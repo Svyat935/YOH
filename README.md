@@ -1,2 +1,0 @@
-# YOH
-Yellow Orange House
