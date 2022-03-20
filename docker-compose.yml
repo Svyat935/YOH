@@ -1,0 +1,24 @@
+version: '3'
+
+services:
+  yoh-backend:
+    container_name: yoh-backend
+    image: yoh-backend
+    build:
+      context: ./yoh-backend
+      dockerfile: Dockerfile
+    depends_on:
+      - yoh-db
+    links:
+      - yoh-db
+    ports:
+      - 5000:8080
+    env_file: &envfile
+      - .env
+
+  yoh-db:
+    image: 'postgres:12.10'
+    container_name: yoh-db
+    env_file: *envfile
+    ports:
+      - 5433:5432
