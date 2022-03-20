@@ -1,7 +1,7 @@
 spring:
   datasource:
     platform: postgres
-    url: jdbc:postgresql://yoh-db:5433/yoh
+    url: ${DATABASE_URL}
     username: ${POSTGRES_USER}
     password: ${POSTGRES_PASSWORD}
     driver-class-name: org.postgresql.Driver
