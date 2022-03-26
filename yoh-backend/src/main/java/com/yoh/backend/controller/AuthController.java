@@ -1,11 +1,13 @@
 package com.yoh.backend.controller;
 
+import com.github.cliftonlabs.json_simple.JsonObject;
 import com.yoh.backend.entity.*;
 import com.yoh.backend.request.OrganizationForAssign;
 import com.yoh.backend.request.RoleForAssign;
 import com.yoh.backend.request.UserForAuthorize;
 import com.yoh.backend.request.UserForCreatingRequest;
 import com.yoh.backend.response.BaseResponse;
+import com.yoh.backend.response.JSONResponse;
 import com.yoh.backend.response.TokenResponse;
 import com.yoh.backend.service.*;
 import org.hibernate.SessionFactory;
@@ -57,9 +59,17 @@ public class AuthController {
     }
 
     @PostMapping("/authorization")
-    public TokenResponse authorizeUser(@Valid @RequestBody UserForAuthorize userRequest) {
-        String token = this.userService.getUser(userRequest.getCredentials(), userRequest.getPassword());
-        return new TokenResponse(token);
+    public JSONResponse authorizeUser(@Valid @RequestBody UserForAuthorize userRequest) {
+        try {
+            JsonObject response = new JsonObject();
+            String token = this.userService.getUser(userRequest.getCredentials(), userRequest.getPassword());
+            response.put("token", token);
+            return new JSONResponse(response, 200);
+        } catch (IllegalArgumentException e){
+            JsonObject exceptionResponse = new JsonObject();
+            exceptionResponse.put("message", e.getMessage());
+            return new JSONResponse(exceptionResponse,  401);
+        }
     }
 
     @PostMapping("/assign/role")
