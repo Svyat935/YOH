@@ -20,16 +20,16 @@ public class TestStatusRepository {
     private SessionFactory sessionFactory;
 
     public void createTestStatus(TestStatus testStatus) {
-        Session session = sessionFactory.openSession();
+        try (Session session = sessionFactory.openSession()) {
+            //Start transaction
+            session.beginTransaction();
 
-        //Start transaction
-        session.beginTransaction();
+            //Transaction
+            session.saveOrUpdate(testStatus);
 
-        //Transaction
-        session.saveOrUpdate(testStatus);
-
-        //End transaction
-        session.getTransaction().commit();
+            //End transaction
+            session.getTransaction().commit();
+        }
     }
 
     public TestStatus getTestStatusByUUID(UUID id) {

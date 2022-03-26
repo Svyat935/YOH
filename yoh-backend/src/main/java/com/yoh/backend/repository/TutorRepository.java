@@ -20,16 +20,16 @@ public class TutorRepository {
     private SessionFactory sessionFactory;
 
     public void createTutor(Tutor tutor) {
-        Session session = sessionFactory.openSession();
+        try (Session session = sessionFactory.openSession()) {
+            //Start transaction
+            session.beginTransaction();
 
-        //Start transaction
-        session.beginTransaction();
+            //Transaction
+            session.saveOrUpdate(tutor);
 
-        //Transaction
-        session.saveOrUpdate(tutor);
-
-        //End transaction
-        session.getTransaction().commit();
+            //End transaction
+            session.getTransaction().commit();
+        }
     }
 
     public Tutor getTutorByUser(User user) {

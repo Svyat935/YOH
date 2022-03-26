@@ -21,16 +21,16 @@ public class TestStatisticRepository {
     private SessionFactory sessionFactory;
 
     public void createTestStatistic(TestStatistic testStatistic) {
-        Session session = sessionFactory.openSession();
+        try (Session session = sessionFactory.openSession()) {
+            //Start transaction
+            session.beginTransaction();
 
-        //Start transaction
-        session.beginTransaction();
+            //Transaction
+            session.saveOrUpdate(testStatistic);
 
-        //Transaction
-        session.saveOrUpdate(testStatistic);
-
-        //End transaction
-        session.getTransaction().commit();
+            //End transaction
+            session.getTransaction().commit();
+        }
     }
 
     public TestStatistic getTestStatisticByUUID(UUID id) {

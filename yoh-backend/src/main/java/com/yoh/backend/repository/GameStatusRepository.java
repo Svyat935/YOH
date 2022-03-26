@@ -23,16 +23,16 @@ public class GameStatusRepository {
     private SessionFactory sessionFactory;
 
     public void createGameStatus(GameStatus gameStatus) {
-        Session session = sessionFactory.openSession();
+        try (Session session = sessionFactory.openSession()) {
+            //Start transaction
+            session.beginTransaction();
 
-        //Start transaction
-        session.beginTransaction();
+            //Transaction
+            session.saveOrUpdate(gameStatus);
 
-        //Transaction
-        session.saveOrUpdate(gameStatus);
-
-        //End transaction
-        session.getTransaction().commit();
+            //End transaction
+            session.getTransaction().commit();
+        }
     }
 
     public GameStatus getGameStatusByUUID(UUID id) {

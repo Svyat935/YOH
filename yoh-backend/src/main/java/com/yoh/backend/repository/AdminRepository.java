@@ -21,16 +21,16 @@ public class AdminRepository {
     private SessionFactory sessionFactory;
 
     public void createAdmin(Admin admin) {
-        Session session = sessionFactory.openSession();
+        try (Session session = sessionFactory.openSession()) {
+            //Start transaction
+            session.beginTransaction();
 
-        //Start transaction
-        session.beginTransaction();
+            //Transaction
+            session.saveOrUpdate(admin);
 
-        //Transaction
-        session.saveOrUpdate(admin);
-
-        //End transaction
-        session.getTransaction().commit();
+            //End transaction
+            session.getTransaction().commit();
+        }
     }
 
     public Admin getAdminByUUID(UUID id) {

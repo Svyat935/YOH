@@ -22,16 +22,17 @@ public class ResearcherRepository {
     private SessionFactory sessionFactory;
 
     public void createResearcher(Researcher researcher) {
-        Session session = sessionFactory.openSession();
+        try (Session session = sessionFactory.openSession()) {
+            //Start transaction
+            session.beginTransaction();
 
-        //Start transaction
-        session.beginTransaction();
+            //Transaction
+            session.saveOrUpdate(researcher);
 
-        //Transaction
-        session.saveOrUpdate(researcher);
+            //End transaction
+            session.getTransaction().commit();
+        }
 
-        //End transaction
-        session.getTransaction().commit();
     }
 
     public Researcher getResearcherByUser(User user) {

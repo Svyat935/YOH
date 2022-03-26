@@ -20,16 +20,16 @@ public class QuestionRepository {
     private SessionFactory sessionFactory;
 
     public void createQuestion(Question question) {
-        Session session = sessionFactory.openSession();
+        try (Session session = sessionFactory.openSession()) {
+            //Start transaction
+            session.beginTransaction();
 
-        //Start transaction
-        session.beginTransaction();
+            //Transaction
+            session.saveOrUpdate(question);
 
-        //Transaction
-        session.saveOrUpdate(question);
-
-        //End transaction
-        session.getTransaction().commit();
+            //End transaction
+            session.getTransaction().commit();
+        }
     }
 
     public Question getQuestionByUUID(UUID id) {

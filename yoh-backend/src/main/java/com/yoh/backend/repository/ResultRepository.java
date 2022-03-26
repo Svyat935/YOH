@@ -20,16 +20,16 @@ public class ResultRepository {
     private SessionFactory sessionFactory;
 
     public void createResult(Result result) {
-        Session session = sessionFactory.openSession();
+        try (Session session = sessionFactory.openSession()) {
+            //Start transaction
+            session.beginTransaction();
 
-        //Start transaction
-        session.beginTransaction();
+            //Transaction
+            session.saveOrUpdate(result);
 
-        //Transaction
-        session.saveOrUpdate(result);
-
-        //End transaction
-        session.getTransaction().commit();
+            //End transaction
+            session.getTransaction().commit();
+        }
     }
 
     public Result getResultByUUID(UUID id) {

@@ -20,16 +20,16 @@ public class GameRepository {
     private SessionFactory sessionFactory;
 
     public void createGame(Game game) {
-        Session session = sessionFactory.openSession();
+        try (Session session = sessionFactory.openSession()) {
+            //Start transaction
+            session.beginTransaction();
 
-        //Start transaction
-        session.beginTransaction();
+            //Transaction
+            session.saveOrUpdate(game);
 
-        //Transaction
-        session.saveOrUpdate(game);
-
-        //End transaction
-        session.getTransaction().commit();
+            //End transaction
+            session.getTransaction().commit();
+        }
     }
 
     public Game getGameByUUID(UUID id) {

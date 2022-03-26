@@ -44,15 +44,16 @@ public class UserRepository {
     }
 
     public void createUser(User user) {
-        Session session = sessionFactory.openSession();
 
-        //Start transaction
-        session.beginTransaction();
+        try (Session session = sessionFactory.openSession()) {
+            //Start transaction
+            session.beginTransaction();
 
-        //Transaction
-        session.saveOrUpdate(user);
+            //Transaction
+            session.saveOrUpdate(user);
 
-        //End transaction
-        session.getTransaction().commit();
+            //End transaction
+            session.getTransaction().commit();
+        }
     }
 }
