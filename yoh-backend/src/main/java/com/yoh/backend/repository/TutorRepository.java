@@ -20,7 +20,8 @@ public class TutorRepository {
     private SessionFactory sessionFactory;
 
     public void createTutor(Tutor tutor) {
-        try (Session session = sessionFactory.openSession()) {
+        Session session = sessionFactory.openSession();
+        try {
             //Start transaction
             session.beginTransaction();
 
@@ -29,6 +30,9 @@ public class TutorRepository {
 
             //End transaction
             session.getTransaction().commit();
+        }
+        finally {
+            session.close();
         }
     }
 

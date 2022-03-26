@@ -20,7 +20,8 @@ public class OrganizationRepository {
     private SessionFactory sessionFactory;
 
     public void createOrganization(Organization organization) {
-        try (Session session = sessionFactory.openSession()) {
+        Session session = sessionFactory.openSession();
+        try {
             //Start transaction
             session.beginTransaction();
 
@@ -29,6 +30,9 @@ public class OrganizationRepository {
 
             //End transaction
             session.getTransaction().commit();
+        }
+        finally {
+            session.close();
         }
     }
 

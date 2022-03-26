@@ -20,7 +20,8 @@ public class TestRepository {
     private SessionFactory sessionFactory;
 
     public void createTest(Test test) {
-        try (Session session = sessionFactory.openSession()) {
+        Session session = sessionFactory.openSession();
+        try {
             //Start transaction
             session.beginTransaction();
 
@@ -29,6 +30,9 @@ public class TestRepository {
 
             //End transaction
             session.getTransaction().commit();
+        }
+        finally {
+            session.close();
         }
 
     }

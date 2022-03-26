@@ -20,7 +20,8 @@ public class GameRepository {
     private SessionFactory sessionFactory;
 
     public void createGame(Game game) {
-        try (Session session = sessionFactory.openSession()) {
+        Session session = sessionFactory.openSession();
+        try {
             //Start transaction
             session.beginTransaction();
 
@@ -29,6 +30,9 @@ public class GameRepository {
 
             //End transaction
             session.getTransaction().commit();
+        }
+        finally {
+            session.close();
         }
     }
 

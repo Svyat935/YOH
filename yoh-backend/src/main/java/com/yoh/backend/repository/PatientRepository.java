@@ -22,7 +22,8 @@ public class PatientRepository {
     private SessionFactory sessionFactory;
 
     public void createPatient(Patient patient) {
-        try (Session session = sessionFactory.openSession()) {
+        Session session = sessionFactory.openSession();
+        try {
             //Start transaction
             session.beginTransaction();
 
@@ -31,6 +32,9 @@ public class PatientRepository {
 
             //End transaction
             session.getTransaction().commit();
+        }
+        finally {
+            session.close();
         }
     }
 

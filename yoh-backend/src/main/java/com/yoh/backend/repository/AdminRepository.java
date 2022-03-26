@@ -21,7 +21,8 @@ public class AdminRepository {
     private SessionFactory sessionFactory;
 
     public void createAdmin(Admin admin) {
-        try (Session session = sessionFactory.openSession()) {
+        Session session = sessionFactory.openSession();
+        try {
             //Start transaction
             session.beginTransaction();
 
@@ -30,6 +31,9 @@ public class AdminRepository {
 
             //End transaction
             session.getTransaction().commit();
+        }
+        finally {
+           session.close();
         }
     }
 

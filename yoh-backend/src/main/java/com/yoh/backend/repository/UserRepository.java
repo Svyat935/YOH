@@ -44,8 +44,8 @@ public class UserRepository {
     }
 
     public void createUser(User user) {
-
-        try (Session session = sessionFactory.openSession()) {
+        Session session = sessionFactory.openSession();
+        try {
             //Start transaction
             session.beginTransaction();
 
@@ -54,6 +54,9 @@ public class UserRepository {
 
             //End transaction
             session.getTransaction().commit();
+        }
+        finally {
+            session.close();
         }
     }
 }

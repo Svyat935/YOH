@@ -20,7 +20,8 @@ public class AnswerRepository {
     private SessionFactory sessionFactory;
 
     public void createAnswer(Answer answer) {
-        try (Session session = sessionFactory.openSession()) {
+        Session session = sessionFactory.openSession();
+        try {
             //Start transaction
             session.beginTransaction();
 
@@ -29,6 +30,9 @@ public class AnswerRepository {
 
             //End transaction
             session.getTransaction().commit();
+        }
+        finally {
+            session.close();
         }
     }
 

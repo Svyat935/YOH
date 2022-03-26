@@ -20,7 +20,8 @@ public class GameStatisticRepository {
     private SessionFactory sessionFactory;
 
     public void createGameStatistic(GameStatistic gameStatistic) {
-        try (Session session = sessionFactory.openSession()) {
+        Session session = sessionFactory.openSession();
+        try {
             //Start transaction
             session.beginTransaction();
 
@@ -29,6 +30,9 @@ public class GameStatisticRepository {
 
             //End transaction
             session.getTransaction().commit();
+        }
+        finally {
+            session.close();
         }
     }
 

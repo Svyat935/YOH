@@ -23,7 +23,8 @@ public class GameStatusRepository {
     private SessionFactory sessionFactory;
 
     public void createGameStatus(GameStatus gameStatus) {
-        try (Session session = sessionFactory.openSession()) {
+        Session session = sessionFactory.openSession();
+        try {
             //Start transaction
             session.beginTransaction();
 
@@ -32,6 +33,9 @@ public class GameStatusRepository {
 
             //End transaction
             session.getTransaction().commit();
+        }
+        finally {
+            session.close();
         }
     }
 
