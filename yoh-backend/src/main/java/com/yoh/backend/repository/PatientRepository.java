@@ -40,34 +40,53 @@ public class PatientRepository {
 
     public void deletePatient(Patient patient) {
         Session session = sessionFactory.openSession();
-
-        session.beginTransaction();
-        session.delete(patient);
-        session.getTransaction().commit();
+        try {
+            session.beginTransaction();
+            session.delete(patient);
+            session.getTransaction().commit();
+        }
+        finally {
+            session.close();
+        }
     }
 
     public Patient getPatientByUser(User user) {
         Session session = sessionFactory.openSession();
-        Criteria criteria = session.createCriteria(Patient.class)
-                .add(Restrictions.eq("user", user));
-        List<Patient> patientsList = criteria.list();
-        return patientsList.isEmpty() ? null : patientsList.get(0);
+        try {
+            Criteria criteria = session.createCriteria(Patient.class)
+                    .add(Restrictions.eq("user", user));
+            List<Patient> patientsList = criteria.list();
+            return patientsList.isEmpty() ? null : patientsList.get(0);
+        }
+        finally {
+            session.close();
+        }
     }
 
     public Patient getPatientByUUID(UUID id) {
         Session session = sessionFactory.openSession();
-        Criteria criteria = session.createCriteria(Patient.class)
-                .add(Restrictions.eq("id", id));
-        List<Patient> patients = criteria.list();
-        return patients.isEmpty() ? null : patients.get(0);
+        try {
+            Criteria criteria = session.createCriteria(Patient.class)
+                    .add(Restrictions.eq("id", id));
+            List<Patient> patients = criteria.list();
+            return patients.isEmpty() ? null : patients.get(0);
+        }
+        finally {
+            session.close();
+        }
     }
 
     public List<Patient> getAllPatientsByOrganization(Organization organization) {
         Session session = sessionFactory.openSession();
-        Criteria criteria = session.createCriteria(Patient.class)
-                .add(Restrictions.eq("organization", organization));
-        List<Patient> patientsList = criteria.list();
-        return patientsList.isEmpty() ? List.of() : patientsList;
+        try {
+            Criteria criteria = session.createCriteria(Patient.class)
+                    .add(Restrictions.eq("organization", organization));
+            List<Patient> patientsList = criteria.list();
+            return patientsList.isEmpty() ? List.of() : patientsList;
+        }
+        finally {
+            session.close();
+        }
     }
 
 }

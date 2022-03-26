@@ -38,10 +38,15 @@ public class TutorRepository {
 
     public Tutor getTutorByUser(User user) {
         Session session = sessionFactory.openSession();
-        Criteria criteria = session.createCriteria(Tutor.class)
-                .add(Restrictions.eq("user", user));
-        List<Tutor> tutorList = criteria.list();
-        return tutorList.isEmpty() ? null : tutorList.get(0);
+        try {
+            Criteria criteria = session.createCriteria(Tutor.class)
+                    .add(Restrictions.eq("user", user));
+            List<Tutor> tutorList = criteria.list();
+            return tutorList.isEmpty() ? null : tutorList.get(0);
+        }
+        finally {
+            session.close();
+        }
     }
 
 //    public List<Patient> getPatientsByTutor(Tutor tutor) {
@@ -54,9 +59,14 @@ public class TutorRepository {
 
     public Tutor getTutorByUUID(UUID id) {
         Session session = sessionFactory.openSession();
-        Criteria criteria = session.createCriteria(Tutor.class)
-                .add(Restrictions.eq("id", id));
-        List<Tutor> tutors = criteria.list();
-        return tutors.isEmpty() ? null : tutors.get(0);
+        try {
+            Criteria criteria = session.createCriteria(Tutor.class)
+                    .add(Restrictions.eq("id", id));
+            List<Tutor> tutors = criteria.list();
+            return tutors.isEmpty() ? null : tutors.get(0);
+        }
+        finally {
+            session.close();
+        }
     }
 }

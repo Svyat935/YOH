@@ -21,26 +21,41 @@ public class UserRepository {
 
     public User getUserByLogin(String login) {
         Session session = sessionFactory.openSession();
-        Criteria criteria = session.createCriteria(User.class)
-                .add(Restrictions.eq("login", login));
-        List<User> users = criteria.list();
-        return users.isEmpty() ? null : users.get(0);
+        try {
+            Criteria criteria = session.createCriteria(User.class)
+                    .add(Restrictions.eq("login", login));
+            List<User> users = criteria.list();
+            return users.isEmpty() ? null : users.get(0);
+        }
+        finally {
+            session.close();
+        }
     }
 
     public User getUserByEmail(String email) {
         Session session = sessionFactory.openSession();
-        Criteria criteria = session.createCriteria(User.class)
-                .add(Restrictions.eq("email", email));
-        List<User> users = criteria.list();
-        return users.isEmpty() ? null : users.get(0);
+        try {
+            Criteria criteria = session.createCriteria(User.class)
+                    .add(Restrictions.eq("email", email));
+            List<User> users = criteria.list();
+            return users.isEmpty() ? null : users.get(0);
+        }
+        finally {
+            session.close();
+        }
     }
 
     public User getUserByUUID(UUID id) {
         Session session = sessionFactory.openSession();
-        Criteria criteria = session.createCriteria(User.class)
-                .add(Restrictions.eq("id", id));
-        List<User> users = criteria.list();
-        return users.isEmpty() ? null : users.get(0);
+        try {
+            Criteria criteria = session.createCriteria(User.class)
+                    .add(Restrictions.eq("id", id));
+            List<User> users = criteria.list();
+            return users.isEmpty() ? null : users.get(0);
+        }
+        finally {
+            session.close();
+        }
     }
 
     public void createUser(User user) {

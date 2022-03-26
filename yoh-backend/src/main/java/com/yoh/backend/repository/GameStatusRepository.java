@@ -41,18 +41,28 @@ public class GameStatusRepository {
 
     public GameStatus getGameStatusByUUID(UUID id) {
         Session session = sessionFactory.openSession();
-        Criteria criteria = session.createCriteria(GameStatus.class)
-                .add(Restrictions.eq("id", id));
-        List<GameStatus> gameStatuses = criteria.list();
-        return gameStatuses.isEmpty() ? null : gameStatuses.get(0);
+        try {
+            Criteria criteria = session.createCriteria(GameStatus.class)
+                    .add(Restrictions.eq("id", id));
+            List<GameStatus> gameStatuses = criteria.list();
+            return gameStatuses.isEmpty() ? null : gameStatuses.get(0);
+        }
+        finally {
+            session.close();
+        }
     }
 
     public GameStatus getGameStatusByGameAndPatient(Game game, Patient patient) {
         Session session = sessionFactory.openSession();
-        Criteria criteria = session.createCriteria(GameStatus.class)
-                .add(Restrictions.eq("game", game))
-                .add(Restrictions.eq("patient", patient));
-        List<GameStatus> gameStatuses = criteria.list();
-        return gameStatuses.isEmpty() ? null : gameStatuses.get(0);
+        try {
+            Criteria criteria = session.createCriteria(GameStatus.class)
+                    .add(Restrictions.eq("game", game))
+                    .add(Restrictions.eq("patient", patient));
+            List<GameStatus> gameStatuses = criteria.list();
+            return gameStatuses.isEmpty() ? null : gameStatuses.get(0);
+        }
+        finally {
+            session.close();
+        }
     }
 }

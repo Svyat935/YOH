@@ -38,9 +38,14 @@ public class GameRepository {
 
     public Game getGameByUUID(UUID id) {
         Session session = sessionFactory.openSession();
-        Criteria criteria = session.createCriteria(Game.class)
-                .add(Restrictions.eq("id", id));
-        List<Game> games = criteria.list();
-        return games.isEmpty() ? null : games.get(0);
+        try {
+            Criteria criteria = session.createCriteria(Game.class)
+                    .add(Restrictions.eq("id", id));
+            List<Game> games = criteria.list();
+            return games.isEmpty() ? null : games.get(0);
+        }
+        finally {
+            session.close();
+        }
     }
 }

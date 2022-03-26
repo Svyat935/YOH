@@ -41,17 +41,27 @@ public class ResearcherRepository {
 
     public Researcher getResearcherByUser(User user) {
         Session session = sessionFactory.openSession();
-        Criteria criteria = session.createCriteria(Researcher.class)
-                .add(Restrictions.eq("user", user));
-        List<Researcher> researcherList = criteria.list();
-        return researcherList.isEmpty() ? null : researcherList.get(0);
+        try {
+            Criteria criteria = session.createCriteria(Researcher.class)
+                    .add(Restrictions.eq("user", user));
+            List<Researcher> researcherList = criteria.list();
+            return researcherList.isEmpty() ? null : researcherList.get(0);
+        }
+        finally {
+            session.close();
+        }
     }
 
     public Researcher getResearcherByUUID(UUID id) {
         Session session = sessionFactory.openSession();
-        Criteria criteria = session.createCriteria(Researcher.class)
-                .add(Restrictions.eq("id", id));
-        List<Researcher> researchers = criteria.list();
-        return researchers.isEmpty() ? null : researchers.get(0);
+        try {
+            Criteria criteria = session.createCriteria(Researcher.class)
+                    .add(Restrictions.eq("id", id));
+            List<Researcher> researchers = criteria.list();
+            return researchers.isEmpty() ? null : researchers.get(0);
+        }
+        finally {
+            session.close();
+        }
     }
 }

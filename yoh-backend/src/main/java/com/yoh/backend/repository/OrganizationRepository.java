@@ -38,9 +38,14 @@ public class OrganizationRepository {
 
     public Organization getOrganizationByUUID(UUID id) {
         Session session = sessionFactory.openSession();
-        Criteria criteria = session.createCriteria(Organization.class)
-                .add(Restrictions.eq("id", id));
-        List<Organization> organizations = criteria.list();
-        return organizations.isEmpty() ? null : organizations.get(0);
+        try {
+            Criteria criteria = session.createCriteria(Organization.class)
+                    .add(Restrictions.eq("id", id));
+            List<Organization> organizations = criteria.list();
+            return organizations.isEmpty() ? null : organizations.get(0);
+        }
+        finally {
+            session.close();
+        }
     }
 }

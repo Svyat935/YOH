@@ -38,9 +38,14 @@ public class ResultRepository {
 
     public Result getResultByUUID(UUID id) {
         Session session = sessionFactory.openSession();
-        Criteria criteria = session.createCriteria(Result.class)
-                .add(Restrictions.eq("id", id));
-        List<Result> results = criteria.list();
-        return results.isEmpty() ? null : results.get(0);
+        try {
+            Criteria criteria = session.createCriteria(Result.class)
+                    .add(Restrictions.eq("id", id));
+            List<Result> results = criteria.list();
+            return results.isEmpty() ? null : results.get(0);
+        }
+        finally {
+            session.close();
+        }
     }
 }

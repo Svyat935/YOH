@@ -39,10 +39,15 @@ public class TestStatisticRepository {
 
     public TestStatistic getTestStatisticByUUID(UUID id) {
         Session session = sessionFactory.openSession();
-        Criteria criteria = session.createCriteria(TestStatistic.class)
-                .add(Restrictions.eq("id", id));
-        List<TestStatistic> testStatistics = criteria.list();
-        return testStatistics.isEmpty() ? null : testStatistics.get(0);
+        try {
+            Criteria criteria = session.createCriteria(TestStatistic.class)
+                    .add(Restrictions.eq("id", id));
+            List<TestStatistic> testStatistics = criteria.list();
+            return testStatistics.isEmpty() ? null : testStatistics.get(0);
+        }
+        finally {
+            session.close();
+        }
     }
 }
 

@@ -39,9 +39,14 @@ public class TestRepository {
 
     public Test getTestByUUID(UUID id) {
         Session session = sessionFactory.openSession();
-        Criteria criteria = session.createCriteria(Test.class)
-                .add(Restrictions.eq("id", id));
-        List<Test> tests = criteria.list();
-        return tests.isEmpty() ? null : tests.get(0);
+        try {
+            Criteria criteria = session.createCriteria(Test.class)
+                    .add(Restrictions.eq("id", id));
+            List<Test> tests = criteria.list();
+            return tests.isEmpty() ? null : tests.get(0);
+        }
+        finally {
+            session.close();
+        }
     }
 }

@@ -38,9 +38,14 @@ public class GameStatisticRepository {
 
     public GameStatistic getGameStatisticByUUID(UUID id) {
         Session session = sessionFactory.openSession();
-        Criteria criteria = session.createCriteria(GameStatistic.class)
-                .add(Restrictions.eq("id", id));
-        List<GameStatistic> gameStatistics = criteria.list();
-        return gameStatistics.isEmpty() ? null : gameStatistics.get(0);
+        try {
+            Criteria criteria = session.createCriteria(GameStatistic.class)
+                    .add(Restrictions.eq("id", id));
+            List<GameStatistic> gameStatistics = criteria.list();
+            return gameStatistics.isEmpty() ? null : gameStatistics.get(0);
+        }
+        finally {
+            session.close();
+        }
     }
 }

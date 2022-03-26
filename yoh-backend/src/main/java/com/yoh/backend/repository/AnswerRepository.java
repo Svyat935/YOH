@@ -38,9 +38,14 @@ public class AnswerRepository {
 
     public Answer getAnswerByUUID(UUID id) {
         Session session = sessionFactory.openSession();
-        Criteria criteria = session.createCriteria(Answer.class)
-                .add(Restrictions.eq("id", id));
-        List<Answer> answers = criteria.list();
-        return answers.isEmpty() ? null : answers.get(0);
+        try {
+            Criteria criteria = session.createCriteria(Answer.class)
+                    .add(Restrictions.eq("id", id));
+            List<Answer> answers = criteria.list();
+            return answers.isEmpty() ? null : answers.get(0);
+        }
+        finally {
+            session.close();
+        }
     }
 }

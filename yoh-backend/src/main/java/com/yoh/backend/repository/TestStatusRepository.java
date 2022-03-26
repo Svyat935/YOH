@@ -38,18 +38,28 @@ public class TestStatusRepository {
 
     public TestStatus getTestStatusByUUID(UUID id) {
         Session session = sessionFactory.openSession();
-        Criteria criteria = session.createCriteria(TestStatus.class)
-                .add(Restrictions.eq("id", id));
-        List<TestStatus> testStatuses = criteria.list();
-        return testStatuses.isEmpty() ? null : testStatuses.get(0);
+        try {
+            Criteria criteria = session.createCriteria(TestStatus.class)
+                    .add(Restrictions.eq("id", id));
+            List<TestStatus> testStatuses = criteria.list();
+            return testStatuses.isEmpty() ? null : testStatuses.get(0);
+        }
+        finally {
+            session.close();
+        }
     }
 
     public TestStatus getTestStatusByTestAndPatient(Test test, Patient patient) {
         Session session = sessionFactory.openSession();
-        Criteria criteria = session.createCriteria(GameStatus.class)
-                .add(Restrictions.eq("test", test))
-                .add(Restrictions.eq("patient", patient));
-        List<TestStatus> testStatuses = criteria.list();
-        return testStatuses.isEmpty() ? null : testStatuses.get(0);
+        try {
+            Criteria criteria = session.createCriteria(GameStatus.class)
+                    .add(Restrictions.eq("test", test))
+                    .add(Restrictions.eq("patient", patient));
+            List<TestStatus> testStatuses = criteria.list();
+            return testStatuses.isEmpty() ? null : testStatuses.get(0);
+        }
+        finally {
+            session.close();
+        }
     }
 }

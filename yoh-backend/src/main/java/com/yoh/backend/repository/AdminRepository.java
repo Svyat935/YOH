@@ -39,9 +39,14 @@ public class AdminRepository {
 
     public Admin getAdminByUUID(UUID id) {
         Session session = sessionFactory.openSession();
-        Criteria criteria = session.createCriteria(User.class)
-                .add(Restrictions.eq("id", id));
-        List<Admin> admins = criteria.list();
-        return admins.isEmpty() ? null : admins.get(0);
+        try {
+            Criteria criteria = session.createCriteria(User.class)
+                    .add(Restrictions.eq("id", id));
+            List<Admin> admins = criteria.list();
+            return admins.isEmpty() ? null : admins.get(0);
+        }
+        finally {
+            session.close();
+        }
     }
 }
