@@ -6,9 +6,9 @@ public class JSONResponse {
     private final Integer code;
     private final JsonObject jsonObject;
 
-    public JSONResponse(JsonObject jsonObject, Integer code) {
-        this.jsonObject = jsonObject;
+    public JSONResponse(Integer code, JsonObject jsonObject) {
         this.code = code;
+        this.jsonObject = jsonObject;
     }
 
     public JsonObject getJsonObject() {

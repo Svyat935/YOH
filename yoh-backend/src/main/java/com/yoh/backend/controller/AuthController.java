@@ -8,7 +8,6 @@ import com.yoh.backend.request.UserForAuthorize;
 import com.yoh.backend.request.UserForCreatingRequest;
 import com.yoh.backend.response.BaseResponse;
 import com.yoh.backend.response.JSONResponse;
-import com.yoh.backend.response.TokenResponse;
 import com.yoh.backend.service.*;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,14 +47,18 @@ public class AuthController {
     }
 
     @PostMapping("/registration")
-    public BaseResponse createUser(@Valid @RequestBody UserForCreatingRequest userRequest) {
+    public JSONResponse createUser(@Valid @RequestBody UserForCreatingRequest userRequest) {
         User user = new User(userRequest.getLogin(), userRequest.getEmail(), userRequest.getPassword());
         try{
             this.userService.createUser(user);
+            JsonObject response = new JsonObject();
+            response.put("message", "User was created");
+            return new JSONResponse(200, response);
         } catch (IllegalArgumentException e){
-            return new BaseResponse(e.getMessage(), 401);
+            JsonObject exceptionResponse = new JsonObject();
+            exceptionResponse.put("message", e.getMessage());
+            return new JSONResponse(401, exceptionResponse);
         }
-        return new BaseResponse("User is created.", 200);
     }
 
     @PostMapping("/authorization")
@@ -64,70 +67,90 @@ public class AuthController {
             JsonObject response = new JsonObject();
             String token = this.userService.getUser(userRequest.getCredentials(), userRequest.getPassword());
             response.put("token", token);
-            return new JSONResponse(response, 200);
+            return new JSONResponse(200, response);
         } catch (IllegalArgumentException e){
             JsonObject exceptionResponse = new JsonObject();
             exceptionResponse.put("message", e.getMessage());
-            return new JSONResponse(exceptionResponse,  401);
+            return new JSONResponse(401, exceptionResponse);
         }
     }
 
     @PostMapping("/assign/role")
-    public BaseResponse assignRoleUser(@RequestHeader("token") String token, @Valid @RequestBody RoleForAssign roleForAssign) throws IllegalArgumentException{
+    public JSONResponse assignRoleUser(@RequestHeader("token") String token, @Valid @RequestBody RoleForAssign roleForAssign) {
         User userForAssign = this.userService.getUserById(this.userService.verifyToken(token));
         try {
             switch (roleForAssign.getRole()) {
                 case 0 -> {
                     Admin admin = new Admin(userForAssign);
                     this.adminService.createAdmin(admin);
-                    return new BaseResponse("Admin was assigned", 200);
+                    JsonObject response = new JsonObject();
+                    response.put("message", "Admin was assigned");
+                    return new JSONResponse(200, response);
                 }
                 case 1 -> {
                     Patient patient = new Patient(userForAssign);
                     this.patientService.createPatient(patient);
-                    return new BaseResponse("Patient was assigned", 200);
+                    JsonObject response = new JsonObject();
+                    response.put("message", "Patient was assigned");
+                    return new JSONResponse(200, response);
                 }
                 case 2 -> {
                     Researcher researcher = new Researcher(userForAssign);
                     this.researcherService.createResearcher(researcher);
-                    return new BaseResponse("Researcher was assigned", 200);
+                    JsonObject response = new JsonObject();
+                    response.put("message", "Researcher was assigned");
+                    return new JSONResponse(200, response);
                 }
                 case 3 -> {
                     Tutor tutor = new Tutor(userForAssign);
                     this.tutorService.createTutor(tutor);
-                    return new BaseResponse("Tutor was assigned", 200);
+                    JsonObject response = new JsonObject();
+                    response.put("message", "Tutor was assigned");
+                    return new JSONResponse(200, response);
                 }
             }
         } catch (IllegalArgumentException e) {
-            return new BaseResponse(e.getMessage(), 401);
+            JsonObject exceptionResponse = new JsonObject();
+            exceptionResponse.put("message", e.getMessage());
+            return new JSONResponse(401, exceptionResponse);
         }
-        return new BaseResponse(String.format("No such role: %s", roleForAssign.getRole()), 401);
+        JsonObject defaultResponse = new JsonObject();
+        defaultResponse.put("message", "No such role");
+        return new JSONResponse(401, defaultResponse);
     }
 
     @PostMapping("/assign/organization")
-    public BaseResponse assignOrganization(@RequestHeader("token") String token, @Valid @RequestBody OrganizationForAssign organizationForAssign) throws IllegalArgumentException{
-        User userForAssign = this.userService.getUserById(this.userService.verifyToken(token));
-        Organization newOrganization = this.organizationService.getOrganizationById(UUID.fromString(organizationForAssign.getOrganization()));
+    public JSONResponse assignOrganization(@RequestHeader("token") String token, @Valid @RequestBody OrganizationForAssign organizationForAssign) {
+        try {
+            User userForAssign = this.userService.getUserById(this.userService.verifyToken(token));
+            Organization newOrganization = this.organizationService.getOrganizationById(UUID.fromString(organizationForAssign.getOrganization()));
 
-        Patient patient = patientService.getPatientByUser(userForAssign);
-        if (patient == null){
-            Researcher researcher = researcherService.getResearcherByUser(userForAssign);
-            if (researcher == null){
-                Tutor tutor = tutorService.getTutorByUser(userForAssign);
-                if (tutor != null) {
-                    tutor.setOrganization(newOrganization);
+            Patient patient = patientService.getPatientByUser(userForAssign);
+            if (patient == null) {
+                Researcher researcher = researcherService.getResearcherByUser(userForAssign);
+                if (researcher == null) {
+                    Tutor tutor = tutorService.getTutorByUser(userForAssign);
+                    if (tutor != null) {
+                        tutor.setOrganization(newOrganization);
+                    } else {
+                        JsonObject exceptionResponse = new JsonObject();
+                        exceptionResponse.put("message", String.format("User was not founded in roles %s", userForAssign.getId()));
+                        return new JSONResponse(401, exceptionResponse);
+                    }
+                } else {
+                    researcher.setOrganization(newOrganization);
                 }
-                else return new BaseResponse(String.format("User was not founded in roles %s", userForAssign.getId()), 401);
+            } else {
+                patient.setOrganization(newOrganization);
             }
-            else {
-                researcher.setOrganization(newOrganization);
-            }
+            JsonObject response = new JsonObject();
+            response.put("message", "Organization was assigned");
+            return new JSONResponse(200, response);
+        } catch (IllegalArgumentException e) {
+            JsonObject exceptionResponse = new JsonObject();
+            exceptionResponse.put("message", e.getMessage());
+            return new JSONResponse(401, exceptionResponse);
         }
-        else {
-            patient.setOrganization(newOrganization);
-        }
-
-        return new BaseResponse("Done", 200);
 
     }
 }
