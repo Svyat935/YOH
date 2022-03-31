@@ -1,6 +1,6 @@
 package com.yoh.backend.repository;
 
-import com.yoh.backend.entity.User;
+import com.yoh.backend.entity.*;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -52,6 +52,36 @@ public class UserRepository {
                     .add(Restrictions.eq("id", id));
             List<User> users = criteria.list();
             return users.isEmpty() ? null : users.get(0);
+        }
+        finally {
+            session.close();
+        }
+    }
+
+    public Integer getRoleByUUID(UUID id){
+        Session session = sessionFactory.openSession();
+        try{
+            Criteria criteria = session.createCriteria(Admin.class).add(Restrictions.eq("user.id", id));
+            List<Admin> admins = criteria.list();
+            if (!admins.isEmpty()){
+                return 0;
+            }
+            criteria = session.createCriteria(Patient.class).add(Restrictions.eq("user.id", id));
+            List<Tutor> patients = criteria.list();
+            if (!patients.isEmpty()){
+                return 1;
+            }
+            criteria = session.createCriteria(Researcher.class).add(Restrictions.eq("user.id", id));
+            List<Tutor> researches = criteria.list();
+            if (!researches.isEmpty()){
+                return 2;
+            }
+            criteria = session.createCriteria(Tutor.class).add(Restrictions.eq("user.id", id));
+            List<Tutor> tutors = criteria.list();
+            if (!tutors.isEmpty()){
+                return 3;
+            }
+            return null;
         }
         finally {
             session.close();

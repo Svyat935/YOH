@@ -35,14 +35,14 @@ public class UserService {
         userRepository.createUser(user);
     }
 
-    public String getUser(String credentials, String password) throws IllegalArgumentException{
+    public User getUser(String credentials, String password) throws IllegalArgumentException{
         User user = userRepository.getUserByLogin(credentials);
         if (user != null) {
             boolean status = BCrypt.verifyer()
                     .verify(password.toCharArray(), user.getPassword())
                     .verified;
             if (status) {
-                return generateToken(user.getId());
+                return user;
             }
         }
 
@@ -52,7 +52,7 @@ public class UserService {
                     .verify(password.toCharArray(), user.getPassword())
                     .verified;
             if (status) {
-                return generateToken(user.getId());
+                return user;
             }
         }
 
@@ -60,6 +60,10 @@ public class UserService {
                 String.format("Sorry, but User with this credentials (%s, %s) wasn't found.",
                         credentials, password)
         );
+    }
+
+    public Integer getRoleById(UUID id){
+        return userRepository.getRoleByUUID(id);
     }
 
     public User getUserById(UUID id) throws IllegalArgumentException{
@@ -83,7 +87,7 @@ public class UserService {
         }
     }
 
-    private String generateToken(UUID userId){
+    public String generateToken(UUID userId){
         LocalDateTime expireLocalDateTime = LocalDateTime.now().plusDays(7);
         Date expireDate = Timestamp.valueOf(expireLocalDateTime);
 
@@ -103,7 +107,7 @@ public class UserService {
             throw new IllegalArgumentException("Problem with token");
         }
         jwt = JWT.decode(token);
-        String userId = jwt.getClaim("user").toString();
+        String userId = jwt.getClaim("user").asString();
         return UUID.fromString(userId);
     }
 }

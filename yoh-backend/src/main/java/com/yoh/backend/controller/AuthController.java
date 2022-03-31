@@ -42,19 +42,19 @@ public class AuthController {
     private SessionFactory sessionFactory;
 
     @GetMapping
-    public BaseResponse testing(){
+    public BaseResponse testing() {
         return new BaseResponse("Test is successes.", 200);
     }
 
     @PostMapping("/registration")
     public JSONResponse createUser(@Valid @RequestBody UserForCreatingRequest userRequest) {
         User user = new User(userRequest.getLogin(), userRequest.getEmail(), userRequest.getPassword());
-        try{
+        try {
             this.userService.createUser(user);
             JsonObject response = new JsonObject();
             response.put("message", "User was created");
             return new JSONResponse(200, response);
-        } catch (IllegalArgumentException e){
+        } catch (IllegalArgumentException e) {
             JsonObject exceptionResponse = new JsonObject();
             exceptionResponse.put("message", e.getMessage());
             return new JSONResponse(401, exceptionResponse);
@@ -65,10 +65,20 @@ public class AuthController {
     public JSONResponse authorizeUser(@Valid @RequestBody UserForAuthorize userRequest) {
         try {
             JsonObject response = new JsonObject();
-            String token = this.userService.getUser(userRequest.getCredentials(), userRequest.getPassword());
+            User user = this.userService.getUser(userRequest.getCredentials(), userRequest.getPassword());
+            Integer role = this.userService.getRoleById(user.getId());
+            String token = this.userService.generateToken(user.getId());
             response.put("token", token);
+            response.put("role", role);
+            String roleString = "NotAssigned";
+            if (role != null){
+                roleString = role == 0 ? "Admin" :
+                        role == 2 ? "Patient" :
+                                role == 3 ? "Researcher" : "Tutor";
+            }
+            response.put("roleString", roleString);
             return new JSONResponse(200, response);
-        } catch (IllegalArgumentException e){
+        } catch (IllegalArgumentException e) {
             JsonObject exceptionResponse = new JsonObject();
             exceptionResponse.put("message", e.getMessage());
             return new JSONResponse(401, exceptionResponse);
