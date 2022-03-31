@@ -20,6 +20,11 @@ public class GameStatisticService {
         gameStatisticRepository.createGameStatistic(gameStatistic);
     }
 
+    public void updateGameStatistic(GameStatistic gameStatistic) throws IllegalArgumentException{
+        gameStatisticRepository.createGameStatistic(gameStatistic);
+    }
+
+
     private void checkExistGameStatistic(GameStatistic gameStatistic) throws IllegalArgumentException{
 
     }

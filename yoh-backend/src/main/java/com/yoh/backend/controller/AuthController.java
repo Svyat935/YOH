@@ -151,6 +151,7 @@ public class AuthController {
                     Tutor tutor = tutorService.getTutorByUser(userForAssign);
                     if (tutor != null) {
                         tutor.setOrganization(newOrganization);
+                        this.tutorService.updateTutor(tutor);
                     } else {
                         JsonObject exceptionResponse = new JsonObject();
                         exceptionResponse.put("message", String.format("User was not founded in roles %s", userForAssign.getId()));
@@ -158,9 +159,11 @@ public class AuthController {
                     }
                 } else {
                     researcher.setOrganization(newOrganization);
+                    this.researcherService.updateResearcher(researcher);
                 }
             } else {
                 patient.setOrganization(newOrganization);
+                this.patientService.updatePatient(patient);
             }
             JsonObject response = new JsonObject();
             response.put("message", "Organization was assigned");

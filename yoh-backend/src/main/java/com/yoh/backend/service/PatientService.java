@@ -21,6 +21,10 @@ public class PatientService {
         patientRepository.createPatient(patient);
     }
 
+    public void updatePatient(Patient patient) throws IllegalArgumentException{
+        patientRepository.createPatient(patient);
+    }
+
     public Patient getPatientByUser(User user) {
         return patientRepository.getPatientByUser(user);
     }

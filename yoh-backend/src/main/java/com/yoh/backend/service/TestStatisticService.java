@@ -20,6 +20,10 @@ public class TestStatisticService {
         testStatisticRepository.createTestStatistic(testStatistic);
     }
 
+    public void updateTestStatistic(TestStatistic testStatistic) throws IllegalArgumentException{
+        testStatisticRepository.createTestStatistic(testStatistic);
+    }
+
     private void checkExistTestStatistic(TestStatistic testStatistic) throws IllegalArgumentException{
 
     }

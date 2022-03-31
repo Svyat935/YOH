@@ -75,6 +75,7 @@ public class PatientController {
             );
             this.gameStatisticService.createGameStatistic(statistic);
             patient.getGameStatistics().add(statistic);
+            this.patientService.updatePatient(patient);
             JsonObject response = new JsonObject();
             response.put("message", "GameStatistic was added");
             return new JSONResponse(200, response);
@@ -147,6 +148,7 @@ public class PatientController {
             );
             this.testStatisticService.createTestStatistic(statistic);
             patient.getTestStatistics().add(statistic);
+            this.patientService.updatePatient(patient);
             JsonObject response = new JsonObject();
             response.put("message", "TestStatistic was added");
             return new JSONResponse(200, response);
@@ -251,6 +253,7 @@ public class PatientController {
             if (editPatientInfoRequest.getAddress() != null){
                 patient.setAddress(editPatientInfoRequest.getAddress());
             }
+            this.patientService.updatePatient(patient);
             JsonObject response = new JsonObject();
             response.put("message", "Patient account was edited");
             return new JSONResponse(200, response);

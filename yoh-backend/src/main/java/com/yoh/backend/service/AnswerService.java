@@ -20,6 +20,10 @@ public class AnswerService {
         answerRepository.createAnswer(answer);
     }
 
+    public void updateAnswer(Answer answer) throws IllegalArgumentException{
+        answerRepository.createAnswer(answer);
+    }
+
     private void checkExistAnswer(Answer answer) throws IllegalArgumentException{
 
     }

@@ -20,6 +20,10 @@ public class QuestionService {
         questionRepository.createQuestion(question);
     }
 
+    public void updateQuestion(Question question) throws IllegalArgumentException{
+        questionRepository.createQuestion(question);
+    }
+
     private void checkExistQuestion(Question question) throws IllegalArgumentException{
 
     }

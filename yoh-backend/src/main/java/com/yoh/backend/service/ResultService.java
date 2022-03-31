@@ -20,6 +20,10 @@ public class ResultService {
         resultRepository.createResult(result);
     }
 
+    public void updateResult(Result result) throws IllegalArgumentException{
+        resultRepository.createResult(result);
+    }
+
     private void checkExistResult(Result result) throws IllegalArgumentException{
 
     }

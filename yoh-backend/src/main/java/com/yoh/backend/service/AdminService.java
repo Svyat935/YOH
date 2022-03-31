@@ -19,6 +19,11 @@ public class AdminService {
         adminRepository.createAdmin(admin);
     }
 
+    public void updateAdmin(Admin admin) throws IllegalArgumentException{
+        adminRepository.createAdmin(admin);
+    }
+
+
     public Admin getAdminById(UUID id) throws IllegalArgumentException{
         Admin admin = adminRepository.getAdminByUUID(id);
         if (admin != null) {

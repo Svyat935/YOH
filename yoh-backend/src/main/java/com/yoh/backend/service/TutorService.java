@@ -20,6 +20,10 @@ public class TutorService {
         tutorRepository.createTutor(tutor);
     }
 
+    public void updateTutor(Tutor tutor) throws IllegalArgumentException{
+        tutorRepository.createTutor(tutor);
+    }
+
     public Tutor getTutorByUser(User user) throws IllegalArgumentException{
         Tutor tutor = tutorRepository.getTutorByUser(user);
         if (tutor != null) return tutor;

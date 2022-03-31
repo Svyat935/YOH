@@ -126,6 +126,7 @@ public class TutorController {
             Tutor tutor = this.tutorService.getTutorByUser(this.userService.getUserById(this.userService.verifyToken(token)));
             Patient patient = this.patientService.getPatientById(UUID.fromString(patientToTutor.getPatient()));
             tutor.getPatients().add(patient);
+            this.tutorService.updateTutor(tutor);
             JsonObject response = new JsonObject();
             response.put("message", "Patient was assigned");
             return new JSONResponse(200, response);
@@ -146,6 +147,7 @@ public class TutorController {
             for (Patient patient: patientList) {
                 if (Objects.equals(patient.getId().toString(), patientToTutor.getPatient())){
                     tutor.getPatients().remove(patient);
+                    this.tutorService.updateTutor(tutor);
                     JsonObject response = new JsonObject();
                     response.put("message", "Patient was detached");
                     return new JSONResponse(200, response);
@@ -170,6 +172,7 @@ public class TutorController {
             Game game = this.gameService.getGameById(UUID.fromString(gameToPatient.getGame_id()));
             Patient patient = this.patientService.getPatientById(UUID.fromString(gameToPatient.getPatient_id()));
             patient.getGames().add(game);
+            this.patientService.updatePatient(patient);
             JsonObject response = new JsonObject();
             response.put("message", "Game was added");
             return new JSONResponse(200, response);
@@ -191,6 +194,7 @@ public class TutorController {
                 listOfGames.add(this.gameService.getGameById(UUID.fromString(id)));
             }
             patient.setGames(listOfGames);
+            this.patientService.updatePatient(patient);
             JsonObject response = new JsonObject();
             response.put("message", "List of games was changed");
             return new JSONResponse(200, response);
@@ -211,6 +215,7 @@ public class TutorController {
             for (Game game: listOfGames){
                 if (game.getId().toString().equals(gameToPatient.getGame_id())){
                     patient.getGames().remove(this.gameService.getGameById(UUID.fromString(gameToPatient.getGame_id())));
+                    this.patientService.updatePatient(patient);
                     JsonObject response = new JsonObject();
                     response.put("message", "Game was removed");
                     return new JSONResponse(200, response);
@@ -233,6 +238,7 @@ public class TutorController {
             this.userService.verifyToken(token);
             Patient patient = this.patientService.getPatientById(UUID.fromString(patientToTutor.getPatient()));
             patient.setGames(new ArrayList<Game>());
+            this.patientService.updatePatient(patient);
             JsonObject response = new JsonObject();
             response.put("message", "List of games was cleared");
             return new JSONResponse(200, response);
@@ -285,6 +291,7 @@ public class TutorController {
                 }
             }
             patient.setGameStatistics(newGameStatistic);
+            this.patientService.updatePatient(patient);
             JsonObject response = new JsonObject();
             response.put("message", "Game statistic was cleared");
             return new JSONResponse(200, response);
@@ -303,6 +310,7 @@ public class TutorController {
             Test test = this.testService.getTestById(UUID.fromString(testToPatient.getTest_id()));
             Patient patient = this.patientService.getPatientById(UUID.fromString(testToPatient.getPatient_id()));
             patient.getTests().add(test);
+            this.patientService.updatePatient(patient);
             JsonObject response = new JsonObject();
             response.put("message", "Test was added");
             return new JSONResponse(200, response);
@@ -324,6 +332,7 @@ public class TutorController {
                 listOfTests.add(this.testService.getTestById(UUID.fromString(id)));
             }
             patient.setTests(listOfTests);
+            this.patientService.updatePatient(patient);
             JsonObject response = new JsonObject();
             response.put("message", "List of tests was changed");
             return new JSONResponse(200, response);
@@ -344,6 +353,7 @@ public class TutorController {
             for (Test test: listOfTests){
                 if (test.getId().toString().equals(testToPatient.getTest_id())){
                     patient.getTests().remove(this.testService.getTestById(UUID.fromString(testToPatient.getTest_id())));
+                    this.patientService.updatePatient(patient);
                     JsonObject response = new JsonObject();
                     response.put("message", "Test was removed");
                     return new JSONResponse(200, response);
@@ -366,6 +376,7 @@ public class TutorController {
             this.userService.verifyToken(token);
             Patient patient = this.patientService.getPatientById(UUID.fromString(patientToTutor.getPatient()));
             patient.setTests(new ArrayList<Test>());
+            this.patientService.updatePatient(patient);
             JsonObject response = new JsonObject();
             response.put("message", "List of test was cleared");
             return new JSONResponse(200, response);
@@ -418,6 +429,7 @@ public class TutorController {
                 }
             }
             patient.setTestStatistics(newTestStatistic);
+            this.patientService.updatePatient(patient);
             JsonObject response = new JsonObject();
             response.put("message", "Statistic for test was cleared");
             return new JSONResponse(200, response);
@@ -464,6 +476,7 @@ public class TutorController {
             if (editTutorInfoRequest.getOrganization() != null) {
                 tutor.setOrganization(this.organizationService.getOrganizationById(UUID.fromString(editTutorInfoRequest.getOrganization())));
             }
+            this.tutorService.updateTutor(tutor);
             JsonObject response = new JsonObject();
             response.put("message", "Tutor account was edited");
             return new JSONResponse(200, response);

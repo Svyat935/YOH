@@ -20,6 +20,10 @@ public class TestStatusService {
         testStatusRepository.createTestStatus(testStatus);
     }
 
+    public void updateTestStatus(TestStatus testStatus) throws IllegalArgumentException{
+        testStatusRepository.createTestStatus(testStatus);
+    }
+
     private void checkExistTestStatus(TestStatus testStatus) throws IllegalArgumentException{
 
     }

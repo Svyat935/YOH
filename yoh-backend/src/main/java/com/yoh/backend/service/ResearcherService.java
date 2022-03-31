@@ -20,6 +20,10 @@ public class ResearcherService {
         researcherRepository.createResearcher(researcher);
     }
 
+    public void updateResearcher(Researcher researcher) throws IllegalArgumentException{
+        researcherRepository.createResearcher(researcher);
+    }
+
     public Researcher getResearcherByUser(User user) {
         return researcherRepository.getResearcherByUser(user);
     }

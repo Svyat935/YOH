@@ -22,6 +22,10 @@ public class GameStatusService {
         gameStatusRepository.createGameStatus(gameStatus);
     }
 
+    public void updateGameStatus(GameStatus gameStatus) throws IllegalArgumentException{
+        gameStatusRepository.createGameStatus(gameStatus);
+    }
+
     private void checkExistGameStatus(GameStatus gameStatus) throws IllegalArgumentException{
 
     }

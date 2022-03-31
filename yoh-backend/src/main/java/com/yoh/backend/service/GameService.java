@@ -15,8 +15,11 @@ public class GameService {
 
     public void createGame(Game game) throws IllegalArgumentException{
         // TODO Добоавить валидацию и проверку на существование
-
         checkExistGame(game);
+        gameRepository.createGame(game);
+    }
+
+    public void updateGame(Game game) throws IllegalArgumentException{
         gameRepository.createGame(game);
     }
 

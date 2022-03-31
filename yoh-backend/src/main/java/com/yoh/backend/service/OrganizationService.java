@@ -19,6 +19,10 @@ public class OrganizationService {
         organizationRepository.createOrganization(organization);
     }
 
+    public void updateOrganization(Organization organization) throws IllegalArgumentException{
+        organizationRepository.createOrganization(organization);
+    }
+
     public Organization getOrganizationById(UUID id) throws IllegalArgumentException{
         Organization organization = organizationRepository.getOrganizationByUUID(id);
         if (organization != null) {
