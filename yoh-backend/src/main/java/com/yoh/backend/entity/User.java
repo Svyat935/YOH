@@ -56,6 +56,18 @@ public class User {
         this.password = password;
     }
 
+    @Column(name = "role", nullable = true)
+    private Integer role;
+
+    public Integer getRole() {
+        return this.role;
+    }
+
+    public void setRole(Integer role) {
+        this.role = role;
+    }
+
+
     @Override
     public String toString() {
         return "User{" +

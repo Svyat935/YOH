@@ -62,9 +62,9 @@ public class UserService {
         );
     }
 
-    public Integer getRoleById(UUID id){
-        return userRepository.getRoleByUUID(id);
-    }
+//    public Integer getRoleById(UUID id){
+//        return userRepository.getRoleByUUID(id);
+//    }
 
     public User getUserById(UUID id) throws IllegalArgumentException{
         User user = userRepository.getUserByUUID(id);

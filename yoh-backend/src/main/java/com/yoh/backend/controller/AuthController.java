@@ -66,15 +66,15 @@ public class AuthController {
         try {
             JsonObject response = new JsonObject();
             User user = this.userService.getUser(userRequest.getCredentials(), userRequest.getPassword());
-            Integer role = this.userService.getRoleById(user.getId());
+            Integer role = user.getRole();
             String token = this.userService.generateToken(user.getId());
             response.put("token", token);
             response.put("role", role);
             String roleString = "NotAssigned";
             if (role != null){
                 roleString = role == 0 ? "Admin" :
-                        role == 2 ? "Patient" :
-                                role == 3 ? "Researcher" : "Tutor";
+                        role == 1 ? "Patient" :
+                                role == 2 ? "Researcher" : "Tutor";
             }
             response.put("roleString", roleString);
             return new JSONResponse(200, response);
@@ -89,8 +89,10 @@ public class AuthController {
     public JSONResponse assignRoleUser(@RequestHeader("token") String token, @Valid @RequestBody RoleForAssign roleForAssign) {
         User userForAssign = this.userService.getUserById(this.userService.verifyToken(token));
         try {
-            switch (roleForAssign.getRole()) {
+            Integer role = roleForAssign.getRole();
+            switch (role) {
                 case 0 -> {
+                    userForAssign.setRole(role);
                     Admin admin = new Admin(userForAssign);
                     this.adminService.createAdmin(admin);
                     JsonObject response = new JsonObject();
@@ -98,6 +100,7 @@ public class AuthController {
                     return new JSONResponse(200, response);
                 }
                 case 1 -> {
+                    userForAssign.setRole(role);
                     Patient patient = new Patient(userForAssign);
                     this.patientService.createPatient(patient);
                     JsonObject response = new JsonObject();
@@ -105,6 +108,7 @@ public class AuthController {
                     return new JSONResponse(200, response);
                 }
                 case 2 -> {
+                    userForAssign.setRole(role);
                     Researcher researcher = new Researcher(userForAssign);
                     this.researcherService.createResearcher(researcher);
                     JsonObject response = new JsonObject();
@@ -112,6 +116,7 @@ public class AuthController {
                     return new JSONResponse(200, response);
                 }
                 case 3 -> {
+                    userForAssign.setRole(role);
                     Tutor tutor = new Tutor(userForAssign);
                     this.tutorService.createTutor(tutor);
                     JsonObject response = new JsonObject();
