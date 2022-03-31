@@ -38,7 +38,7 @@ public class Tutor {
         this.user = user;
     }
 
-    @Column(name = "surname", length = 128, nullable = false)
+    @Column(name = "surname", length = 128, nullable = true)
     private String surname;
 
     public String getSurname(){
@@ -49,7 +49,7 @@ public class Tutor {
         this.surname = surname;
     }
 
-    @Column(name = "name", length = 128, nullable = false)
+    @Column(name = "name", length = 128, nullable = true)
     private String name;
 
     public String getName(){
@@ -60,7 +60,7 @@ public class Tutor {
         this.name = name;
     }
 
-    @Column(name = "secondName", length = 128, nullable = false)
+    @Column(name = "secondName", length = 128, nullable = true)
     private String secondName;
 
     public String getSecondName(){

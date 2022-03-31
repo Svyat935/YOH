@@ -39,7 +39,7 @@ public class Patient {
         this.user = user;
     }
 
-    @Column(name = "surname", length = 128, nullable = false)
+    @Column(name = "surname", length = 128, nullable = true)
     private String surname;
 
     public String getSurname(){
@@ -50,7 +50,7 @@ public class Patient {
         this.surname = surname;
     }
 
-    @Column(name = "name", length = 128, nullable = false)
+    @Column(name = "name", length = 128, nullable = true)
     private String name;
 
     public String getName(){
@@ -61,7 +61,7 @@ public class Patient {
         this.name = name;
     }
 
-    @Column(name = "secondName", length = 128, nullable = false)
+    @Column(name = "secondName", length = 128, nullable = true)
     private String secondName;
 
     public String getSecondName(){
@@ -72,7 +72,7 @@ public class Patient {
         this.secondName = secondName;
     }
 
-    @Column(name = "birthDate", length = 128, nullable = false)
+    @Column(name = "birthDate", length = 128, nullable = true)
     private String birthDate;
 
     public String getBirthDate(){
@@ -83,7 +83,7 @@ public class Patient {
         this.birthDate = birthDate;
     }
 
-    @Column(name = "NumberPhone", length = 128, nullable = false)
+    @Column(name = "NumberPhone", length = 128, nullable = true)
     private String numberPhone;
 
     public String getNumberPhone(){
@@ -94,7 +94,7 @@ public class Patient {
         this.numberPhone = numberPhone;
     }
 
-    @Column(name = "address", length = 128, nullable = false)
+    @Column(name = "address", length = 128, nullable = true)
     private String address;
 
     public String getAddress(){
