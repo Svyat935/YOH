@@ -93,6 +93,7 @@ public class AuthController {
             switch (role) {
                 case 0 -> {
                     userForAssign.setRole(role);
+                    this.userService.updateUser(userForAssign);
                     Admin admin = new Admin(userForAssign);
                     this.adminService.createAdmin(admin);
                     JsonObject response = new JsonObject();
@@ -101,6 +102,7 @@ public class AuthController {
                 }
                 case 1 -> {
                     userForAssign.setRole(role);
+                    this.userService.updateUser(userForAssign);
                     Patient patient = new Patient(userForAssign);
                     this.patientService.createPatient(patient);
                     JsonObject response = new JsonObject();
@@ -109,6 +111,7 @@ public class AuthController {
                 }
                 case 2 -> {
                     userForAssign.setRole(role);
+                    this.userService.updateUser(userForAssign);
                     Researcher researcher = new Researcher(userForAssign);
                     this.researcherService.createResearcher(researcher);
                     JsonObject response = new JsonObject();
@@ -117,6 +120,7 @@ public class AuthController {
                 }
                 case 3 -> {
                     userForAssign.setRole(role);
+                    this.userService.updateUser(userForAssign);
                     Tutor tutor = new Tutor(userForAssign);
                     this.tutorService.createTutor(tutor);
                     JsonObject response = new JsonObject();

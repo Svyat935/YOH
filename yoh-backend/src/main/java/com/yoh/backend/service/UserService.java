@@ -35,6 +35,10 @@ public class UserService {
         userRepository.createUser(user);
     }
 
+    public void updateUser(User user) throws IllegalArgumentException{
+        userRepository.createUser(user);
+    }
+
     public User getUser(String credentials, String password) throws IllegalArgumentException{
         User user = userRepository.getUserByLogin(credentials);
         if (user != null) {
