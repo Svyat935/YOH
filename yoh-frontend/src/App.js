@@ -1,4 +1,5 @@
 import './App.css';
+import 'bootstrap/dist/css/bootstrap.min.css';
 import React from "react";
 import {UserContext} from "./authentication/userContext";
 import {LocalAuthorizeUser} from "./authentication/authorizeUser";

@@ -1,7 +1,7 @@
 import React, {useContext} from "react";
-import {BrowserRouter, Routes, Route} from 'react-router-dom';
+import {BrowserRouter, Routes, Route, Link} from 'react-router-dom';
 import {EntityRouter} from "./entity/EntityRouter";
-import {AuthPage} from "./basicEntity/AuthPage";
+import {AuthPage} from "./basicEntity/Auth/AuthPage";
 // import {UserContext} from "./authentication/userContext";
 
 
@@ -13,7 +13,18 @@ export function AppRouters() {
             <Routes>
                 <Route path={"/user/*"} element={<EntityRouter/>}/>
                 <Route path={"/auth/"} element={<AuthPage/>}/>
-                <Route path={"/"} element={<h1>Version 0.1.0</h1>}/>
+                <Route path={"/"} element={
+                    <div>
+                        <h1>Version 0.1.0</h1>
+                        <Link to="/user/">
+                            <button>To User</button>
+                        </Link>
+                        <Link to="/auth/">
+                            <button>To Auth</button>
+                        </Link>
+                    </div>
+                }
+                />
             </Routes>
         </BrowserRouter>
     )
