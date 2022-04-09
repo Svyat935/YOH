@@ -1,6 +1,8 @@
 package com.yoh.backend.service;
 
 import com.yoh.backend.entity.Admin;
+import com.yoh.backend.entity.Tutor;
+import com.yoh.backend.entity.User;
 import com.yoh.backend.repository.AdminRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -33,4 +35,14 @@ public class AdminService {
                 String.format("Sorry, but Admin with this id (%s) wasn't found.", id)
         );
     }
+
+    public Admin getAdminByUser(User user) throws IllegalArgumentException{
+        Admin admin = adminRepository.getAdminByUser(user);
+        if (admin != null) return admin;
+        else throw new IllegalArgumentException(
+                String.format("Sorry, but Admin with this user (%s) wasn't found.", user.getId().toString())
+        );
+    }
+
+
 }

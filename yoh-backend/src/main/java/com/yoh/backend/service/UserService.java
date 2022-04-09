@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -33,6 +34,10 @@ public class UserService {
         String hashString = BCrypt.withDefaults().hashToString(13, password.toCharArray());
         user.setPassword(hashString);
         userRepository.createUser(user);
+    }
+
+    public List<User> getAllUsers() {
+        return userRepository.getAllUsers();
     }
 
     public void updateUser(User user) throws IllegalArgumentException{

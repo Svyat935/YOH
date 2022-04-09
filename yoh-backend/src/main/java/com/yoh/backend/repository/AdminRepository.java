@@ -1,6 +1,7 @@
 package com.yoh.backend.repository;
 
 import com.yoh.backend.entity.Admin;
+import com.yoh.backend.entity.Tutor;
 import com.yoh.backend.entity.User;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
@@ -44,6 +45,19 @@ public class AdminRepository {
                     .add(Restrictions.eq("id", id));
             List<Admin> admins = criteria.list();
             return admins.isEmpty() ? null : admins.get(0);
+        }
+        finally {
+            session.close();
+        }
+    }
+
+    public Admin getAdminByUser(User user) {
+        Session session = sessionFactory.openSession();
+        try {
+            Criteria criteria = session.createCriteria(Admin.class)
+                    .add(Restrictions.eq("user", user));
+            List<Admin> adminList = criteria.list();
+            return adminList.isEmpty() ? null : adminList.get(0);
         }
         finally {
             session.close();
