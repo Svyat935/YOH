@@ -1,18 +1,23 @@
-import "./AuthPage.css"
-import React, {useContext} from "react";
+import "./RegPage.css"
+import React from "react";
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import {Link} from "react-router-dom";
-import {UserContext} from "../../authentication/userContext";
 
-export function ViewAuthPage(props) {
+export function ViewRegPage(props) {
 
-    const authorize = () => {
-        let credentials = document.getElementById("credentials").value,
-            password = document.getElementById("password").value;
-        console.log(credentials, password);
-        props.auth(credentials, password);
+    const register = () => {
+        let email = document.getElementById("email").value,
+            login = document.getElementById("login").value,
+            password = document.getElementById("password").value,
+            confirm_password = document.getElementById("confirm_password").value;
+        console.log(email, login, password, confirm_password);
+        if (password === confirm_password){
+            props.reg(login, email, password);
+        }else{
+            alert("Passwords don't match.")
+        }
     }
 
     return (
@@ -23,19 +28,25 @@ export function ViewAuthPage(props) {
                     <Container>
                         <Row style={{"background": "wheat", "fontWeight": "bold"}}>
                             <p style={{"textAlign": "center"}}>
-                                Authentication
+                                Registration
                             </p>
                         </Row>
                         <Row style={{"textAlign": "center", "margin": "10px"}}>
-                            <label htmlFor={"credentials"}>Credentials<br/>
-                                <input type={"text"} placeholder={"credentials"} id={"credentials"}/>
+                            <label htmlFor={"email"}>Gmail<br/>
+                                <input type={"email"} placeholder={"email"} id={"email"}/>
+                            </label>
+                            <label htmlFor={"login"}>Login<br/>
+                                <input type={"text"} placeholder={"login"} id={"login"}/>
                             </label>
                             <label htmlFor={"password"}>Password<br/>
                                 <input type={"password"} placeholder={"password"} id={"password"}/>
                             </label>
+                            <label htmlFor={"confirm_password"}>Confirm password<br/>
+                                <input type={"password"} placeholder={"password"} id={"confirm_password"}/>
+                            </label>
                         </Row>
                         <Row style={{"textAlign": "center", "margin": "10px"}}>
-                            <button onClick={() => authorize()}>Submit</button>
+                            <button onClick={() => register()}>Submit</button>
                         </Row>
                     </Container>
                 </Col>
@@ -47,7 +58,7 @@ export function ViewAuthPage(props) {
                         <Row>
                             <Col/>
                             <Col style={{"background": "BurlyWood", "margin": "10px", "textAlign": "center"}}>
-                                <Link to={"/reg/"}><button>Registration</button></Link>
+                                <Link to={"/auth/"}><button>Authentication</button></Link>
                             </Col>
                             <Col/>
                         </Row>
@@ -58,17 +69,17 @@ export function ViewAuthPage(props) {
     )
 }
 
-export function AuthPage() {
-    const userContext = useContext(UserContext);
+export function RegPage() {
 
-    const authorize = async (credentials, password) => {
-        return await fetch("/users/authorization", {
+    const register = async (login, email, password) => {
+        return await fetch("/users/registration", {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                credentials: credentials,
+                login: login,
+                email: email,
                 password: password,
             })
         }).then((response) => {
@@ -80,13 +91,10 @@ export function AuthPage() {
         });
     }
 
-    const authenticationUser = async (credentials, password) => {
-        let response = await authorize(credentials, password);
-
-        let data = response["jsonObject"];
-        userContext.token = data["token"];
-        userContext.userRole = data["role"];
+    const registerUser = async (login, email, password) => {
+        let response = await register(login, email, password);
+        console.log(response);
     }
 
-    return <ViewAuthPage auth={authenticationUser}/>;
+    return <ViewRegPage reg={registerUser}/>;
 }
