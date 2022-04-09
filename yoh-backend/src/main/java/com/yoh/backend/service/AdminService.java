@@ -17,7 +17,7 @@ public class AdminService {
 
     public void createAdmin(Admin admin) throws IllegalArgumentException{
         // TODO Добоавить валидацию и проверку на существование
-
+        checksExistAdmin(admin);
         adminRepository.createAdmin(admin);
     }
 
@@ -42,6 +42,13 @@ public class AdminService {
         else throw new IllegalArgumentException(
                 String.format("Sorry, but Admin with this user (%s) wasn't found.", user.getId().toString())
         );
+    }
+
+    private void checksExistAdmin(Admin admin) throws IllegalArgumentException{
+        Admin admin_copy = adminRepository.getAdminByUser(admin.getUser());
+        if (admin_copy != null){
+            throw new IllegalArgumentException("Sorry, but Admin with this user was found.");
+        }
     }
 
 

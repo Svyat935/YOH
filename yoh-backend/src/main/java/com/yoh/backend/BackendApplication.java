@@ -4,6 +4,8 @@ import com.yoh.backend.entity.Admin;
 import com.yoh.backend.entity.User;
 import com.yoh.backend.repository.AdminRepository;
 import com.yoh.backend.repository.UserRepository;
+import com.yoh.backend.service.AdminService;
+import com.yoh.backend.service.UserService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -28,12 +30,12 @@ public class BackendApplication {
 	}
 
 	@Bean
-	public CommandLineRunner init(AdminRepository adminRepository, UserRepository userRepository) {
+	public CommandLineRunner init(AdminService adminService, UserService userService) {
 		return (args) -> {
 			User user = new User(this.login, this.email, this.password, 0);
 			Admin admin = new Admin(user);
-			userRepository.createUser(user);
-			adminRepository.createAdmin(admin);
+			userService.createUser(user);
+			adminService.createAdmin(admin);
 		};
 	}
 
