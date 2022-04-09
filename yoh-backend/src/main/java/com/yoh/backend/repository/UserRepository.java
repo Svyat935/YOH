@@ -19,6 +19,18 @@ public class UserRepository {
     @Autowired
     private SessionFactory sessionFactory;
 
+    public List<User> getAllUsers() {
+        Session session = sessionFactory.openSession();
+        try {
+            Criteria criteria = session.createCriteria(User.class);
+            List<User> users = criteria.list();
+            return users;
+        }
+        finally {
+            session.close();
+        }
+    }
+
     public User getUserByLogin(String login) {
         Session session = sessionFactory.openSession();
         try {
