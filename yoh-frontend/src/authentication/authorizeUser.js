@@ -15,17 +15,15 @@ export const LocalAuthorizeUser = () => {
         }
     }, []);
 
-    const login = (token, userRole, theme) => {
+    const login = (token, userRole) => {
         setToken(token);
         setUserRole(userRole);
-        setTheme(theme);
     };
 
     const logout = () => {
         setToken(null);
         setUserRole(null);
-        setTheme(null);
     };
 
-    return {token, userRole, theme}
+    return {token, userRole, theme, login, logout}
 }

@@ -5,6 +5,7 @@ import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import {Link} from "react-router-dom";
 import {UserContext} from "../../authentication/userContext";
+import {useNavigate} from "react-router-dom";
 
 export function ViewAuthPage(props) {
 
@@ -47,7 +48,9 @@ export function ViewAuthPage(props) {
                         <Row>
                             <Col/>
                             <Col style={{"background": "BurlyWood", "margin": "10px", "textAlign": "center"}}>
-                                <Link to={"/reg/"}><button>Registration</button></Link>
+                                <Link to={"/reg/"}>
+                                    <button>Registration</button>
+                                </Link>
                             </Col>
                             <Col/>
                         </Row>
@@ -60,6 +63,7 @@ export function ViewAuthPage(props) {
 
 export function AuthPage() {
     const userContext = useContext(UserContext);
+    const routing = useNavigate();
 
     const authorize = async (credentials, password) => {
         return await fetch("/users/authorization", {
@@ -82,10 +86,33 @@ export function AuthPage() {
 
     const authenticationUser = async (credentials, password) => {
         let response = await authorize(credentials, password);
+        console.log(response);
+        let data = response["jsonObject"],
+            role = data["role"],
+            token = data["token"];
 
-        let data = response["jsonObject"];
-        userContext.token = data["token"];
-        userContext.userRole = data["role"];
+        if (role === null) {
+            alert("Role is null. Sorry, but I can't let you in.")
+        } else {
+            userContext.login(token, role);
+
+            switch (role) {
+                case 0:
+                    routing("/user/admin/");
+                    break;
+                case 1:
+                    routing("/user/patient/");
+                    break;
+                case 2:
+                    routing("/user/researcher/");
+                    break;
+                case 3:
+                    routing("/user/tutor");
+                    break;
+                default:
+                    alert("Role is undefined. Sorry, but I can't let you in.")
+            }
+        }
     }
 
     return <ViewAuthPage auth={authenticationUser}/>;
