@@ -39,6 +39,16 @@ public class OrganizationService {
         );
     }
 
+    public Organization getOrganizationByName(String name) throws IllegalArgumentException{
+        Organization organization = organizationRepository.getOrganizationByName(name);
+        if (organization != null){
+            return organization;
+        }
+        else throw new IllegalArgumentException(
+                String.format("Sorry, but Organization with this name (%s) was not found.", name)
+        );
+    }
+
     public void checkExistOrganization(Organization organization) throws IllegalArgumentException{
         Organization organization_copy = organizationRepository.getOrganizationByName(organization.getName());
         if (organization_copy != null) {

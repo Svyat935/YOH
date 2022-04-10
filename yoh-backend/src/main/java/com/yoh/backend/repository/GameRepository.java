@@ -48,4 +48,15 @@ public class GameRepository {
             session.close();
         }
     }
+
+    public List<Game> getAllGames(){
+        Session session = sessionFactory.openSession();
+        try{
+            Criteria criteria = session.createCriteria(Game.class);
+            List<Game> games = criteria.list();
+            return games.isEmpty() ? null : games;
+        }finally {
+            session.close();
+        }
+    }
 }

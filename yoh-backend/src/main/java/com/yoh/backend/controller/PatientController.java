@@ -214,14 +214,16 @@ public class PatientController {
 
             JsonObject tutorInfo = new JsonObject();
             Tutor tutor = patient.getTutor();
-            tutorInfo.put("id", tutor.getId().toString());
-            tutorInfo.put("name", tutor.getName());
-            tutorInfo.put("surname", tutor.getSurname());
-            tutorInfo.put("secondName", tutor.getSecondName());
-            if (tutor.getOrganization() != null)
-                tutorInfo.put("organization", tutor.getOrganization().getId().toString());
-            else tutorInfo.put("organization", null);
-            response.put("tutor", tutorInfo);
+            if (tutor != null){
+                tutorInfo.put("id", tutor.getId().toString());
+                tutorInfo.put("name", tutor.getName());
+                tutorInfo.put("surname", tutor.getSurname());
+                tutorInfo.put("secondName", tutor.getSecondName());
+                if (tutor.getOrganization() != null)
+                    tutorInfo.put("organization", tutor.getOrganization().getId().toString());
+                else tutorInfo.put("organization", null);
+                response.put("tutor", tutorInfo);
+            }
             return new JSONResponse(200, response);
         }
         catch (IllegalArgumentException e){

@@ -88,6 +88,8 @@ public class AuthController {
     @PostMapping("/assign/role")
     public JSONResponse assignRoleUser(@RequestHeader("token") String token, @Valid @RequestBody RoleForAssign roleForAssign) {
         User userForAssign = this.userService.getUserById(this.userService.verifyToken(token));
+        //TODO: Delete organization
+        Organization testOrganization = this.organizationService.getOrganizationByName("TestOrganization");
         try {
             Integer role = roleForAssign.getRole();
             switch (role) {
@@ -104,6 +106,8 @@ public class AuthController {
                     userForAssign.setRole(role);
                     this.userService.updateUser(userForAssign);
                     Patient patient = new Patient(userForAssign);
+                    //TODO: Delete Organization later.
+                    patient.setOrganization(testOrganization);
                     this.patientService.createPatient(patient);
                     JsonObject response = new JsonObject();
                     response.put("message", "Patient was assigned");
@@ -113,6 +117,8 @@ public class AuthController {
                     userForAssign.setRole(role);
                     this.userService.updateUser(userForAssign);
                     Researcher researcher = new Researcher(userForAssign);
+                    //TODO: Delete Organization later.
+                    researcher.setOrganization(testOrganization);
                     this.researcherService.createResearcher(researcher);
                     JsonObject response = new JsonObject();
                     response.put("message", "Researcher was assigned");
@@ -122,6 +128,8 @@ public class AuthController {
                     userForAssign.setRole(role);
                     this.userService.updateUser(userForAssign);
                     Tutor tutor = new Tutor(userForAssign);
+                    //TODO: Delete Organization later.
+                    tutor.setOrganization(testOrganization);
                     this.tutorService.createTutor(tutor);
                     JsonObject response = new JsonObject();
                     response.put("message", "Tutor was assigned");

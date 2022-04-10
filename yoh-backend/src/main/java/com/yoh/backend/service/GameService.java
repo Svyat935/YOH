@@ -5,6 +5,7 @@ import com.yoh.backend.repository.GameRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -35,5 +36,9 @@ public class GameService {
         else throw new IllegalArgumentException(
                 String.format("Sorry, but Game with this id (%s) wasn't found.", id)
         );
+    }
+
+    public List<Game> getAllGames(){
+        return gameRepository.getAllGames();
     }
 }

@@ -9,6 +9,11 @@ import java.util.UUID;
 public class Game {
     public Game() {}
 
+    public Game(String name, String description, String url) {
+        this.name = name;
+        this.description = description;
+        this.url = url;
+    }
 
     @Id
     @GeneratedValue
