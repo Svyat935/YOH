@@ -1,6 +1,7 @@
 package com.yoh.backend.repository;
 
 import com.yoh.backend.entity.Organization;
+import com.yoh.backend.entity.User;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -43,6 +44,31 @@ public class OrganizationRepository {
                     .add(Restrictions.eq("id", id));
             List<Organization> organizations = criteria.list();
             return organizations.isEmpty() ? null : organizations.get(0);
+        }
+        finally {
+            session.close();
+        }
+    }
+
+    public Organization getOrganizationByName(String name) {
+        Session session = sessionFactory.openSession();
+        try {
+            Criteria criteria = session.createCriteria(Organization.class)
+                    .add(Restrictions.eq("name", name));
+            List<Organization> organizations = criteria.list();
+            return organizations.isEmpty() ? null : organizations.get(0);
+        }
+        finally {
+            session.close();
+        }
+    }
+
+    public List<Organization> getAllOrganizations() {
+        Session session = sessionFactory.openSession();
+        try {
+            Criteria criteria = session.createCriteria(Organization.class);
+            List<Organization> organizations = criteria.list();
+            return organizations;
         }
         finally {
             session.close();

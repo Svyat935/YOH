@@ -8,6 +8,13 @@ import java.util.UUID;
 public class Organization {
     public Organization() {}
 
+    public Organization(String name, String address, String phone, String email, String website) {
+        this.name = name;
+        this.address = address;
+        this.phone = phone;
+        this.email = email;
+        this.website = website;
+    }
 
     @Id
     @GeneratedValue
@@ -34,7 +41,7 @@ public class Organization {
     }
 
 
-    @Column(name = "address", length = 128, nullable = false)
+    @Column(name = "address", length = 128, nullable = true)
     private String address;
 
     public String getAddress(){
@@ -46,7 +53,7 @@ public class Organization {
     }
 
 
-    @Column(name = "phone", length = 128, nullable = false)
+    @Column(name = "phone", length = 128, nullable = true)
     private String phone;
 
     public String getPhone(){
@@ -58,7 +65,7 @@ public class Organization {
     }
 
 
-    @Column(name = "email", length = 128, nullable = false)
+    @Column(name = "email", length = 128, nullable = true)
     private String email;
 
     public String getEmail(){
@@ -70,7 +77,7 @@ public class Organization {
     }
 
 
-    @Column(name = "website", length = 128, nullable = false)
+    @Column(name = "website", length = 128, nullable = true)
     private String website;
 
     public String getWebsite(){
