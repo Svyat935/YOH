@@ -51,13 +51,15 @@ public class GameController {
             Admin admin = this.adminService.getAdminByUser(this.userService.getUserById(this.userService.verifyToken(token)));
             List<Game> games = this.gameService.getAllGames();
             JsonArray jsonArray = new JsonArray();
-            for(Game game: games){
-                JsonObject response = new JsonObject();
-                response.put("id", game.getId());
-                response.put("name", game.getName());
-                response.put("description", game.getDescription());
-                response.put("url", game.getUrl());
-                jsonArray.add(response);
+            if (games != null){
+                for(Game game: games){
+                    JsonObject response = new JsonObject();
+                    response.put("id", game.getId());
+                    response.put("name", game.getName());
+                    response.put("description", game.getDescription());
+                    response.put("url", game.getUrl());
+                    jsonArray.add(response);
+                }
             }
             JsonObject jsonObject = new JsonObject();
             jsonObject.put("games", jsonArray);
