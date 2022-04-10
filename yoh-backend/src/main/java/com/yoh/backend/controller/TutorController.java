@@ -54,7 +54,6 @@ public class TutorController {
                 else {
                     patientInfo.put("organization", null);
                 }
-                patientInfo.put("organization", patient.getOrganization().getId().toString());
                 patientList.add(patientInfo);
             }
             JsonObject response = new JsonObject();
@@ -107,7 +106,9 @@ public class TutorController {
             response.put("name", patient.getName());
             response.put("surname", patient.getSurname());
             response.put("secondName", patient.getSecondName());
-            response.put("gender", patient.getGender().toString());
+            if (patient.getGender() != null)
+                response.put("gender", patient.getGender().toString());
+            else response.put("gender", null);
             if (patient.getOrganization() != null){
                 response.put("organization", patient.getOrganization().getId().toString());
             }

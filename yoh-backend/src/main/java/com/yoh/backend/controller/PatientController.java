@@ -202,8 +202,12 @@ public class PatientController {
             response.put("name", patient.getName());
             response.put("surname", patient.getSurname());
             response.put("secondName", patient.getSecondName());
-            response.put("gender", patient.getGender().toString());
-            response.put("organization", patient.getOrganization().getId().toString());
+            if (patient.getGender() != null)
+                response.put("gender", patient.getGender().toString());
+            else response.put("gender", null);
+            if (patient.getOrganization() != null)
+                response.put("organization", patient.getOrganization().getId().toString());
+            else response.put("organization", null);
             response.put("birthDate", patient.getBirthDate());
             response.put("numberPhone", patient.getNumberPhone());
             response.put("address", patient.getAddress());
@@ -214,7 +218,9 @@ public class PatientController {
             tutorInfo.put("name", tutor.getName());
             tutorInfo.put("surname", tutor.getSurname());
             tutorInfo.put("secondName", tutor.getSecondName());
-            tutorInfo.put("organization", tutor.getOrganization().getId().toString());
+            if (tutor.getOrganization() != null)
+                tutorInfo.put("organization", tutor.getOrganization().getId().toString());
+            else tutorInfo.put("organization", null);
             response.put("tutor", tutorInfo);
             return new JSONResponse(200, response);
         }
