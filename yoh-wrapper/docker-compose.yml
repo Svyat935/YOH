@@ -1,0 +1,15 @@
+version: '3'
+services:
+  flask:
+    build: ./wrapper
+    container_name: backend-flask
+    environment:
+      - PYTHONUNBUFFERED=True                   
+    restart: on-failure
+    volumes:
+      - type: bind
+        source: //c/Users/nikit/Desktop/docker_diplom/games
+        target: /wrapper/games
+    ports:
+      - "5000:5000"
+    command: gunicorn main:"create_flask_app()" -b 0.0.0.0:5000 --reload --log-level debug --workers=2
