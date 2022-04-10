@@ -44,11 +44,10 @@ public class BackendApplication {
                     null,
                     null
             );
-            organizationRepository.createOrganization(organization);
-
             try {
                 userService.createUser(user);
                 adminService.createAdmin(admin);
+                organizationRepository.createOrganization(organization);
             } catch (IllegalArgumentException e) {
                 System.out.println("Admin had been created.");
             }
