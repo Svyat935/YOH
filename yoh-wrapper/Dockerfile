@@ -9,4 +9,4 @@ RUN pip3 install --upgrade pip -r requirements.txt
 # в рабочую директорию контейнера
 COPY . /wrapper
 # Устанавливаем порт, который будет использоваться для сервера
-EXPOSE 5000
+EXPOSE 5050
