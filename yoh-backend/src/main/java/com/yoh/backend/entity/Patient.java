@@ -113,7 +113,7 @@ public class Patient {
     public void setGender(Gender gender) { this.gender = gender; }
 
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     private Tutor tutor;
 
     public Tutor getTutor() {
