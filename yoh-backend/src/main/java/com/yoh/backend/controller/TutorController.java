@@ -148,9 +148,9 @@ public class TutorController {
             Tutor tutor = this.tutorService.getTutorByUser(this.userService.getUserById(this.userService.verifyToken(token)));
             Patient patient = this.patientService.getPatientById(UUID.fromString(patientToTutor.getPatient()));
             patient.setTutor(tutor);
-            tutor.getPatients().add(patient);
+//            tutor.getPatients().add(patient);
             this.patientService.updatePatient(patient);
-            this.tutorService.updateTutor(tutor);
+//            this.tutorService.updateTutor(tutor);
             JsonObject response = new JsonObject();
             response.put("message", "Patient was assigned");
             return new JSONResponse(200, response);
@@ -170,8 +170,11 @@ public class TutorController {
             List<Patient> patientList = tutor.getPatients();
             for (Patient patient: patientList) {
                 if (Objects.equals(patient.getId().toString(), patientToTutor.getPatient())){
-                    tutor.getPatients().remove(patient);
-                    this.tutorService.updateTutor(tutor);
+//                    tutor.getPatients().remove(patient);
+                    patient.setTutor(null);
+                    this.patientService.updatePatient(patient);
+//                    this.tutorService.updateTutor(tutor);
+
                     JsonObject response = new JsonObject();
                     response.put("message", "Patient was detached");
                     return new JSONResponse(200, response);
