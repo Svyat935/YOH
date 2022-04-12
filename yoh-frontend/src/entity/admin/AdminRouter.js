@@ -1,5 +1,5 @@
 import React from "react";
-import {Link, Route, Routes} from "react-router-dom";
+import {Link, Route, Routes, useNavigate} from "react-router-dom";
 import {UsersPage} from "./pages/UsersPage";
 import {ComponentsPage} from "./pages/ComponentsPage";
 import {OrganizationPage} from "./pages/OrganizationPage";
@@ -19,6 +19,9 @@ export function AdminRouter() {
                     </Link>
                     <Link to={"organization_page"}>
                         <button>Organization page</button>
+                    </Link>
+                    <Link to={"/"}>
+                        <button>To back</button>
                     </Link>
                 </div>
             }/>
