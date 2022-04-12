@@ -147,7 +147,9 @@ public class TutorController {
         try {
             Tutor tutor = this.tutorService.getTutorByUser(this.userService.getUserById(this.userService.verifyToken(token)));
             Patient patient = this.patientService.getPatientById(UUID.fromString(patientToTutor.getPatient()));
+            patient.setTutor(tutor);
             tutor.getPatients().add(patient);
+            this.patientService.updatePatient(patient);
             this.tutorService.updateTutor(tutor);
             JsonObject response = new JsonObject();
             response.put("message", "Patient was assigned");
