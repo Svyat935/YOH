@@ -39,6 +39,18 @@ public class GameStatusRepository {
         }
     }
 
+    public void deleteGameStatus(GameStatus gameStatus) {
+        Session session = sessionFactory.openSession();
+        try {
+            session.beginTransaction();
+            session.delete(gameStatus);
+            session.getTransaction().commit();
+        }
+        finally {
+            session.close();
+        }
+    }
+
     public GameStatus getGameStatusByUUID(UUID id) {
         Session session = sessionFactory.openSession();
         try {
@@ -62,6 +74,17 @@ public class GameStatusRepository {
             return gameStatuses.isEmpty() ? null : gameStatuses.get(0);
         }
         finally {
+            session.close();
+        }
+    }
+
+    public List<GameStatus> getAllGameStatuses(){
+        Session session = sessionFactory.openSession();
+        try{
+            Criteria criteria = session.createCriteria(GameStatus.class);
+            List<GameStatus> gameStatusList = criteria.list();
+            return gameStatusList.isEmpty() ? null : gameStatusList;
+        }finally {
             session.close();
         }
     }

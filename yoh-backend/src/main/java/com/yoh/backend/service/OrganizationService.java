@@ -1,8 +1,10 @@
 package com.yoh.backend.service;
 
+import com.yoh.backend.entity.Game;
 import com.yoh.backend.entity.Organization;
 import com.yoh.backend.entity.User;
 import com.yoh.backend.repository.OrganizationRepository;
+import org.aspectj.weaver.ast.Or;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -27,6 +29,10 @@ public class OrganizationService {
 
     public void updateOrganization(Organization organization) throws IllegalArgumentException{
         organizationRepository.createOrganization(organization);
+    }
+
+    public void deleteOrganization(Organization organization) throws IllegalArgumentException{
+        organizationRepository.deleteOrganization(organization);
     }
 
     public Organization getOrganizationById(UUID id) throws IllegalArgumentException{

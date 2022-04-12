@@ -6,6 +6,7 @@ import com.yoh.backend.request.OrganizationForAdding;
 import com.yoh.backend.request.RoleForAssign;
 import com.yoh.backend.request.UserForCreatingRequest;
 import com.yoh.backend.response.JSONResponse;
+import com.yoh.backend.response.UserInfoResponse;
 import com.yoh.backend.service.AdminService;
 import com.yoh.backend.service.OrganizationService;
 import com.yoh.backend.service.UserService;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.ArrayList;
+import java.util.List;
 
 @RestController
 @RequestMapping("/admins")
@@ -33,7 +35,12 @@ public class AdminController {
         try {
             Admin admin = this.adminService.getAdminByUser(this.userService.getUserById(this.userService.verifyToken(token)));
             JsonObject response = new JsonObject();
-            response.put("userList", this.userService.getAllUsers());
+            List<UserInfoResponse> responseList = new ArrayList<>();
+            for (User user: this.userService.getAllUsers()) {
+                responseList.add(new UserInfoResponse(user));
+            }
+//            response.put("userList", this.userService.getAllUsers());
+            response.put("userLust", responseList);
             return new JSONResponse(200, response);
         }
         catch (IllegalArgumentException e){

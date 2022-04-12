@@ -1,3 +1,5 @@
+'''
+
 from flask import Flask, make_response, render_template, request, session, abort, send_from_directory
 from jinja2.exceptions import TemplateNotFound
 from werkzeug.exceptions import HTTPException
@@ -87,4 +89,10 @@ def test_post2():
 
 
 if __name__ == '__main__':
-    app.run(debug=False)
+    app.run(host='0.0.0.0')
+
+'''
+from app import create_flask_app
+
+if __name__ == "__main__":
+    create_flask_app().run(host='0.0.0.0')

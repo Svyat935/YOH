@@ -1,6 +1,7 @@
 package com.yoh.backend.repository;
 
 import com.yoh.backend.entity.Answer;
+import com.yoh.backend.entity.Game;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -36,6 +37,18 @@ public class AnswerRepository {
         }
     }
 
+    public void deleteAnswer(Answer answer) {
+        Session session = sessionFactory.openSession();
+        try {
+            session.beginTransaction();
+            session.delete(answer);
+            session.getTransaction().commit();
+        }
+        finally {
+            session.close();
+        }
+    }
+
     public Answer getAnswerByUUID(UUID id) {
         Session session = sessionFactory.openSession();
         try {
@@ -48,4 +61,16 @@ public class AnswerRepository {
             session.close();
         }
     }
+
+    public List<Answer> getAllAnswers(){
+        Session session = sessionFactory.openSession();
+        try{
+            Criteria criteria = session.createCriteria(Answer.class);
+            List<Answer> answerList = criteria.list();
+            return answerList.isEmpty() ? null : answerList;
+        }finally {
+            session.close();
+        }
+    }
+
 }

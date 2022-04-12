@@ -1,11 +1,13 @@
 package com.yoh.backend.service;
 
+import com.yoh.backend.entity.Game;
 import com.yoh.backend.entity.Tutor;
 import com.yoh.backend.entity.User;
 import com.yoh.backend.repository.TutorRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -22,6 +24,14 @@ public class TutorService {
 
     public void updateTutor(Tutor tutor) throws IllegalArgumentException{
         tutorRepository.createTutor(tutor);
+    }
+
+    public void deleteTutor(Tutor tutor) throws IllegalArgumentException{
+        tutorRepository.deleteTutor(tutor);
+    }
+
+    public List<Tutor> getAllTutors(){
+        return tutorRepository.getAllTutors();
     }
 
     public Tutor getTutorByUser(User user) throws IllegalArgumentException{

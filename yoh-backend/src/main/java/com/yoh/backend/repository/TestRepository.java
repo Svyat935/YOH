@@ -1,5 +1,6 @@
 package com.yoh.backend.repository;
 
+import com.yoh.backend.entity.Game;
 import com.yoh.backend.entity.Test;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
@@ -37,6 +38,18 @@ public class TestRepository {
 
     }
 
+    public void deleteTest(Test test) {
+        Session session = sessionFactory.openSession();
+        try {
+            session.beginTransaction();
+            session.delete(test);
+            session.getTransaction().commit();
+        }
+        finally {
+            session.close();
+        }
+    }
+
     public Test getTestByUUID(UUID id) {
         Session session = sessionFactory.openSession();
         try {
@@ -46,6 +59,17 @@ public class TestRepository {
             return tests.isEmpty() ? null : tests.get(0);
         }
         finally {
+            session.close();
+        }
+    }
+
+    public List<Test> getAllTests(){
+        Session session = sessionFactory.openSession();
+        try{
+            Criteria criteria = session.createCriteria(Test.class);
+            List<Test> testList = criteria.list();
+            return testList.isEmpty() ? null : testList;
+        }finally {
             session.close();
         }
     }

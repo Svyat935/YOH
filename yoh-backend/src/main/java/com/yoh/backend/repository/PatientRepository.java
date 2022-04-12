@@ -1,5 +1,6 @@
 package com.yoh.backend.repository;
 
+import com.yoh.backend.entity.Game;
 import com.yoh.backend.entity.Organization;
 import com.yoh.backend.entity.Patient;
 import com.yoh.backend.entity.User;
@@ -85,6 +86,17 @@ public class PatientRepository {
             return patientsList.isEmpty() ? List.of() : patientsList;
         }
         finally {
+            session.close();
+        }
+    }
+
+    public List<Patient> getAllPatients(){
+        Session session = sessionFactory.openSession();
+        try{
+            Criteria criteria = session.createCriteria(Patient.class);
+            List<Patient> patientList = criteria.list();
+            return patientList.isEmpty() ? null : patientList;
+        }finally {
             session.close();
         }
     }

@@ -1,5 +1,6 @@
 package com.yoh.backend.repository;
 
+import com.yoh.backend.entity.Game;
 import com.yoh.backend.entity.Researcher;
 import com.yoh.backend.entity.User;
 import org.hibernate.Criteria;
@@ -39,6 +40,18 @@ public class ResearcherRepository {
 
     }
 
+    public void deleteResearcher(Researcher researcher) {
+        Session session = sessionFactory.openSession();
+        try {
+            session.beginTransaction();
+            session.delete(researcher);
+            session.getTransaction().commit();
+        }
+        finally {
+            session.close();
+        }
+    }
+
     public Researcher getResearcherByUser(User user) {
         Session session = sessionFactory.openSession();
         try {
@@ -61,6 +74,17 @@ public class ResearcherRepository {
             return researchers.isEmpty() ? null : researchers.get(0);
         }
         finally {
+            session.close();
+        }
+    }
+
+    public List<Researcher> getAllResearchers(){
+        Session session = sessionFactory.openSession();
+        try{
+            Criteria criteria = session.createCriteria(Researcher.class);
+            List<Researcher> researcherList = criteria.list();
+            return researcherList.isEmpty() ? null : researcherList;
+        }finally {
             session.close();
         }
     }

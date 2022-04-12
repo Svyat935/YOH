@@ -22,3 +22,18 @@ services:
     env_file: *envfile
     ports:
       - 5432:5432
+      
+  flask:
+    build: ./yoh-wrapper
+    container_name: yoh-wrapper
+    env_file: *envfile
+    environment:
+      - PYTHONUNBUFFERED=True                   
+    restart: on-failure
+    volumes:
+      - type: bind
+        source: ${GAMES_FOLDER}
+        target: /wrapper/games
+    ports:
+      - "5050:5050"
+    command: gunicorn main:"create_flask_app()" -b 0.0.0.0:5050 --reload --log-level debug --workers=4

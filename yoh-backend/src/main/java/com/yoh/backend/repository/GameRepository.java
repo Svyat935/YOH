@@ -36,6 +36,18 @@ public class GameRepository {
         }
     }
 
+    public void deleteGame(Game game) {
+        Session session = sessionFactory.openSession();
+        try {
+            session.beginTransaction();
+            session.delete(game);
+            session.getTransaction().commit();
+        }
+        finally {
+            session.close();
+        }
+    }
+
     public Game getGameByUUID(UUID id) {
         Session session = sessionFactory.openSession();
         try {
