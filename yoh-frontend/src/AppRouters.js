@@ -25,7 +25,7 @@ export function AppRouters() {
                             <button>To Auth</button>
                         </Link>
                         <Link to="/reg/">
-                            <button>To Auth</button>
+                            <button>To Reg</button>
                         </Link>
                     </div>
                 }

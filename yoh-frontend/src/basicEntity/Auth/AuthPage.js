@@ -12,7 +12,6 @@ export function ViewAuthPage(props) {
     const authorize = () => {
         let credentials = document.getElementById("credentials").value,
             password = document.getElementById("password").value;
-        console.log(credentials, password);
         props.auth(credentials, password);
     }
 
@@ -86,7 +85,6 @@ export function AuthPage() {
 
     const authenticationUser = async (credentials, password) => {
         let response = await authorize(credentials, password);
-        console.log(response);
         let data = response["jsonObject"],
             role = data["role"],
             token = data["token"];

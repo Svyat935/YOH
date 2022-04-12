@@ -1,13 +1,11 @@
-import React, {useContext} from "react";
+import React from "react";
 import {Link, Route, Routes} from "react-router-dom";
 import {UsersPage} from "./pages/UsersPage";
 import {ComponentsPage} from "./pages/ComponentsPage";
-import {UserContext} from "../../authentication/userContext";
+import {OrganizationPage} from "./pages/OrganizationPage";
 
 
 export function AdminRouter() {
-    const userContext = useContext(UserContext);
-
     return (
         <Routes>
             <Route path={'/'} element={
@@ -19,10 +17,14 @@ export function AdminRouter() {
                     <Link to={"components_page"}>
                         <button>Components page</button>
                     </Link>
+                    <Link to={"organization_page"}>
+                        <button>Organization page</button>
+                    </Link>
                 </div>
             }/>
-            <Route path={'/users_page'} element={<UsersPage token={userContext.token}/>}/>
-            <Route path={'/components_page'} element={<ComponentsPage token={userContext.token}/>}/>
+            <Route path={'/users_page'} element={<UsersPage/>}/>
+            <Route path={'/components_page'} element={<ComponentsPage/>}/>
+            <Route path={'/organization_page'} element={<OrganizationPage/>}/>
         </Routes>
     )
 }

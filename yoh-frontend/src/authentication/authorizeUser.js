@@ -1,4 +1,4 @@
-import {useEffect, useState} from "react";
+import {useCallback, useEffect, useState} from "react";
 
 const STORAGE_NAME = 'userContext';
 
@@ -7,23 +7,29 @@ export const LocalAuthorizeUser = () => {
         [userRole, setUserRole] = useState(null),
         [theme, setTheme] = useState("white");
 
+    const login = useCallback((token, userRole) => {
+        setToken(token);
+        setUserRole(userRole);
+
+        localStorage.setItem(STORAGE_NAME, JSON.stringify({
+            token: token, role: userRole,
+        }))
+    }, []);
+
+    const logout = useCallback(() => {
+        setToken(null);
+        setUserRole(null);
+
+        localStorage.removeItem(STORAGE_NAME)
+    }, []);
+
     useEffect(() => {
         let data = JSON.parse(localStorage.getItem(STORAGE_NAME));
 
         if (data && data.token){
-            login(data.token, data.userRole, data.theme);
+            login(data.token, data.userRole);
         }
-    }, []);
-
-    const login = (token, userRole) => {
-        setToken(token);
-        setUserRole(userRole);
-    };
-
-    const logout = () => {
-        setToken(null);
-        setUserRole(null);
-    };
+    });
 
     return {token, userRole, theme, login, logout}
 }

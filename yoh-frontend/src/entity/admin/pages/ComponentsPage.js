@@ -1,4 +1,5 @@
 import React from "react";
+import {Link} from "react-router-dom";
 
 function ViewComponentsPage(){
     return (
@@ -11,7 +12,9 @@ export function ComponentsPage(props) {
 
     return (
         <div>
-            <h1></h1>
+            <Link to={"/user/admin/"}>
+                <button>To Back</button>
+            </Link>
             <ViewComponentsPage/>
         </div>
     );

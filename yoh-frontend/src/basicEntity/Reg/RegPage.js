@@ -52,19 +52,6 @@ export function ViewRegPage(props) {
                 </Col>
                 <Col/>
             </Row>
-            <Row>
-                <Col>
-                    <Container>
-                        <Row>
-                            <Col/>
-                            <Col style={{"background": "BurlyWood", "margin": "10px", "textAlign": "center"}}>
-                                <Link to={"/auth/"}><button>Authentication</button></Link>
-                            </Col>
-                            <Col/>
-                        </Row>
-                    </Container>
-                </Col>
-            </Row>
         </Container>
     )
 }
@@ -96,5 +83,18 @@ export function RegPage() {
         console.log(response);
     }
 
-    return <ViewRegPage reg={registerUser}/>;
+    return (
+        <div>
+            <ViewRegPage reg={registerUser}/>
+            <Container>
+                <Row>
+                    <Col/>
+                    <Col style={{"background": "BurlyWood", "margin": "10px", "textAlign": "center"}}>
+                        <Link to={"/auth/"}><button>Authentication</button></Link>
+                    </Col>
+                    <Col/>
+                </Row>
+            </Container>
+        </div>
+    )
 }
