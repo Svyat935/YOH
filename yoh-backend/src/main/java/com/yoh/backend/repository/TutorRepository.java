@@ -36,6 +36,18 @@ public class TutorRepository {
         }
     }
 
+    public void deleteTutor(Tutor tutor) {
+        Session session = sessionFactory.openSession();
+        try {
+            session.beginTransaction();
+            session.delete(tutor);
+            session.getTransaction().commit();
+        }
+        finally {
+            session.close();
+        }
+    }
+
     public Tutor getTutorByUser(User user) {
         Session session = sessionFactory.openSession();
         try {
@@ -66,6 +78,17 @@ public class TutorRepository {
             return tutors.isEmpty() ? null : tutors.get(0);
         }
         finally {
+            session.close();
+        }
+    }
+
+    public List<Tutor> getAllTutors(){
+        Session session = sessionFactory.openSession();
+        try{
+            Criteria criteria = session.createCriteria(Tutor.class);
+            List<Tutor> tutorList = criteria.list();
+            return tutorList.isEmpty() ? null : tutorList;
+        }finally {
             session.close();
         }
     }

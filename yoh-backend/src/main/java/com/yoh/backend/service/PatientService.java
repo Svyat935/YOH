@@ -25,6 +25,14 @@ public class PatientService {
         patientRepository.createPatient(patient);
     }
 
+    public void deletePatient(Patient patient) throws IllegalArgumentException{
+        patientRepository.deletePatient(patient);
+    }
+
+    public List<Patient> getAllPatients(){
+        return patientRepository.getAllPatients();
+    }
+
     public Patient getPatientByUser(User user) {
         return patientRepository.getPatientByUser(user);
     }

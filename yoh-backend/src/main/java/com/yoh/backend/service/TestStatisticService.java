@@ -1,10 +1,12 @@
 package com.yoh.backend.service;
 
+import com.yoh.backend.entity.Game;
 import com.yoh.backend.entity.TestStatistic;
 import com.yoh.backend.repository.TestStatisticRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -24,8 +26,16 @@ public class TestStatisticService {
         testStatisticRepository.createTestStatistic(testStatistic);
     }
 
+    public void deleteTest(TestStatistic testStatistic) throws IllegalArgumentException{
+        testStatisticRepository.deleteTestStatistic(testStatistic);
+    }
+
     private void checkExistTestStatistic(TestStatistic testStatistic) throws IllegalArgumentException{
 
+    }
+
+    public List<TestStatistic> getAllTestStatistics(){
+        return testStatisticRepository.getAllTestStatistics();
     }
 
     public TestStatistic getTestStatisticById(UUID id) throws IllegalArgumentException{

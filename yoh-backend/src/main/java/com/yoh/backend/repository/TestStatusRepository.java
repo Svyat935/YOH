@@ -36,6 +36,18 @@ public class TestStatusRepository {
         }
     }
 
+    public void deleteTestStatus(TestStatus testStatus) {
+        Session session = sessionFactory.openSession();
+        try {
+            session.beginTransaction();
+            session.delete(testStatus);
+            session.getTransaction().commit();
+        }
+        finally {
+            session.close();
+        }
+    }
+
     public TestStatus getTestStatusByUUID(UUID id) {
         Session session = sessionFactory.openSession();
         try {
@@ -59,6 +71,17 @@ public class TestStatusRepository {
             return testStatuses.isEmpty() ? null : testStatuses.get(0);
         }
         finally {
+            session.close();
+        }
+    }
+
+    public List<TestStatus> getAllTestStatuses(){
+        Session session = sessionFactory.openSession();
+        try{
+            Criteria criteria = session.createCriteria(TestStatus.class);
+            List<TestStatus> testStatusList = criteria.list();
+            return testStatusList.isEmpty() ? null : testStatusList;
+        }finally {
             session.close();
         }
     }

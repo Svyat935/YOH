@@ -24,6 +24,10 @@ public class GameService {
         gameRepository.createGame(game);
     }
 
+    public void deleteGame(Game game) throws IllegalArgumentException{
+        gameRepository.deleteGame(game);
+    }
+
     private void checkExistGame(Game game) throws IllegalArgumentException{
 
     }

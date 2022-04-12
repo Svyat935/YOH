@@ -1,12 +1,14 @@
 package com.yoh.backend.service;
 
 import com.yoh.backend.entity.Admin;
+import com.yoh.backend.entity.Game;
 import com.yoh.backend.entity.Tutor;
 import com.yoh.backend.entity.User;
 import com.yoh.backend.repository.AdminRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -25,6 +27,13 @@ public class AdminService {
         adminRepository.createAdmin(admin);
     }
 
+    public void deleteAdmin(Admin admin) throws IllegalArgumentException{
+        adminRepository.deleteAdmin(admin);
+    }
+
+    public List<Admin> getAllAdmins(){
+        return adminRepository.getAllAdmins();
+    }
 
     public Admin getAdminById(UUID id) throws IllegalArgumentException{
         Admin admin = adminRepository.getAdminByUUID(id);

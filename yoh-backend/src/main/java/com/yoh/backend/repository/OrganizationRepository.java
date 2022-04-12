@@ -1,5 +1,6 @@
 package com.yoh.backend.repository;
 
+import com.yoh.backend.entity.Game;
 import com.yoh.backend.entity.Organization;
 import com.yoh.backend.entity.User;
 import org.hibernate.Criteria;
@@ -37,6 +38,18 @@ public class OrganizationRepository {
         }
     }
 
+    public void deleteOrganization(Organization organization) {
+        Session session = sessionFactory.openSession();
+        try {
+            session.beginTransaction();
+            session.delete(organization);
+            session.getTransaction().commit();
+        }
+        finally {
+            session.close();
+        }
+    }
+
     public Organization getOrganizationByUUID(UUID id) {
         Session session = sessionFactory.openSession();
         try {
@@ -64,6 +77,7 @@ public class OrganizationRepository {
     }
 
     public List<Organization> getAllOrganizations() {
+        //TODO подогнать под общий вид
         Session session = sessionFactory.openSession();
         try {
             Criteria criteria = session.createCriteria(Organization.class);

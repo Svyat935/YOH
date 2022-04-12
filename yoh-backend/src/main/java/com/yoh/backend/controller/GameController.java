@@ -5,7 +5,9 @@ import com.github.cliftonlabs.json_simple.JsonObject;
 import com.yoh.backend.entity.Admin;
 import com.yoh.backend.entity.Game;
 import com.yoh.backend.request.AddGamesRequest;
+import com.yoh.backend.request.EditGameRequest;
 import com.yoh.backend.request.EditPatientInfoRequest;
+import com.yoh.backend.request.GameToRemove;
 import com.yoh.backend.response.JSONResponse;
 import com.yoh.backend.service.AdminService;
 import com.yoh.backend.service.GameService;
@@ -15,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/games")
@@ -46,7 +49,7 @@ public class GameController {
     }
 
     @GetMapping(path = "/all")
-    public JSONResponse allGames(@RequestHeader("token") String token){
+    public JSONResponse allGames(@RequestHeader("token") String token) {
         try{
             Admin admin = this.adminService.getAdminByUser(this.userService.getUserById(this.userService.verifyToken(token)));
             List<Game> games = this.gameService.getAllGames();
@@ -65,6 +68,47 @@ public class GameController {
             jsonObject.put("games", jsonArray);
             return new JSONResponse(200, jsonObject);
         }catch (IllegalArgumentException e){
+            JsonObject exceptionResponse = new JsonObject();
+            exceptionResponse.put("message", e.getMessage());
+            return new JSONResponse(401, exceptionResponse);
+        }
+    }
+
+    @DeleteMapping(path = "/removing")
+    public JSONResponse removeGame(@RequestHeader("token") String token, @Valid @RequestBody GameToRemove gameToRemove) {
+        try {
+
+            Admin admin = this.adminService.getAdminByUser(this.userService.getUserById(this.userService.verifyToken(token)));
+            Game game = this.gameService.getGameById(UUID.fromString(gameToRemove.getGame_id()));
+            gameService.deleteGame(game);
+            JsonObject response = new JsonObject();
+            response.put("status", "OK");
+            return new JSONResponse(200, response);
+        }
+        catch (IllegalArgumentException e) {
+            JsonObject exceptionResponse = new JsonObject();
+            exceptionResponse.put("message", e.getMessage());
+            return new JSONResponse(401, exceptionResponse);
+        }
+    }
+
+    @PutMapping(path = "/changing")
+    public JSONResponse changeGame(@RequestHeader("token") String token, @Valid @RequestBody EditGameRequest editGameRequest) {
+        try {
+            Admin admin = this.adminService.getAdminByUser(this.userService.getUserById(this.userService.verifyToken(token)));
+            Game game = this.gameService.getGameById(UUID.fromString(editGameRequest.getGame_id()));
+            if (editGameRequest.getName() != null)
+                game.setName(editGameRequest.getName());
+            if (editGameRequest.getDescription() != null)
+                game.setDescription(editGameRequest.getDescription());
+            if (editGameRequest.getUrl() != null)
+                game.setUrl(editGameRequest.getUrl());
+            gameService.updateGame(game);
+            JsonObject response = new JsonObject();
+            response.put("status", "OK");
+            return new JSONResponse(200, response);
+        }
+        catch (IllegalArgumentException e) {
             JsonObject exceptionResponse = new JsonObject();
             exceptionResponse.put("message", e.getMessage());
             return new JSONResponse(401, exceptionResponse);

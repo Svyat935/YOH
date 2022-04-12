@@ -6,6 +6,7 @@ import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.DecodedJWT;
+import com.yoh.backend.entity.Game;
 import com.yoh.backend.entity.Organization;
 import com.yoh.backend.entity.User;
 import com.yoh.backend.repository.OrganizationRepository;
@@ -44,6 +45,10 @@ public class UserService {
 
     public void updateUser(User user) throws IllegalArgumentException{
         userRepository.createUser(user);
+    }
+
+    public void deleteUser(User user) throws IllegalArgumentException{
+        userRepository.deleteUser(user);
     }
 
     public User getUser(String credentials, String password) throws IllegalArgumentException{

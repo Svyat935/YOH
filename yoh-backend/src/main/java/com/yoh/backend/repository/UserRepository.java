@@ -20,11 +20,24 @@ public class UserRepository {
     private SessionFactory sessionFactory;
 
     public List<User> getAllUsers() {
+        //TODO подогнать под общий вид
         Session session = sessionFactory.openSession();
         try {
             Criteria criteria = session.createCriteria(User.class);
             List<User> users = criteria.list();
             return users;
+        }
+        finally {
+            session.close();
+        }
+    }
+
+    public void deleteUser(User user) {
+        Session session = sessionFactory.openSession();
+        try {
+            session.beginTransaction();
+            session.delete(user);
+            session.getTransaction().commit();
         }
         finally {
             session.close();
