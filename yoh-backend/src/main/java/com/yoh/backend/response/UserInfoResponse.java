@@ -71,8 +71,9 @@ public class UserInfoResponse {
     }
 
     public void setRoleString(Integer role) {
-        this.roleString = role == 0 ? "Admin" :
-                role == 1 ? "Patient" :
-                        role == 2 ? "Researcher" : "Tutor";
+        if (role != null)
+            this.roleString = role == 0 ? "Admin" :
+                    role == 1 ? "Patient" :
+                            role == 2 ? "Researcher" : "Tutor";
     }
 }
