@@ -1,7 +1,7 @@
 from flask import Blueprint, make_response, render_template, request, session, abort, send_from_directory
 from jinja2.exceptions import TemplateNotFound
 
-game_bp = Blueprint('Game', __name__, template_folder='../games', static_folder='../games')
+game_bp = Blueprint('Game', __name__, template_folder='../games', static_folder='../games', url_prefix='/games')
 
 
 @game_bp.route('/<game>/<path:path>')
