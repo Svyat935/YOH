@@ -1,6 +1,7 @@
 package com.yoh.backend.entity;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -72,7 +73,7 @@ public class Tutor {
     }
 
     @OneToMany(mappedBy = "tutor")
-    private List<Patient> patients;
+    private List<Patient> patients = new ArrayList<>();
 
     public List<Patient> getPatients() {
         return patients;

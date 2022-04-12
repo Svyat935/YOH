@@ -87,6 +87,7 @@ public class AuthController {
 
     @PostMapping("/assign/role")
     public JSONResponse assignRoleUser(@RequestHeader("token") String token, @Valid @RequestBody RoleForAssign roleForAssign) {
+        //TODO: Перенести в админа
         User userForAssign = this.userService.getUserById(this.userService.verifyToken(token));
         //TODO: Delete organization
         Organization testOrganization = this.organizationService.getOrganizationByName("TestOrganization");
