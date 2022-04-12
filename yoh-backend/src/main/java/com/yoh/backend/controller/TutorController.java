@@ -56,7 +56,6 @@ public class TutorController {
                 }
                 patientList.add(patientInfo);
             }
-            tutorService.updateTutor(tutor);
             JsonObject response = new JsonObject();
             response.put("patientList", patientList);
             return new JSONResponse(200, response);
