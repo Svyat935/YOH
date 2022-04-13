@@ -6,12 +6,21 @@ import {ViewRegPage} from "../../../basicEntity/Reg/RegPage";
 import {Link} from "react-router-dom";
 
 function ViewUserPage(props){
+    const changeRole = (role, user_id) => {
+        props.requestChangeRole(role, user_id);
+    }
+
     const createUsersView = (users) => {
         let view = [];
         users["userList"].forEach((user) => {
             view.push(
                 <Row key={user.id} style={{"background": "wheat", "mapping": "10px"}}>
-                    id: {user.id}; login: {user.login}; email: {user.login}; role: {user.role}
+                    <p>id: {user.id}; login: {user.login}; email: {user.login}; role: {user.role}</p>
+                        <p>
+                            <button onClick={() => {changeRole(3, user.id)}}>To Tutor</button>
+                            <button onClick={() => {changeRole(2, user.id)}}>To Researcher</button>
+                            <button onClick={() => {changeRole(1, user.id)}}>To Patient</button>
+                        </p>
                 </Row>
             )
         })
@@ -60,22 +69,33 @@ export function UsersPage(props) {
         }).then((response) => {
             if (response.status === 200) {
                 setViewUsers(null);
-                return response.json();
-            } else {
-                return null;
             }
         });
     }
 
-    const requestAssignRole = async () => {
-
+    const requestAssignRole = async (role, user_id) => {
+        return await fetch("/admins/assign/role", {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'token': context.token
+            },
+            body: JSON.stringify({
+                role: role,
+                user: user_id
+            })
+        }).then((response) => {
+            if (response.status === 200) {
+                setViewUsers(null);
+            }
+        });
     }
 
     useEffect(async () => {
         if (context.token !== null){
             let response = await requestUsers(),
                 users = response["jsonObject"];
-            setViewUsers(<ViewUserPage users={users}/>);
+            setViewUsers(<ViewUserPage users={users} requestChangeRole={requestAssignRole}/>);
         }
     }, [context, viewUsers])
 

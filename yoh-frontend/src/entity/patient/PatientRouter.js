@@ -17,9 +17,9 @@ export function PatientRouter() {
                     <Link to={"main_page"}>
                         <button>Main Page</button>
                     </Link>
-                    <Link to={"chat_page"}>
-                        <button>Chat Page</button>
-                    </Link>
+                    {/*<Link to={"chat_page"}>*/}
+                    {/*    <button>Chat Page</button>*/}
+                    {/*</Link>*/}
                     <Link to={"games_page"}>
                         <button>Games Page</button>
                     </Link>

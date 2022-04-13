@@ -5,16 +5,65 @@ import Row from "react-bootstrap/Row";
 import {Link} from "react-router-dom";
 
 function AccountPageView(props) {
+    const changeField = (name_field) => {
+        let value = document.getElementById(name_field).value;
+        if (value !== ""){
+            let body = {}
+            body[name_field] = value;
+            props.changeAccount(body);
+        }
+    }
+
     return (
         <Container style={{"background": "wheat"}}>
-            <Row>Name: {props.name}</Row>
-            <Row>Surname: {props.surname}</Row>
-            <Row>SecondName: {props.secondName}</Row>
-            <Row>Gender: {props.gender}</Row>
-            <Row>Organization: {props.organization}</Row>
-            <Row>BirthDate: {props.birthDate}</Row>
-            <Row>NumberPhone: {props.numberPhone}</Row>
-            <Row>Address: {props.address}</Row>
+            <Row>
+                <p>Name: {props.name} ;
+                    <input type={"text"} id={"name"}/>
+                    <button onClick={() => changeField("name")}>Change</button>
+                </p>
+            </Row>
+            <Row>
+                <p>Surname: {props.surname} ;
+                    <input type={"text"} id={"surname"}/>
+                    <button onClick={() => changeField("surname")}>Change</button>
+                </p>
+            </Row>
+            <Row>
+                <p>SecondName: {props.secondName} ;
+                    <input type={"text"} id={"secondName"}/>
+                    <button onClick={() => changeField("secondName")}>Change</button>
+                </p>
+            </Row>
+            <Row>
+                <p>Gender: {props.gender} ;
+                    <select id={"gender"}>
+                        <option defaultValue={true} value={"Мужской"}>Мужской</option>
+                        <option value={"Женский"}>Женский</option>
+                    </select>
+                    <button onClick={() => changeField("gender")}>Change</button>
+                </p>
+            </Row>
+            <Row>
+                <p>Organization: {props.organization}</p>
+            </Row>
+            <Row>
+                <p>BirthDate: {props.birthDate} ;
+                    <input type={"text"} id={"birthDate"}/>
+                    <button onClick={() => changeField("birthDate")}>Change</button>
+                </p>
+            </Row>
+            <Row>
+                <p>NumberPhone: {props.numberPhone} ;
+                    <input type={"text"} id={"numberPhone"}/>
+                    <button onClick={() => changeField("numberPhone")}>Change</button>
+                </p>
+            </Row>
+            <Row>
+                <p>Address: {props.address} ;
+                    <input type={"text"} id={"address"}/>
+                    <button onClick={() => changeField("address")}>Change</button>
+                </p>
+            </Row>
             {props.tutor !== undefined ?
                 <Container style={{"background": "wheat"}}>
                     <Row>Tutor name: {props.tutor["name"]}</Row>
@@ -30,6 +79,7 @@ function AccountPageView(props) {
 export function AccountPage() {
     const context = useContext(UserContext);
     const [view, setView] = useState(null);
+    const [reset, executeReset] = useState(false);
 
     const requestAccount = async () => {
         return await fetch("/patient/account", {
@@ -57,9 +107,11 @@ export function AccountPage() {
             body: JSON.stringify(body)
         }).then((response) => {
             if (response.status === 200) {
-                return response.json();
-            } else {
-                return null;
+                if (reset === true){
+                    executeReset(false);
+                }else{
+                    executeReset(true);
+                }
             }
         });
     }
@@ -68,6 +120,7 @@ export function AccountPage() {
         if (context.token !== null){
             let response = await requestAccount(),
                 account = response["jsonObject"];
+            console.log(response);
             setView(
                 <AccountPageView
                     name={account.name}
@@ -79,10 +132,11 @@ export function AccountPage() {
                     numberPhone={account.numberPhone}
                     address={account.address}
                     tutor={account.tutor}
+                    changeAccount={requestChangeAccount}
                 />
             )
         }
-    }, [context])
+    }, [context, reset])
 
     return (
         <div>
