@@ -12,4 +12,15 @@ public class OrganizationForAssign {
     }
 
     public void setOrganization(String organization) {this.organization = organization;}
+
+    @NotNull
+    private String user;
+
+    public String getUser() {
+        return user;
+    }
+
+    public void setUser(String user) {
+        this.user = user;
+    }
 }
