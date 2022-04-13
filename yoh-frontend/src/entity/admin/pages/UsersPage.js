@@ -67,6 +67,10 @@ export function UsersPage(props) {
         });
     }
 
+    const requestAssignRole = async () => {
+
+    }
+
     useEffect(async () => {
         if (context.token !== null){
             let response = await requestUsers(),

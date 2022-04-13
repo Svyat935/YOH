@@ -24,21 +24,6 @@ public class AuthController {
     private UserService userService;
 
     @Autowired
-    private AdminService adminService;
-
-    @Autowired
-    private PatientService patientService;
-
-    @Autowired
-    private ResearcherService researcherService;
-
-    @Autowired
-    private TutorService tutorService;
-
-    @Autowired
-    private OrganizationService organizationService;
-
-    @Autowired
     private SessionFactory sessionFactory;
 
     @GetMapping
@@ -83,105 +68,5 @@ public class AuthController {
             exceptionResponse.put("message", e.getMessage());
             return new JSONResponse(401, exceptionResponse);
         }
-    }
-
-    @PostMapping("/assign/role")
-    public JSONResponse assignRoleUser(@RequestHeader("token") String token, @Valid @RequestBody RoleForAssign roleForAssign) {
-        //TODO: Перенести в админа
-        User userForAssign = this.userService.getUserById(this.userService.verifyToken(token));
-        //TODO: Delete organization
-        Organization testOrganization = this.organizationService.getOrganizationByName("TestOrganization");
-        try {
-            Integer role = roleForAssign.getRole();
-            switch (role) {
-                case 0 -> {
-                    userForAssign.setRole(role);
-                    this.userService.updateUser(userForAssign);
-                    Admin admin = new Admin(userForAssign);
-                    this.adminService.createAdmin(admin);
-                    JsonObject response = new JsonObject();
-                    response.put("message", "Admin was assigned");
-                    return new JSONResponse(200, response);
-                }
-                case 1 -> {
-                    userForAssign.setRole(role);
-                    this.userService.updateUser(userForAssign);
-                    Patient patient = new Patient(userForAssign);
-                    //TODO: Delete Organization later.
-                    patient.setOrganization(testOrganization);
-                    this.patientService.createPatient(patient);
-                    JsonObject response = new JsonObject();
-                    response.put("message", "Patient was assigned");
-                    return new JSONResponse(200, response);
-                }
-                case 2 -> {
-                    userForAssign.setRole(role);
-                    this.userService.updateUser(userForAssign);
-                    Researcher researcher = new Researcher(userForAssign);
-                    //TODO: Delete Organization later.
-                    researcher.setOrganization(testOrganization);
-                    this.researcherService.createResearcher(researcher);
-                    JsonObject response = new JsonObject();
-                    response.put("message", "Researcher was assigned");
-                    return new JSONResponse(200, response);
-                }
-                case 3 -> {
-                    userForAssign.setRole(role);
-                    this.userService.updateUser(userForAssign);
-                    Tutor tutor = new Tutor(userForAssign);
-                    //TODO: Delete Organization later.
-                    tutor.setOrganization(testOrganization);
-                    this.tutorService.createTutor(tutor);
-                    JsonObject response = new JsonObject();
-                    response.put("message", "Tutor was assigned");
-                    return new JSONResponse(200, response);
-                }
-            }
-        } catch (IllegalArgumentException e) {
-            JsonObject exceptionResponse = new JsonObject();
-            exceptionResponse.put("message", e.getMessage());
-            return new JSONResponse(401, exceptionResponse);
-        }
-        JsonObject defaultResponse = new JsonObject();
-        defaultResponse.put("message", "No such role");
-        return new JSONResponse(401, defaultResponse);
-    }
-
-    @PostMapping("/assign/organization")
-    public JSONResponse assignOrganization(@RequestHeader("token") String token, @Valid @RequestBody OrganizationForAssign organizationForAssign) {
-        try {
-            User userForAssign = this.userService.getUserById(this.userService.verifyToken(token));
-            Organization newOrganization = this.organizationService.getOrganizationById(UUID.fromString(organizationForAssign.getOrganization()));
-
-            Patient patient = patientService.getPatientByUser(userForAssign);
-            if (patient == null) {
-                Researcher researcher = researcherService.getResearcherByUser(userForAssign);
-                if (researcher == null) {
-                    Tutor tutor = tutorService.getTutorByUser(userForAssign);
-                    if (tutor != null) {
-                        tutor.setOrganization(newOrganization);
-                        this.tutorService.updateTutor(tutor);
-                    } else {
-                        JsonObject exceptionResponse = new JsonObject();
-                        exceptionResponse.put("message", String.format("User was not founded in roles %s", userForAssign.getId()));
-                        return new JSONResponse(401, exceptionResponse);
-                    }
-                } else {
-                    researcher.setOrganization(newOrganization);
-                    this.researcherService.updateResearcher(researcher);
-                }
-            } else {
-                patient.setOrganization(newOrganization);
-                this.patientService.updatePatient(patient);
-            }
-            JsonObject response = new JsonObject();
-            response.put("message", "Organization was assigned");
-            return new JSONResponse(200, response);
-        } catch (IllegalArgumentException e) {
-            JsonObject exceptionResponse = new JsonObject();
-            exceptionResponse.put("message", e.getMessage());
-            return new JSONResponse(401, exceptionResponse);
-        }
-
     }
 }
