@@ -72,7 +72,7 @@ public class Tutor {
         this.secondName = secondName;
     }
 
-    @OneToMany(mappedBy = "tutor")
+    @OneToMany(mappedBy = "tutor", fetch = FetchType.EAGER)
     private List<Patient> patients = new ArrayList<>();
 
     public List<Patient> getPatients() {
