@@ -49,7 +49,7 @@ public class AdminController {
                 responseList.add(new UserInfoResponse(user));
             }
 //            response.put("userList", this.userService.getAllUsers());
-            response.put("userLust", responseList);
+            response.put("userList", responseList);
             return new JSONResponse(200, response);
         }
         catch (IllegalArgumentException e){
