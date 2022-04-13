@@ -76,7 +76,7 @@ public class AdminController {
     }
 
     @PostMapping(path = "/upload/games")
-    public JSONResponse uploadGames(@RequestHeader("token") String token, @RequestParam("file")MultipartFile file) {
+    public JSONResponse uploadGames(@RequestHeader("token") String token, @RequestBody MultipartFile file) {
         try {
             Admin admin = this.adminService.getAdminByUser(this.userService.getUserById(this.userService.verifyToken(token)));
             if (!file.isEmpty()) {
