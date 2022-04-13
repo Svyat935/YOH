@@ -14,6 +14,9 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 
+import java.io.File;
+import java.util.ArrayList;
+
 
 @SpringBootApplication
 public class BackendApplication {
@@ -27,8 +30,12 @@ public class BackendApplication {
     @Value("${INIT_ADMIN_EMAIL}")
     private String email;
 
+    @Value("${GAMES_FOLDER}")
+    private String games_folder;
+
     public static void main(String[] args) {
         SpringApplication.run(BackendApplication.class, args);
+
     }
 
     @Bean
@@ -52,6 +59,12 @@ public class BackendApplication {
                 System.out.println("Admin had been created.");
             }
         };
+    }
+
+    @Bean
+    public void create_folder() {
+        String[] games_folders = this.games_folder.split("/");
+        new File(games_folders[games_folders.length - 1]).mkdir();
     }
 
 }

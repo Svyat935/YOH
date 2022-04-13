@@ -76,7 +76,7 @@ public class TutorController {
                 JsonObject patientInfo = new JsonObject();
                 patientInfo.put("id", patient.getId().toString());
                 patientInfo.put("name", patient.getName());
-                patientInfo.put("surmane", patient.getSurname());
+                patientInfo.put("surname", patient.getSurname());
                 if (patient.getOrganization() != null){
                     patientInfo.put("organization", patient.getOrganization().getId().toString());
                 }
