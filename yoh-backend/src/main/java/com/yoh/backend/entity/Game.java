@@ -40,7 +40,7 @@ public class Game {
     }
 
 
-    @Column(name = "description", length = 128, nullable = false)
+    @Column(name = "description", length = 128, nullable = true)
     private String description;
 
     public String getDescription(){

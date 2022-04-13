@@ -11,16 +11,29 @@ import com.yoh.backend.response.UserInfoResponse;
 import com.yoh.backend.service.*;
 import org.aspectj.weaver.ast.Or;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.zip.*;
 
 @RestController
 @RequestMapping("/admins")
 public class AdminController {
+    @Value("${GAMES_FOLDER}")
+    private String games_folder;
+
+    @Value("${WRAPPER}")
+    private String wrapper;
+
     @Autowired
     private AdminService adminService;
 
@@ -39,6 +52,9 @@ public class AdminController {
     @Autowired
     private TutorService tutorService;
 
+    @Autowired
+    private GameService gameService;
+
     @GetMapping(path = "/users/all")
     public JSONResponse getUsers(@RequestHeader("token") String token) {
         try {
@@ -53,6 +69,48 @@ public class AdminController {
             return new JSONResponse(200, response);
         }
         catch (IllegalArgumentException e){
+            JsonObject exceptionResponse = new JsonObject();
+            exceptionResponse.put("message", e.getMessage());
+            return new JSONResponse(401, exceptionResponse);
+        }
+    }
+
+    @PostMapping(path = "/upload/games")
+    public JSONResponse uploadGames(@RequestHeader("token") String token, @RequestBody MultipartFile file) {
+        try {
+            Admin admin = this.adminService.getAdminByUser(this.userService.getUserById(this.userService.verifyToken(token)));
+            if (!file.isEmpty()) {
+                byte[] bytes = file.getBytes();
+                BufferedOutputStream stream =
+                        new BufferedOutputStream(new FileOutputStream(new File(this.games_folder + "/" + file.getName())));
+                stream.write(bytes);
+                stream.close();
+                try (ZipInputStream zin = new ZipInputStream(new FileInputStream(this.games_folder + "/" + file.getName()))){
+                    ZipEntry entry;
+                    String name;
+//                    Long size;
+                    while ((entry = zin.getNextEntry()) != null) {
+                        name = entry.getName();
+//                        size = entry.getSize();
+
+                        FileOutputStream fout = new FileOutputStream(this.games_folder + "/" + name);
+                        for (int c = zin.read(); c != -1; c = zin.read()) {
+                            fout.write(c);
+                        }
+                        fout.flush();
+                        zin.closeEntry();
+                        fout.close();
+                        Game game = new Game(name, null, this.wrapper + "/" + name);
+                        this.gameService.createGame(game);
+                    }
+                }
+                new File(this.games_folder + "/" + file.getName()).delete();
+            }
+            JsonObject response = new JsonObject();
+            response.put("message", "games successfully uploaded");
+            return new JSONResponse(200, response);
+        }
+        catch (Exception e){
             JsonObject exceptionResponse = new JsonObject();
             exceptionResponse.put("message", e.getMessage());
             return new JSONResponse(401, exceptionResponse);
