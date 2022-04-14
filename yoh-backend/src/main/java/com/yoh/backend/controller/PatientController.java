@@ -209,7 +209,10 @@ public class PatientController {
             if (patient.getOrganization() != null)
                 response.put("organization", patient.getOrganization().getId().toString());
             else response.put("organization", null);
-            response.put("birthDate", patient.getBirthDate());
+            if (patient.getBirthDate() != null)
+                response.put("birthDate", patient.getBirthDate().toString());
+            else response.put("birthDate", null);
+//            response.put("birthDate", patient.getBirthDate());
             response.put("numberPhone", patient.getNumberPhone());
             response.put("address", patient.getAddress());
 
