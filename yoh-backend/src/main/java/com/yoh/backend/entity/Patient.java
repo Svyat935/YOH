@@ -164,7 +164,7 @@ public class Patient {
     }
 
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     private List<Game> games;
 
     public List<Game> getGames() {
