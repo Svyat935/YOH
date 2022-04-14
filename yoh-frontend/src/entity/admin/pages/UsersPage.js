@@ -38,6 +38,7 @@ function ViewUserPage(props){
 export function UsersPage(props) {
     const context = useContext(UserContext);
     const [viewUsers, setViewUsers] = useState(null);
+    const [reset, executeReset] = useState(false);
 
     const requestUsers = async () => {
         return await fetch("/admins/users/all", {
@@ -68,7 +69,11 @@ export function UsersPage(props) {
             })
         }).then((response) => {
             if (response.status === 200) {
-                setViewUsers(null);
+                if (reset === true){
+                    executeReset(false);
+                }else{
+                    executeReset(true);
+                }
             }
         });
     }
@@ -86,7 +91,11 @@ export function UsersPage(props) {
             })
         }).then((response) => {
             if (response.status === 200) {
-                setViewUsers(null);
+                if (reset === true){
+                    executeReset(false);
+                }else{
+                    executeReset(true);
+                }
             }
         });
     }
@@ -97,7 +106,7 @@ export function UsersPage(props) {
                 users = response["jsonObject"];
             setViewUsers(<ViewUserPage users={users} requestChangeRole={requestAssignRole}/>);
         }
-    }, [context, viewUsers])
+    }, [context, reset])
 
     return (
         <div>
