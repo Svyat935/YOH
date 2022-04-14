@@ -13,6 +13,7 @@ import javax.validation.Valid;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.UUID;
 
 @RestController
@@ -48,11 +49,21 @@ public class PatientController {
 
     @GetMapping(path = "/games/getting")
     public JSONResponse getAllGames(@RequestHeader("token") String token) {
-        // TODO Уточнить как игры возвращаться будут.
         try {
             Patient patient = this.patientService.getPatientByUser(this.userService.getUserById(this.userService.verifyToken(token)));
+            ArrayList<JsonObject> gamesArray = new ArrayList<>();
+            if (patient.getGames() != null){
+                for (Game game: patient.getGames()){
+                    JsonObject gamesInfo = new JsonObject();
+                    gamesInfo.put("id", game.getId().toString());
+                    gamesInfo.put("name", game.getName());
+                    gamesInfo.put("description", game.getDescription());
+                    gamesInfo.put("url", game.getUrl());
+                    gamesArray.add(gamesInfo);
+                }
+            }
             JsonObject response = new JsonObject();
-            response.put("message", "Stub");
+            response.put("gamesArray", gamesArray);
             return new JSONResponse(200, response);
         }
         catch (IllegalArgumentException e){
