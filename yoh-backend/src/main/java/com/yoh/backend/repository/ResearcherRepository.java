@@ -1,8 +1,6 @@
 package com.yoh.backend.repository;
 
-import com.yoh.backend.entity.Game;
-import com.yoh.backend.entity.Researcher;
-import com.yoh.backend.entity.User;
+import com.yoh.backend.entity.*;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -85,6 +83,19 @@ public class ResearcherRepository {
             List<Researcher> researcherList = criteria.list();
             return researcherList.isEmpty() ? null : researcherList;
         }finally {
+            session.close();
+        }
+    }
+
+    public List<Researcher> getAllResearchersByOrganization(Organization organization) {
+        Session session = sessionFactory.openSession();
+        try {
+            Criteria criteria = session.createCriteria(Researcher.class)
+                    .add(Restrictions.eq("organization", organization));
+            List<Researcher> researcherList = criteria.list();
+            return researcherList.isEmpty() ? List.of() : researcherList;
+        }
+        finally {
             session.close();
         }
     }

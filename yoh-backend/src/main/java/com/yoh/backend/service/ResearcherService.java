@@ -1,8 +1,6 @@
 package com.yoh.backend.service;
 
-import com.yoh.backend.entity.Game;
-import com.yoh.backend.entity.Researcher;
-import com.yoh.backend.entity.User;
+import com.yoh.backend.entity.*;
 import com.yoh.backend.repository.ResearcherRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -46,5 +44,9 @@ public class ResearcherService {
         else throw new IllegalArgumentException(
                 String.format("Sorry, but Researcher with this id (%s) wasn't found.", id)
         );
+    }
+
+    public List<Researcher> getAllResearchersByOrganization(Organization organization){
+        return researcherRepository.getAllResearchersByOrganization(organization);
     }
 }

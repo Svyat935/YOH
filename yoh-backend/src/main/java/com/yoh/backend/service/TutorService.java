@@ -1,8 +1,6 @@
 package com.yoh.backend.service;
 
-import com.yoh.backend.entity.Game;
-import com.yoh.backend.entity.Tutor;
-import com.yoh.backend.entity.User;
+import com.yoh.backend.entity.*;
 import com.yoh.backend.repository.TutorRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -50,5 +48,9 @@ public class TutorService {
         else throw new IllegalArgumentException(
                 String.format("Sorry, but Tutor with this id (%s) wasn't found.", id)
         );
+    }
+
+    public List<Tutor> getAllTutorsByOrganization(Organization organization){
+        return tutorRepository.getAllTutorsByOrganization(organization);
     }
 }
