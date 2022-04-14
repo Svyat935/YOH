@@ -10,10 +10,15 @@ import com.yoh.backend.service.AdminService;
 import com.yoh.backend.service.UserService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.boot.web.servlet.MultipartConfigFactory;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
 
+import javax.servlet.MultipartConfigElement;
 import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -21,6 +26,9 @@ import java.util.ArrayList;
 
 
 @SpringBootApplication
+@Configuration
+@ComponentScan
+@EnableAutoConfiguration
 public class BackendApplication {
 
     @Value("${INIT_ADMIN_LOGIN}")
@@ -73,6 +81,12 @@ public class BackendApplication {
         catch (Exception e){
             System.out.println(e.getMessage());
         }
+    }
+
+    @Bean
+    MultipartConfigElement multipartConfigElement() {
+        MultipartConfigFactory factory = new MultipartConfigFactory();
+        return factory.createMultipartConfig();
     }
 
 }
