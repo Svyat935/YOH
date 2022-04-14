@@ -263,3 +263,6 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+# Папка с играми для дебага
+yoh-wrapper/games/
