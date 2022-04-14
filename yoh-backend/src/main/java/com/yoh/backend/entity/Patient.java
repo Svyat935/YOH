@@ -5,6 +5,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 import com.yoh.backend.enums.Gender;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 
 @Entity
 @Table(name = "patients")
@@ -174,7 +176,8 @@ public class Patient {
     }
 
 
-    @OneToMany(mappedBy = "patient", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "patient")
+    @LazyCollection(LazyCollectionOption.FALSE)
     private List<GameStatistic> gameStatistics;
 
     public List<GameStatistic> getGameStatistics() {
