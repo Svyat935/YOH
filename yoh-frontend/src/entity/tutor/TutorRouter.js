@@ -1,11 +1,11 @@
 import React from "react";
 import {Link, Route, Routes} from "react-router-dom";
 import {AccountPage} from "./pages/AccountPage";
-import {MainPage} from "../patient/pages/MainPage";
-import {ChatPage} from "../patient/pages/ChatPage";
-import {GamesPage} from "../patient/pages/GamesPage";
-import {TestsPage} from "../patient/pages/TestsPage";
 import {PatientPage} from "./pages/PatientPage";
+import {StatisticsPage} from "./pages/StatisticsPage";
+import {MainPage} from "./pages/MainPage";
+import {ChatPage} from "./pages/ChatPage";
+import {GamesPage} from "./pages/GamesPage";
 
 
 export function TutorRouter() {
@@ -40,7 +40,8 @@ export function TutorRouter() {
             <Route path={'/main_page'} element={<MainPage/>}/>
             <Route path={'/chat_page'} element={<ChatPage/>}/>
             <Route path={'/patient_page'} element={<PatientPage/>}/>
-            <Route path={'/statistics_page'} element={<TestsPage/>}/>
+            <Route path={'/statistics_page'} element={<StatisticsPage/>}/>
+            <Route path={'/games_page'} element={<GamesPage/>}/>
             <Route path={'/account_page'} element={<AccountPage/>}/>
         </Routes>
     )

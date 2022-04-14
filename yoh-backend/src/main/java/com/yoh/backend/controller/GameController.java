@@ -4,6 +4,7 @@ import com.github.cliftonlabs.json_simple.JsonArray;
 import com.github.cliftonlabs.json_simple.JsonObject;
 import com.yoh.backend.entity.Admin;
 import com.yoh.backend.entity.Game;
+import com.yoh.backend.entity.User;
 import com.yoh.backend.request.AddGamesRequest;
 import com.yoh.backend.request.EditGameRequest;
 import com.yoh.backend.request.EditPatientInfoRequest;
@@ -51,7 +52,7 @@ public class GameController {
     @GetMapping(path = "/all")
     public JSONResponse allGames(@RequestHeader("token") String token) {
         try{
-            Admin admin = this.adminService.getAdminByUser(this.userService.getUserById(this.userService.verifyToken(token)));
+            User user = this.userService.getUserById(this.userService.verifyToken(token));
             List<Game> games = this.gameService.getAllGames();
             JsonArray jsonArray = new JsonArray();
             if (games != null){
@@ -77,7 +78,6 @@ public class GameController {
     @DeleteMapping(path = "/removing")
     public JSONResponse removeGame(@RequestHeader("token") String token, @Valid @RequestBody GameToRemove gameToRemove) {
         try {
-
             Admin admin = this.adminService.getAdminByUser(this.userService.getUserById(this.userService.verifyToken(token)));
             Game game = this.gameService.getGameById(UUID.fromString(gameToRemove.getGame_id()));
             gameService.deleteGame(game);
