@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.text.SimpleDateFormat;
 import java.util.UUID;
 
 @RestController
@@ -253,7 +254,7 @@ public class PatientController {
                 patient.setOrganization(this.organizationService.getOrganizationById(UUID.fromString(editPatientInfoRequest.getOrganization())));
             }
             if (editPatientInfoRequest.getBirthDate() != null){
-                patient.setBirthDate(editPatientInfoRequest.getBirthDate());
+                patient.setBirthDate(new SimpleDateFormat("yyyy-MM-dd").parse(editPatientInfoRequest.getBirthDate()));
             }
             if (editPatientInfoRequest.getNumberPhone() != null){
                 patient.setNumberPhone(editPatientInfoRequest.getNumberPhone());
@@ -266,7 +267,7 @@ public class PatientController {
             response.put("message", "Patient account was edited");
             return new JSONResponse(200, response);
         }
-        catch (IllegalArgumentException e){
+        catch (Exception e){
             JsonObject exceptionResponse = new JsonObject();
             exceptionResponse.put("message", e.getMessage());
             return new JSONResponse(401, exceptionResponse);

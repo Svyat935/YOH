@@ -1,6 +1,7 @@
 package com.yoh.backend.entity;
 
 import javax.persistence.*;
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 import com.yoh.backend.enums.Gender;
@@ -73,13 +74,13 @@ public class Patient {
     }
 
     @Column(name = "birthDate", length = 128, nullable = true)
-    private String birthDate;
+    private Date birthDate;
 
-    public String getBirthDate(){
+    public Date getBirthDate(){
         return this.birthDate;
     }
 
-    public void setBirthDate(String birthDate){
+    public void setBirthDate(Date birthDate){
         this.birthDate = birthDate;
     }
 
