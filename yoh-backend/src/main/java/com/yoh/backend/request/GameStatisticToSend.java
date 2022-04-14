@@ -1,51 +1,43 @@
 package com.yoh.backend.request;
 
+import org.springframework.lang.Nullable;
+
 import javax.validation.constraints.NotNull;
 import java.util.Date;
 
 public class GameStatisticToSend {
 
     @NotNull
-    private String game_id;
+    private String DateAction;
 
-    public void setGame_id(String game_id) {
-        this.game_id = game_id;
+    public void setDateAction(String DateAction) {
+        this.DateAction = DateAction;
     }
 
-    public String getGame_id() {
-        return game_id;
+    public String getDateAction() {
+        return this.DateAction;
     }
 
     @NotNull
-    private Short type;
+    private Short Type;
 
-    public void setType(Short type) {
-        this.type = type;
+    public void setType(Short Type) {
+        this.Type = Type;
     }
 
     public Short getType() {
-        return type;
+        return Type;
     }
 
-    @NotNull
-    private Date dateAction;
+    @Nullable
+    private String AnswerNumber;
 
-    public void setDateAction(Date dateAction) {
-        this.dateAction = dateAction;
+    public void setAnswerNumber(Date dateAction) {
+        this.AnswerNumber = AnswerNumber;
     }
 
-    public Date getDateAction() {
-        return dateAction;
+    public String getAnswerNumber() {
+        return AnswerNumber;
     }
 
-    @NotNull
-    private String message;
-
-    public void setMessage(String message) {
-        this.message = message;
-    }
-
-    public String getMessage() {
-        return message;
-    }
 }

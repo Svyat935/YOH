@@ -132,7 +132,7 @@ public class AdminController {
         }
     }
 
-    @PostMapping("/organizations/new")
+    @PostMapping("/organizations/add")
     public JSONResponse createOrganization(@RequestHeader("token") String token, @Valid @RequestBody OrganizationForAdding organizationForAdding) {
         try {
             Admin admin = this.adminService.getAdminByUser(this.userService.getUserById(this.userService.verifyToken(token)));
@@ -142,7 +142,7 @@ public class AdminController {
             JsonObject response = new JsonObject();
             response.put("message", "Organization was created");
             return new JSONResponse(200, response);
-        } catch (IllegalArgumentException e) {
+        } catch (Exception e) {
             JsonObject exceptionResponse = new JsonObject();
             exceptionResponse.put("message", e.getMessage());
             return new JSONResponse(401, exceptionResponse);

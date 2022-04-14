@@ -1,6 +1,7 @@
 package com.yoh.backend.entity;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.UUID;
 
@@ -9,12 +10,12 @@ import java.util.UUID;
 public class GameStatistic {
     public GameStatistic() {}
 
-    public GameStatistic(Game game, Patient patient, Short type, Date dateAction, String message) {
+    public GameStatistic(Game game, Patient patient, Short type, LocalDateTime dateAction, Short answerNumber) {
         this.game = game;
         this.patient = patient;
         this.type = type;
         this.dateAction = dateAction;
-        this.message = message;
+        this.answerNumber = answerNumber;
     }
 
     @Id
@@ -42,7 +43,7 @@ public class GameStatistic {
     }
 
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     private Patient patient;
 
     public Patient getPatient(){
@@ -67,19 +68,30 @@ public class GameStatistic {
 
 
     @Column(name = "dateAction", nullable = false)
-    private Date dateAction;
+    private LocalDateTime dateAction;
 
-    public Date getDateAction(){
+    public LocalDateTime getDateAction(){
         return this.dateAction;
     }
 
-    public void setDateAction(Date dateAction){
+    public void setDateAction(LocalDateTime dateAction){
         this.dateAction = dateAction;
     }
 
 
+    @Column(name = "answerNumber", nullable = true)
+    private Short answerNumber;
 
-    @Column(name = "message", length = 128, nullable = false)
+    public Short getAnswerNumber() {
+        return this.answerNumber;
+    }
+
+    public void setAnswerNumber(Short answerNumber) {
+        this.answerNumber = answerNumber;
+    }
+
+
+    @Column(name = "message", length = 128, nullable = true)
     private String message;
 
     public String getMessage(){

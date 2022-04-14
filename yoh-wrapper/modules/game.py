@@ -21,6 +21,7 @@ def game_route(game):
 
     try:
         resp = make_response(render_template(f'{game}/index.html'))
+        session['current_game'] = game
     except TemplateNotFound:
         abort(404)
 
