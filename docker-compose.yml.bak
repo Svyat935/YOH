@@ -7,7 +7,6 @@ services:
     build:
       context: ./yoh-backend
       dockerfile: Dockerfile
-    restart: on-failure
     depends_on:
       - yoh-db
     links:
@@ -24,10 +23,9 @@ services:
     ports:
       - 5432:5432
       
-  yoh-wrapper:
+  flask:
     build: ./yoh-wrapper
     container_name: yoh-wrapper
-    image: yoh-wrapper
     env_file: *envfile
     environment:
       - PYTHONUNBUFFERED=True                   
@@ -39,17 +37,5 @@ services:
     depends_on:
       - yoh-backend
     ports:
-      - 5050:5050
+      - "5050:5050"
     command: gunicorn main:"create_flask_app()" -b 0.0.0.0:5050 --reload --log-level debug --workers=4
-
-#  yoh-frontend:
-#    build: ./yoh-frontend
-#    container_name: yoh-frontend
-#    image: yoh-frontend
-#    restart: on-failure
-#    links:
-#      - yoh-backend
-#    depends_on:
-#      - yoh-backend
-#    ports:
-#      - 3000:3000

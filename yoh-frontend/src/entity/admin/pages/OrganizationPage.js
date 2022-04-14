@@ -48,7 +48,13 @@ function ViewFormCreateOrganizations(props) {
         phone = phone === "" ? null : phone;
         website = website === "" ? null : website;
 
-        props.createOrg(name, address, phone, email, website);
+        let body = {"name": name};
+        if (address !== null) body["address"] = address;
+        if (phone !== null) body["phone"] = phone;
+        if (email !== null) body["email"] = email;
+        if (website !== null) body["website"] = website;
+
+        props.createOrg(body);
     }
 
     return (
@@ -107,34 +113,22 @@ export function OrganizationPage() {
         return response !== null ? response["jsonObject"] : null;
     }
 
-    const requestCreateOrganization = async (name, address, phone, email, website) => {
-        let body = {"name": name}
-        if (address !== null) body["address"] = address
-        if (phone !== null) body["phone"] = phone
-        if (email !== null) body["email"] = email
-        if (website !== null) body["website"] = website
-
-        console.log(JSON.stringify(body));
-
-        let response = await fetch("/admins/users/all", {
+    const requestCreateOrganization = async (body) => {
+        return await fetch("/admins/organizations/new", {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
                 'token': context.token
             },
             body: JSON.stringify(body)
-        }).catch(
-            (response) => console.log(response)
-        )
-        // }).then((response) => {
-        //     console.log(response);
-        //     if (response.status === 200) {
-        //         return response.json();
-        //     } else {
-        //         return null;
-        //     }
-        // })
-        console.log(response);
+        }).then((response) => {
+            console.log(response);
+            if (response.status === 200) {
+                return response.json();
+            } else {
+                return null;
+            }
+        });
     }
 
     useEffect(() => {
