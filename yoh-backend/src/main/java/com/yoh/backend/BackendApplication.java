@@ -15,6 +15,8 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 
 import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 
 
@@ -63,8 +65,14 @@ public class BackendApplication {
 
     @Bean
     public void create_folder() {
-        String[] games_folders = this.games_folder.split("/");
-        new File(games_folders[games_folders.length - 1]).mkdir();
+        try {
+            String[] games_folders = this.games_folder.split("/");
+//        new File(games_folders[games_folders.length - 1]).mkdir();
+            Files.createDirectories(Paths.get(games_folders[games_folders.length - 1]));
+        }
+        catch (Exception e){
+            System.out.println(e.getMessage());
+        }
     }
 
 }

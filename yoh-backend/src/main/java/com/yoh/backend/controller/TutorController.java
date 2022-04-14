@@ -118,7 +118,18 @@ public class TutorController {
             response.put("birthDate", patient.getBirthDate());
             response.put("numberPhone", patient.getNumberPhone());
             response.put("address", patient.getAddress());
-
+            ArrayList<JsonObject> gamesArray = new ArrayList<>();
+            if (patient.getGames() != null){
+                for (Game game: patient.getGames()){
+                    JsonObject gamesInfo = new JsonObject();
+                    gamesInfo.put("id", game.getId().toString());
+                    gamesInfo.put("name", game.getName());
+                    gamesInfo.put("description", game.getDescription());
+                    gamesInfo.put("url", game.getUrl());
+                    gamesArray.add(gamesInfo);
+                }
+            }
+            response.put("games", gamesArray);
             JsonObject tutorInfo = new JsonObject();
             Tutor tutor = patient.getTutor();
             tutorInfo.put("id", tutor.getId().toString());

@@ -3,10 +3,7 @@ package com.yoh.backend.controller;
 import com.github.cliftonlabs.json_simple.JsonObject;
 import com.yoh.backend.entity.*;
 import com.yoh.backend.enums.Gender;
-import com.yoh.backend.request.EditPatientInfoRequest;
-import com.yoh.backend.request.GameStatisticToSend;
-import com.yoh.backend.request.StatusRequest;
-import com.yoh.backend.request.TestStatisticToSend;
+import com.yoh.backend.request.*;
 import com.yoh.backend.response.*;
 import com.yoh.backend.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +11,8 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.UUID;
 
 @RestController
@@ -64,19 +63,31 @@ public class PatientController {
     }
 
     @PostMapping(path = "/games/statistics/sending")
-    public JSONResponse sendGameStatistic(@RequestHeader("token") String token, @Valid @RequestBody GameStatisticToSend gameStatisticToSend) {
+    public JSONResponse sendGameStatistic(@RequestHeader("token") String token, @RequestHeader("game") String game, @Valid @RequestBody StatisticArray statisticArray) {
         try {
             Patient patient = this.patientService.getPatientByUser(this.userService.getUserById(this.userService.verifyToken(token)));
-            GameStatistic statistic = new GameStatistic(
-                    this.gameService.getGameById(UUID.fromString(gameStatisticToSend.getGame_id())),
-                    patient,
-                    gameStatisticToSend.getType(),
-                    gameStatisticToSend.getDateAction(),
-                    gameStatisticToSend.getMessage()
-            );
-            this.gameStatisticService.createGameStatistic(statistic);
-            patient.getGameStatistics().add(statistic);
-            this.patientService.updatePatient(patient);
+            for (GameStatisticToSend statisticToSend: statisticArray.getRecords()){
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("M/d/yyyy, h:m:s a");
+                LocalDateTime localDateTime = LocalDateTime.parse(statisticToSend.getDateAction(), formatter);
+                GameStatistic statistic = new GameStatistic(
+                        this.gameService.getGameById(UUID.fromString(game)),
+                        patient,
+                        statisticToSend.getType(),
+                        localDateTime,
+                        statisticToSend.getType()
+                );
+                this.gameStatisticService.createGameStatistic(statistic);
+            }
+//            GameStatistic statistic = new GameStatistic(
+//                    this.gameService.getGameById(UUID.fromString(gameStatisticToSend.getGame_id())),
+//                    patient,
+//                    gameStatisticToSend.getType(),
+//                    gameStatisticToSend.getDateAction(),
+//                    gameStatisticToSend.getMessage()
+//            );
+//            this.gameStatisticService.createGameStatistic(statistic);
+//            patient.getGameStatistics().add(statistic);
+//            this.patientService.updatePatient(patient);
             JsonObject response = new JsonObject();
             response.put("message", "GameStatistic was added");
             return new JSONResponse(200, response);

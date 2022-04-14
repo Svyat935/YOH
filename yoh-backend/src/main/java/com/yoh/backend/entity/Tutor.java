@@ -1,5 +1,8 @@
 package com.yoh.backend.entity;
 
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
+
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -72,7 +75,8 @@ public class Tutor {
         this.secondName = secondName;
     }
 
-    @OneToMany(mappedBy = "tutor", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "tutor")
+    @LazyCollection(LazyCollectionOption.FALSE)
     private List<Patient> patients = new ArrayList<>();
 
     public List<Patient> getPatients() {
