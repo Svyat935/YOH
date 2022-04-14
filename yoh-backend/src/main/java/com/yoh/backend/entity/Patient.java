@@ -186,7 +186,7 @@ public class Patient {
     }
 
 
-    @OneToMany(mappedBy = "patient", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "patient")
     private List<TestStatistic> testStatistics;
 
     public List<TestStatistic> getTestStatistics() {
@@ -198,7 +198,7 @@ public class Patient {
     }
 
 
-    @OneToMany(mappedBy = "patient", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "patient")
     private List<GameStatus> gameStatuses;
 
     public List<GameStatus> getGameStatuses() { return gameStatuses; }
@@ -208,7 +208,7 @@ public class Patient {
     }
 
 
-    @OneToMany(mappedBy = "patient", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "patient")
     private List<TestStatus> testStatuses;
 
     public List<TestStatus> getTestStatuses() { return testStatuses; }
