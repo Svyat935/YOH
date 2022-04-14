@@ -249,16 +249,22 @@ public class TutorController {
         try {
             this.userService.verifyToken(token);
             Patient patient = this.patientService.getPatientById(UUID.fromString(gameToPatient.getPatient_id()));
-            List<Game> listOfGames = patient.getGames();
-            for (Game game: listOfGames){
-                if (game.getId().toString().equals(gameToPatient.getGame_id())){
-                    patient.getGames().remove(this.gameService.getGameById(UUID.fromString(gameToPatient.getGame_id())));
-                    this.patientService.updatePatient(patient);
-                    JsonObject response = new JsonObject();
-                    response.put("message", "Game was removed");
-                    return new JSONResponse(200, response);
-                }
-            }
+            Game game = this.gameService.getGameById(UUID.fromString(gameToPatient.getGame_id()));
+            patient.getGames().remove(game);
+            this.patientService.updatePatient(patient);
+//            List<Game> listOfGames = patient.getGames();
+//            listOfGames.remove(game);
+//            patient.setGames(listOfGames);
+//
+//            for (Game game: listOfGames){
+//                if (game.getId().toString().equals(gameToPatient.getGame_id())){
+//                    patient.getGames().remove(this.gameService.getGameById(UUID.fromString(gameToPatient.getGame_id())));
+//                    this.patientService.updatePatient(patient);
+//                    JsonObject response = new JsonObject();
+//                    response.put("message", "Game was removed");
+//                    return new JSONResponse(200, response);
+//                }
+//            }
             JsonObject errorResponse = new JsonObject();
             errorResponse.put("message", "Game was not founded");
             return new JSONResponse(401, errorResponse);
