@@ -34,6 +34,7 @@ function GamesPageView(props) {
 
 function UsersView(props) {
     const [usersView, setView] = useState([]);
+    const context = useContext(UserContext);
 
     const addingGame = async (user_id) => {
         let game_id = document.getElementById("games").value;
@@ -61,9 +62,7 @@ function UsersView(props) {
                             patient["jsonObject"].games.forEach((game) => {
                                 view.push(
                                     <p key={game.id} style={{"background": "grey"}}>id: {game.id}; name: {game.name}; description: {game.description};
-                                        <Link onClick={() => {context.theme = game.url}} to={"/user/tutor/game"}>
-                                            Перейти
-                                        </Link>
+                                        url: {game.url};
                                     </p>
                                 );
                             })
