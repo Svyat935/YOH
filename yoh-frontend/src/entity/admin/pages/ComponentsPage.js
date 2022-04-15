@@ -5,17 +5,19 @@ import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 
 function ViewComponentsPage(props){
+    const context = useContext(UserContext);
+
     function createGames() {
-        const context = useContext(UserContext);
         let games = props.games,
             view = [];
 
         games.forEach((game) => {
             view.push(
                 <Row key={game.id}>
-                    <p>id: {game.id}; name: {game.name}; description: {game.name};
+                    <p>id: {game.id}; name: {game.name}; description: {game.description};
+                        url: {game.url};
                         <Link onClick={() => {context.theme = game.url}} to={"/user/admin/game"}>
-                            url: {game.url}
+                            Перейти
                         </Link></p>
                 </Row>
             )

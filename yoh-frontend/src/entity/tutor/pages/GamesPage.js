@@ -5,8 +5,9 @@ import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 
 function GamesPageView(props) {
+    const context = useContext(UserContext);
+
     function createView() {
-        const context = useContext(UserContext);
         let view = [];
         let games = props.games;
         games.forEach((game) => {
