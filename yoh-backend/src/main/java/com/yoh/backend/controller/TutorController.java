@@ -257,6 +257,7 @@ public class TutorController {
             this.userService.verifyToken(token);
             Patient patient = this.patientService.getPatientById(UUID.fromString(gameToPatient.getPatient_id()));
             Game gameToRemove = this.gameService.getGameById(UUID.fromString(gameToPatient.getGame_id()));
+            patient.getGames().remove(gameToRemove);
             gameToRemove.getPatient().remove(patient);
 
 //            for (Patient patient1: gameToRemove.getPatient()){
@@ -267,10 +268,10 @@ public class TutorController {
 //            }
 
 //            patient.getGames().remove(gameToRemove);
-            patient.getGames().remove(gameToRemove);
+
             this.patientService.updatePatient(patient);
 //
-            gameToRemove.getPatient().remove(patient);
+//            gameToRemove.getPatient().remove(patient);
             this.gameService.updateGame(gameToRemove);
 //            List<Game> listOfGames = patient.getGames();
 //            listOfGames.remove(game);
@@ -286,7 +287,7 @@ public class TutorController {
 //                }
 //            }
             JsonObject errorResponse = new JsonObject();
-            errorResponse.put("message", "Game was dettached");
+            errorResponse.put("message", "Game was detached");
             return new JSONResponse(200, errorResponse);
         }
         catch (Exception e){
