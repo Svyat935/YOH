@@ -86,7 +86,7 @@ function UsersView(props) {
     useEffect(async () => {
        let view = await createView();
        setView(view);
-    },[])
+    },[usersView])
 
     return (
         <Container style={{"background": "wheat", "marginTop": "10px"}}>
