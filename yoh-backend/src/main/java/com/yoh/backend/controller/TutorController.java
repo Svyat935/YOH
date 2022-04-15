@@ -212,7 +212,7 @@ public class TutorController {
             Patient patient = this.patientService.getPatientById(UUID.fromString(gameToPatient.getPatient_id()));
             patient.getGames().add(game);
 
-            game.getPatients().add(patient);
+            game.getPatient().add(patient);
 
             this.patientService.updatePatient(patient);
 
@@ -257,8 +257,8 @@ public class TutorController {
             this.userService.verifyToken(token);
             Patient patient = this.patientService.getPatientById(UUID.fromString(gameToPatient.getPatient_id()));
             Game gameToRemove = this.gameService.getGameById(UUID.fromString(gameToPatient.getGame_id()));
-            gameToRemove.getPatients().remove(patient);
-            for (Patient patient1: gameToRemove.getPatients()){
+            gameToRemove.getPatient().remove(patient);
+            for (Patient patient1: gameToRemove.getPatient()){
                 if(patient1.getId() == patient.getId()) {
                     patient1.getGames().remove(gameToRemove);
                     this.patientService.updatePatient(patient1);
