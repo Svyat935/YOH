@@ -288,7 +288,7 @@ public class TutorController {
             errorResponse.put("message", "Game was dettached");
             return new JSONResponse(401, errorResponse);
         }
-        catch (IllegalArgumentException e){
+        catch (Exception e){
             JsonObject exceptionResponse = new JsonObject();
             exceptionResponse.put("message", e.getMessage());
             return new JSONResponse(401, exceptionResponse);
