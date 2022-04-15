@@ -166,6 +166,10 @@ public class Patient {
 
     @ManyToMany
     @LazyCollection(LazyCollectionOption.FALSE)
+    @JoinTable(name = "game_patient",
+            joinColumns = @JoinColumn(name = "game_id"),
+            inverseJoinColumns = @JoinColumn(name = "patient_id")
+    )
     private List<Game> games;
 
     public List<Game> getGames() {
