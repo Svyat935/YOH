@@ -205,6 +205,7 @@ public class TutorController {
     // // [START] Games
     @PostMapping(path = "/patients/games/adding")
     public JSONResponse addGameForPatient(@RequestHeader("token") String token, @Valid @RequestBody GameToPatient gameToPatient) {
+        //TODO проверить что есть
         try {
             this.userService.verifyToken(token);
             Game game = this.gameService.getGameById(UUID.fromString(gameToPatient.getGame_id()));
@@ -255,12 +256,21 @@ public class TutorController {
         try {
             this.userService.verifyToken(token);
             Patient patient = this.patientService.getPatientById(UUID.fromString(gameToPatient.getPatient_id()));
-            Game game = this.gameService.getGameById(UUID.fromString(gameToPatient.getGame_id()));
-            patient.getGames().remove(game);
-            this.patientService.updatePatient(patient);
+            Game gameToRemove = this.gameService.getGameById(UUID.fromString(gameToPatient.getGame_id()));
+            gameToRemove.getPatients().remove(patient);
+            for (Patient patient1: gameToRemove.getPatients()){
+                if(patient1.getId() == patient.getId()) {
+                    patient1.getGames().remove(gameToRemove);
+                    this.patientService.updatePatient(patient1);
+                }
+            }
 
-            game.getPatients().remove(patient);
-            this.gameService.updateGame(game);
+//            patient.getGames().remove(gameToRemove);
+//            patient.getGames().remove(game);
+//            this.patientService.updatePatient(patient);
+//
+//            game.getPatients().remove(patient);
+//            this.gameService.updateGame(gameToRemove);
 //            List<Game> listOfGames = patient.getGames();
 //            listOfGames.remove(game);
 //            patient.setGames(listOfGames);
@@ -275,10 +285,10 @@ public class TutorController {
 //                }
 //            }
             JsonObject errorResponse = new JsonObject();
-            errorResponse.put("message", "Game was not founded");
+            errorResponse.put("message", "Game was dettached");
             return new JSONResponse(401, errorResponse);
         }
-        catch (IllegalArgumentException e){
+        catch (Exception e){
             JsonObject exceptionResponse = new JsonObject();
             exceptionResponse.put("message", e.getMessage());
             return new JSONResponse(401, exceptionResponse);

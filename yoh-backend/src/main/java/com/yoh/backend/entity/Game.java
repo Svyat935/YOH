@@ -67,7 +67,7 @@ public class Game {
     }
 
 
-    @ManyToMany
+    @ManyToMany(mappedBy="games")
     @LazyCollection(LazyCollectionOption.FALSE)
     private List<Patient> patients;
 
