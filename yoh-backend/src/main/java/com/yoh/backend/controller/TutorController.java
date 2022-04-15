@@ -258,16 +258,19 @@ public class TutorController {
             Patient patient = this.patientService.getPatientById(UUID.fromString(gameToPatient.getPatient_id()));
             Game gameToRemove = this.gameService.getGameById(UUID.fromString(gameToPatient.getGame_id()));
             gameToRemove.getPatients().remove(patient);
-            for (Game game : patient.getGames()) {
-                if (game.getId() == gameToRemove.getId())
-                    patient.getGames().remove(game);
-
+            for (Patient patient1: gameToRemove.getPatients()){
+                if(patient1.getId() == patient.getId()) {
+                    patient1.getGames().remove(gameToRemove);
+                    this.patientService.updatePatient(patient1);
+                }
             }
+
+//            patient.getGames().remove(gameToRemove);
 //            patient.getGames().remove(game);
-            this.patientService.updatePatient(patient);
+//            this.patientService.updatePatient(patient);
 //
 //            game.getPatients().remove(patient);
-            this.gameService.updateGame(gameToRemove);
+//            this.gameService.updateGame(gameToRemove);
 //            List<Game> listOfGames = patient.getGames();
 //            listOfGames.remove(game);
 //            patient.setGames(listOfGames);
