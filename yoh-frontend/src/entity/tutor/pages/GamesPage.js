@@ -218,7 +218,7 @@ export function GamesPage() {
                 />)
             }
         }
-    }, [context])
+    }, [context, reset])
 
     return (
         <div>
