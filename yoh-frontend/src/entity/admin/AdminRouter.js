@@ -3,7 +3,7 @@ import {Link, Route, Routes, useNavigate} from "react-router-dom";
 import {UsersPage} from "./pages/UsersPage";
 import {ComponentsPage} from "./pages/ComponentsPage";
 import {OrganizationPage} from "./pages/OrganizationPage";
-import {Game} from "../patient/pages/p";
+import {Game} from "./pages/p";
 
 
 export function AdminRouter() {

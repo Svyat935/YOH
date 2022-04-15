@@ -6,7 +6,7 @@ import {StatisticsPage} from "./pages/StatisticsPage";
 import {MainPage} from "./pages/MainPage";
 import {ChatPage} from "./pages/ChatPage";
 import {GamesPage} from "./pages/GamesPage";
-import {Game} from "../patient/pages/p";
+import {Game} from "./pages/p";
 
 
 export function TutorRouter() {
