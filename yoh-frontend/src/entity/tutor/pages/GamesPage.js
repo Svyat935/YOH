@@ -6,12 +6,17 @@ import Row from "react-bootstrap/Row";
 
 function GamesPageView(props) {
     function createView() {
+        const context = useContext(UserContext);
         let view = [];
         let games = props.games;
         games.forEach((game) => {
             view.push(
                 <Row key={game.id}>
-                    <p>id: {game.id}; name: {game.name}; description: {game.description}; url: {game.url};</p>
+                    <p>id: {game.id}; name: {game.name}; description: {game.description};
+                        <Link to={} onClick={() => {
+                            context.theme = game.url;
+                        }}>Перейти</Link>
+                    </p>
                 </Row>
             )
         })
@@ -54,7 +59,11 @@ function UsersView(props) {
                             let view = [];
                             patient["jsonObject"].games.forEach((game) => {
                                 view.push(
-                                    <p key={game.id} style={{"background": "grey"}}>id: {game.id}; name: {game.name}; description: {game.description}; url: {game.url}</p>
+                                    <p key={game.id} style={{"background": "grey"}}>id: {game.id}; name: {game.name}; description: {game.description};
+                                        <Link onClick={() => {context.theme = game.url}} to={"/user/tutor/game"}>
+                                            Перейти
+                                        </Link>
+                                    </p>
                                 );
                             })
                             return view;

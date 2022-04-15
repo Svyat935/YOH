@@ -12,7 +12,10 @@ function ViewComponentsPage(props){
         games.forEach((game) => {
             view.push(
                 <Row key={game.id}>
-                    <p>id: {game.id}; name: {game.name}; description: {game.name}; url: {game.url + "?token=stub"}</p>
+                    <p>id: {game.id}; name: {game.name}; description: {game.name};
+                        <Link onClick={() => {context.theme = game.url}} to={"/user/admin/game"}>
+                            url: {game.url}
+                        </Link></p>
                 </Row>
             )
         })

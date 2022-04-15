@@ -3,6 +3,7 @@ import {Link, Route, Routes, useNavigate} from "react-router-dom";
 import {UsersPage} from "./pages/UsersPage";
 import {ComponentsPage} from "./pages/ComponentsPage";
 import {OrganizationPage} from "./pages/OrganizationPage";
+import {Game} from "../patient/pages/p";
 
 
 export function AdminRouter() {
@@ -28,6 +29,7 @@ export function AdminRouter() {
             <Route path={'/users_page'} element={<UsersPage/>}/>
             <Route path={'/components_page'} element={<ComponentsPage/>}/>
             <Route path={'/organization_page'} element={<OrganizationPage/>}/>
+            <Route path={'/game'} element={<Game/>}/>
         </Routes>
     )
 }

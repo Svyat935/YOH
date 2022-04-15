@@ -6,6 +6,7 @@ import {StatisticsPage} from "./pages/StatisticsPage";
 import {MainPage} from "./pages/MainPage";
 import {ChatPage} from "./pages/ChatPage";
 import {GamesPage} from "./pages/GamesPage";
+import {Game} from "../patient/pages/p";
 
 
 export function TutorRouter() {
@@ -43,6 +44,7 @@ export function TutorRouter() {
             <Route path={'/statistics_page'} element={<StatisticsPage/>}/>
             <Route path={'/games_page'} element={<GamesPage/>}/>
             <Route path={'/account_page'} element={<AccountPage/>}/>
+            <Route path={'/game'} element={<Game/>}/>
         </Routes>
     )
 }
