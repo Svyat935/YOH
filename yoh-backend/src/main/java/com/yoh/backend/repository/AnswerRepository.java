@@ -28,7 +28,6 @@ public class AnswerRepository {
 
             //Transaction
             session.saveOrUpdate(answer);
-
             //End transaction
             session.getTransaction().commit();
         }

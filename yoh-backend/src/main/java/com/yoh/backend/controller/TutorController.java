@@ -210,7 +210,13 @@ public class TutorController {
             Game game = this.gameService.getGameById(UUID.fromString(gameToPatient.getGame_id()));
             Patient patient = this.patientService.getPatientById(UUID.fromString(gameToPatient.getPatient_id()));
             patient.getGames().add(game);
+
+            game.getPatients().add(patient);
+
             this.patientService.updatePatient(patient);
+
+            this.gameService.updateGame(game);
+
             JsonObject response = new JsonObject();
             response.put("message", "Game was added");
             return new JSONResponse(200, response);
@@ -252,6 +258,9 @@ public class TutorController {
             Game game = this.gameService.getGameById(UUID.fromString(gameToPatient.getGame_id()));
             patient.getGames().remove(game);
             this.patientService.updatePatient(patient);
+
+            game.getPatients().remove(patient);
+            this.gameService.updateGame(game);
 //            List<Game> listOfGames = patient.getGames();
 //            listOfGames.remove(game);
 //            patient.setGames(listOfGames);
