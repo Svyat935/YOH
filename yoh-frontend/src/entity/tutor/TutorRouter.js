@@ -14,9 +14,9 @@ export function TutorRouter() {
             <Route path={'/'} element={
                 <div>
                     <p>Tutor page</p>
-                    <Link to={"main_page"}>
-                        <button>Main Page</button>
-                    </Link>
+                    {/*<Link to={"main_page"}>*/}
+                    {/*    <button>Main Page</button>*/}
+                    {/*</Link>*/}
                     {/*<Link to={"chat_page"}>*/}
                     {/*    <button>Chat Page</button>*/}
                     {/*</Link>*/}

@@ -48,31 +48,35 @@ function ViewFormCreateOrganizations(props) {
         phone = phone === "" ? null : phone;
         website = website === "" ? null : website;
 
-        props.createOrg(name, address, phone, email, website);
+        let body = {"name": name};
+        if (address !== null) body["address"] = address;
+        if (phone !== null) body["phone"] = phone;
+        if (email !== null) body["email"] = email;
+        if (website !== null) body["website"] = website;
+
+        props.createOrg(body);
     }
 
     return (
         <Container>
             <Row>
-                <p>Create organizations</p>
-                <form onSubmit={createOrg}>
-                    <label htmlFor={"name"}>Name of organization<br/>
-                        <input type={"text"} placeholder={"name"} id={"name"} required={true}/>
-                    </label>
-                    <label htmlFor={"address"}><br/>
-                        <input type={"text"} placeholder={"address"} id={"address"}/>
-                    </label>
-                    <label htmlFor={"email"}><br/>
-                        <input type={"email"} placeholder={"email"} id={"email"}/>
-                    </label>
-                    <label htmlFor={"phone"}><br/>
-                        <input type={"phone"} placeholder={"phone"} id={"phone"}/>
-                    </label>
-                    <label htmlFor={"website"}><br/>
-                        <input type={"website"} placeholder={"website"} id={"website"}/>
-                    </label>
-                    <input type="submit" value="Отправить"/>
-                </form>
+                <h4>Create organizations</h4><p>
+                <label htmlFor={"name"}>Name of organization<br/>
+                    <input type={"text"} placeholder={"name"} id={"name"} required={true}/>
+                </label>
+                <label htmlFor={"address"}><br/>
+                    <input type={"text"} placeholder={"address"} id={"address"}/>
+                </label>
+                <label htmlFor={"email"}><br/>
+                    <input type={"email"} placeholder={"email"} id={"email"}/>
+                </label>
+                <label htmlFor={"phone"}><br/>
+                    <input type={"phone"} placeholder={"phone"} id={"phone"}/>
+                </label>
+                <label htmlFor={"website"}><br/>
+                    <input type={"website"} placeholder={"website"} id={"website"}/>
+                </label>
+                <button onClick={() => createOrg()}>Отправить</button></p>
             </Row>
         </Container>
     );
@@ -81,6 +85,7 @@ function ViewFormCreateOrganizations(props) {
 export function OrganizationPage() {
     const context = useContext(UserContext);
     const [view, setView] = useState(null);
+    const [reset, executeReset] = useState(false);
 
     const requestGetOrganizations = async () => {
         return await fetch("/admins/organizations/all", {
@@ -107,34 +112,23 @@ export function OrganizationPage() {
         return response !== null ? response["jsonObject"] : null;
     }
 
-    const requestCreateOrganization = async (name, address, phone, email, website) => {
-        let body = {"name": name}
-        if (address !== null) body["address"] = address
-        if (phone !== null) body["phone"] = phone
-        if (email !== null) body["email"] = email
-        if (website !== null) body["website"] = website
-
-        console.log(JSON.stringify(body));
-
-        let response = await fetch("/admins/users/all", {
+    const requestCreateOrganization = async (body) => {
+        return await fetch("/admins/organizations/add", {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
                 'token': context.token
             },
             body: JSON.stringify(body)
-        }).catch(
-            (response) => console.log(response)
-        )
-        // }).then((response) => {
-        //     console.log(response);
-        //     if (response.status === 200) {
-        //         return response.json();
-        //     } else {
-        //         return null;
-        //     }
-        // })
-        console.log(response);
+        }).then((response) => {
+            if (response.status === 200) {
+                if (reset === true){
+                    executeReset(false);
+                }else{
+                    executeReset(true);
+                }
+            }
+        });
     }
 
     useEffect(() => {
@@ -142,7 +136,7 @@ export function OrganizationPage() {
             let organizations = await getOrganizations();
             setView(<ViewOrganizations orgs={organizations}/>)
         })()
-    }, [context])
+    }, [context, reset])
 
     return (
         <div>
