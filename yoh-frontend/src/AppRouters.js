@@ -18,9 +18,9 @@ export function AppRouters() {
                 <Route path={"/"} element={
                     <div>
                         <h1>Version 0.1.0</h1>
-                        <Link to="/user/">
-                            <button>To User</button>
-                        </Link>
+                        {/*<Link to="/user/">*/}
+                        {/*    <button>To User</button>*/}
+                        {/*</Link>*/}
                         <Link to="/auth/">
                             <button>To Auth</button>
                         </Link>
