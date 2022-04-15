@@ -8,6 +8,7 @@ function GamesPageView(props) {
     const context = useContext(UserContext);
 
     function createGames() {
+        const context = useContext(UserContext);
         let games = props.games,
             view = [];
 

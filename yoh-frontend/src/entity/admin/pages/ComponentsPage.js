@@ -6,6 +6,7 @@ import Row from "react-bootstrap/Row";
 
 function ViewComponentsPage(props){
     function createGames() {
+        const context = useContext(UserContext);
         let games = props.games,
             view = [];
 
