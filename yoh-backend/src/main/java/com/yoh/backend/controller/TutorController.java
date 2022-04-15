@@ -258,19 +258,20 @@ public class TutorController {
             Patient patient = this.patientService.getPatientById(UUID.fromString(gameToPatient.getPatient_id()));
             Game gameToRemove = this.gameService.getGameById(UUID.fromString(gameToPatient.getGame_id()));
             gameToRemove.getPatient().remove(patient);
-            for (Patient patient1: gameToRemove.getPatient()){
-                if(patient1.getId() == patient.getId()) {
-                    patient1.getGames().remove(gameToRemove);
-                    this.patientService.updatePatient(patient1);
-                }
-            }
+
+//            for (Patient patient1: gameToRemove.getPatient()){
+//                if(patient1.getId() == patient.getId()) {
+//                    patient1.getGames().remove(gameToRemove);
+//                    this.patientService.updatePatient(patient1);
+//                }
+//            }
 
 //            patient.getGames().remove(gameToRemove);
-//            patient.getGames().remove(game);
-//            this.patientService.updatePatient(patient);
+            patient.getGames().remove(gameToRemove);
+            this.patientService.updatePatient(patient);
 //
-//            game.getPatients().remove(patient);
-//            this.gameService.updateGame(gameToRemove);
+            gameToRemove.getPatient().remove(patient);
+            this.gameService.updateGame(gameToRemove);
 //            List<Game> listOfGames = patient.getGames();
 //            listOfGames.remove(game);
 //            patient.setGames(listOfGames);
@@ -286,7 +287,7 @@ public class TutorController {
 //            }
             JsonObject errorResponse = new JsonObject();
             errorResponse.put("message", "Game was dettached");
-            return new JSONResponse(401, errorResponse);
+            return new JSONResponse(200, errorResponse);
         }
         catch (Exception e){
             JsonObject exceptionResponse = new JsonObject();
