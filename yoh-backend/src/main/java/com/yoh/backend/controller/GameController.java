@@ -78,11 +78,12 @@ public class GameController {
     @DeleteMapping(path = "/removing")
     public JSONResponse removeGame(@RequestHeader("token") String token, @Valid @RequestBody GameToRemove gameToRemove) {
         try {
+            //TODO Отцепление от пациентов, проверить возможно работает
             Admin admin = this.adminService.getAdminByUser(this.userService.getUserById(this.userService.verifyToken(token)));
             Game game = this.gameService.getGameById(UUID.fromString(gameToRemove.getGame_id()));
             gameService.deleteGame(game);
             JsonObject response = new JsonObject();
-            response.put("status", "OK");
+            response.put("messag", "Game was deleted");
             return new JSONResponse(200, response);
         }
         catch (IllegalArgumentException e) {
