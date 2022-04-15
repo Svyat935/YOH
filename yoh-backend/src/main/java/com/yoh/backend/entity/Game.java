@@ -69,14 +69,14 @@ public class Game {
 
     @ManyToMany(mappedBy="games")
     @LazyCollection(LazyCollectionOption.FALSE)
-    private List<Patient> patients;
+    private List<Patient> patient;
 
-    public List<Patient> getPatients() {
-        return patients;
+    public List<Patient> getPatient() {
+        return patient;
     }
 
-    public void setPatients(List<Patient> patients) {
-        this.patients = patients;
+    public void setPatients(List<Patient> patient) {
+        this.patient = patient;
     }
 
 
