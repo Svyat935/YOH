@@ -13,7 +13,7 @@ function GamesPageView(props) {
             view.push(
                 <Row key={game.id}>
                     <p>id: {game.id}; name: {game.name}; description: {game.description};
-                        <Link to={} onClick={() => {
+                        <Link to={"/user/tutor/game"} onClick={() => {
                             context.theme = game.url;
                         }}>Перейти</Link>
                     </p>
