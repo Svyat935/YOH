@@ -83,7 +83,7 @@ def send_statistic_route():
         'user': session['user'],
         'game': session['current_game']
     }
-    send_url = 'http://79.175.40.24:5000/patient/games/statistics/sending'
+    send_url = 'http://yoh-backend:5000/patient/games/statistics/sending'
 
     post(send_url, data=json.dumps(response_params, default=json_serial), headers=headers)
 
