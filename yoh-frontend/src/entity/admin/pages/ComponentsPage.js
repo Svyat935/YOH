@@ -15,7 +15,7 @@ function ViewComponentsPage(props){
             view.push(
                 <Row key={game.id}>
                     <p>id: {game.id}; name: {game.name}; description: {game.description};
-                        url: {game.url};
+                        url: https://mobile.itkostroma.ru/games/{game.id}/;
                         <Link onClick={() => {context.theme = game.url}} to={"/user/admin/game"}>
                             Перейти
                         </Link></p>
