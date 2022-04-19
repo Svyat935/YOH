@@ -11,7 +11,7 @@ public class GameStaticticResponse {
     private final String gameID;
     private final String type;
     private final String dateAction;
-    private final String message;
+//    private final String message;
 
     public GameStaticticResponse(GameStatistic gameStatistic) {
         this.id = gameStatistic.getId().toString();
@@ -19,7 +19,7 @@ public class GameStaticticResponse {
         this.gameID = gameStatistic.getGame().getId().toString();
         this.type = gameStatistic.getType().toString();
         this.dateAction = gameStatistic.getDateAction().toString();
-        this.message = gameStatistic.getMessage();
+//        this.message = gameStatistic.getMessage();
     }
 
     public String getId() { return id; }
@@ -32,6 +32,6 @@ public class GameStaticticResponse {
 
     public String getDateAction() { return dateAction; }
 
-    public String getMessage() { return message; }
+//    public String getMessage() { return message; }
 
 }
