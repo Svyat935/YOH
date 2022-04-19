@@ -77,22 +77,23 @@ public class PatientController {
     public JSONResponse sendGameStatistic(@RequestHeader("token") String token, @RequestHeader("game") String game, @Valid @RequestBody StatisticArray statisticArray) {
         try {
             Patient patient = this.patientService.getPatientByUser(this.userService.getUserById(this.userService.verifyToken(token)));
-            for (GameStatisticToSend statisticToSend: statisticArray.getRecords()){
-                System.out.println(statisticToSend.getDateAction());
-                System.out.println(statisticToSend.getType());
-                System.out.println(statisticToSend.getAnswerNumber());
-                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("M/d/yyyy, h:m:s a");
-                LocalDateTime localDateTime = LocalDateTime.parse(statisticToSend.getDateAction(), formatter);
-                GameStatistic statistic = new GameStatistic(
-                        this.gameService.getGameById(UUID.fromString(game)),
-                        patient,
-                        statisticToSend.getType(),
-                        localDateTime,
-                        statisticToSend.getType()
-                );
-                this.gameStatisticService.createGameStatistic(statistic);
-                patient.getGameStatistics().add(statistic);
-                this.patientService.updatePatient(patient);
+            for (JsonObject statisticToSend: statisticArray.getRecords()){
+                System.out.println(statisticToSend.get("DateAction"));
+                System.out.println(statisticToSend.get("Type"));
+                System.out.println(statisticToSend.get("AnswerNumber"));
+//                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("M/d/yyyy, h:m:s a");
+//                LocalDateTime localDateTime = LocalDateTime.parse(statisticToSend.getDateAction(), formatter);
+//
+//                GameStatistic statistic = new GameStatistic(
+//                        this.gameService.getGameById(UUID.fromString(game)),
+//                        patient,
+//                        statisticToSend.getType(),
+//                        localDateTime,
+//                        statisticToSend.getType()
+//                );
+//                this.gameStatisticService.createGameStatistic(statistic);
+//                patient.getGameStatistics().add(statistic);
+//                this.patientService.updatePatient(patient);
             }
 //            GameStatistic statistic = new GameStatistic(
 //                    this.gameService.getGameById(UUID.fromString(gameStatisticToSend.getGame_id())),
