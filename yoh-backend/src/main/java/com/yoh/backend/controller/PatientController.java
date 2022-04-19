@@ -77,6 +77,7 @@ public class PatientController {
     public JSONResponse sendGameStatistic(@RequestHeader("token") String token, @RequestHeader("game") String game, @Valid @RequestBody StatisticArray statisticArray) {
         try {
             Patient patient = this.patientService.getPatientByUser(this.userService.getUserById(this.userService.verifyToken(token)));
+            System.out.println(statisticArray.getRecords());
             for (JsonObject statisticToSend: statisticArray.getRecords()){
                 System.out.println(statisticToSend.get("DateAction"));
                 System.out.println(statisticToSend.get("Type"));

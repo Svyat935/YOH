@@ -320,6 +320,7 @@ public class TutorController {
     @GetMapping(path = "/patients/games/get-statistics")
     public JSONResponse getStatisticsForGame(@RequestHeader("token") String token, @RequestParam UUID patientUUID, @RequestParam UUID gameUUID) {
         try {
+            //TODO message
             this.userService.verifyToken(token);
             Patient patient = this.patientService.getPatientById(patientUUID);
             List<GameStatistic> gameStatistics = patient.getGameStatistics();
