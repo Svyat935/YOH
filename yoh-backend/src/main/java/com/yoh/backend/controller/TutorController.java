@@ -440,6 +440,7 @@ public class TutorController {
 
     @DeleteMapping(path = "/patients/tests/clear")
     public JSONResponse clearTestsForPatients(@RequestHeader("token") String token, @Valid @RequestBody PatientToTutor patientToTutor) {
+        //TODO
         try {
             this.userService.verifyToken(token);
             Patient patient = this.patientService.getPatientById(UUID.fromString(patientToTutor.getPatient()));
@@ -458,6 +459,7 @@ public class TutorController {
 
     @GetMapping(path = "/patients/tests/get-statistics")
     public JSONResponse getStatisticsForPatients(@RequestHeader("token") String token, @RequestParam UUID patientUUID, @RequestParam UUID testUUID) {
+        //TODO
         try {
             this.userService.verifyToken(token);
             Patient patient = this.patientService.getPatientById(patientUUID);
@@ -486,6 +488,7 @@ public class TutorController {
 
     @DeleteMapping(path = "/patients/tests/clear-statistics")
     public JSONResponse deleteStatisticForPatient(@RequestHeader("token") String token, @Valid @RequestBody TestToPatient testToPatient) {
+        //TODO
         try {
             this.userService.verifyToken(token);
             Patient patient = this.patientService.getPatientById(UUID.fromString(testToPatient.getPatient_id()));

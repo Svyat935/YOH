@@ -91,6 +91,8 @@ public class PatientController {
                         statisticToSend.getType()
                 );
                 this.gameStatisticService.createGameStatistic(statistic);
+                patient.getGameStatistics().add(statistic);
+                this.patientService.updatePatient(patient);
             }
 //            GameStatistic statistic = new GameStatistic(
 //                    this.gameService.getGameById(UUID.fromString(gameStatisticToSend.getGame_id())),
