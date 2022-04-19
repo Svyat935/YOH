@@ -62,7 +62,7 @@ function UsersView(props) {
                             patient["jsonObject"].games.forEach((game) => {
                                 view.push(
                                     <p key={game.id} style={{"background": "grey"}}>id: {game.id}; name: {game.name}; description: {game.description};
-                                        url: {game.url};
+                                        url: https://mobile.itkostroma.ru/games/{game.name};
                                     </p>
                                 );
                             })
@@ -86,7 +86,7 @@ function UsersView(props) {
     useEffect(async () => {
        let view = await createView();
        setView(view);
-    },[usersView])
+    },[])
 
     return (
         <Container style={{"background": "wheat", "marginTop": "10px"}}>
@@ -208,7 +208,6 @@ export function GamesPage() {
 
             response = await requestGetUser();
             response = response["jsonObject"];
-            console.log(response);
             if (response["patientList"].length > 0){
                 setUsersView(<UsersView
                     addGame={requestAddGame}
