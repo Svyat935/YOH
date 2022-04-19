@@ -11,11 +11,13 @@ public class GameStatistic {
     public GameStatistic() {}
 
     public GameStatistic(Game game, Patient patient, Short type, LocalDateTime dateAction, Short answerNumber) {
+        //TODO
         this.game = game;
         this.patient = patient;
         this.type = type;
         this.dateAction = dateAction;
         this.answerNumber = answerNumber;
+        this.message = null;
     }
 
     @Id
