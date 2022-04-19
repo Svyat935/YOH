@@ -11,11 +11,13 @@ public class GameStatistic {
     public GameStatistic() {}
 
     public GameStatistic(Game game, Patient patient, Short type, LocalDateTime dateAction, Short answerNumber) {
+        //TODO
         this.game = game;
         this.patient = patient;
         this.type = type;
         this.dateAction = dateAction;
         this.answerNumber = answerNumber;
+//        this.message = null;
     }
 
     @Id
@@ -91,16 +93,16 @@ public class GameStatistic {
     }
 
 
-    @Column(name = "message", length = 128, nullable = true)
-    private String message;
-
-    public String getMessage(){
-        return this.message;
-    }
-
-    public void setMessage(String message){
-        this.message = message;
-    }
+//    @Column(name = "message", length = 128, nullable = true)
+//    private String message;
+//
+//    public String getMessage(){
+//        return this.message;
+//    }
+//
+//    public void setMessage(String message){
+//        this.message = message;
+//    }
 
 //
 //    ID Пользователя

@@ -81,19 +81,25 @@ public class PatientController {
                 System.out.println(statisticToSend.get("DateAction"));
                 System.out.println(statisticToSend.get("Type"));
                 System.out.println(statisticToSend.get("AnswerNumber"));
-//                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("M/d/yyyy, h:m:s a");
-//                LocalDateTime localDateTime = LocalDateTime.parse(statisticToSend.getDateAction(), formatter);
-//
-//                GameStatistic statistic = new GameStatistic(
-//                        this.gameService.getGameById(UUID.fromString(game)),
-//                        patient,
-//                        statisticToSend.getType(),
-//                        localDateTime,
-//                        statisticToSend.getType()
-//                );
-//                this.gameStatisticService.createGameStatistic(statistic);
-//                patient.getGameStatistics().add(statistic);
-//                this.patientService.updatePatient(patient);
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("M/d/yyyy, h:m:s a");
+                LocalDateTime localDateTime = LocalDateTime.parse(statisticToSend.get("DateAction").toString(), formatter);
+
+                Short AnswerNumber;
+                if (statisticToSend.get("AnswerNumber") != null)
+                    AnswerNumber = Short.valueOf(statisticToSend.get("AnswerNumber").toString());
+                else
+                    AnswerNumber = null;
+
+                GameStatistic statistic = new GameStatistic(
+                        this.gameService.getGameById(UUID.fromString(game)),
+                        patient,
+                        Short.valueOf(statisticToSend.get("Type").toString()),
+                        localDateTime,
+                        AnswerNumber
+                );
+                this.gameStatisticService.createGameStatistic(statistic);
+                patient.getGameStatistics().add(statistic);
+                this.patientService.updatePatient(patient);
             }
 //            GameStatistic statistic = new GameStatistic(
 //                    this.gameService.getGameById(UUID.fromString(gameStatisticToSend.getGame_id())),
