@@ -116,11 +116,17 @@ public class PatientController {
             response.put("message", "GameStatistic was added");
             return new JSONResponse(200, response);
         }
-        catch (IllegalArgumentException e){
+        catch (Exception e){
+            System.out.println(e.getMessage());
             JsonObject exceptionResponse = new JsonObject();
             exceptionResponse.put("message", e.getMessage());
             return new JSONResponse(401, exceptionResponse);
         }
+//        catch (IllegalArgumentException e){
+//            JsonObject exceptionResponse = new JsonObject();
+//            exceptionResponse.put("message", e.getMessage());
+//            return new JSONResponse(401, exceptionResponse);
+//        }
     }
 
     @GetMapping(path = "/games/status")
