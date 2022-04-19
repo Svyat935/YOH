@@ -78,6 +78,9 @@ public class PatientController {
         try {
             Patient patient = this.patientService.getPatientByUser(this.userService.getUserById(this.userService.verifyToken(token)));
             for (GameStatisticToSend statisticToSend: statisticArray.getRecords()){
+                System.out.println(statisticToSend.getDateAction());
+                System.out.println(statisticToSend.getType());
+                System.out.println(statisticToSend.getAnswerNumber());
                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("M/d/yyyy, h:m:s a");
                 LocalDateTime localDateTime = LocalDateTime.parse(statisticToSend.getDateAction(), formatter);
                 GameStatistic statistic = new GameStatistic(
