@@ -332,7 +332,7 @@ public class TutorController {
                 gameStatisticInfo.put("type", statistic.getType().toString());
                 gameStatisticInfo.put("dateAction", statistic.getDateAction().toString());
                 gameStatisticInfo.put("answerNumber", statistic.getDateAction().toString());
-                gameStatisticInfo.put("message", statistic.getMessage());
+//                gameStatisticInfo.put("message", statistic.getMessage());
                 gameStatisticList.add(gameStatisticInfo);
             }
             JsonObject response = new JsonObject();
