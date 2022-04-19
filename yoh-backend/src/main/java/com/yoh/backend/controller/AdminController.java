@@ -2,10 +2,7 @@ package com.yoh.backend.controller;
 
 import com.github.cliftonlabs.json_simple.JsonObject;
 import com.yoh.backend.entity.*;
-import com.yoh.backend.request.OrganizationForAdding;
-import com.yoh.backend.request.OrganizationForAssign;
-import com.yoh.backend.request.RoleForAssign;
-import com.yoh.backend.request.UserForCreatingRequest;
+import com.yoh.backend.request.*;
 import com.yoh.backend.response.JSONResponse;
 import com.yoh.backend.response.UserInfoResponse;
 import com.yoh.backend.service.*;
@@ -132,7 +129,7 @@ public class AdminController {
         }
     }
 
-    @PostMapping("/organizations/new")
+    @PostMapping("/organizations/add")
     public JSONResponse createOrganization(@RequestHeader("token") String token, @Valid @RequestBody OrganizationForAdding organizationForAdding) {
         try {
             Admin admin = this.adminService.getAdminByUser(this.userService.getUserById(this.userService.verifyToken(token)));
@@ -142,6 +139,41 @@ public class AdminController {
             JsonObject response = new JsonObject();
             response.put("message", "Organization was created");
             return new JSONResponse(200, response);
+        } catch (IllegalArgumentException e) {
+            JsonObject exceptionResponse = new JsonObject();
+            exceptionResponse.put("message", e.getMessage());
+            return new JSONResponse(401, exceptionResponse);
+        }
+    }
+
+    @DeleteMapping("/organizations/delete")
+    public JSONResponse deleteOrganization(@RequestHeader("token") String token, @Valid @RequestBody OrganizationToDelete organizationToDelete) {
+        try {
+            Admin admin = this.adminService.getAdminByUser(this.userService.getUserById(this.userService.verifyToken(token)));
+            Organization organization = this.organizationService.getOrganizationById(UUID.fromString(organizationToDelete.getOrganization()));
+
+            //TODO улучшить
+            List<Researcher> researchers = this.researcherService.getAllResearchersByOrganization(organization);
+            for (Researcher researcher: researchers){
+                researcher.setOrganization(null);
+                this.researcherService.updateResearcher(researcher);
+            }
+            List<Tutor> tutors = this.tutorService.getAllTutorsByOrganization(organization);
+            for (Tutor tutor: tutors) {
+                tutor.setOrganization(null);
+                this.tutorService.updateTutor(tutor);
+            }
+            List<Patient> patients = this.patientService.getAllPatientsByOrganization(organization);
+            for (Patient patient: patients) {
+                patient.setOrganization(null);
+                this.patientService.updatePatient(patient);
+            }
+
+            this.organizationService.deleteOrganization(organization);
+            JsonObject response = new JsonObject();
+            response.put("message", "Organization was deleted");
+            return new JSONResponse(200, response);
+
         } catch (IllegalArgumentException e) {
             JsonObject exceptionResponse = new JsonObject();
             exceptionResponse.put("message", e.getMessage());

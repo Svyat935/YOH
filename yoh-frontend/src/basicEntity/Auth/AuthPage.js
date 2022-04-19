@@ -89,8 +89,10 @@ export function AuthPage() {
             role = data["role"],
             token = data["token"];
 
-        if (role === null) {
-            alert("Role is null. Sorry, but I can't let you in.")
+        if (token == null){
+            alert("Sorry, invalid password and login.");
+        }else if (role === null) {
+            alert("Role is null. Sorry, but I can't let you in.");
         } else {
             userContext.login(token, role);
 

@@ -92,4 +92,17 @@ public class TutorRepository {
             session.close();
         }
     }
+
+    public List<Tutor> getAllTutorsByOrganization(Organization organization) {
+        Session session = sessionFactory.openSession();
+        try {
+            Criteria criteria = session.createCriteria(Tutor.class)
+                    .add(Restrictions.eq("organization", organization));
+            List<Tutor> tutorList = criteria.list();
+            return tutorList.isEmpty() ? List.of() : tutorList;
+        }
+        finally {
+            session.close();
+        }
+    }
 }

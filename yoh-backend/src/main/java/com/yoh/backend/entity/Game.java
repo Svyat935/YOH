@@ -1,5 +1,8 @@
 package com.yoh.backend.entity;
 
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
+
 import javax.persistence.*;
 import java.util.List;
 import java.util.UUID;
@@ -64,15 +67,16 @@ public class Game {
     }
 
 
-    @ManyToMany
-    private List<Patient> patients;
+    @ManyToMany(mappedBy="games")
+    @LazyCollection(LazyCollectionOption.FALSE)
+    private List<Patient> patient;
 
-    public List<Patient> getPatients() {
-        return patients;
+    public List<Patient> getPatient() {
+        return patient;
     }
 
-    public void setPatients(List<Patient> patients) {
-        this.patients = patients;
+    public void setPatients(List<Patient> patient) {
+        this.patient = patient;
     }
 
 

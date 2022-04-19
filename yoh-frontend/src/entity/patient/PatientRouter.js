@@ -6,6 +6,7 @@ import {MainPage} from "./pages/MainPage";
 import {TestsPage} from "./pages/TestsPage";
 import {AuthPage} from "../../basicEntity/Auth/AuthPage";
 import {AccountPage} from "./pages/AccountPage";
+import {Game} from "./pages/p";
 
 
 export function PatientRouter() {
@@ -39,6 +40,7 @@ export function PatientRouter() {
             <Route path={'/games_page'} element={<GamesPage/>}/>
             <Route path={'/tests_page'} element={<TestsPage/>}/>
             <Route path={'/account_page'} element={<AccountPage/>}/>
+            <Route path={'/game'} element={<Game/>}/>
         </Routes>
     )
 }

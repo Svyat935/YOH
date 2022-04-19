@@ -6,6 +6,7 @@ import {StatisticsPage} from "./pages/StatisticsPage";
 import {MainPage} from "./pages/MainPage";
 import {ChatPage} from "./pages/ChatPage";
 import {GamesPage} from "./pages/GamesPage";
+import {Game} from "./pages/p";
 
 
 export function TutorRouter() {
@@ -14,9 +15,9 @@ export function TutorRouter() {
             <Route path={'/'} element={
                 <div>
                     <p>Tutor page</p>
-                    <Link to={"main_page"}>
-                        <button>Main Page</button>
-                    </Link>
+                    {/*<Link to={"main_page"}>*/}
+                    {/*    <button>Main Page</button>*/}
+                    {/*</Link>*/}
                     {/*<Link to={"chat_page"}>*/}
                     {/*    <button>Chat Page</button>*/}
                     {/*</Link>*/}
@@ -43,6 +44,7 @@ export function TutorRouter() {
             <Route path={'/statistics_page'} element={<StatisticsPage/>}/>
             <Route path={'/games_page'} element={<GamesPage/>}/>
             <Route path={'/account_page'} element={<AccountPage/>}/>
+            <Route path={'/game'} element={<Game/>}/>
         </Routes>
     )
 }
