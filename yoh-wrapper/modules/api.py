@@ -81,7 +81,7 @@ def send_statistic_route():
     headers = {
         'Content-Type': 'application/json',
         'token': session['user'],
-        'game': session['current_game']
+        'game': '6d7795cb-126c-49bd-babd-ed02b56e78e7'  # session['current_game']
     }
     send_url = 'http://yoh-backend:8080/patient/games/statistics/sending'
 
