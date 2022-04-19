@@ -99,6 +99,7 @@ public class TutorController {
     @GetMapping(path = "/patients/getting/one")
     public JSONResponse getOnePatient(@RequestHeader("token") String token, @RequestParam UUID patientUUID) {
         try {
+            //TODO проверка тьютора
             this.userService.verifyToken(token);
             Patient patient = this.patientService.getPatientById(patientUUID);
             JsonObject response = new JsonObject();
@@ -231,6 +232,7 @@ public class TutorController {
 
     @PostMapping(path = "/patients/games/new")
     public JSONResponse newGamesForPatient(@RequestHeader("token") String token, @Valid @RequestBody GamesToPatient gamesToPatient) {
+        // TODO проверить работу
         try {
             this.userService.verifyToken(token);
             Patient patient = this.patientService.getPatientById(UUID.fromString(gamesToPatient.getPatient_id()));
@@ -329,6 +331,7 @@ public class TutorController {
                 gameStatisticInfo.put("gameID", statistic.getGame().getId().toString());
                 gameStatisticInfo.put("type", statistic.getType().toString());
                 gameStatisticInfo.put("dateAction", statistic.getDateAction().toString());
+                gameStatisticInfo.put("answerNumber", statistic.getDateAction().toString());
                 gameStatisticInfo.put("message", statistic.getMessage());
                 gameStatisticList.add(gameStatisticInfo);
             }
