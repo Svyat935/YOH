@@ -77,6 +77,7 @@ public class PatientController {
     public JSONResponse sendGameStatistic(@RequestHeader("token") String token, @RequestHeader("game") String game, @Valid @RequestBody StatisticArray statisticArray) {
         try {
             Patient patient = this.patientService.getPatientByUser(this.userService.getUserById(this.userService.verifyToken(token)));
+            System.out.println(statisticArray.getRecords());
             for (JsonObject statisticToSend: statisticArray.getRecords()){
                 System.out.println(statisticToSend.get("DateAction"));
                 System.out.println(statisticToSend.get("Type"));
@@ -115,11 +116,17 @@ public class PatientController {
             response.put("message", "GameStatistic was added");
             return new JSONResponse(200, response);
         }
-        catch (IllegalArgumentException e){
+        catch (Exception e){
+            System.out.println(e.getMessage());
             JsonObject exceptionResponse = new JsonObject();
             exceptionResponse.put("message", e.getMessage());
             return new JSONResponse(401, exceptionResponse);
         }
+//        catch (IllegalArgumentException e){
+//            JsonObject exceptionResponse = new JsonObject();
+//            exceptionResponse.put("message", e.getMessage());
+//            return new JSONResponse(401, exceptionResponse);
+//        }
     }
 
     @GetMapping(path = "/games/status")
