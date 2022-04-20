@@ -12,7 +12,7 @@ export function Game() {
                 <button>To Back</button>
             </Link>
             <div>
-                <iframe width={1280} height={1024} src={context.theme + "?token=" + context.token}/>
+                <iframe width="100%" height="100%" src={context.theme + "?token=" + context.token}/>
             </div>
         </div>
     )
