@@ -1,12 +1,12 @@
 import React from "react";
 import {Back} from "../../../components/back/Back";
-import {BasicNavigate} from "../../../components/navigate/BasicNav";
+import {BasicNav} from "../../../components/navigate/BasicNav";
 import {Container, Row, Col} from "react-bootstrap";
 import homeImages from "../../../assets/homeImages.jpg";
 
 export function VHome() {
     return (
-        <Back nav={<BasicNavigate/>}>
+        <Back nav={<BasicNav/>}>
             <Container>
                 <Row style={{height: "78vh"}} className={"align-items-center"}>
                     <Col>

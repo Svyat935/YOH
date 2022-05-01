@@ -13,9 +13,15 @@
 .nav-link{
     color: white;
     font-weight: bold;
+    transition: .2s linear;
 }
 
 .nav-link:hover{
+    color: #222585;
+    text-decoration: underline;
+}
+
+.nav-link:focus{
     color: #222585;
     text-decoration: underline;
 }
@@ -28,4 +34,8 @@
     position: fixed;
     left: 0;
     bottom: 0;
+}
+
+body {
+    overflow-x: hidden;
 }

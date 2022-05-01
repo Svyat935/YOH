@@ -1,0 +1,42 @@
+.popup {
+    transition: 1s linear;
+    background: #F5F5F5;
+    box-shadow: -10px 10px 30px rgba(0, 0, 0, 0.9);
+    border-radius: 40px;
+    width: 260px;
+    height: 90px;
+    display: none;
+    right: -30%;
+    position: absolute;
+    z-index: 10000;
+    top: 90px;
+    margin-right: 10px;
+    margin-left: 10px;
+    padding: 10px;
+    text-align: center;
+    font-weight: bold;
+}
+
+@keyframes from-left-to-right {
+    from {
+        right: -25%;
+    }
+    to {
+        right: 0;
+    }
+}
+
+.pop-animation{
+    right: 0;
+    animation: from-left-to-right .3s linear;
+}
+
+.popup-content{
+    height: 100%;
+    display: flex;
+    align-items: center;
+}
+
+.popup-content p{
+    margin: 0;
+}
