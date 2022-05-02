@@ -4,7 +4,6 @@ import {ChatPage} from "./pages/ChatPage";
 import {GamesPage} from "./pages/GamesPage";
 import {MainPage} from "./pages/MainPage";
 import {TestsPage} from "./pages/TestsPage";
-import {AuthPage} from "../../basic/Auth/AuthPage";
 import {AccountPage} from "./pages/AccountPage";
 import {Game} from "./pages/p";
 

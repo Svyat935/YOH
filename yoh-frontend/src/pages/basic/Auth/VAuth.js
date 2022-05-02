@@ -4,7 +4,7 @@ import Col from "react-bootstrap/Col";
 import React, {useState} from "react";
 import {useNavigate} from "react-router-dom";
 import {Back} from "../../../components/back/Back";
-import {BasicNav} from "../../../components/navigate/BasicNav";
+import {BasicNav} from "../../../components/navigate/Basic/BasicNav";
 import "./Auth.css";
 import {PopUp} from "../../../components/popup/PopUp";
 
@@ -14,10 +14,18 @@ export function VAuth(props) {
 
     const popUpMessage = (text) => {
         setTextPopUp(text);
+        throwPopUp();
+        setTimeout(takeAwayPopUp, 2500);
+    }
+
+    const throwPopUp = () => {
         let element = document.querySelector(".popup");
-        element.style.display = "inline";
         element.style.right = 0;
-        element.classList.toggle("pop-animation");
+    }
+
+    const takeAwayPopUp = () => {
+        let element = document.querySelector(".popup");
+        element.style.right = "-25%";
     }
 
     const authorize = async () => {

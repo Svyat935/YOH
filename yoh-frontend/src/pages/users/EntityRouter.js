@@ -1,12 +1,10 @@
-import {UserContext} from "../../context/userContext";
-import React, {useContext} from "react";
+import React from "react";
 import {Route, Routes} from "react-router-dom";
 import {AdminRouter} from "./admin/AdminRouter";
 import {PatientRouter} from "./patient/PatientRouter";
 import {TutorRouter} from "./tutor/TutorRouter";
 
 export function EntityRouter() {
-    // const userContext = useContext(UserContext);
 
     return (
         <Routes>

@@ -5,7 +5,7 @@
     border-radius: 40px;
     width: 260px;
     height: 90px;
-    display: none;
+    /*display: none;*/
     right: -30%;
     position: absolute;
     z-index: 10000;
@@ -15,20 +15,6 @@
     padding: 10px;
     text-align: center;
     font-weight: bold;
-}
-
-@keyframes from-left-to-right {
-    from {
-        right: -25%;
-    }
-    to {
-        right: 0;
-    }
-}
-
-.pop-animation{
-    right: 0;
-    animation: from-left-to-right .3s linear;
 }
 
 .popup-content{

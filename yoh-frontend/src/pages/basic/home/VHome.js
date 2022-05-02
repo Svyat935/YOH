@@ -1,6 +1,6 @@
 import React from "react";
 import {Back} from "../../../components/back/Back";
-import {BasicNav} from "../../../components/navigate/BasicNav";
+import {BasicNav} from "../../../components/navigate/Basic/BasicNav";
 import {Container, Row, Col} from "react-bootstrap";
 import homeImages from "../../../assets/homeImages.jpg";
 
