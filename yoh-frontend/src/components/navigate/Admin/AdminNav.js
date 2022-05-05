@@ -2,6 +2,7 @@ import {Button, Container, FormControl, Nav, Navbar, NavDropdown} from "react-bo
 import React from "react";
 import {Offcanvas} from "bootstrap";
 import "./AdminNav.css";
+import {Link} from "react-router-dom";
 
 export function AdminNav() {
     return (
@@ -12,11 +13,9 @@ export function AdminNav() {
             </label>
 
             <ul className="menu__box">
-                <li><a className="menu__item" href="#">Home</a></li>
-                <li><a className="menu__item" href="#">About</a></li>
-                <li><a className="menu__item" href="#">Team</a></li>
-                <li><a className="menu__item" href="#">Contact</a></li>
-                <li><a className="menu__item" href="#">Twitter</a></li>
+                <li><Link className="menu__item" to={"/user/admin/"}>Домашняя страница</Link></li>
+                <li><Link className="menu__item" to={"users"}>Пользователи</Link></li>
+                <li><Link className="menu__item" to={"components"}>Компоненты</Link></li>
             </ul>
         </div>
     )

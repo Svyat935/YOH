@@ -14,7 +14,7 @@ export function VHome() {
                     </Col>
                     <Col className={"column"}>
                         <div style={{width: "100%"}}>
-                            <img style={{width: "100%", height: "100%", }} src={homeImages}/>
+                            <img style={{width: "100%", height: "100%", }} src={homeImages} alt={"home image"}/>
                         </div>
                     </Col>
                 </Row>

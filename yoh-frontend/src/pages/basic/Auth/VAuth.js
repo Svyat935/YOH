@@ -40,6 +40,8 @@ export function VAuth(props) {
         let role = await props.auth(credentials, password);
         if (role === null){
             popUpMessage("Пользователь с указанным логиным и паролем отсутствует.");
+        }else if (role === undefined){
+            popUpMessage("Извините. Произошла ошибка на сервере.");
         } else if (role === -1){
             popUpMessage("Ваш пользователь не имеет роли. Пожалуйста обратитесь к администратору.");
         } else {

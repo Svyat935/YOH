@@ -22,6 +22,10 @@ export function CAuth() {
     const authorize = async (credentials, password) => {
         let response = await requestAuth(credentials, password);
 
+        if (response === null){
+            return undefined;
+        }
+
         if (response.code === 401){
             return null;
         }

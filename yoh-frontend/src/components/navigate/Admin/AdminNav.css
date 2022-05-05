@@ -17,7 +17,7 @@
 }
 .menu__btn {
     position: fixed;
-    top: 20px;
+    top: 36px;
     left: 20px;
     width: 26px;
     height: 26px;
@@ -54,7 +54,7 @@
     margin: 0;
     padding: 80px 0;
     list-style: none;
-    background-color: #ECEFF1;
+    background-color: #6A6DCD;
     box-shadow: 2px 2px 6px rgba(0, 0, 0, .4);
     transition-duration: .25s;
     z-index: 10;
@@ -62,14 +62,16 @@
 .menu__item {
     display: block;
     padding: 12px 24px;
-    color: #333;
+    color: #FFFFFF;
     font-family: 'Roboto', sans-serif;
     font-size: 20px;
     font-weight: 600;
     text-decoration: none;
     transition-duration: .25s;
 }
+
 .menu__item:hover {
-    background-color: #CFD8DC;
+    background-color: #9395E6;
+    color: #FFFFFF;
 }
 
