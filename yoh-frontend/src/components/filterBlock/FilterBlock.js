@@ -10,7 +10,12 @@ export function FilterBlock(props) {
             filterList.forEach((filterOne) => {
                 view.push(
                     <div className={"filter-one"}>
-                        <input type={"radio"} id={filterOne["text"]} value={filterOne["value"]}/>
+                        <input
+                            id={filterOne["text"]}
+                            name={"filterName"}
+                            type={"radio"}
+                            value={filterOne["value"]}
+                        />
                         <label htmlFor={filterOne["text"]}>{filterOne["text"]}</label>
                     </div>
                 )

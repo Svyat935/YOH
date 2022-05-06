@@ -5,6 +5,11 @@ import Col from "react-bootstrap/Col";
 import Row from "react-bootstrap/Row";
 import React from "react";
 import {FilterBlock} from "../../../../../components/filterBlock/FilterBlock";
+import {SearchInput} from "../../../../../components/searchInput/SearchInput";
+import {InfoBlock} from "../../../../../components/infoBlock/InfoBlock";
+import profileStub from "../../../../../assets/profileStub.jpg";
+import {Button} from "../../../../../components/buttons/button";
+import {Modal} from "../../../../../components/modal/Modal";
 
 export function VUsersAdmin() {
     const filterList = [
@@ -37,12 +42,83 @@ export function VUsersAdmin() {
     return (
         <Back navPanel={<AdminNav/>}>
             <Container style={{marginTop: 20}}>
-                <Col>
-                    <Row>
-                        <h2>Список пользователей</h2>
+                <Row>
+                    <h1 style={{marginBottom: 20}}>Список пользователей</h1>
+                    <Col md={4} style={
+                        {
+                            display: "flex",
+                            justifyContent: "flex-start",
+                            alignItems: "center",
+                            flexDirection: "column"
+                        }
+                    }>
                         <FilterBlock filters={filterList}/>
-                    </Row>
-                </Col>
+                        <Button width={300} text={"Добавить +"}/>
+                        <Button width={300} text={"Удалить -"}/>
+                    </Col>
+                    <Col md={8}>
+                        <SearchInput onClick={() => console.log("onClick is waiting")}/>
+                        <Container>
+                            <Row>
+                                <Col style={
+                                    {
+                                        display: "flex",
+                                        flexDirection: "row",
+                                        flexWrap: "wrap",
+                                        justifyContent: "space-evenly"
+                                    }
+                                }>
+                                    <Modal/>
+                                    <InfoBlock text={"test"}>
+                                        <div>
+                                            <img style={{width: "100%"}} src={profileStub} alt={"profileStub"}/>
+                                        </div>
+                                    </InfoBlock>
+                                    <InfoBlock text={"test"}>
+                                        <div>
+                                            <img style={{width: "100%"}} src={profileStub} alt={"profileStub"}/>
+                                        </div>
+                                    </InfoBlock>
+                                    <InfoBlock text={"test"}>
+                                        <div>
+                                            <img style={{width: "100%"}} src={profileStub} alt={"profileStub"}/>
+                                        </div>
+                                    </InfoBlock>
+                                    <InfoBlock text={"test"}>
+                                        <div>
+                                            <img style={{width: "100%"}} src={profileStub} alt={"profileStub"}/>
+                                        </div>
+                                    </InfoBlock>
+                                    <InfoBlock text={"test"}>
+                                        <div>
+                                            <img style={{width: "100%"}} src={profileStub} alt={"profileStub"}/>
+                                        </div>
+                                    </InfoBlock>
+                                    <InfoBlock text={"test"}>
+                                        <div>
+                                            <img style={{width: "100%"}} src={profileStub} alt={"profileStub"}/>
+                                        </div>
+                                    </InfoBlock>
+                                    <InfoBlock text={"test"}>
+                                        <div>
+                                            <img style={{width: "100%"}} src={profileStub} alt={"profileStub"}/>
+                                        </div>
+                                    </InfoBlock>
+                                    <InfoBlock text={"test"}>
+                                        <div>
+                                            <img style={{width: "100%"}} src={profileStub} alt={"profileStub"}/>
+                                        </div>
+                                    </InfoBlock>
+                                    <InfoBlock text={"test"}>
+                                        <div>
+                                            <img style={{width: "100%"}} src={profileStub} alt={"profileStub"}/>
+                                        </div>
+                                    </InfoBlock>
+                                </Col>
+                            </Row>
+                        </Container>
+                    </Col>
+                </Row>
             </Container>
         </Back>
     )
