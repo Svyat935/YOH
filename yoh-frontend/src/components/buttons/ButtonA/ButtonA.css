@@ -1,4 +1,4 @@
-.buttons{
+.buttons-a{
     padding: 10px 20px;
     background: #6A6DCD;
     color: #FFFFFF;
@@ -10,7 +10,7 @@
     border: none;
 }
 
-.buttons:hover, .buttons:focus{
+.buttons-a:hover, .m-buttons-a:focus{
     background: #FFFFFF;
     color: #6A6DCD;
 }
