@@ -22,25 +22,36 @@ export function VUsersAdmin(props) {
         {"text": "Исследователь", "value": 6},
     ]
     const [show, setShow] = useState(false);
-    //TODO: replace the bool type with something better.
-    //Note: Adding user - false, Removing user - true
-    const [buttonStatus, setButtonStatus] = useState(false);
+    //TODO: replace the int type with something better.
+    //Note: Adding user - 0, Removing user - 1, Confirm Removing - 2, Changing user - 3
+    const [buttonStatus, setButtonStatus] = useState(0);
+    const [userForRemoving, setRemovingUser] = useState(null);
+    const [userForChanging, setChangingUser] = useState(null);
 
-    const createViewUsers = () => {
+    const createBasicViewUsers = () => {
         let users = props.users,
             view = [];
-
-        if (users.length > 0){
+        if (users.length > 0) {
             users.forEach((user) => {
+                let role = user["role"] === 0 ? "Администратор":
+                    user["role"] === 1 ? "Наблюдаемый" :
+                        user["role"] === 2 ? "Исследователь" :
+                            user["role"] === 3 ? "Тьютор" : "Без Роли"
                 view.push(
-                    <InfoBlock key={user["id"]} text={user["login"]}>
+                    <InfoBlock onClick={
+                        () => {
+                            setChangingUser(user);
+                            setButtonStatus(3);
+                            setShow(true);
+                        }
+                    } key={user["id"]} text={user["login"]} addText={role}>
                         <div>
                             <img style={{width: "100%"}} src={profileStub} alt={'profile'}/>
                         </div>
                     </InfoBlock>
                 )
             })
-        }else{
+        } else {
             view.push(
                 <div style={
                     {
@@ -57,23 +68,211 @@ export function VUsersAdmin(props) {
         return view;
     }
 
+    const createRemovingViewUsers = () => {
+        let users = props.users,
+            view = [];
+
+        if (users.length > 0) {
+            users.forEach((user) => {
+                view.push(
+                    <div style={
+                        {
+                            borderRadius: 40,
+                            color: "#FFFFFF",
+                            background: "#6A6DCD",
+                            display: "flex",
+                            justifyContent: "space-between",
+                            alignItems: "center",
+                            marginBottom: "20px"
+                        }
+                    }>
+                        <p>Login: {user["login"]}; Email: {user["email"]}</p>
+                        <ButtonB text={"Удалить"} fontSize={"medium"} onClick={
+                            () => {
+                                setRemovingUser(user);
+                                setButtonStatus(2);
+                            }
+                        }/>
+                    </div>
+                )
+            })
+        } else {
+            view.push(
+                <div style={{display: "flex", justifyContent: "center", alignItems: "center"}}>
+                    <h3>Пользователей в системе отсутствует.</h3>
+                </div>
+            )
+        }
+
+        return (
+            <div style={{display: "flex", flexDirection: "column"}}>
+                {view}
+            </div>
+        );
+    }
+
+    const validateEmail = (email) => {
+        return String(email)
+            .toLowerCase()
+            .match(
+                /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+            );
+    };
+
     const addUser = async () => {
-        let login = document.getElementById("login").value,
-            email = document.getElementById("email").value,
-            password = document.getElementById("password").value,
-            confirmPassword = document.getElementById("confirmPassword").value;
+        const validStyle = "1px red solid",
+            removeBorderStyle = "none";
+        let fLogin = document.getElementById("login"),
+            fEmail = document.getElementById("email"),
+            fPassword = document.getElementById("password"),
+            fConfirmPassword = document.getElementById("confirmPassword");
+        let vLogin = document.getElementById("login-validate"),
+            vEmail = document.getElementById("email-validate"),
+            vPassword = document.getElementById("password-validate");
+        let validStatus = true;
 
-        //TODO: Validation
+        vEmail.textContent = "";
+        vEmail.style.marginBottom = "0";
+        vPassword.textContent = "";
+        vPassword.style.marginBottom = "0";
+        vLogin.textContent = "";
+        vLogin.style.marginBottom = "0";
+        fLogin.style.border = removeBorderStyle;
+        fEmail.style.border = removeBorderStyle;
+        fPassword.style.border = removeBorderStyle;
+        fConfirmPassword.style.border = removeBorderStyle;
 
-        let response = await props.createUser(login, email, password);
-        console.log(response);
-        props.refresh();
-        setShow(false);
+        if (!fLogin.value) {
+            fLogin.style.border = validStyle;
+            validStatus = false;
+        }
+        if (!fEmail.value) {
+            fEmail.style.border = validStyle;
+            validStatus = false;
+        }
+        if (!fPassword.value) {
+            fPassword.style.border = validStyle;
+            validStatus = false;
+        }
+        if (!fConfirmPassword.value) {
+            fConfirmPassword.style.border = validStyle;
+            validStatus = false;
+        }
+
+
+        if (fEmail.value && validateEmail(fEmail.value) === null) {
+            fEmail.style.border = validStyle;
+            vEmail.textContent = "Электронная почта имеет неправильный формат.";
+            vEmail.style.marginBottom = "20px";
+            validStatus = false;
+        }
+        if (fPassword.value !== fConfirmPassword.value) {
+            fPassword.style.border = validStyle;
+            fConfirmPassword.style.border = validStyle;
+            vPassword.textContent = "Пароли не совпадают."
+            vPassword.style.marginBottom = "20px";
+            validStatus = false;
+        }
+
+        if (validStatus === true) {
+            let response = await props.createUser(fLogin.value, fEmail.value, fPassword.value);
+            if (response.code === 401) {
+                let message = response['jsonObject']["message"];
+                validStatus = false;
+
+                if (message.indexOf('email') !== -1) {
+                    vEmail.textContent = "Данная электронная почта уже существует.";
+                    vEmail.style.marginBottom = "20px";
+                    fEmail.style.border = validStyle;
+                }
+
+                if (message.indexOf('login') !== -1) {
+                    vLogin.textContent = "Данный логин уже существует.";
+                    vLogin.style.marginBottom = "20px";
+                    fLogin.style.border = validStyle;
+                }
+            }
+        }
+
+        if (validStatus === true) {
+            props.refresh();
+            setShow(false);
+        }
     }
 
     const removeUser = () => {
+        //TODO: When we're adding a route.
         alert("Remove!");
         setShow(false);
+    }
+
+    const changingView = () => {
+        return (
+            <div style={
+                {
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center"
+                }
+            }>
+                <h3>Выберите роль: </h3>
+                <ButtonB text={"Пациент"} onClick={
+                    async () => {
+                        await props.assignRole(1, userForChanging["id"])
+                        props.refresh();
+                        setShow(false);
+                    }
+                }/>
+                <ButtonB text={"Исследователь"} onClick={
+                    async () => {
+                        await props.assignRole(2, userForChanging["id"])
+                        props.refresh();
+                        setShow(false);
+                    }
+                }/>
+                <ButtonB text={"Тьютор"} onClick={
+                    async () => {
+                        await props.assignRole(3, userForChanging["id"])
+                        props.refresh();
+                        setShow(false);
+                    }
+                }/>
+            </div>
+        )
+    }
+
+    const createUserView = () => {
+        return (
+            <div style={
+                {
+                    display: "flex",
+                    flexDirection: "column",
+                    padding: "0 10px"
+                }
+            }>
+                <label>Логин: </label>
+                <input id={"login"} type={"text"} style={
+                    {borderRadius: 40, border: "none", padding: "5px 15px", marginBottom: 10}
+                } required/>
+                <p id={"login-validate"} style={{height: "5px", marginBottom: 0, color: "#800000"}}/>
+                <label>Электронная почта: </label>
+                <input id={"email"} type={"email"} style={
+                    {borderRadius: 40, border: "none", padding: "5px 15px", marginBottom: 10}
+                } required/>
+                <p id={"email-validate"} style={{height: "5px", marginBottom: 0, color: "#800000"}}/>
+                <label>Пароль: </label>
+                <input id={"password"} type={"password"} style={
+                    {borderRadius: 40, border: "none", padding: "5px 15px", marginBottom: 15}
+                } required/>
+                <p id={"password-validate"} style={{height: "5px", marginBottom: 0, color: "#800000"}}/>
+                <label>Подтвердить пароль: </label>
+                <input id={"confirmPassword"} type={"password"} style={
+                    {borderRadius: 40, border: "none", padding: "5px 15px", marginBottom: 15}
+                } required/>
+                <p id={"confirmPassword-validate"}
+                   style={{height: "5px", marginBottom: 0, color: "#800000"}}/>
+            </div>
+        )
     }
 
     return (
@@ -85,37 +284,19 @@ export function VUsersAdmin(props) {
                 onHide={() => setShow(false)}
             >
                 <Modal.Header closeButton>
-                    <Modal.Title>{buttonStatus ? "Удаление пользователя" : "Добавление пользователя"}</Modal.Title>
+                    <Modal.Title>{
+                        userForChanging !== null ? "Изменение пользователя" :
+                            buttonStatus ? "Удаление пользователя" :
+                                "Добавление пользователя"
+                    }</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
                     {
-                        buttonStatus ? (
-                            <p> Удаление </p>
-                        ) : (
-                            <div style={
-                                {
-                                    display: "flex",
-                                    flexDirection: "column"
-                                }
-                            }>
-                                <label>Логин: </label>
-                                <input id={"login"} type={"text"} style={
-                                    {borderRadius: 40, border: "none", padding: "5px 15px"}
-                                }/>
-                                <label>Электронная почта: </label>
-                                <input id={"email"} type={"email"} style={
-                                    {borderRadius: 40, border: "none", padding: "5px 15px"}
-                                }/>
-                                <label>Пароль: </label>
-                                <input id={"password"} type={"password"} style={
-                                    {borderRadius: 40, border: "none", padding: "5px 15px"}
-                                }/>
-                                <label>Подтвердить пароль: </label>
-                                <input id={"confirmPassword"} type={"password"} style={
-                                    {borderRadius: 40, border: "none", padding: "5px 15px"}
-                                }/>
-                            </div>
-                        )
+                        buttonStatus === 0 ?
+                            createUserView() : buttonStatus === 1 ?
+                                createRemovingViewUsers() : buttonStatus === 2 ?
+                                "Вы уверен что хотите удалить пользователя c Логиным:" + userForRemoving["login"] + "?"
+                                : changingView()
                     }
                 </Modal.Body>
                 <Modal.Footer>
@@ -127,8 +308,13 @@ export function VUsersAdmin(props) {
                             justifyContent: "space-between"
                         }
                     }>
-                        <ButtonB text={"Закрыть"} onClick={() => setShow(false)}/>
-                        <ButtonB text={buttonStatus ? "Удалить" : "Добавить"} onClick={buttonStatus ? removeUser : addUser}/>
+                        <ButtonB text={"Отмена"} onClick={() => setShow(false)}/>
+                        {
+                            buttonStatus === 0 ?
+                                <ButtonB text={"Добавить"} onClick={addUser}/> :
+                                    buttonStatus === 2 ?
+                                        <ButtonB text={"Удалить"} onClick={removeUser}/> : null
+                        }
                     </div>
                 </Modal.Footer>
             </Modal>
@@ -145,10 +331,12 @@ export function VUsersAdmin(props) {
                     }>
                         <FilterBlock filters={filterList}/>
                         <ButtonA width={300} text={"Добавить +"} onClick={() => {
-                            setButtonStatus(false); setShow(true);
+                            setButtonStatus(0);
+                            setShow(true);
                         }}/>
                         <ButtonA width={300} text={"Удалить -"} onClick={() => {
-                            setButtonStatus(true); setShow(true);
+                            setButtonStatus(1);
+                            setShow(true);
                         }}/>
                     </Col>
                     <Col md={8}>
@@ -163,7 +351,7 @@ export function VUsersAdmin(props) {
                                         justifyContent: "space-evenly"
                                     }
                                 }>
-                                    {createViewUsers()}
+                                    {createBasicViewUsers()}
                                 </Col>
                             </Row>
                         </Container>

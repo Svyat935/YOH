@@ -1,6 +1,12 @@
 .info-block{
     width: 230px;
     margin-top: 40px;
+    cursor: pointer;
+    transition: .1s linear;
+}
+
+.info-block:hover{
+    transform: scale(1.1);
 }
 
 .info-block-content{

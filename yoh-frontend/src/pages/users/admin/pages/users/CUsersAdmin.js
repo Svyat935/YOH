@@ -39,6 +39,23 @@ export function CUsersAdmin() {
         return null
     }
 
+    const requestAssignRole = async (role, user_id) => {
+        return await fetch("/admins/assign/role", {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'token': context.token
+            },
+            body: JSON.stringify({
+                role: role,
+                user: user_id
+            })
+        }).then((response) => {
+            if (response.status === 200) return response.json();
+            else return null
+        });
+    }
+
     useEffect(async () => {
         if (context.token){
             let responseUsers = await requestUsers();
@@ -50,5 +67,10 @@ export function CUsersAdmin() {
         }
     }, [context, _])
 
-    return <VUsersAdmin users={users} createUser={requestCreateUser} refresh={() => rerun(new class{})}/>
+    return <VUsersAdmin
+        users={users}
+        createUser={requestCreateUser}
+        assignRole={requestAssignRole}
+        refresh={() => rerun(new class{})}
+    />
 }
