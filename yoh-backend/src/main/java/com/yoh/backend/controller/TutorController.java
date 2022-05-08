@@ -5,8 +5,10 @@ import com.yoh.backend.entity.*;
 import com.yoh.backend.request.*;
 import com.yoh.backend.response.*;
 import com.yoh.backend.service.*;
+import com.yoh.backend.util.ImageUtility;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 import java.util.ArrayList;
@@ -557,6 +559,83 @@ public class TutorController {
             return new JSONResponse(200, response);
         }
         catch (IllegalArgumentException e){
+            JsonObject exceptionResponse = new JsonObject();
+            exceptionResponse.put("message", e.getMessage());
+            return new JSONResponse(401, exceptionResponse);
+        }
+    }
+
+    @PostMapping(path = "/account/image/add")
+    public JSONResponse uploadTutorImage(@RequestHeader("token") String token, @RequestParam("image") MultipartFile file) {
+        try {
+            Tutor tutor = this.tutorService.getTutorByUser(this.userService.getUserById(this.userService.verifyToken(token)));
+            byte[] imageBytes = ImageUtility.compressImage(file.getBytes());
+            tutor.setImage(imageBytes);
+            this.tutorService.updateTutor(tutor);
+            JsonObject response = new JsonObject();
+            response.put("message", "Tutor account image was added");
+            return new JSONResponse(200, response);
+        }
+        catch (Exception e){
+            JsonObject exceptionResponse = new JsonObject();
+            exceptionResponse.put("message", e.getMessage());
+            return new JSONResponse(401, exceptionResponse);
+        }
+    }
+
+    @PutMapping(path = "/account/image/edit")
+    public JSONResponse updateTutorImage(@RequestHeader("token") String token, @RequestParam("image") MultipartFile file) {
+        try {
+            Tutor tutor = this.tutorService.getTutorByUser(this.userService.getUserById(this.userService.verifyToken(token)));
+            byte[] imageBytes = ImageUtility.compressImage(file.getBytes());
+            tutor.setImage(imageBytes);
+            this.tutorService.updateTutor(tutor);
+            JsonObject response = new JsonObject();
+            response.put("message", "Tutor account image was edited");
+            return new JSONResponse(200, response);
+        }
+        catch (Exception e){
+            JsonObject exceptionResponse = new JsonObject();
+            exceptionResponse.put("message", e.getMessage());
+            return new JSONResponse(401, exceptionResponse);
+        }
+    }
+
+    @DeleteMapping(path = "/account/image/delete")
+    public JSONResponse deleteTutorImage(@RequestHeader("token") String token) {
+        try {
+            Tutor tutor = this.tutorService.getTutorByUser(this.userService.getUserById(this.userService.verifyToken(token)));
+//            byte[] imageBytes = null;
+//            patient.setImage(imageBytes);
+            tutor.setImage(null);
+            this.tutorService.updateTutor(tutor);
+            JsonObject response = new JsonObject();
+            response.put("message", "Tutor account image was deleted");
+            return new JSONResponse(200, response);
+        }
+        catch (Exception e){
+            JsonObject exceptionResponse = new JsonObject();
+            exceptionResponse.put("message", e.getMessage());
+            return new JSONResponse(401, exceptionResponse);
+        }
+    }
+
+    @GetMapping(path = "/account/image")
+    public JSONResponse getTutorImage(@RequestHeader("token") String token) {
+        try {
+            Tutor tutor = this.tutorService.getTutorByUser(this.userService.getUserById(this.userService.verifyToken(token)));
+            if (tutor.getImage() != null) {
+                JsonObject response = new JsonObject();
+                response.put("image", ImageUtility.decompressImage(tutor.getImage()));
+                return new JSONResponse(200, response);
+            }
+            else {
+                JsonObject response = new JsonObject();
+                response.put("message", "Tutor does not have an image");
+                return new JSONResponse(200, response);
+            }
+        }
+        catch (Exception e){
             JsonObject exceptionResponse = new JsonObject();
             exceptionResponse.put("message", e.getMessage());
             return new JSONResponse(401, exceptionResponse);

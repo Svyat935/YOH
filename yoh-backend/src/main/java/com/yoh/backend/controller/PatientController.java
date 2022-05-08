@@ -280,7 +280,7 @@ public class PatientController {
         }
     }
 
-    @PutMapping(path = "/account/image")
+    @PostMapping(path = "/account/image/add")
     public JSONResponse uploadPatientImage(@RequestHeader("token") String token, @RequestParam("image") MultipartFile file) {
         try {
             Patient patient = this.patientService.getPatientByUser(this.userService.getUserById(this.userService.verifyToken(token)));
@@ -288,7 +288,44 @@ public class PatientController {
             patient.setImage(imageBytes);
             this.patientService.updatePatient(patient);
             JsonObject response = new JsonObject();
-            response.put("message", "Patient account was edited");
+            response.put("message", "Patient account image was added");
+            return new JSONResponse(200, response);
+        }
+        catch (Exception e){
+            JsonObject exceptionResponse = new JsonObject();
+            exceptionResponse.put("message", e.getMessage());
+            return new JSONResponse(401, exceptionResponse);
+        }
+    }
+
+    @PutMapping(path = "/account/image/edit")
+    public JSONResponse updatePatientImage(@RequestHeader("token") String token, @RequestParam("image") MultipartFile file) {
+        try {
+            Patient patient = this.patientService.getPatientByUser(this.userService.getUserById(this.userService.verifyToken(token)));
+            byte[] imageBytes = ImageUtility.compressImage(file.getBytes());
+            patient.setImage(imageBytes);
+            this.patientService.updatePatient(patient);
+            JsonObject response = new JsonObject();
+            response.put("message", "Patient account image was edited");
+            return new JSONResponse(200, response);
+        }
+        catch (Exception e){
+            JsonObject exceptionResponse = new JsonObject();
+            exceptionResponse.put("message", e.getMessage());
+            return new JSONResponse(401, exceptionResponse);
+        }
+    }
+
+    @DeleteMapping(path = "/account/image/delete")
+    public JSONResponse deletePatientImage(@RequestHeader("token") String token) {
+        try {
+            Patient patient = this.patientService.getPatientByUser(this.userService.getUserById(this.userService.verifyToken(token)));
+//            byte[] imageBytes = null;
+//            patient.setImage(imageBytes);
+            patient.setImage(null);
+            this.patientService.updatePatient(patient);
+            JsonObject response = new JsonObject();
+            response.put("message", "Patient account image was deleted");
             return new JSONResponse(200, response);
         }
         catch (Exception e){
