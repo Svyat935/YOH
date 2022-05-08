@@ -14,10 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
+import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -88,8 +85,11 @@ public class AdminController {
 
                 String pathFile = this.games_folder + file.getOriginalFilename();
                 System.out.println(pathFile);
-                Path path = Paths.get(pathFile);
-                Files.copy(file.getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);
+                try (OutputStream os = Files.newOutputStream(Paths.get(pathFile))) {
+                    os.write(file.getBytes());
+                }
+//                Path path = Paths.get(pathFile);
+//                Files.copy(file.getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);
 
 ////                System.out.println(21);
 ////                System.out.println(file.getName());
