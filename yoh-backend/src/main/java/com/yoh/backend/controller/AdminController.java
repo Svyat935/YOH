@@ -84,6 +84,8 @@ public class AdminController {
             if (!file.isEmpty()) {
 //                byte[] bytes = file.getBytes();
                 System.out.println("************************ 1 line *****************************");
+                System.out.println(file.getName());
+                System.out.println(file.getOriginalFilename());
                 String pathFile = this.games_folder + "/" + file.getOriginalFilename();
                 Path path = Paths.get(pathFile);
                 Files.copy(file.getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);
