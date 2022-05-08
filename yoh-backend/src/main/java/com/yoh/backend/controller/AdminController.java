@@ -87,54 +87,54 @@ public class AdminController {
                 System.out.println(this.games_folder);
                 String pathFile = this.games_folder + file.getOriginalFilename();
                 file.transferTo(new File(pathFile));
-//                System.out.println(21);
-//                System.out.println(file.getName());
-//                System.out.println(file.getOriginalFilename());
-//                System.out.println(21);
-//                String pathFile = this.games_folder + "/" + file.getOriginalFilename();
-//                System.out.println(21);
-//                Path path = Paths.get(pathFile);
-//                System.out.println(21);
-//                Files.copy(file.getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);
-//                System.out.println(21);
-
-//                String fileName = file.getOriginalFilename();
-//                String location = this.games_folder;
-//                File pathFile = new File(location);
-//                if (!pathFile.exists()) {
-//                    pathFile.mkdir();
+////                System.out.println(21);
+////                System.out.println(file.getName());
+////                System.out.println(file.getOriginalFilename());
+////                System.out.println(21);
+////                String pathFile = this.games_folder + "/" + file.getOriginalFilename();
+////                System.out.println(21);
+////                Path path = Paths.get(pathFile);
+////                System.out.println(21);
+////                Files.copy(file.getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);
+////                System.out.println(21);
+//
+////                String fileName = file.getOriginalFilename();
+////                String location = this.games_folder;
+////                File pathFile = new File(location);
+////                if (!pathFile.exists()) {
+////                    pathFile.mkdir();
+////                }
+////                pathFile = new File(location + fileName);
+////                file.transferTo(pathFile);
+//
+////                BufferedOutputStream stream =
+////                        new BufferedOutputStream(new FileOutputStream(new File(this.games_folder + "/" + file.getName())));
+////                stream.write(bytes);
+////                stream.close();
+//                System.out.println("************************ 2 line *****************************");
+////                try (ZipInputStream zin = new ZipInputStream(new FileInputStream(this.games_folder + "/" + file.getName()))){
+//                try (ZipInputStream zin = new ZipInputStream(new FileInputStream(pathFile))){
+//
+//                    ZipEntry entry;
+//                    String name;
+////                    Long size;
+//                    while ((entry = zin.getNextEntry()) != null) {
+//                        name = entry.getName();
+////                        size = entry.getSize();
+//
+//                        System.out.println("************************ 3 line *****************************");
+//                        FileOutputStream fout = new FileOutputStream(this.games_folder + "/" + name);
+//                        for (int c = zin.read(); c != -1; c = zin.read()) {
+//                            fout.write(c);
+//                        }
+//                        fout.flush();
+//                        zin.closeEntry();
+//                        fout.close();
+//                        Game game = new Game(name, null, this.wrapper + "/" + name);
+//                        this.gameService.createGame(game);
+//                    }
 //                }
-//                pathFile = new File(location + fileName);
-//                file.transferTo(pathFile);
-
-//                BufferedOutputStream stream =
-//                        new BufferedOutputStream(new FileOutputStream(new File(this.games_folder + "/" + file.getName())));
-//                stream.write(bytes);
-//                stream.close();
-                System.out.println("************************ 2 line *****************************");
-//                try (ZipInputStream zin = new ZipInputStream(new FileInputStream(this.games_folder + "/" + file.getName()))){
-                try (ZipInputStream zin = new ZipInputStream(new FileInputStream(pathFile))){
-
-                        ZipEntry entry;
-                    String name;
-//                    Long size;
-                    while ((entry = zin.getNextEntry()) != null) {
-                        name = entry.getName();
-//                        size = entry.getSize();
-
-                        System.out.println("************************ 3 line *****************************");
-                        FileOutputStream fout = new FileOutputStream(this.games_folder + "/" + name);
-                        for (int c = zin.read(); c != -1; c = zin.read()) {
-                            fout.write(c);
-                        }
-                        fout.flush();
-                        zin.closeEntry();
-                        fout.close();
-                        Game game = new Game(name, null, this.wrapper + "/" + name);
-                        this.gameService.createGame(game);
-                    }
-                }
-                new File(this.games_folder + "/" + file.getName()).delete();
+//                new File(this.games_folder + "/" + file.getName()).delete();
             }
             JsonObject response = new JsonObject();
             response.put("message", "games successfully uploaded");
