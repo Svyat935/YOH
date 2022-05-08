@@ -83,9 +83,10 @@ public class AdminController {
 
             ZipInputStream zis = new ZipInputStream(new ByteArrayInputStream(bytes));
             System.out.println("Processing archive with size=" + file.getSize());
-            ZipEntry entry = null;
+            ZipEntry entry = zis.getNextEntry();
+            System.out.println(entry);
 
-            while ((entry = zis.getNextEntry()) != null) {
+            while (entry != null) {
                 System.out.println("Processing file = " + entry.getName() + " is directory? " + entry.isDirectory());
             }
 
