@@ -1,5 +1,6 @@
 package com.yoh.backend.controller;
 
+import antlr.StringUtils;
 import com.github.cliftonlabs.json_simple.JsonObject;
 import com.yoh.backend.entity.*;
 import com.yoh.backend.request.*;
@@ -17,6 +18,10 @@ import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -79,14 +84,17 @@ public class AdminController {
             if (!file.isEmpty()) {
 //                byte[] bytes = file.getBytes();
                 System.out.println("************************ 1 line *****************************");
-                String fileName = file.getOriginalFilename();
-                String location = this.games_folder;
-                File pathFile = new File(location);
-                if (!pathFile.exists()) {
-                    pathFile.mkdir();
-                }
-                pathFile = new File(location + fileName);
-                file.transferTo(pathFile);
+                String pathFile = this.games_folder + "/" + file.getOriginalFilename();
+                Path path = Paths.get(pathFile);
+                Files.copy(file.getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);
+//                String fileName = file.getOriginalFilename();
+//                String location = this.games_folder;
+//                File pathFile = new File(location);
+//                if (!pathFile.exists()) {
+//                    pathFile.mkdir();
+//                }
+//                pathFile = new File(location + fileName);
+//                file.transferTo(pathFile);
 
 //                BufferedOutputStream stream =
 //                        new BufferedOutputStream(new FileOutputStream(new File(this.games_folder + "/" + file.getName())));
