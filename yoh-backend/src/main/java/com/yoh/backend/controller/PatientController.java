@@ -6,8 +6,10 @@ import com.yoh.backend.enums.Gender;
 import com.yoh.backend.request.*;
 import com.yoh.backend.response.*;
 import com.yoh.backend.service.*;
+import com.yoh.backend.util.ImageUtility;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 import java.text.SimpleDateFormat;
@@ -272,6 +274,46 @@ public class PatientController {
             return new JSONResponse(200, response);
         }
         catch (IllegalArgumentException e){
+            JsonObject exceptionResponse = new JsonObject();
+            exceptionResponse.put("message", e.getMessage());
+            return new JSONResponse(401, exceptionResponse);
+        }
+    }
+
+    @PutMapping(path = "/account/image")
+    public JSONResponse uploadPatientImage(@RequestHeader("token") String token, @RequestParam("image") MultipartFile file) {
+        try {
+            Patient patient = this.patientService.getPatientByUser(this.userService.getUserById(this.userService.verifyToken(token)));
+            byte[] imageBytes = ImageUtility.compressImage(file.getBytes());
+            patient.setImage(imageBytes);
+            this.patientService.updatePatient(patient);
+            JsonObject response = new JsonObject();
+            response.put("message", "Patient account was edited");
+            return new JSONResponse(200, response);
+        }
+        catch (Exception e){
+            JsonObject exceptionResponse = new JsonObject();
+            exceptionResponse.put("message", e.getMessage());
+            return new JSONResponse(401, exceptionResponse);
+        }
+    }
+
+    @GetMapping(path = "/account/image")
+    public JSONResponse getPatientImage(@RequestHeader("token") String token) {
+        try {
+            Patient patient = this.patientService.getPatientByUser(this.userService.getUserById(this.userService.verifyToken(token)));
+            if (patient.getImage() != null) {
+                JsonObject response = new JsonObject();
+                response.put("image", ImageUtility.decompressImage(patient.getImage()));
+                return new JSONResponse(200, response);
+            }
+            else {
+                JsonObject response = new JsonObject();
+                response.put("message", "Patient does not have an image");
+                return new JSONResponse(200, response);
+            }
+        }
+        catch (Exception e){
             JsonObject exceptionResponse = new JsonObject();
             exceptionResponse.put("message", e.getMessage());
             return new JSONResponse(401, exceptionResponse);

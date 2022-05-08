@@ -226,6 +226,18 @@ public class Patient {
     }
 
 
+    @Column(name = "image", unique = false, nullable = true, length = 100000)
+    private byte[] image;
+
+    public byte[] getImage() {
+        return this.image;
+    }
+
+    public void setImage(byte[] image) {
+        this.image = image;
+    }
+
+
     @Override
     public String toString() {
         return "Patient{" +
