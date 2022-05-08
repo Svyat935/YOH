@@ -79,8 +79,9 @@ public class AdminController {
         try {
             Admin admin = this.adminService.getAdminByUser(this.userService.getUserById(this.userService.verifyToken(token)));
             byte[] bytes = file.getBytes();
-            ZipInputStream zis = new ZipInputStream(file.getInputStream());
+//            ZipInputStream zis = new ZipInputStream(file.getInputStream());
 
+            ZipInputStream zis = new ZipInputStream(new ByteArrayInputStream(bytes));
             System.out.println("Processing archive with size=" + file.getSize());
             ZipEntry entry = null;
 
