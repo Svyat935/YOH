@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @RestController
@@ -33,7 +34,7 @@ public class AuthController {
 
     @PostMapping("/registration")
     public JSONResponse createUser(@Valid @RequestBody UserForCreatingRequest userRequest) {
-        User user = new User(userRequest.getLogin(), userRequest.getEmail(), userRequest.getPassword());
+        User user = new User(userRequest.getLogin(), userRequest.getEmail(), userRequest.getPassword(), LocalDateTime.now());
         try {
             this.userService.createUser(user);
             JsonObject response = new JsonObject();

@@ -31,7 +31,7 @@ public class Game {
     }
 
 
-    @Column(name = "name", length = 128, nullable = false)
+    @Column(name = "name", length = 128, nullable = false, unique = true)
     private String name;
 
     public String getName(){
