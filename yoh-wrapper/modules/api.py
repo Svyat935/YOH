@@ -1,4 +1,6 @@
 import json
+import psycopg2
+from prettytable import PrettyTable
 from datetime import datetime, date
 from flask import Blueprint, make_response, request, session, abort
 from werkzeug.exceptions import HTTPException
@@ -81,10 +83,31 @@ def send_statistic_route():
     headers = {
         'Content-Type': 'application/json',
         'token': session['user'],
-        'game': session['current_game']
+        'game': '6d7795cb-126c-49bd-babd-ed02b56e78e7'  # session['current_game']
     }
     send_url = 'http://yoh-backend:8080/patient/games/statistics/sending'
 
     post(send_url, data=json.dumps(response_params, default=json_serial), headers=headers)
 
     return make_response(json.dumps({'message': 'Success'}))
+
+
+@api_bp.route('/statistics')
+def statistics_route():
+    conn = psycopg2.connect(
+        host="yoh-db",
+        port="5432",
+        database="yoh",
+        user="postgres",
+        password="postgres")
+    cursor = conn.cursor()
+    cursor.execute('select * from game_statistics')
+    th = ['id', 'answer_number', 'date_action', 'type', 'game_id', 'patient_id']
+    td = cursor.fetchall()
+    columns = len(th)
+
+    table = PrettyTable(th)
+
+    for td_data in td:
+        table.add_row(td_data[:columns])
+    return make_response(table.get_html_string())
