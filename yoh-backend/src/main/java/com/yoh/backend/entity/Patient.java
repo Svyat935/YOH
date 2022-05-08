@@ -207,6 +207,7 @@ public class Patient {
 
 
     @OneToMany(mappedBy = "patient")
+    @LazyCollection(LazyCollectionOption.FALSE)
     private List<GameStatus> gameStatuses;
 
     public List<GameStatus> getGameStatuses() { return gameStatuses; }

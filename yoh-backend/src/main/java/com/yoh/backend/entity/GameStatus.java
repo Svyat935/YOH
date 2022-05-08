@@ -1,6 +1,7 @@
 package com.yoh.backend.entity;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
@@ -9,9 +10,11 @@ public class GameStatus {
 
     public GameStatus() { }
 
-    public GameStatus(Game game, Patient patient, String status) {
+    public GameStatus(Game game, Patient patient, Tutor tutor, LocalDateTime assignmentDate, String status) {
         this.game = game;
         this.patient = patient;
+        this.tutor = tutor;
+        this.assignmentDate = assignmentDate;
         this.status = status;
     }
 
@@ -40,7 +43,7 @@ public class GameStatus {
     }
 
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     private Patient patient;
 
     public Patient getPatient(){
@@ -49,6 +52,30 @@ public class GameStatus {
 
     public void setPatient(Patient patient){
         this.patient = patient;
+    }
+
+
+    @ManyToOne
+    private Tutor tutor;
+
+    public Tutor getTutor() {
+        return this.tutor;
+    }
+
+    public void setTutor(Tutor tutor) {
+        this.tutor = tutor;
+    }
+
+
+    @Column(name = "assignmentDate", nullable = true)
+    private LocalDateTime assignmentDate;
+
+    public LocalDateTime getAssignmentDate() {
+        return this.assignmentDate;
+    }
+
+    public void setAssignmentDate(LocalDateTime assignmentDate) {
+        this.assignmentDate = assignmentDate;
     }
 
 

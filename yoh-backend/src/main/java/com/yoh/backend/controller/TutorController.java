@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -37,6 +38,9 @@ public class TutorController {
 
     @Autowired
     private OrganizationService organizationService;
+
+    @Autowired
+    private GameStatusService gameStatusService;
 
     // [START] Patients
 
@@ -209,18 +213,21 @@ public class TutorController {
     @PostMapping(path = "/patients/games/adding")
     public JSONResponse addGameForPatient(@RequestHeader("token") String token, @Valid @RequestBody GameToPatient gameToPatient) {
         //TODO проверить что есть
+        //TODO проверить статусы
         try {
-            this.userService.verifyToken(token);
+            Tutor tutor = this.tutorService.getTutorByUser(this.userService.getUserById(this.userService.verifyToken(token)));
             Game game = this.gameService.getGameById(UUID.fromString(gameToPatient.getGame_id()));
             Patient patient = this.patientService.getPatientById(UUID.fromString(gameToPatient.getPatient_id()));
+            GameStatus gameStatus = new GameStatus(game, patient, tutor, LocalDateTime.now(), "Назначена");
             patient.getGames().add(game);
-
+            patient.getGameStatuses().add(gameStatus);
             game.getPatient().add(patient);
 
             this.patientService.updatePatient(patient);
 
             this.gameService.updateGame(game);
 
+            this.gameStatusService.createGameStatus(gameStatus);
             JsonObject response = new JsonObject();
             response.put("message", "Game was added");
             return new JSONResponse(200, response);
@@ -235,15 +242,29 @@ public class TutorController {
     @PostMapping(path = "/patients/games/new")
     public JSONResponse newGamesForPatient(@RequestHeader("token") String token, @Valid @RequestBody GamesToPatient gamesToPatient) {
         // TODO проверить работу
+        // TODO сделать добавление статусов
         try {
-            this.userService.verifyToken(token);
+            Tutor tutor = this.tutorService.getTutorByUser(this.userService.getUserById(this.userService.verifyToken(token)));
             Patient patient = this.patientService.getPatientById(UUID.fromString(gamesToPatient.getPatient_id()));
-            List<Game> listOfGames = new ArrayList<Game>();
-            for (String id : gamesToPatient.getGames_id()){
-                listOfGames.add(this.gameService.getGameById(UUID.fromString(id)));
+            for (String id : gamesToPatient.getGames_id()) {
+                Game game = this.gameService.getGameById(UUID.fromString(id));
+                GameStatus gameStatus = new GameStatus(game, patient, tutor, LocalDateTime.now(), "Назначена");
+                patient.getGames().add(game);
+                patient.getGameStatuses().add(gameStatus);
+                game.getPatient().add(patient);
+                this.gameService.updateGame(game);
+                this.gameStatusService.createGameStatus(gameStatus);
             }
-            patient.setGames(listOfGames);
             this.patientService.updatePatient(patient);
+//            Tutor tutor = this.tutorService.getTutorByUser(this.userService.getUserById(this.userService.verifyToken(token)));
+//            Patient patient = this.patientService.getPatientById(UUID.fromString(gamesToPatient.getPatient_id()));
+//            List<Game> listOfGames = new ArrayList<Game>();
+//            for (String id : gamesToPatient.getGames_id()){
+//                listOfGames.add(this.gameService.getGameById(UUID.fromString(id)));
+//            }
+//            patient.setGames(listOfGames);
+//            this.patientService.updatePatient(patient);
+
             JsonObject response = new JsonObject();
             response.put("message", "List of games was changed");
             return new JSONResponse(200, response);
