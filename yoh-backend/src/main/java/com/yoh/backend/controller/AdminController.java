@@ -84,9 +84,13 @@ public class AdminController {
             if (!file.isEmpty()) {
 //                byte[] bytes = file.getBytes();
                 System.out.println("************************ 1 line *****************************");
-                System.out.println(this.games_folder);
+//                System.out.println(this.games_folder);
+
                 String pathFile = this.games_folder + file.getOriginalFilename();
-                file.transferTo(new File(pathFile));
+                System.out.println(pathFile);
+                Path path = Paths.get(pathFile);
+                Files.copy(file.getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);
+
 ////                System.out.println(21);
 ////                System.out.println(file.getName());
 ////                System.out.println(file.getOriginalFilename());
@@ -123,7 +127,7 @@ public class AdminController {
 ////                        size = entry.getSize();
 //
 //                        System.out.println("************************ 3 line *****************************");
-//                        FileOutputStream fout = new FileOutputStream(this.games_folder + "/" + name);
+//                        FileOutputStream fout = new FileOutputStream(this.games_folder + name);
 //                        for (int c = zin.read(); c != -1; c = zin.read()) {
 //                            fout.write(c);
 //                        }
