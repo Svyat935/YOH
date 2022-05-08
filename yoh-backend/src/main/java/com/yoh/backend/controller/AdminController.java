@@ -77,15 +77,26 @@ public class AdminController {
         try {
             Admin admin = this.adminService.getAdminByUser(this.userService.getUserById(this.userService.verifyToken(token)));
             if (!file.isEmpty()) {
-                byte[] bytes = file.getBytes();
+//                byte[] bytes = file.getBytes();
                 System.out.println("************************ 1 line *****************************");
-                BufferedOutputStream stream =
-                        new BufferedOutputStream(new FileOutputStream(new File(this.games_folder + "/" + file.getName())));
-                stream.write(bytes);
-                stream.close();
+                String fileName = file.getOriginalFilename();
+                String location = this.games_folder;
+                File pathFile = new File(location);
+                if (!pathFile.exists()) {
+                    pathFile.mkdir();
+                }
+                pathFile = new File(location + fileName);
+                file.transferTo(pathFile);
+
+//                BufferedOutputStream stream =
+//                        new BufferedOutputStream(new FileOutputStream(new File(this.games_folder + "/" + file.getName())));
+//                stream.write(bytes);
+//                stream.close();
                 System.out.println("************************ 2 line *****************************");
-                try (ZipInputStream zin = new ZipInputStream(new FileInputStream(this.games_folder + "/" + file.getName()))){
-                    ZipEntry entry;
+//                try (ZipInputStream zin = new ZipInputStream(new FileInputStream(this.games_folder + "/" + file.getName()))){
+                try (ZipInputStream zin = new ZipInputStream(new FileInputStream(pathFile))){
+
+                        ZipEntry entry;
                     String name;
 //                    Long size;
                     while ((entry = zin.getNextEntry()) != null) {
