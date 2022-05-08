@@ -78,10 +78,12 @@ public class AdminController {
             Admin admin = this.adminService.getAdminByUser(this.userService.getUserById(this.userService.verifyToken(token)));
             if (!file.isEmpty()) {
                 byte[] bytes = file.getBytes();
+                System.out.println("************************ 1 line *****************************");
                 BufferedOutputStream stream =
                         new BufferedOutputStream(new FileOutputStream(new File(this.games_folder + "/" + file.getName())));
                 stream.write(bytes);
                 stream.close();
+                System.out.println("************************ 2 line *****************************");
                 try (ZipInputStream zin = new ZipInputStream(new FileInputStream(this.games_folder + "/" + file.getName()))){
                     ZipEntry entry;
                     String name;
@@ -90,6 +92,7 @@ public class AdminController {
                         name = entry.getName();
 //                        size = entry.getSize();
 
+                        System.out.println("************************ 3 line *****************************");
                         FileOutputStream fout = new FileOutputStream(this.games_folder + "/" + name);
                         for (int c = zin.read(); c != -1; c = zin.read()) {
                             fout.write(c);

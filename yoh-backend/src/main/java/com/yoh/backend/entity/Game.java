@@ -67,6 +67,7 @@ public class Game {
     }
 
 
+    //TODO переименовать
     @ManyToMany(mappedBy="games")
     @LazyCollection(LazyCollectionOption.FALSE)
     private List<Patient> patient;
