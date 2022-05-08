@@ -79,6 +79,7 @@ public class AdminController {
         try {
             Admin admin = this.adminService.getAdminByUser(this.userService.getUserById(this.userService.verifyToken(token)));
             byte[] bytes = file.getBytes();
+            byte[] buffer = new byte[4096];
 //            ZipInputStream zis = new ZipInputStream(file.getInputStream());
 
             ZipInputStream zis = new ZipInputStream(new ByteArrayInputStream(bytes));
@@ -88,7 +89,20 @@ public class AdminController {
 
             while (entry != null) {
                 System.out.println("Processing file = " + entry.getName() + " is directory? " + entry.isDirectory());
+                File newFile = new File(this.games_folder + entry.getName());
+                System.out.println("Unzipping to "+newFile.getAbsolutePath());
+                new File(newFile.getParent()).mkdirs();
+                FileOutputStream fos = new FileOutputStream(newFile);
+                int len;
+                while ((len = zis.read(buffer)) > 0) {
+                    fos.write(buffer, 0, len);
+                }
+                fos.close();
+                zis.closeEntry();
+                entry = zis.getNextEntry();
             }
+            zis.closeEntry();
+            zis.close();
 
 //            if (!file.isEmpty()) {
 ////                byte[] bytes = file.getBytes();
