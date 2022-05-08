@@ -5,5 +5,6 @@ export const UserContext = createContext({
     userRole: null,
     theme: null,
     login: null,
-    logout: null
+    logout: null,
+    info: null
 })

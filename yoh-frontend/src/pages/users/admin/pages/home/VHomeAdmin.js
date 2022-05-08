@@ -50,7 +50,7 @@ export function VHomeAdmin(props) {
                 <h3 style={{marginTop: 20}}>Последние зарегистрированные пользователи:</h3>
                 <div style={{display: "flex", justifyContent: "space-evenly"}}>
                     {view}
-                    {view.length === 5 ? <RightArrow onClick={() => router("/admin/users_page/")}/> : null}
+                    {view.length === 5 ? <RightArrow onClick={() => router("/user/admin/users/")}/> : null}
                 </div>
             </div>
         )
