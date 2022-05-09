@@ -33,21 +33,21 @@ public class GameController {
     @Autowired
     private GameService gameService;
 
-    @PostMapping(path = "/adding")
-    public JSONResponse addGame(@RequestHeader("token") String token, @Valid @RequestBody AddGamesRequest addGamesRequest) {
-        try{
-            Admin admin = this.adminService.getAdminByUser(this.userService.getUserById(this.userService.verifyToken(token)));
-            Game game = new Game(addGamesRequest.getName(), addGamesRequest.getDescription(), addGamesRequest.getUrl());
-            gameService.createGame(game);
-            JsonObject response = new JsonObject();
-            response.put("message", "Game was added.");
-            return new JSONResponse(200, response);
-        }catch (IllegalArgumentException e){
-            JsonObject exceptionResponse = new JsonObject();
-            exceptionResponse.put("message", e.getMessage());
-            return new JSONResponse(401, exceptionResponse);
-        }
-    }
+//    @PostMapping(path = "/adding")
+//    public JSONResponse addGame(@RequestHeader("token") String token, @Valid @RequestBody AddGamesRequest addGamesRequest) {
+//        try{
+//            Admin admin = this.adminService.getAdminByUser(this.userService.getUserById(this.userService.verifyToken(token)));
+//            Game game = new Game(addGamesRequest.getName(), addGamesRequest.getDescription(), addGamesRequest.getUrl());
+//            gameService.createGame(game);
+//            JsonObject response = new JsonObject();
+//            response.put("message", "Game was added.");
+//            return new JSONResponse(200, response);
+//        }catch (IllegalArgumentException e){
+//            JsonObject exceptionResponse = new JsonObject();
+//            exceptionResponse.put("message", e.getMessage());
+//            return new JSONResponse(401, exceptionResponse);
+//        }
+//    }
 
     @GetMapping(path = "/all")
     public JSONResponse allGames(@RequestHeader("token") String token) {
