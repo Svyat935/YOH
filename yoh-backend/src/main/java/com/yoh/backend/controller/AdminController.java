@@ -94,7 +94,7 @@ public class AdminController {
                 zipFile.extractAll(url);
                 tempFile.delete();
 
-                Game game = new Game(name, description, url, LocalDateTime.now());
+                Game game = new Game(name, description, wrapper+ "/" +name+"/", LocalDateTime.now());
                 this.gameService.createGame(game);
 
                 JsonObject response = new JsonObject();
