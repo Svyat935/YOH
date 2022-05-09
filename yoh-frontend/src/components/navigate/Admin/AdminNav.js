@@ -16,6 +16,7 @@ export function AdminNav() {
                 <li><Link className="menu__item" to={"/user/admin/"}>Домашняя страница</Link></li>
                 <li><Link className="menu__item" to={"/user/admin/users"}>Пользователи</Link></li>
                 <li><Link className="menu__item" to={"/user/admin/components"}>Компоненты</Link></li>
+                <li><Link className="menu__item" to={"/"}>Выйти</Link></li>
             </ul>
         </div>
     )
