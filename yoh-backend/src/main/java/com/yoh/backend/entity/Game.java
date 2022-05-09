@@ -4,6 +4,7 @@ import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -12,10 +13,11 @@ import java.util.UUID;
 public class Game {
     public Game() {}
 
-    public Game(String name, String description, String url) {
+    public Game(String name, String description, String url, LocalDateTime dateAdding) {
         this.name = name;
         this.description = description;
         this.url = url;
+        this.dateAdding = dateAdding;
     }
 
     @Id
@@ -64,6 +66,18 @@ public class Game {
 
     public void setUrl(String url){
         this.url = url;
+    }
+
+
+    @Column(name = "dateAdding", nullable = false)
+    private LocalDateTime dateAdding;
+
+    public LocalDateTime getDateAdding() {
+        return this.dateAdding;
+    }
+
+    public void setDateAdding(LocalDateTime dateAdding) {
+        this.dateAdding = dateAdding;
     }
 
 

@@ -61,6 +61,20 @@ public class GameRepository {
         }
     }
 
+    public Game getGameByName(String name) {
+        Session session = sessionFactory.openSession();
+        try {
+            Criteria criteria = session.createCriteria(Game.class)
+                    .add(Restrictions.eq("name", name));
+            List<Game> games = criteria.list();
+            return games.isEmpty() ? null : games.get(0);
+        }
+        finally {
+            session.close();
+        }
+    }
+
+
     public List<Game> getAllGames(){
         Session session = sessionFactory.openSession();
         try{

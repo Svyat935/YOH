@@ -8,6 +8,10 @@ services:
       context: ./yoh-backend
       dockerfile: Dockerfile
     restart: on-failure
+    volumes:
+      - type: bind
+        source: ${GAMES_FOLDER}
+        target: /app/games
     depends_on:
       - yoh-db
     links:

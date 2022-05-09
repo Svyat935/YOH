@@ -7,6 +7,8 @@ import com.yoh.backend.request.*;
 import com.yoh.backend.response.JSONResponse;
 import com.yoh.backend.response.UserInfoResponse;
 import com.yoh.backend.service.*;
+import net.lingala.zip4j.ZipFile;
+import net.lingala.zip4j.model.UnzipParameters;
 import org.aspectj.weaver.ast.Or;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -19,10 +21,13 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.zip.*;
+import net.lingala.zip4j.*;
+
 
 @RestController
 @RequestMapping("/admins")
@@ -75,107 +80,142 @@ public class AdminController {
     }
 
     @PostMapping(path = "/upload/games")
-    public JSONResponse uploadGames(@RequestHeader("token") String token, @RequestParam MultipartFile file) {
+    public JSONResponse uploadGames(@RequestHeader("token") String token, @RequestParam MultipartFile file, @RequestParam String name, @RequestParam String description) {
         try {
             Admin admin = this.adminService.getAdminByUser(this.userService.getUserById(this.userService.verifyToken(token)));
-            byte[] bytes = file.getBytes();
-            byte[] buffer = new byte[4096];
-//            ZipInputStream zis = new ZipInputStream(file.getInputStream());
+            if(this.gameService.checkGameByName(name)){
+                String url = "/app/games/" + name;
 
-            ZipInputStream zis = new ZipInputStream(new ByteArrayInputStream(bytes));
-            System.out.println("Processing archive with size=" + file.getSize());
-            ZipEntry entry = zis.getNextEntry();
-            System.out.println(entry);
+                //Unzip
+                File tempFile = File.createTempFile("prefix-", "-suffix");
+//            tempFile.deleteOnExit();
+                file.transferTo(tempFile);
+                ZipFile zipFile = new ZipFile(tempFile);
+                zipFile.extractAll(url);
+                tempFile.delete();
 
-            while (entry != null) {
-                System.out.println("Processing file = " + entry.getName() + " is directory? " + entry.isDirectory());
-                File newFile = new File(this.games_folder + entry.getName());
-                System.out.println("Unzipping to "+newFile.getAbsolutePath());
-                new File(newFile.getParent()).mkdirs();
-                FileOutputStream fos = new FileOutputStream(newFile);
-                int len;
-                while ((len = zis.read(buffer)) > 0) {
-                    fos.write(buffer, 0, len);
-                }
-                fos.close();
-                zis.closeEntry();
-                entry = zis.getNextEntry();
+                Game game = new Game(name, description, url, LocalDateTime.now());
+                this.gameService.createGame(game);
+
+                JsonObject response = new JsonObject();
+                response.put("message", "games successfully uploaded");
+                return new JSONResponse(200, response);
             }
-            zis.closeEntry();
-            zis.close();
+            else {
+                JsonObject response = new JsonObject();
+                response.put("message", "Game is already exists");
+                return new JSONResponse(401, response);
+            }
 
-//            if (!file.isEmpty()) {
-////                byte[] bytes = file.getBytes();
-//                System.out.println("************************ 1 line *****************************");
-////                System.out.println(this.games_folder);
+//            String destDir = "/app/games";
+//            ----------------------------------------------------
+//            File destDir = new File("/app/games");
 //
-//                String pathFile = this.games_folder + file.getOriginalFilename();
-//                System.out.println(pathFile);
-//                try (OutputStream os = Files.newOutputStream(Paths.get(pathFile))) {
-//                    os.write(file.getBytes());
+//            if(!destDir.exists()) destDir.mkdirs();
+//
+//            try {
+//                byte[] buffer = new byte[1024];
+//                ZipInputStream zis = new ZipInputStream(file.getInputStream());
+//                ZipEntry zipEntry = zis.getNextEntry();
+//                while (zipEntry != null) {
+//                    System.out.println(zipEntry);
+//                    File newFile = newFile(destDir, zipEntry);
+//                    if (zipEntry.isDirectory()) {
+//                        if (!newFile.isDirectory() && !newFile.mkdirs()) {
+//                            throw new IOException("Failed to create directory " + newFile);
+//                        }
+//                    } else {
+//                        // fix for Windows-created archives
+//                        File parent = newFile.getParentFile();
+//                        if (!parent.isDirectory() && !parent.mkdirs()) {
+//                            throw new IOException("Failed to create directory " + parent);
+//                        }
+//
+//                        // write file content
+//                        FileOutputStream fos = new FileOutputStream(newFile);
+//                        int len;
+//                        while ((len = zis.read(buffer)) > 0) {
+//                            fos.write(buffer, 0, len);
+//                        }
+//                        fos.close();
+//                    }
+//                    zipEntry = zis.getNextEntry();
 //                }
-////                Path path = Paths.get(pathFile);
-////                Files.copy(file.getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);
-//
-//////                System.out.println(21);
-//////                System.out.println(file.getName());
-//////                System.out.println(file.getOriginalFilename());
-//////                System.out.println(21);
-//////                String pathFile = this.games_folder + "/" + file.getOriginalFilename();
-//////                System.out.println(21);
-//////                Path path = Paths.get(pathFile);
-//////                System.out.println(21);
-//////                Files.copy(file.getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);
-//////                System.out.println(21);
-////
-//////                String fileName = file.getOriginalFilename();
-//////                String location = this.games_folder;
-//////                File pathFile = new File(location);
-//////                if (!pathFile.exists()) {
-//////                    pathFile.mkdir();
-//////                }
-//////                pathFile = new File(location + fileName);
-//////                file.transferTo(pathFile);
-////
-//////                BufferedOutputStream stream =
-//////                        new BufferedOutputStream(new FileOutputStream(new File(this.games_folder + "/" + file.getName())));
-//////                stream.write(bytes);
-//////                stream.close();
-////                System.out.println("************************ 2 line *****************************");
-//////                try (ZipInputStream zin = new ZipInputStream(new FileInputStream(this.games_folder + "/" + file.getName()))){
-////                try (ZipInputStream zin = new ZipInputStream(new FileInputStream(pathFile))){
-////
-////                    ZipEntry entry;
-////                    String name;
-//////                    Long size;
-////                    while ((entry = zin.getNextEntry()) != null) {
-////                        name = entry.getName();
-//////                        size = entry.getSize();
-////
-////                        System.out.println("************************ 3 line *****************************");
-////                        FileOutputStream fout = new FileOutputStream(this.games_folder + name);
-////                        for (int c = zin.read(); c != -1; c = zin.read()) {
-////                            fout.write(c);
-////                        }
-////                        fout.flush();
-////                        zin.closeEntry();
-////                        fout.close();
-////                        Game game = new Game(name, null, this.wrapper + "/" + name);
-////                        this.gameService.createGame(game);
-////                    }
-////                }
-////                new File(this.games_folder + "/" + file.getName()).delete();
+//                zis.closeEntry();
+//                zis.close();
 //            }
-////            ********
-            JsonObject response = new JsonObject();
-            response.put("message", "games successfully uploaded");
-            return new JSONResponse(200, response);
+//            catch (IOException e) {
+//                e.printStackTrace();
+//            }
+//            _________________________________________________________
+
+//            byte[] bytes = file.getBytes();
+//            File tempFile = File.createTempFile("prefix-", "-suffix");
+////            tempFile.deleteOnExit();
+//            file.transferTo(tempFile);
+//            ZipFile zipFile = new ZipFile(tempFile);
+//            System.out.println("+++++++++++++++++++");
+//            System.out.println(zipFile.getFileHeaders());
+//            System.out.println("+++++++++++++++++++");
+//            zipFile.extractFile("games_archive/2/", "/app/games/");
+////            zipFile.extractAll("/app/games");
+//
+////            ZipFile zipFile = new ZipFile(tempFile);
+////            zipFile
+//            tempFile.delete();
+
+
+
+
+
+
+//            Admin admin = this.adminService.getAdminByUser(this.userService.getUserById(this.userService.verifyToken(token)));
+//            byte[] bytes = file.getBytes();
+//            byte[] buffer = new byte[4096];
+////            ZipInputStream zis = new ZipInputStream(file.getInputStream());
+//
+//            ZipInputStream zis = new ZipInputStream(new ByteArrayInputStream(bytes));
+//            System.out.println("Processing archive with size=" + file.getSize());
+//            ZipEntry entry = zis.getNextEntry();
+//            System.out.println(entry);
+//
+//            while (entry != null) {
+//                System.out.println("Processing file = " + entry.getName() + " is directory? " + entry.isDirectory());
+//                File newFile = new File("games/" + entry.getName());
+//                System.out.println("Unzipping to "+newFile.getAbsolutePath());
+////                new File(newFile.getParent()).mkdirs();
+////                FileOutputStream fos = new FileOutputStream(newFile);
+////                int len;
+////                while ((len = zis.read(buffer)) > 0) {
+////                    fos.write(buffer, 0, len);
+////                }
+////                fos.close();
+//                zis.closeEntry();
+//                entry = zis.getNextEntry();
+//            }
+//            zis.closeEntry();
+//            zis.close();
+
+
         }
         catch (Exception e){
             JsonObject exceptionResponse = new JsonObject();
             exceptionResponse.put("message", e.getMessage());
             return new JSONResponse(401, exceptionResponse);
         }
+    }
+
+    public static File newFile(File destinationDir, ZipEntry zipEntry) throws IOException {
+        File destFile = new File(destinationDir, zipEntry.getName());
+
+        String destDirPath = destinationDir.getCanonicalPath();
+        String destFilePath = destFile.getCanonicalPath();
+
+        if (!destFilePath.startsWith(destDirPath + File.separator)) {
+            throw new IOException("Entry is outside of the target dir: " + zipEntry.getName());
+        }
+
+        return destFile;
     }
 
     @GetMapping(path = "/organizations/all")
