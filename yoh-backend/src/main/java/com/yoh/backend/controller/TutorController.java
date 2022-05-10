@@ -61,6 +61,8 @@ public class TutorController {
                     patientInfo.put("organization", null);
                 }
                 patientInfo.put("organizationString", patient.getOrganizationString());
+                patientInfo.put("login", patient.getUser().getLogin());
+                patientInfo.put("email", patient.getUser().getEmail());
                 patientList.add(patientInfo);
             }
             JsonObject response = new JsonObject();
@@ -91,6 +93,8 @@ public class TutorController {
                     patientInfo.put("organization", null);
                 }
                 patientInfo.put("organizationString", patient.getOrganizationString());
+                patientInfo.put("login", patient.getUser().getLogin());
+                patientInfo.put("email", patient.getUser().getEmail());
                 patientList.add(patientInfo);
             }
             JsonObject response = new JsonObject();
@@ -128,6 +132,8 @@ public class TutorController {
             response.put("birthDate", patient.getBirthDate());
             response.put("numberPhone", patient.getNumberPhone());
             response.put("address", patient.getAddress());
+            response.put("login", patient.getUser().getLogin());
+            response.put("email", patient.getUser().getEmail());
             ArrayList<JsonObject> gamesArray = new ArrayList<>();
             if (patient.getGames() != null){
                 for (Game game: patient.getGames()){
@@ -153,6 +159,8 @@ public class TutorController {
                 tutorInfo.put("organization", null);
             }
             tutorInfo.put("organizationString", tutor.getOrganizationString());
+            tutorInfo.put("login", tutor.getUser().getLogin());
+            tutorInfo.put("email", tutor.getUser().getEmail());
             response.put("tutor", tutorInfo);
             return new JSONResponse(200, response);
         }
@@ -554,6 +562,8 @@ public class TutorController {
             }
             else response.put("organization", null);
             response.put("organizationString",tutor.getOrganizationString());
+            response.put("login", tutor.getUser().getLogin());
+            response.put("email", tutor.getUser().getEmail());
             return new JSONResponse(200, response);
         }
         catch (IllegalArgumentException e){
@@ -576,9 +586,9 @@ public class TutorController {
             if (editTutorInfoRequest.getSecondName() != null) {
                 tutor.setSecondName(editTutorInfoRequest.getSecondName());
             }
-            if (editTutorInfoRequest.getOrganization() != null) {
-                tutor.setOrganization(this.organizationService.getOrganizationById(UUID.fromString(editTutorInfoRequest.getOrganization())));
-            }
+//            if (editTutorInfoRequest.getOrganization() != null) {
+//                tutor.setOrganization(this.organizationService.getOrganizationById(UUID.fromString(editTutorInfoRequest.getOrganization())));
+//            }
             this.tutorService.updateTutor(tutor);
             JsonObject response = new JsonObject();
             response.put("message", "Tutor account was edited");

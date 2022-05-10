@@ -259,6 +259,8 @@ public class PatientController {
 //            response.put("birthDate", patient.getBirthDate());
             response.put("numberPhone", patient.getNumberPhone());
             response.put("address", patient.getAddress());
+            response.put("login", patient.getUser().getLogin());
+            response.put("email", patient.getUser().getEmail());
 
             JsonObject tutorInfo = new JsonObject();
             Tutor tutor = patient.getTutor();
@@ -271,6 +273,8 @@ public class PatientController {
                     tutorInfo.put("organization", tutor.getOrganization().getId().toString());
                 else tutorInfo.put("organization", null);
                 tutorInfo.put("organizationString", tutor.getOrganizationString());
+                tutorInfo.put("login", tutor.getUser().getLogin());
+                tutorInfo.put("email", tutor.getUser().getEmail());
                 response.put("tutor", tutorInfo);
             }
             return new JSONResponse(200, response);
@@ -375,9 +379,9 @@ public class PatientController {
             if (editPatientInfoRequest.getGender() != null){
                 patient.setGender(Gender.valueOf(editPatientInfoRequest.getGender()));
             }
-            if (editPatientInfoRequest.getOrganization() != null){
-                patient.setOrganization(this.organizationService.getOrganizationById(UUID.fromString(editPatientInfoRequest.getOrganization())));
-            }
+//            if (editPatientInfoRequest.getOrganization() != null){
+//                patient.setOrganization(this.organizationService.getOrganizationById(UUID.fromString(editPatientInfoRequest.getOrganization())));
+//            }
             if (editPatientInfoRequest.getBirthDate() != null){
                 patient.setBirthDate(new SimpleDateFormat("yyyy-MM-dd").parse(editPatientInfoRequest.getBirthDate()));
             }
