@@ -60,6 +60,7 @@ public class TutorController {
                 else {
                     patientInfo.put("organization", null);
                 }
+                patientInfo.put("organizationString", patient.getOrganizationString());
                 patientList.add(patientInfo);
             }
             JsonObject response = new JsonObject();
@@ -89,6 +90,7 @@ public class TutorController {
                 else {
                     patientInfo.put("organization", null);
                 }
+                patientInfo.put("organizationString", patient.getOrganizationString());
                 patientList.add(patientInfo);
             }
             JsonObject response = new JsonObject();
@@ -122,6 +124,7 @@ public class TutorController {
             else {
                 response.put("organization", null);
             }
+            response.put("organization", patient.getOrganizationString());
             response.put("birthDate", patient.getBirthDate());
             response.put("numberPhone", patient.getNumberPhone());
             response.put("address", patient.getAddress());
@@ -149,6 +152,7 @@ public class TutorController {
             else {
                 tutorInfo.put("organization", null);
             }
+            tutorInfo.put("organizationString", tutor.getOrganizationString());
             response.put("tutor", tutorInfo);
             return new JSONResponse(200, response);
         }
@@ -549,6 +553,7 @@ public class TutorController {
                 response.put("organization", tutor.getOrganization().getId().toString());
             }
             else response.put("organization", null);
+            response.put("organizationString",tutor.getOrganizationString());
             return new JSONResponse(200, response);
         }
         catch (IllegalArgumentException e){

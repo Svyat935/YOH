@@ -252,6 +252,7 @@ public class PatientController {
             if (patient.getOrganization() != null)
                 response.put("organization", patient.getOrganization().getId().toString());
             else response.put("organization", null);
+            response.put("organizationString", patient.getOrganizationString());
             if (patient.getBirthDate() != null)
                 response.put("birthDate", patient.getBirthDate().toString());
             else response.put("birthDate", null);
@@ -269,6 +270,7 @@ public class PatientController {
                 if (tutor.getOrganization() != null)
                     tutorInfo.put("organization", tutor.getOrganization().getId().toString());
                 else tutorInfo.put("organization", null);
+                tutorInfo.put("organizationString", tutor.getOrganizationString());
                 response.put("tutor", tutorInfo);
             }
             return new JSONResponse(200, response);
