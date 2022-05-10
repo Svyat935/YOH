@@ -4,6 +4,7 @@ import com.yoh.backend.entity.*;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.criterion.MatchMode;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -32,12 +33,14 @@ public class UserRepository {
         }
     }
 
-    public List<User> getAllUsersByAdmin() {
+    public List<User> getAllUsersByAdmin(Integer role) {
         //TODO подогнать под общий вид
         Session session = sessionFactory.openSession();
         try {
             Criteria criteria = session.createCriteria(User.class)
                     .add(Restrictions.ne("role", 0));
+            if (role != -1)
+                criteria.add(Restrictions.eq("role", role));
             List<User> users = criteria.list();
             return users;
         }

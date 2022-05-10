@@ -60,12 +60,14 @@ public class AdminController {
     private GameService gameService;
 
     @GetMapping(path = "/users/all")
-    public JSONResponse getUsers(@RequestHeader("token") String token) {
+    public JSONResponse getUsers(@RequestHeader("token") String token,
+                                 @RequestParam(value = "role", required = false, defaultValue = "-1") String role,
+                                 @RequestParam(value = "regex", required = false, defaultValue = "") String regex) {
         try {
             Admin admin = this.adminService.getAdminByUser(this.userService.getUserById(this.userService.verifyToken(token)));
             JsonObject response = new JsonObject();
             List<UserInfoResponse> responseList = new ArrayList<>();
-            for (User user: this.userService.getAllUsersByAdmin()) {
+            for (User user: this.userService.getAllUsersByAdmin(Integer.parseInt(role), regex)) {
                 responseList.add(new UserInfoResponse(user));
             }
 //            response.put("userList", this.userService.getAllUsers());
