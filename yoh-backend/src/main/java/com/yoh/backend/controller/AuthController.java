@@ -34,7 +34,7 @@ public class AuthController {
 
     @PostMapping("/registration")
     public JSONResponse createUser(@Valid @RequestBody UserForCreatingRequest userRequest) {
-        User user = new User(userRequest.getLogin(), userRequest.getEmail(), userRequest.getPassword(), LocalDateTime.now());
+        User user = new User(userRequest.getLogin(), userRequest.getEmail(), userRequest.getPassword(), LocalDateTime.now(), 4);
         try {
             this.userService.createUser(user);
             JsonObject response = new JsonObject();
@@ -56,11 +56,13 @@ public class AuthController {
             String token = this.userService.generateToken(user.getId());
             response.put("token", token);
             response.put("role", role);
+            //TODO опитимизация
             String roleString = "NotAssigned";
             if (role != null){
                 roleString = role == 0 ? "Admin" :
                         role == 1 ? "Patient" :
-                                role == 2 ? "Researcher" : "Tutor";
+                                role == 2 ? "Researcher" :
+                                        role == 3 ? "Tutor" : "Not assigned";
             }
             response.put("roleString", roleString);
             return new JSONResponse(200, response);
