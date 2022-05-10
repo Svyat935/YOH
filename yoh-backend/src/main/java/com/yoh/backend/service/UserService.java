@@ -39,8 +39,13 @@ public class UserService {
         userRepository.createUser(user);
     }
 
+    //Не применяется
     public List<User> getAllUsers() {
         return userRepository.getAllUsers();
+    }
+
+    public List<User> getAllUsersByAdmin() {
+        return userRepository.getAllUsersByAdmin();
     }
 
     public void updateUser(User user) throws IllegalArgumentException{

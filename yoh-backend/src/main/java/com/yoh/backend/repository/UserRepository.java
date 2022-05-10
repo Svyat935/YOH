@@ -32,6 +32,20 @@ public class UserRepository {
         }
     }
 
+    public List<User> getAllUsersByAdmin() {
+        //TODO подогнать под общий вид
+        Session session = sessionFactory.openSession();
+        try {
+            Criteria criteria = session.createCriteria(User.class)
+                    .add(Restrictions.ne("role", 0));
+            List<User> users = criteria.list();
+            return users;
+        }
+        finally {
+            session.close();
+        }
+    }
+
     public void deleteUser(User user) {
         Session session = sessionFactory.openSession();
         try {

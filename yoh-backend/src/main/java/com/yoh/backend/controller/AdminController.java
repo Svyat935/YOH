@@ -65,7 +65,7 @@ public class AdminController {
             Admin admin = this.adminService.getAdminByUser(this.userService.getUserById(this.userService.verifyToken(token)));
             JsonObject response = new JsonObject();
             List<UserInfoResponse> responseList = new ArrayList<>();
-            for (User user: this.userService.getAllUsers()) {
+            for (User user: this.userService.getAllUsersByAdmin()) {
                 responseList.add(new UserInfoResponse(user));
             }
 //            response.put("userList", this.userService.getAllUsers());
