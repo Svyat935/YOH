@@ -47,7 +47,7 @@ public class UserService {
 
     public List<User> getAllUsersByAdmin(Integer role, String regex) {
         List<User> unfilteredList = userRepository.getAllUsersByAdmin(role);
-        return unfilteredList.stream().filter(i -> i.getLogin().toLowerCase().contains(regex)).collect(Collectors.toList());
+        return unfilteredList.stream().filter(i -> i.getLogin().toLowerCase().contains(regex.toLowerCase())).collect(Collectors.toList());
     }
 
     public void updateUser(User user) throws IllegalArgumentException{
