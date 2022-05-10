@@ -11,10 +11,10 @@ export function TutorNav() {
             </label>
 
             <ul className="menu__box">
-                <li><Link className="menu__item" to={"/user/tutor/"}>Домашняя страница</Link></li>
-                <li><Link className="menu__item" to={"/user/tutor/account"}>Личный кабинет</Link></li>
-                <li><Link className="menu__item" to={"/user/tutor/users"}>Пользователи</Link></li>
-                <li><Link className="menu__item" to={"/user/tutor/chat"}>Чат</Link></li>
+                <li><Link className="menu__item" to={"/user/patient/"}>Домашняя страница</Link></li>
+                <li><Link className="menu__item" to={"/user/patient/account"}>Личный кабинет</Link></li>
+                <li><Link className="menu__item" to={"/user/patient/users"}>Пользователи</Link></li>
+                <li><Link className="menu__item" to={"/user/patient/chat"}>Чат</Link></li>
                 <li><Link className="menu__item" to={"/"}>Выйти</Link></li>
             </ul>
         </div>

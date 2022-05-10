@@ -20,14 +20,57 @@ export function CComponents() {
         });
     }
 
+    const requestSendGames = async (formData) => {
+        return await fetch("/admins/upload/games/", {
+            method: 'POST',
+            headers: {'token': context.token},
+            body: formData
+        }).then((response) => {
+            if (response.status === 200) return response.json()
+            else return null;
+        });
+    }
+
+    const requestRemoveGame = async (game_id) => {
+        return await fetch("/games/removing/", {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+                'token': context.token
+            },
+            body: JSON.stringify({game_id: game_id})
+        }).then((response) => {
+            if (response.status === 200) return response.json()
+            else return null;
+        });
+    }
+
+    const requestChangeGame = async (body) => {
+        /*
+        game_id: required
+        name: Optional,
+        description: Optional
+        */
+        return await fetch("/games/changing/", {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                'token': context.token
+            },
+            body: JSON.stringify(body)
+        }).then((response) => {
+            if (response.status === 200) return response.json()
+            else return null;
+        });
+    }
+
     useEffect(async () => {
         if (context.token){
             let responseGames = await requestGames();
 
-            console.log(responseGames["jsonObject"]["games"]);
             if (responseGames !== null){
                 responseGames = responseGames["jsonObject"]["games"];
-                setGames(responseGames);
+                if (responseGames !== undefined) setGames(responseGames);
             }
         }
     }, [context, _])
@@ -35,5 +78,9 @@ export function CComponents() {
     return <VComponents
         games={games}
         refresh={() => rerun(new class{})}
+        sendGames={requestSendGames}
+        removeGame={requestRemoveGame}
+        changeGame={requestChangeGame}
+        context={context}
     />
 }

@@ -3,12 +3,12 @@ import {Container} from "react-bootstrap";
 import Col from "react-bootstrap/Col";
 import Row from "react-bootstrap/Row";
 import {Back} from "../../../../../components/back/Back";
-import {TutorNav} from "../../../../../components/navigate/Patient/TutorNav";
 import {InfoBlock} from "../../../../../components/infoBlock/InfoBlock";
 import gameStub from "../../../../../assets/gameStub.jpg";
 import {FilterBlock} from "../../../../../components/filterBlock/FilterBlock";
 import {ButtonA} from "../../../../../components/buttons/ButtonA/ButtonA";
 import {SearchInput} from "../../../../../components/searchInput/SearchInput";
+import {PatientNav} from "../../../../../components/navigate/Patient/PatientNav";
 
 export function VHomePatient(props) {
     let filterList =[
@@ -48,7 +48,7 @@ export function VHomePatient(props) {
     }
 
     return (
-        <Back navPanel={<TutorNav/>}>
+        <Back navPanel={<PatientNav/>}>
             <Container style={{marginTop: 20}}>
                 <Row>
                     <h1 style={{fontWeight: "bold"}}>Добрый день!</h1>
