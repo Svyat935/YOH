@@ -50,10 +50,11 @@ public class GameController {
 //    }
 
     @GetMapping(path = "/all")
-    public JSONResponse allGames(@RequestHeader("token") String token) {
+    public JSONResponse allGames(@RequestHeader("token") String token,
+                                 @RequestParam(value = "regex", required = false, defaultValue = "") String regex) {
         try{
             User user = this.userService.getUserById(this.userService.verifyToken(token));
-            List<Game> games = this.gameService.getAllGames();
+            List<Game> games = this.gameService.getAllGamesFiltered(regex);
             JsonArray jsonArray = new JsonArray();
             if (games != null){
                 for(Game game: games){
