@@ -20,6 +20,7 @@ import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 public class UserService {
@@ -44,8 +45,9 @@ public class UserService {
         return userRepository.getAllUsers();
     }
 
-    public List<User> getAllUsersByAdmin() {
-        return userRepository.getAllUsersByAdmin();
+    public List<User> getAllUsersByAdmin(Integer role, String regex) {
+        List<User> unfilteredList = userRepository.getAllUsersByAdmin(role);
+        return unfilteredList.stream().filter(i -> i.getLogin().toLowerCase().contains(regex.toLowerCase())).collect(Collectors.toList());
     }
 
     public void updateUser(User user) throws IllegalArgumentException{

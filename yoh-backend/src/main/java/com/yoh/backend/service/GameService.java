@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 public class GameService {
@@ -46,7 +47,12 @@ public class GameService {
         );
     }
 
-    public List<Game> getAllGames(){
+    public List<Game> getAllGames() {
         return gameRepository.getAllGames();
+    }
+
+    public List<Game> getAllGamesFiltered(String regex) {
+        List<Game> unfilteredList = gameRepository.getAllGames();
+        return unfilteredList.stream().filter(i -> i.getName().toLowerCase().contains(regex.toLowerCase())).collect(Collectors.toList());
     }
 }

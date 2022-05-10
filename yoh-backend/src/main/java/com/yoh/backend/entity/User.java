@@ -9,11 +9,12 @@ import java.util.UUID;
 public class User {
     public User() {}
 
-    public User(String login, String email, String password, LocalDateTime dateRegistration) {
+    public User(String login, String email, String password, LocalDateTime dateRegistration, Integer role) {
         this.login = login;
         this.email = email;
         this.password = password;
         this.dateRegistration = dateRegistration;
+        this.role = role;
     }
 
     public User(String login, String email, String password, Integer role) {
