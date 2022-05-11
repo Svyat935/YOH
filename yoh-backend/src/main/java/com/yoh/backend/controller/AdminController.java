@@ -8,6 +8,7 @@ import com.yoh.backend.request.*;
 import com.yoh.backend.response.JSONResponse;
 import com.yoh.backend.response.UserInfoResponse;
 import com.yoh.backend.service.*;
+import com.yoh.backend.util.ImageUtility;
 import net.lingala.zip4j.ZipFile;
 import net.lingala.zip4j.model.UnzipParameters;
 import org.aspectj.weaver.ast.Or;
@@ -164,7 +165,8 @@ public class AdminController {
     public JSONResponse uploadGames(@RequestHeader("token") String token,
                                     @RequestParam MultipartFile file,
                                     @RequestParam String name,
-                                    @RequestParam String description) {
+                                    @RequestParam String description,
+                                    @RequestParam(value = "image", required = false, defaultValue = "") MultipartFile image) {
         try {
             Admin admin = this.adminService.getAdminByUser(this.userService.getUserById(this.userService.verifyToken(token)));
             if(this.gameService.checkGameByName(name)){
@@ -177,8 +179,11 @@ public class AdminController {
                 ZipFile zipFile = new ZipFile(tempFile);
                 zipFile.extractAll(url);
                 tempFile.delete();
-
                 Game game = new Game(name, description, wrapper+ "/" +name+"/", LocalDateTime.now());
+                if (!image.equals("")) {
+                    byte[] imageBytes = ImageUtility.compressImage(file.getBytes());
+                    game.setImage(imageBytes);
+                }
                 this.gameService.createGame(game);
 
                 JsonObject response = new JsonObject();
@@ -190,6 +195,27 @@ public class AdminController {
                 response.put("message", "Game is already exists");
                 return new JSONResponse(401, response);
             }
+        }
+        catch (Exception e){
+            JsonObject exceptionResponse = new JsonObject();
+            exceptionResponse.put("message", e.getMessage());
+            return new JSONResponse(401, exceptionResponse);
+        }
+    }
+
+    @PostMapping(path = "/upload/games/image")
+    public JSONResponse uploadTutorImage(@RequestHeader("token") String token,
+                                         @RequestParam("gameID") String gameID,
+                                         @RequestParam("image") MultipartFile file){
+        try {
+            Admin admin = this.adminService.getAdminByUser(this.userService.getUserById(this.userService.verifyToken(token)));
+            Game game = this.gameService.getGameById(UUID.fromString(gameID));
+            byte[] imageBytes = ImageUtility.compressImage(file.getBytes());
+            game.setImage(imageBytes);
+            this.gameService.updateGame(game);
+            JsonObject response = new JsonObject();
+            response.put("message", "Game image was edited");
+            return new JSONResponse(200, response);
         }
         catch (Exception e){
             JsonObject exceptionResponse = new JsonObject();

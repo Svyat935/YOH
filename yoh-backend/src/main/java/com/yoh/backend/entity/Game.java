@@ -81,6 +81,17 @@ public class Game {
     }
 
 
+    @Column(name = "image", unique = false, nullable = true, length = 100000)
+    private byte[] image;
+
+    public byte[] getImage() {
+        return this.image;
+    }
+
+    public void setImage(byte[] image) {
+        this.image = image;
+    }
+
     //TODO переименовать
     @ManyToMany(mappedBy="games")
     @LazyCollection(LazyCollectionOption.FALSE)

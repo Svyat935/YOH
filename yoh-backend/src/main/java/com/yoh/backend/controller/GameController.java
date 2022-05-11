@@ -13,6 +13,7 @@ import com.yoh.backend.response.JSONResponse;
 import com.yoh.backend.service.AdminService;
 import com.yoh.backend.service.GameService;
 import com.yoh.backend.service.UserService;
+import com.yoh.backend.util.ImageUtility;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -63,6 +64,7 @@ public class GameController {
                     response.put("name", game.getName());
                     response.put("description", game.getDescription());
                     response.put("url", game.getUrl());
+                    response.put("image", ImageUtility.decompressImage(game.getImage()));
                     jsonArray.add(response);
                 }
             }

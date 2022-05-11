@@ -677,6 +677,7 @@ public class TutorController {
         }
     }
 
+    //TODO Подумать над удалением
     @PutMapping(path = "/account/image/edit")
     public JSONResponse updateTutorImage(@RequestHeader("token") String token,
                                          @RequestParam("image") MultipartFile file) {
