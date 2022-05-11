@@ -77,7 +77,8 @@ public class GameController {
     }
 
     @DeleteMapping(path = "/removing")
-    public JSONResponse removeGame(@RequestHeader("token") String token, @Valid @RequestBody GameToRemove gameToRemove) {
+    public JSONResponse removeGame(@RequestHeader("token") String token,
+                                   @Valid @RequestBody GameToRemove gameToRemove) {
         try {
             //TODO Отцепление от пациентов, проверить возможно работает
             Admin admin = this.adminService.getAdminByUser(this.userService.getUserById(this.userService.verifyToken(token)));
@@ -95,7 +96,8 @@ public class GameController {
     }
 
     @PutMapping(path = "/changing")
-    public JSONResponse changeGame(@RequestHeader("token") String token, @Valid @RequestBody EditGameRequest editGameRequest) {
+    public JSONResponse changeGame(@RequestHeader("token") String token,
+                                   @Valid @RequestBody EditGameRequest editGameRequest) {
         try {
             Admin admin = this.adminService.getAdminByUser(this.userService.getUserById(this.userService.verifyToken(token)));
             Game game = this.gameService.getGameById(UUID.fromString(editGameRequest.getGame_id()));

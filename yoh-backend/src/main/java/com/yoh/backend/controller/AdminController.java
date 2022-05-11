@@ -161,7 +161,10 @@ public class AdminController {
     }
 
     @PostMapping(path = "/upload/games")
-    public JSONResponse uploadGames(@RequestHeader("token") String token, @RequestParam MultipartFile file, @RequestParam String name, @RequestParam String description) {
+    public JSONResponse uploadGames(@RequestHeader("token") String token,
+                                    @RequestParam MultipartFile file,
+                                    @RequestParam String name,
+                                    @RequestParam String description) {
         try {
             Admin admin = this.adminService.getAdminByUser(this.userService.getUserById(this.userService.verifyToken(token)));
             if(this.gameService.checkGameByName(name)){
@@ -187,97 +190,6 @@ public class AdminController {
                 response.put("message", "Game is already exists");
                 return new JSONResponse(401, response);
             }
-
-//            String destDir = "/app/games";
-//            ----------------------------------------------------
-//            File destDir = new File("/app/games");
-//
-//            if(!destDir.exists()) destDir.mkdirs();
-//
-//            try {
-//                byte[] buffer = new byte[1024];
-//                ZipInputStream zis = new ZipInputStream(file.getInputStream());
-//                ZipEntry zipEntry = zis.getNextEntry();
-//                while (zipEntry != null) {
-//                    System.out.println(zipEntry);
-//                    File newFile = newFile(destDir, zipEntry);
-//                    if (zipEntry.isDirectory()) {
-//                        if (!newFile.isDirectory() && !newFile.mkdirs()) {
-//                            throw new IOException("Failed to create directory " + newFile);
-//                        }
-//                    } else {
-//                        // fix for Windows-created archives
-//                        File parent = newFile.getParentFile();
-//                        if (!parent.isDirectory() && !parent.mkdirs()) {
-//                            throw new IOException("Failed to create directory " + parent);
-//                        }
-//
-//                        // write file content
-//                        FileOutputStream fos = new FileOutputStream(newFile);
-//                        int len;
-//                        while ((len = zis.read(buffer)) > 0) {
-//                            fos.write(buffer, 0, len);
-//                        }
-//                        fos.close();
-//                    }
-//                    zipEntry = zis.getNextEntry();
-//                }
-//                zis.closeEntry();
-//                zis.close();
-//            }
-//            catch (IOException e) {
-//                e.printStackTrace();
-//            }
-//            _________________________________________________________
-
-//            byte[] bytes = file.getBytes();
-//            File tempFile = File.createTempFile("prefix-", "-suffix");
-////            tempFile.deleteOnExit();
-//            file.transferTo(tempFile);
-//            ZipFile zipFile = new ZipFile(tempFile);
-//            System.out.println("+++++++++++++++++++");
-//            System.out.println(zipFile.getFileHeaders());
-//            System.out.println("+++++++++++++++++++");
-//            zipFile.extractFile("games_archive/2/", "/app/games/");
-////            zipFile.extractAll("/app/games");
-//
-////            ZipFile zipFile = new ZipFile(tempFile);
-////            zipFile
-//            tempFile.delete();
-
-
-
-
-
-
-//            Admin admin = this.adminService.getAdminByUser(this.userService.getUserById(this.userService.verifyToken(token)));
-//            byte[] bytes = file.getBytes();
-//            byte[] buffer = new byte[4096];
-////            ZipInputStream zis = new ZipInputStream(file.getInputStream());
-//
-//            ZipInputStream zis = new ZipInputStream(new ByteArrayInputStream(bytes));
-//            System.out.println("Processing archive with size=" + file.getSize());
-//            ZipEntry entry = zis.getNextEntry();
-//            System.out.println(entry);
-//
-//            while (entry != null) {
-//                System.out.println("Processing file = " + entry.getName() + " is directory? " + entry.isDirectory());
-//                File newFile = new File("games/" + entry.getName());
-//                System.out.println("Unzipping to "+newFile.getAbsolutePath());
-////                new File(newFile.getParent()).mkdirs();
-////                FileOutputStream fos = new FileOutputStream(newFile);
-////                int len;
-////                while ((len = zis.read(buffer)) > 0) {
-////                    fos.write(buffer, 0, len);
-////                }
-////                fos.close();
-//                zis.closeEntry();
-//                entry = zis.getNextEntry();
-//            }
-//            zis.closeEntry();
-//            zis.close();
-
-
         }
         catch (Exception e){
             JsonObject exceptionResponse = new JsonObject();
@@ -315,7 +227,8 @@ public class AdminController {
     }
 
     @PostMapping("/organizations/add")
-    public JSONResponse createOrganization(@RequestHeader("token") String token, @Valid @RequestBody OrganizationForAdding organizationForAdding) {
+    public JSONResponse createOrganization(@RequestHeader("token") String token,
+                                           @Valid @RequestBody OrganizationForAdding organizationForAdding) {
         try {
             Admin admin = this.adminService.getAdminByUser(this.userService.getUserById(this.userService.verifyToken(token)));
             Organization organization = new Organization(organizationForAdding.getName(), organizationForAdding.getAddress(), organizationForAdding.getPhone(),
@@ -332,7 +245,8 @@ public class AdminController {
     }
 
     @DeleteMapping("/organizations/delete")
-    public JSONResponse deleteOrganization(@RequestHeader("token") String token, @Valid @RequestBody OrganizationToDelete organizationToDelete) {
+    public JSONResponse deleteOrganization(@RequestHeader("token") String token,
+                                           @Valid @RequestBody OrganizationToDelete organizationToDelete) {
         try {
             Admin admin = this.adminService.getAdminByUser(this.userService.getUserById(this.userService.verifyToken(token)));
             Organization organization = this.organizationService.getOrganizationById(UUID.fromString(organizationToDelete.getOrganization()));
@@ -367,7 +281,8 @@ public class AdminController {
     }
 
     @PostMapping("/assign/role")
-    public JSONResponse assignRoleUser(@RequestHeader("token") String token, @Valid @RequestBody RoleForAssign roleForAssign) {
+    public JSONResponse assignRoleUser(@RequestHeader("token") String token,
+                                       @Valid @RequestBody RoleForAssign roleForAssign) {
         try {
             Admin admin = this.adminService.getAdminByUser(this.userService.getUserById(this.userService.verifyToken(token)));
             User userForAssign = this.userService.getUserById(UUID.fromString(roleForAssign.getUser()));
@@ -429,7 +344,8 @@ public class AdminController {
     }
 
     @PostMapping("/assign/organization")
-    public JSONResponse assignOrganization(@RequestHeader("token") String token, @Valid @RequestBody OrganizationForAssign organizationForAssign) {
+    public JSONResponse assignOrganization(@RequestHeader("token") String token,
+                                           @Valid @RequestBody OrganizationForAssign organizationForAssign) {
         try {
             Admin admin = this.adminService.getAdminByUser(this.userService.getUserById(this.userService.verifyToken(token)));
             User userForAssign = this.userService.getUserById(UUID.fromString(organizationForAssign.getUser()));
@@ -468,7 +384,8 @@ public class AdminController {
     }
 
     @PutMapping(path = "/users/patient/editing")
-    public JSONResponse editAccountOfPatient(@RequestHeader("token") String token, @Valid @RequestBody EditPatientInfoByAdminRequest editPatientInfoByAdminRequest) {
+    public JSONResponse editAccountOfPatient(@RequestHeader("token") String token,
+                                             @Valid @RequestBody EditPatientInfoByAdminRequest editPatientInfoByAdminRequest) {
         try {
             Admin admin = this.adminService.getAdminByUser(this.userService.getUserById(this.userService.verifyToken(token)));
             Patient patient = this.patientService.getPatientByUser(this.userService.getUserById(UUID.fromString(editPatientInfoByAdminRequest.getId())));
@@ -509,7 +426,8 @@ public class AdminController {
     }
 
     @PutMapping(path = "/users/tutor/editing")
-    public JSONResponse editAccountOfTutor(@RequestHeader("token") String token, @Valid @RequestBody EditTutorInfoByAdminRequest editTutorInfoByAdminRequest) {
+    public JSONResponse editAccountOfTutor(@RequestHeader("token") String token,
+                                           @Valid @RequestBody EditTutorInfoByAdminRequest editTutorInfoByAdminRequest) {
         try {
             Admin admin = this.adminService.getAdminByUser(this.userService.getUserById(this.userService.verifyToken(token)));
             Tutor tutor = this.tutorService.getTutorByUser(this.userService.getUserById(UUID.fromString(editTutorInfoByAdminRequest.getId())));
