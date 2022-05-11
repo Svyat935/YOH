@@ -364,7 +364,7 @@ public class PatientController {
     }
 
     @PutMapping(path = "/account/changing")
-    public JSONResponse editAccountOfTutor(@RequestHeader("token") String token, @Valid @RequestBody EditPatientInfoRequest editPatientInfoRequest) {
+    public JSONResponse editAccountOfPatient(@RequestHeader("token") String token, @Valid @RequestBody EditPatientInfoRequest editPatientInfoRequest) {
         try {
             Patient patient = this.patientService.getPatientByUser(this.userService.getUserById(this.userService.verifyToken(token)));
             if (editPatientInfoRequest.getName() != null){

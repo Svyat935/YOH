@@ -3,6 +3,7 @@ package com.yoh.backend.controller;
 import antlr.StringUtils;
 import com.github.cliftonlabs.json_simple.JsonObject;
 import com.yoh.backend.entity.*;
+import com.yoh.backend.enums.Gender;
 import com.yoh.backend.request.*;
 import com.yoh.backend.response.JSONResponse;
 import com.yoh.backend.response.UserInfoResponse;
@@ -21,6 +22,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -73,6 +75,83 @@ public class AdminController {
 //            response.put("userList", this.userService.getAllUsers());
             response.put("userList", responseList);
             return new JSONResponse(200, response);
+        }
+        catch (IllegalArgumentException e){
+            JsonObject exceptionResponse = new JsonObject();
+            exceptionResponse.put("message", e.getMessage());
+            return new JSONResponse(401, exceptionResponse);
+        }
+    }
+
+    @GetMapping(path = "/users/get")
+    public JSONResponse getUserInfo(@RequestHeader("token") String token,
+                                    @RequestParam String id) {
+        try {
+            Admin admin = this.adminService.getAdminByUser(this.userService.getUserById(this.userService.verifyToken(token)));
+            User user = this.userService.getUserById(UUID.fromString(id));
+            switch (user.getRole()) {
+                case 1 -> {
+                    //patient
+                    Patient patient = this.patientService.getPatientByUser(user);
+                    JsonObject response = new JsonObject();
+
+                    response.put("id", patient.getId().toString());
+                    response.put("name", patient.getName());
+                    response.put("surname", patient.getSurname());
+                    response.put("secondName", patient.getSecondName());
+                    if (patient.getGender() != null)
+                        response.put("gender", patient.getGender().toString());
+                    else response.put("gender", null);
+                    if (patient.getOrganization() != null)
+                        response.put("organization", patient.getOrganization().getId().toString());
+                    else response.put("organization", null);
+                    response.put("organizationString", patient.getOrganizationString());
+                    if (patient.getBirthDate() != null)
+                        response.put("birthDate", patient.getBirthDate().toString());
+                    else response.put("birthDate", null);
+//            response.put("birthDate", patient.getBirthDate());
+                    response.put("numberPhone", patient.getNumberPhone());
+                    response.put("address", patient.getAddress());
+                    response.put("login", patient.getUser().getLogin());
+                    response.put("email", patient.getUser().getEmail());
+
+                    JsonObject tutorInfo = new JsonObject();
+                    Tutor tutor = patient.getTutor();
+                    if (tutor != null) {
+                        tutorInfo.put("id", tutor.getId().toString());
+                        tutorInfo.put("name", tutor.getName());
+                        tutorInfo.put("surname", tutor.getSurname());
+                        tutorInfo.put("secondName", tutor.getSecondName());
+                        if (tutor.getOrganization() != null)
+                            tutorInfo.put("organization", tutor.getOrganization().getId().toString());
+                        else tutorInfo.put("organization", null);
+                        tutorInfo.put("organizationString", tutor.getOrganizationString());
+                        tutorInfo.put("login", tutor.getUser().getLogin());
+                        tutorInfo.put("email", tutor.getUser().getEmail());
+                        response.put("tutor", tutorInfo);
+                    }
+                    return new JSONResponse(200, response);
+                }
+                case 3 -> {
+                    //tutor
+                    Tutor tutor = this.tutorService.getTutorByUser(user);
+                    JsonObject response = new JsonObject();
+                    response.put("id", tutor.getId().toString());
+                    response.put("name", tutor.getName());
+                    response.put("surname", tutor.getSurname());
+                    response.put("secondName", tutor.getSecondName());
+                    if (tutor.getOrganization() != null) {
+                        response.put("organization", tutor.getOrganization().getId().toString());
+                    } else response.put("organization", null);
+                    response.put("organizationString", tutor.getOrganizationString());
+                    response.put("login", tutor.getUser().getLogin());
+                    response.put("email", tutor.getUser().getEmail());
+                    return new JSONResponse(200, response);
+                }
+            }
+            JsonObject genericResponse = new JsonObject();
+            genericResponse.put("message", "User was not founded");
+            return new JSONResponse(401, genericResponse);
         }
         catch (IllegalArgumentException e){
             JsonObject exceptionResponse = new JsonObject();
@@ -386,5 +465,75 @@ public class AdminController {
             return new JSONResponse(401, exceptionResponse);
         }
 
+    }
+
+    @PutMapping(path = "/users/patient/editing")
+    public JSONResponse editAccountOfPatient(@RequestHeader("token") String token, @Valid @RequestBody EditPatientInfoByAdminRequest editPatientInfoByAdminRequest) {
+        try {
+            Admin admin = this.adminService.getAdminByUser(this.userService.getUserById(this.userService.verifyToken(token)));
+            Patient patient = this.patientService.getPatientByUser(this.userService.getUserById(UUID.fromString(editPatientInfoByAdminRequest.getId())));
+            if (editPatientInfoByAdminRequest.getName() != null){
+                patient.setName(editPatientInfoByAdminRequest.getName());
+            }
+            if (editPatientInfoByAdminRequest.getSurname() != null){
+                patient.setSurname(editPatientInfoByAdminRequest.getSurname());
+            }
+            if (editPatientInfoByAdminRequest.getSecondName() != null){
+                patient.setSecondName(editPatientInfoByAdminRequest.getSecondName());
+            }
+            if (editPatientInfoByAdminRequest.getGender() != null){
+                patient.setGender(Gender.valueOf(editPatientInfoByAdminRequest.getGender()));
+            }
+            if (editPatientInfoByAdminRequest.getOrganization() != null){
+                patient.setOrganization(this.organizationService.getOrganizationById(UUID.fromString(editPatientInfoByAdminRequest.getOrganization())));
+            }
+            if (editPatientInfoByAdminRequest.getBirthDate() != null){
+                patient.setBirthDate(new SimpleDateFormat("yyyy-MM-dd").parse(editPatientInfoByAdminRequest.getBirthDate()));
+            }
+            if (editPatientInfoByAdminRequest.getNumberPhone() != null){
+                patient.setNumberPhone(editPatientInfoByAdminRequest.getNumberPhone());
+            }
+            if (editPatientInfoByAdminRequest.getAddress() != null){
+                patient.setAddress(editPatientInfoByAdminRequest.getAddress());
+            }
+            this.patientService.updatePatient(patient);
+            JsonObject response = new JsonObject();
+            response.put("message", "Patient account was edited");
+            return new JSONResponse(200, response);
+        }
+        catch (Exception e){
+            JsonObject exceptionResponse = new JsonObject();
+            exceptionResponse.put("message", e.getMessage());
+            return new JSONResponse(401, exceptionResponse);
+        }
+    }
+
+    @PutMapping(path = "/users/tutor/editing")
+    public JSONResponse editAccountOfTutor(@RequestHeader("token") String token, @Valid @RequestBody EditTutorInfoByAdminRequest editTutorInfoByAdminRequest) {
+        try {
+            Admin admin = this.adminService.getAdminByUser(this.userService.getUserById(this.userService.verifyToken(token)));
+            Tutor tutor = this.tutorService.getTutorByUser(this.userService.getUserById(UUID.fromString(editTutorInfoByAdminRequest.getId())));
+            if (editTutorInfoByAdminRequest.getName() != null) {
+                tutor.setName(editTutorInfoByAdminRequest.getName());
+            }
+            if (editTutorInfoByAdminRequest.getSurname() != null) {
+                tutor.setSurname(editTutorInfoByAdminRequest.getSurname());
+            }
+            if (editTutorInfoByAdminRequest.getSecondName() != null) {
+                tutor.setSecondName(editTutorInfoByAdminRequest.getSecondName());
+            }
+            if (editTutorInfoByAdminRequest.getOrganization() != null) {
+                tutor.setOrganization(this.organizationService.getOrganizationById(UUID.fromString(editTutorInfoByAdminRequest.getOrganization())));
+            }
+            this.tutorService.updateTutor(tutor);
+            JsonObject response = new JsonObject();
+            response.put("message", "Tutor account was edited");
+            return new JSONResponse(200, response);
+        }
+        catch (IllegalArgumentException e){
+            JsonObject exceptionResponse = new JsonObject();
+            exceptionResponse.put("message", e.getMessage());
+            return new JSONResponse(401, exceptionResponse);
+        }
     }
 }
