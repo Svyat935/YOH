@@ -164,6 +164,7 @@ public class AdminController {
     @PostMapping(path = "/upload/games")
     public JSONResponse uploadGames(@RequestHeader("token") String token,
                                     @RequestParam MultipartFile file,
+                                    @RequestParam String type,
                                     @RequestParam String name,
                                     @RequestParam String description,
                                     @RequestParam(value = "image", required = false, defaultValue = "") MultipartFile image) {
@@ -179,7 +180,7 @@ public class AdminController {
                 ZipFile zipFile = new ZipFile(tempFile);
                 zipFile.extractAll(url);
                 tempFile.delete();
-                Game game = new Game(name, description, wrapper+ "/" +name+"/", LocalDateTime.now());
+                Game game = new Game(name, type, description, wrapper+ "/" +name+"/", LocalDateTime.now());
                 if (!image.equals("")) {
                     byte[] imageBytes = ImageUtility.compressImage(file.getBytes());
                     game.setImage(imageBytes);
@@ -205,8 +206,8 @@ public class AdminController {
 
     @PostMapping(path = "/upload/games/image")
     public JSONResponse uploadTutorImage(@RequestHeader("token") String token,
-                                         @RequestParam("gameID") String gameID,
-                                         @RequestParam("image") MultipartFile file){
+                                         @RequestParam String gameID,
+                                         @RequestParam MultipartFile file){
         try {
             Admin admin = this.adminService.getAdminByUser(this.userService.getUserById(this.userService.verifyToken(token)));
             Game game = this.gameService.getGameById(UUID.fromString(gameID));

@@ -144,8 +144,10 @@ public class TutorController {
                     JsonObject gamesInfo = new JsonObject();
                     gamesInfo.put("id", game.getId().toString());
                     gamesInfo.put("name", game.getName());
+                    gamesInfo.put("type", game.getType());
                     gamesInfo.put("description", game.getDescription());
                     gamesInfo.put("url", game.getUrl());
+                    gamesInfo.put("image", ImageUtility.decompressImage(game.getImage()));
                     gamesArray.add(gamesInfo);
                 }
             }

@@ -52,16 +52,18 @@ public class GameController {
 
     @GetMapping(path = "/all")
     public JSONResponse allGames(@RequestHeader("token") String token,
-                                 @RequestParam(value = "regex", required = false, defaultValue = "") String regex) {
+                                 @RequestParam(value = "regex", required = false, defaultValue = "") String regex,
+                                 @RequestParam(value = "typeRegex", required = false, defaultValue = "") String typeRegex) {
         try{
             User user = this.userService.getUserById(this.userService.verifyToken(token));
-            List<Game> games = this.gameService.getAllGamesFiltered(regex);
+            List<Game> games = this.gameService.getAllGamesFiltered(regex, typeRegex);
             JsonArray jsonArray = new JsonArray();
             if (games != null){
                 for(Game game: games){
                     JsonObject response = new JsonObject();
                     response.put("id", game.getId());
                     response.put("name", game.getName());
+                    response.put("type", game.getType());
                     response.put("description", game.getDescription());
                     response.put("url", game.getUrl());
                     response.put("image", ImageUtility.decompressImage(game.getImage()));
@@ -70,6 +72,29 @@ public class GameController {
             }
             JsonObject jsonObject = new JsonObject();
             jsonObject.put("games", jsonArray);
+            return new JSONResponse(200, jsonObject);
+        }catch (IllegalArgumentException e){
+            JsonObject exceptionResponse = new JsonObject();
+            exceptionResponse.put("message", e.getMessage());
+            return new JSONResponse(401, exceptionResponse);
+        }
+    }
+
+    @GetMapping(path = "/get")
+    public JSONResponse getGame(@RequestHeader("token") String token,
+                                @RequestParam String gameID) {
+        try{
+            User user = this.userService.getUserById(this.userService.verifyToken(token));
+            Game game = this.gameService.getGameById(UUID.fromString(gameID));
+            JsonObject response = new JsonObject();
+            response.put("id", game.getId());
+            response.put("name", game.getName());
+            response.put("type", game.getType());
+            response.put("description", game.getDescription());
+            response.put("url", game.getUrl());
+            response.put("image", ImageUtility.decompressImage(game.getImage()));
+            JsonObject jsonObject = new JsonObject();
+            jsonObject.put("gameInfo", response);
             return new JSONResponse(200, jsonObject);
         }catch (IllegalArgumentException e){
             JsonObject exceptionResponse = new JsonObject();

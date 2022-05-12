@@ -20,6 +20,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/patient")
@@ -53,20 +54,36 @@ public class PatientController {
     private TestStatusService testStatusService;
 
     @GetMapping(path = "/games/getting")
-    public JSONResponse getAllGames(@RequestHeader("token") String token) {
+    public JSONResponse getAllGames(@RequestHeader("token") String token,
+                                    @RequestParam(value = "regex", required = false, defaultValue = "") String regex,
+                                    @RequestParam(value = "typeRegex", required = false, defaultValue = "") String typeRegex) {
         try {
             Patient patient = this.patientService.getPatientByUser(this.userService.getUserById(this.userService.verifyToken(token)));
             ArrayList<JsonObject> gamesArray = new ArrayList<>();
-            if (patient.getGames() != null){
-                for (Game game: patient.getGames()){
-                    JsonObject gamesInfo = new JsonObject();
-                    gamesInfo.put("id", game.getId().toString());
-                    gamesInfo.put("name", game.getName());
-                    gamesInfo.put("description", game.getDescription());
-                    gamesInfo.put("url", game.getUrl());
-                    gamesArray.add(gamesInfo);
-                }
+            List<Game> gameList = patient.getGames().stream().filter(i -> i.getName().toLowerCase().contains(regex.toLowerCase())
+                            && i.getType().toLowerCase().contains(typeRegex.toLowerCase())).collect(Collectors.toList());
+            for (Game game: gameList) {
+                JsonObject gamesInfo = new JsonObject();
+                gamesInfo.put("id", game.getId().toString());
+                gamesInfo.put("name", game.getName());
+                gamesInfo.put("type", game.getType());
+                gamesInfo.put("description", game.getDescription());
+                gamesInfo.put("image", ImageUtility.decompressImage(game.getImage()));
+                gamesInfo.put("url", game.getUrl());
+                gamesArray.add(gamesInfo);
             }
+//            if (patient.getGames() != null){
+//                for (Game game: patient.getGames()){
+//                    JsonObject gamesInfo = new JsonObject();
+//                    gamesInfo.put("id", game.getId().toString());
+//                    gamesInfo.put("name", game.getName());
+//                    gamesInfo.put("type", game.getType());
+//                    gamesInfo.put("description", game.getDescription());
+//                    gamesInfo.put("image", ImageUtility.decompressImage(game.getImage()));
+//                    gamesInfo.put("url", game.getUrl());
+//                    gamesArray.add(gamesInfo);
+//                }
+//            }
             JsonObject response = new JsonObject();
             response.put("gamesArray", gamesArray);
             return new JSONResponse(200, response);
