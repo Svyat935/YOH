@@ -66,7 +66,7 @@ public class GameController {
                     response.put("type", game.getType());
                     response.put("description", game.getDescription());
                     response.put("url", game.getUrl());
-//                    response.put("image", ImageUtility.decompressImage(game.getImage()));
+                    response.put("image", ImageUtility.decompressImage(game.getImage()));
                     jsonArray.add(response);
                 }
             }
