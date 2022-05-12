@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -45,6 +46,16 @@ public class PatientService {
         else throw new IllegalArgumentException(
                 String.format("Sorry, but Patient with this id (%s) wasn't found.", id)
         );
+    }
+
+    public List<Patient> getAllPatientsByOrganizationFiltered(Organization organization, String regex){
+        List<Patient> patientListUnfiltered = patientRepository.getAllPatientsByOrganization(organization);
+        return patientListUnfiltered
+                .stream()
+                .filter(i -> i.getSurname().toLowerCase().contains(regex.toLowerCase())
+                        || i.getName().toLowerCase().contains(regex.toLowerCase())
+                        || i.getSecondName().toLowerCase().contains(regex.toLowerCase()))
+                .collect(Collectors.toList());
     }
 
     public List<Patient> getAllPatientsByOrganization(Organization organization){

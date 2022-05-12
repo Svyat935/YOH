@@ -3,10 +3,12 @@ package com.yoh.backend.controller;
 import antlr.StringUtils;
 import com.github.cliftonlabs.json_simple.JsonObject;
 import com.yoh.backend.entity.*;
+import com.yoh.backend.enums.Gender;
 import com.yoh.backend.request.*;
 import com.yoh.backend.response.JSONResponse;
 import com.yoh.backend.response.UserInfoResponse;
 import com.yoh.backend.service.*;
+import com.yoh.backend.util.ImageUtility;
 import net.lingala.zip4j.ZipFile;
 import net.lingala.zip4j.model.UnzipParameters;
 import org.aspectj.weaver.ast.Or;
@@ -21,6 +23,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -81,8 +84,90 @@ public class AdminController {
         }
     }
 
+    @GetMapping(path = "/users/get")
+    public JSONResponse getUserInfo(@RequestHeader("token") String token,
+                                    @RequestParam String id) {
+        try {
+            Admin admin = this.adminService.getAdminByUser(this.userService.getUserById(this.userService.verifyToken(token)));
+            User user = this.userService.getUserById(UUID.fromString(id));
+            switch (user.getRole()) {
+                case 1 -> {
+                    //patient
+                    Patient patient = this.patientService.getPatientByUser(user);
+                    JsonObject response = new JsonObject();
+
+                    response.put("id", patient.getId().toString());
+                    response.put("name", patient.getName());
+                    response.put("surname", patient.getSurname());
+                    response.put("secondName", patient.getSecondName());
+                    if (patient.getGender() != null)
+                        response.put("gender", patient.getGender().toString());
+                    else response.put("gender", null);
+                    if (patient.getOrganization() != null)
+                        response.put("organization", patient.getOrganization().getId().toString());
+                    else response.put("organization", null);
+                    response.put("organizationString", patient.getOrganizationString());
+                    if (patient.getBirthDate() != null)
+                        response.put("birthDate", patient.getBirthDate().toString());
+                    else response.put("birthDate", null);
+//            response.put("birthDate", patient.getBirthDate());
+                    response.put("numberPhone", patient.getNumberPhone());
+                    response.put("address", patient.getAddress());
+                    response.put("login", patient.getUser().getLogin());
+                    response.put("email", patient.getUser().getEmail());
+
+                    JsonObject tutorInfo = new JsonObject();
+                    Tutor tutor = patient.getTutor();
+                    if (tutor != null) {
+                        tutorInfo.put("id", tutor.getId().toString());
+                        tutorInfo.put("name", tutor.getName());
+                        tutorInfo.put("surname", tutor.getSurname());
+                        tutorInfo.put("secondName", tutor.getSecondName());
+                        if (tutor.getOrganization() != null)
+                            tutorInfo.put("organization", tutor.getOrganization().getId().toString());
+                        else tutorInfo.put("organization", null);
+                        tutorInfo.put("organizationString", tutor.getOrganizationString());
+                        tutorInfo.put("login", tutor.getUser().getLogin());
+                        tutorInfo.put("email", tutor.getUser().getEmail());
+                        response.put("tutor", tutorInfo);
+                    }
+                    return new JSONResponse(200, response);
+                }
+                case 3 -> {
+                    //tutor
+                    Tutor tutor = this.tutorService.getTutorByUser(user);
+                    JsonObject response = new JsonObject();
+                    response.put("id", tutor.getId().toString());
+                    response.put("name", tutor.getName());
+                    response.put("surname", tutor.getSurname());
+                    response.put("secondName", tutor.getSecondName());
+                    if (tutor.getOrganization() != null) {
+                        response.put("organization", tutor.getOrganization().getId().toString());
+                    } else response.put("organization", null);
+                    response.put("organizationString", tutor.getOrganizationString());
+                    response.put("login", tutor.getUser().getLogin());
+                    response.put("email", tutor.getUser().getEmail());
+                    return new JSONResponse(200, response);
+                }
+            }
+            JsonObject genericResponse = new JsonObject();
+            genericResponse.put("message", "User was not founded");
+            return new JSONResponse(401, genericResponse);
+        }
+        catch (IllegalArgumentException e){
+            JsonObject exceptionResponse = new JsonObject();
+            exceptionResponse.put("message", e.getMessage());
+            return new JSONResponse(401, exceptionResponse);
+        }
+    }
+
     @PostMapping(path = "/upload/games")
-    public JSONResponse uploadGames(@RequestHeader("token") String token, @RequestParam MultipartFile file, @RequestParam String name, @RequestParam String description) {
+    public JSONResponse uploadGames(@RequestHeader("token") String token,
+                                    @RequestParam MultipartFile file,
+                                    @RequestParam String type,
+                                    @RequestParam String name,
+                                    @RequestParam String description,
+                                    @RequestParam(value = "image", required = false, defaultValue = "") MultipartFile image) {
         try {
             Admin admin = this.adminService.getAdminByUser(this.userService.getUserById(this.userService.verifyToken(token)));
             if(this.gameService.checkGameByName(name)){
@@ -95,8 +180,11 @@ public class AdminController {
                 ZipFile zipFile = new ZipFile(tempFile);
                 zipFile.extractAll(url);
                 tempFile.delete();
-
-                Game game = new Game(name, description, wrapper+ "/" +name+"/", LocalDateTime.now());
+                Game game = new Game(name, type, description, wrapper+ "/" +name+"/", LocalDateTime.now());
+                if (!image.equals("")) {
+                    byte[] imageBytes = ImageUtility.compressImage(file.getBytes());
+                    game.setImage(imageBytes);
+                }
                 this.gameService.createGame(game);
 
                 JsonObject response = new JsonObject();
@@ -108,97 +196,27 @@ public class AdminController {
                 response.put("message", "Game is already exists");
                 return new JSONResponse(401, response);
             }
+        }
+        catch (Exception e){
+            JsonObject exceptionResponse = new JsonObject();
+            exceptionResponse.put("message", e.getMessage());
+            return new JSONResponse(401, exceptionResponse);
+        }
+    }
 
-//            String destDir = "/app/games";
-//            ----------------------------------------------------
-//            File destDir = new File("/app/games");
-//
-//            if(!destDir.exists()) destDir.mkdirs();
-//
-//            try {
-//                byte[] buffer = new byte[1024];
-//                ZipInputStream zis = new ZipInputStream(file.getInputStream());
-//                ZipEntry zipEntry = zis.getNextEntry();
-//                while (zipEntry != null) {
-//                    System.out.println(zipEntry);
-//                    File newFile = newFile(destDir, zipEntry);
-//                    if (zipEntry.isDirectory()) {
-//                        if (!newFile.isDirectory() && !newFile.mkdirs()) {
-//                            throw new IOException("Failed to create directory " + newFile);
-//                        }
-//                    } else {
-//                        // fix for Windows-created archives
-//                        File parent = newFile.getParentFile();
-//                        if (!parent.isDirectory() && !parent.mkdirs()) {
-//                            throw new IOException("Failed to create directory " + parent);
-//                        }
-//
-//                        // write file content
-//                        FileOutputStream fos = new FileOutputStream(newFile);
-//                        int len;
-//                        while ((len = zis.read(buffer)) > 0) {
-//                            fos.write(buffer, 0, len);
-//                        }
-//                        fos.close();
-//                    }
-//                    zipEntry = zis.getNextEntry();
-//                }
-//                zis.closeEntry();
-//                zis.close();
-//            }
-//            catch (IOException e) {
-//                e.printStackTrace();
-//            }
-//            _________________________________________________________
-
-//            byte[] bytes = file.getBytes();
-//            File tempFile = File.createTempFile("prefix-", "-suffix");
-////            tempFile.deleteOnExit();
-//            file.transferTo(tempFile);
-//            ZipFile zipFile = new ZipFile(tempFile);
-//            System.out.println("+++++++++++++++++++");
-//            System.out.println(zipFile.getFileHeaders());
-//            System.out.println("+++++++++++++++++++");
-//            zipFile.extractFile("games_archive/2/", "/app/games/");
-////            zipFile.extractAll("/app/games");
-//
-////            ZipFile zipFile = new ZipFile(tempFile);
-////            zipFile
-//            tempFile.delete();
-
-
-
-
-
-
-//            Admin admin = this.adminService.getAdminByUser(this.userService.getUserById(this.userService.verifyToken(token)));
-//            byte[] bytes = file.getBytes();
-//            byte[] buffer = new byte[4096];
-////            ZipInputStream zis = new ZipInputStream(file.getInputStream());
-//
-//            ZipInputStream zis = new ZipInputStream(new ByteArrayInputStream(bytes));
-//            System.out.println("Processing archive with size=" + file.getSize());
-//            ZipEntry entry = zis.getNextEntry();
-//            System.out.println(entry);
-//
-//            while (entry != null) {
-//                System.out.println("Processing file = " + entry.getName() + " is directory? " + entry.isDirectory());
-//                File newFile = new File("games/" + entry.getName());
-//                System.out.println("Unzipping to "+newFile.getAbsolutePath());
-////                new File(newFile.getParent()).mkdirs();
-////                FileOutputStream fos = new FileOutputStream(newFile);
-////                int len;
-////                while ((len = zis.read(buffer)) > 0) {
-////                    fos.write(buffer, 0, len);
-////                }
-////                fos.close();
-//                zis.closeEntry();
-//                entry = zis.getNextEntry();
-//            }
-//            zis.closeEntry();
-//            zis.close();
-
-
+    @PostMapping(path = "/upload/games/image")
+    public JSONResponse uploadTutorImage(@RequestHeader("token") String token,
+                                         @RequestParam String gameID,
+                                         @RequestParam MultipartFile file){
+        try {
+            Admin admin = this.adminService.getAdminByUser(this.userService.getUserById(this.userService.verifyToken(token)));
+            Game game = this.gameService.getGameById(UUID.fromString(gameID));
+            byte[] imageBytes = ImageUtility.compressImage(file.getBytes());
+            game.setImage(imageBytes);
+            this.gameService.updateGame(game);
+            JsonObject response = new JsonObject();
+            response.put("message", "Game image was edited");
+            return new JSONResponse(200, response);
         }
         catch (Exception e){
             JsonObject exceptionResponse = new JsonObject();
@@ -236,7 +254,8 @@ public class AdminController {
     }
 
     @PostMapping("/organizations/add")
-    public JSONResponse createOrganization(@RequestHeader("token") String token, @Valid @RequestBody OrganizationForAdding organizationForAdding) {
+    public JSONResponse createOrganization(@RequestHeader("token") String token,
+                                           @Valid @RequestBody OrganizationForAdding organizationForAdding) {
         try {
             Admin admin = this.adminService.getAdminByUser(this.userService.getUserById(this.userService.verifyToken(token)));
             Organization organization = new Organization(organizationForAdding.getName(), organizationForAdding.getAddress(), organizationForAdding.getPhone(),
@@ -253,7 +272,8 @@ public class AdminController {
     }
 
     @DeleteMapping("/organizations/delete")
-    public JSONResponse deleteOrganization(@RequestHeader("token") String token, @Valid @RequestBody OrganizationToDelete organizationToDelete) {
+    public JSONResponse deleteOrganization(@RequestHeader("token") String token,
+                                           @Valid @RequestBody OrganizationToDelete organizationToDelete) {
         try {
             Admin admin = this.adminService.getAdminByUser(this.userService.getUserById(this.userService.verifyToken(token)));
             Organization organization = this.organizationService.getOrganizationById(UUID.fromString(organizationToDelete.getOrganization()));
@@ -288,7 +308,8 @@ public class AdminController {
     }
 
     @PostMapping("/assign/role")
-    public JSONResponse assignRoleUser(@RequestHeader("token") String token, @Valid @RequestBody RoleForAssign roleForAssign) {
+    public JSONResponse assignRoleUser(@RequestHeader("token") String token,
+                                       @Valid @RequestBody RoleForAssign roleForAssign) {
         try {
             Admin admin = this.adminService.getAdminByUser(this.userService.getUserById(this.userService.verifyToken(token)));
             User userForAssign = this.userService.getUserById(UUID.fromString(roleForAssign.getUser()));
@@ -350,7 +371,8 @@ public class AdminController {
     }
 
     @PostMapping("/assign/organization")
-    public JSONResponse assignOrganization(@RequestHeader("token") String token, @Valid @RequestBody OrganizationForAssign organizationForAssign) {
+    public JSONResponse assignOrganization(@RequestHeader("token") String token,
+                                           @Valid @RequestBody OrganizationForAssign organizationForAssign) {
         try {
             Admin admin = this.adminService.getAdminByUser(this.userService.getUserById(this.userService.verifyToken(token)));
             User userForAssign = this.userService.getUserById(UUID.fromString(organizationForAssign.getUser()));
@@ -386,5 +408,77 @@ public class AdminController {
             return new JSONResponse(401, exceptionResponse);
         }
 
+    }
+
+    @PutMapping(path = "/users/patient/editing")
+    public JSONResponse editAccountOfPatient(@RequestHeader("token") String token,
+                                             @Valid @RequestBody EditPatientInfoByAdminRequest editPatientInfoByAdminRequest) {
+        try {
+            Admin admin = this.adminService.getAdminByUser(this.userService.getUserById(this.userService.verifyToken(token)));
+            Patient patient = this.patientService.getPatientByUser(this.userService.getUserById(UUID.fromString(editPatientInfoByAdminRequest.getId())));
+            if (editPatientInfoByAdminRequest.getName() != null){
+                patient.setName(editPatientInfoByAdminRequest.getName());
+            }
+            if (editPatientInfoByAdminRequest.getSurname() != null){
+                patient.setSurname(editPatientInfoByAdminRequest.getSurname());
+            }
+            if (editPatientInfoByAdminRequest.getSecondName() != null){
+                patient.setSecondName(editPatientInfoByAdminRequest.getSecondName());
+            }
+            if (editPatientInfoByAdminRequest.getGender() != null){
+                patient.setGender(Gender.valueOf(editPatientInfoByAdminRequest.getGender()));
+            }
+            if (editPatientInfoByAdminRequest.getOrganization() != null){
+                patient.setOrganization(this.organizationService.getOrganizationById(UUID.fromString(editPatientInfoByAdminRequest.getOrganization())));
+            }
+            if (editPatientInfoByAdminRequest.getBirthDate() != null){
+                patient.setBirthDate(new SimpleDateFormat("yyyy-MM-dd").parse(editPatientInfoByAdminRequest.getBirthDate()));
+            }
+            if (editPatientInfoByAdminRequest.getNumberPhone() != null){
+                patient.setNumberPhone(editPatientInfoByAdminRequest.getNumberPhone());
+            }
+            if (editPatientInfoByAdminRequest.getAddress() != null){
+                patient.setAddress(editPatientInfoByAdminRequest.getAddress());
+            }
+            this.patientService.updatePatient(patient);
+            JsonObject response = new JsonObject();
+            response.put("message", "Patient account was edited");
+            return new JSONResponse(200, response);
+        }
+        catch (Exception e){
+            JsonObject exceptionResponse = new JsonObject();
+            exceptionResponse.put("message", e.getMessage());
+            return new JSONResponse(401, exceptionResponse);
+        }
+    }
+
+    @PutMapping(path = "/users/tutor/editing")
+    public JSONResponse editAccountOfTutor(@RequestHeader("token") String token,
+                                           @Valid @RequestBody EditTutorInfoByAdminRequest editTutorInfoByAdminRequest) {
+        try {
+            Admin admin = this.adminService.getAdminByUser(this.userService.getUserById(this.userService.verifyToken(token)));
+            Tutor tutor = this.tutorService.getTutorByUser(this.userService.getUserById(UUID.fromString(editTutorInfoByAdminRequest.getId())));
+            if (editTutorInfoByAdminRequest.getName() != null) {
+                tutor.setName(editTutorInfoByAdminRequest.getName());
+            }
+            if (editTutorInfoByAdminRequest.getSurname() != null) {
+                tutor.setSurname(editTutorInfoByAdminRequest.getSurname());
+            }
+            if (editTutorInfoByAdminRequest.getSecondName() != null) {
+                tutor.setSecondName(editTutorInfoByAdminRequest.getSecondName());
+            }
+            if (editTutorInfoByAdminRequest.getOrganization() != null) {
+                tutor.setOrganization(this.organizationService.getOrganizationById(UUID.fromString(editTutorInfoByAdminRequest.getOrganization())));
+            }
+            this.tutorService.updateTutor(tutor);
+            JsonObject response = new JsonObject();
+            response.put("message", "Tutor account was edited");
+            return new JSONResponse(200, response);
+        }
+        catch (IllegalArgumentException e){
+            JsonObject exceptionResponse = new JsonObject();
+            exceptionResponse.put("message", e.getMessage());
+            return new JSONResponse(401, exceptionResponse);
+        }
     }
 }

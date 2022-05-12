@@ -6,6 +6,7 @@ import com.yoh.backend.request.*;
 import com.yoh.backend.response.*;
 import com.yoh.backend.service.*;
 import com.yoh.backend.util.ImageUtility;
+import com.yoh.backend.enums.Status;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -44,6 +45,7 @@ public class TutorController {
 
     // [START] Patients
 
+    //TODO выборка
     @GetMapping(path = "/patients/getting")
     public JSONResponse getPatients(@RequestHeader("token") String token) {
         try {
@@ -77,11 +79,13 @@ public class TutorController {
     }
 
     @GetMapping(path = "/patients/getting/all")
-    public JSONResponse getAllPatients(@RequestHeader("token") String token) {
+    public JSONResponse getAllPatients(@RequestHeader("token") String token,
+                                       @RequestParam(value = "regex", required = false, defaultValue = "") String regex) {
         try {
+            Tutor tutor = this.tutorService.getTutorByUser(this.userService.getUserById(this.userService.verifyToken(token)));
             Organization organization = this.tutorService.getTutorByUser(this.userService.getUserById(this.userService.verifyToken(token))).getOrganization();
             ArrayList<JsonObject> patientList = new ArrayList<JsonObject>();
-            for (Patient patient : patientService.getAllPatientsByOrganization(organization)){
+            for (Patient patient : patientService.getAllPatientsByOrganizationFiltered(organization, regex)){
                 JsonObject patientInfo = new JsonObject();
                 patientInfo.put("id", patient.getId().toString());
                 patientInfo.put("name", patient.getName());
@@ -109,11 +113,11 @@ public class TutorController {
     }
 
     @GetMapping(path = "/patients/getting/one")
-    public JSONResponse getOnePatient(@RequestHeader("token") String token, @RequestParam UUID patientUUID) {
+    public JSONResponse getOnePatient(@RequestHeader("token") String token,
+                                      @RequestParam String patientID) {
         try {
-            //TODO проверка тьютора
-            this.userService.verifyToken(token);
-            Patient patient = this.patientService.getPatientById(patientUUID);
+            Tutor tutorValidation = this.tutorService.getTutorByUser(this.userService.getUserById(this.userService.verifyToken(token)));
+            Patient patient = this.patientService.getPatientById(UUID.fromString(patientID));
             JsonObject response = new JsonObject();
             response.put("id", patient.getId().toString());
             response.put("name", patient.getName());
@@ -140,8 +144,10 @@ public class TutorController {
                     JsonObject gamesInfo = new JsonObject();
                     gamesInfo.put("id", game.getId().toString());
                     gamesInfo.put("name", game.getName());
+                    gamesInfo.put("type", game.getType());
                     gamesInfo.put("description", game.getDescription());
                     gamesInfo.put("url", game.getUrl());
+                    gamesInfo.put("image", ImageUtility.decompressImage(game.getImage()));
                     gamesArray.add(gamesInfo);
                 }
             }
@@ -173,7 +179,8 @@ public class TutorController {
 
 
     @PostMapping(path = "/patients/attaching")
-    public JSONResponse attachPatient(@RequestHeader("token") String token, @Valid @RequestBody PatientToTutor patientToTutor) {
+    public JSONResponse attachPatient(@RequestHeader("token") String token,
+                                      @Valid @RequestBody PatientToTutor patientToTutor) {
         try {
             Tutor tutor = this.tutorService.getTutorByUser(this.userService.getUserById(this.userService.verifyToken(token)));
             Patient patient = this.patientService.getPatientById(UUID.fromString(patientToTutor.getPatient()));
@@ -193,7 +200,8 @@ public class TutorController {
     }
 
     @DeleteMapping(path = "/patients/detaching")
-    public JSONResponse detachPatient(@RequestHeader("token") String token, @Valid @RequestBody PatientToTutor patientToTutor) {
+    public JSONResponse detachPatient(@RequestHeader("token") String token,
+                                      @Valid @RequestBody PatientToTutor patientToTutor) {
 
         try {
             Tutor tutor = this.tutorService.getTutorByUser(this.userService.getUserById(this.userService.verifyToken(token)));
@@ -223,14 +231,15 @@ public class TutorController {
 
     // // [START] Games
     @PostMapping(path = "/patients/games/adding")
-    public JSONResponse addGameForPatient(@RequestHeader("token") String token, @Valid @RequestBody GameToPatient gameToPatient) {
+    public JSONResponse addGameForPatient(@RequestHeader("token") String token,
+                                          @Valid @RequestBody GameToPatient gameToPatient) {
         //TODO проверить что есть
         //TODO проверить статусы
         try {
             Tutor tutor = this.tutorService.getTutorByUser(this.userService.getUserById(this.userService.verifyToken(token)));
             Game game = this.gameService.getGameById(UUID.fromString(gameToPatient.getGame_id()));
             Patient patient = this.patientService.getPatientById(UUID.fromString(gameToPatient.getPatient_id()));
-            GameStatus gameStatus = new GameStatus(game, patient, tutor, LocalDateTime.now(), "Назначена");
+            GameStatus gameStatus = new GameStatus(game, patient, tutor, LocalDateTime.now(), Status.ASSIGNED);
             patient.getGames().add(game);
             patient.getGameStatuses().add(gameStatus);
             game.getPatient().add(patient);
@@ -252,7 +261,8 @@ public class TutorController {
     }
 
     @PostMapping(path = "/patients/games/new")
-    public JSONResponse newGamesForPatient(@RequestHeader("token") String token, @Valid @RequestBody GamesToPatient gamesToPatient) {
+    public JSONResponse newGamesForPatient(@RequestHeader("token") String token,
+                                           @Valid @RequestBody GamesToPatient gamesToPatient) {
         // TODO проверить работу
         // TODO сделать добавление статусов
         try {
@@ -260,7 +270,7 @@ public class TutorController {
             Patient patient = this.patientService.getPatientById(UUID.fromString(gamesToPatient.getPatient_id()));
             for (String id : gamesToPatient.getGames_id()) {
                 Game game = this.gameService.getGameById(UUID.fromString(id));
-                GameStatus gameStatus = new GameStatus(game, patient, tutor, LocalDateTime.now(), "Назначена");
+                GameStatus gameStatus = new GameStatus(game, patient, tutor, LocalDateTime.now(), Status.ASSIGNED);
                 patient.getGames().add(game);
                 patient.getGameStatuses().add(gameStatus);
                 game.getPatient().add(patient);
@@ -289,9 +299,10 @@ public class TutorController {
     }
 
     @DeleteMapping(path = "/patients/games/removing")
-    public JSONResponse removeGameForPatient(@RequestHeader("token") String token, @Valid @RequestBody GameToPatient gameToPatient) {
+    public JSONResponse removeGameForPatient(@RequestHeader("token") String token,
+                                             @Valid @RequestBody GameToPatient gameToPatient) {
         try {
-            this.userService.verifyToken(token);
+            Tutor tutor = this.tutorService.getTutorByUser(this.userService.getUserById(this.userService.verifyToken(token)));
             Patient patient = this.patientService.getPatientById(UUID.fromString(gameToPatient.getPatient_id()));
             Game gameToRemove = this.gameService.getGameById(UUID.fromString(gameToPatient.getGame_id()));
             patient.getGames().remove(gameToRemove);
@@ -335,9 +346,10 @@ public class TutorController {
     }
 
     @DeleteMapping(path = "/patients/games/clear")
-    public JSONResponse clearGamesForPatient(@RequestHeader("token") String token, @Valid @RequestBody PatientToTutor patientToTutor) {
+    public JSONResponse clearGamesForPatient(@RequestHeader("token") String token,
+                                             @Valid @RequestBody PatientToTutor patientToTutor) {
         try {
-            this.userService.verifyToken(token);
+            Tutor tutor = this.tutorService.getTutorByUser(this.userService.getUserById(this.userService.verifyToken(token)));
             Patient patient = this.patientService.getPatientById(UUID.fromString(patientToTutor.getPatient()));
             patient.setGames(new ArrayList<Game>());
             this.patientService.updatePatient(patient);
@@ -353,11 +365,12 @@ public class TutorController {
     }
 
     @GetMapping(path = "/patients/games/get-statistics")
-    public JSONResponse getStatisticsForGame(@RequestHeader("token") String token, @RequestParam UUID patientUUID, @RequestParam UUID gameUUID) {
+    public JSONResponse getStatisticsForGame(@RequestHeader("token") String token,
+                                             @RequestParam String patientID) {
         try {
             //TODO message
-            this.userService.verifyToken(token);
-            Patient patient = this.patientService.getPatientById(patientUUID);
+            Tutor tutor = this.tutorService.getTutorByUser(this.userService.getUserById(this.userService.verifyToken(token)));
+            Patient patient = this.patientService.getPatientById(UUID.fromString(patientID));
             List<GameStatistic> gameStatistics = patient.getGameStatistics();
             ArrayList<JsonObject> gameStatisticList = new ArrayList<>();
             for (GameStatistic statistic: gameStatistics){
@@ -383,9 +396,10 @@ public class TutorController {
     }
 
     @DeleteMapping(path = "/patients/games/clear-statistics")
-    public JSONResponse clearStatisticsForGame(@RequestHeader("token") String token, @Valid @RequestBody GameToPatient gameToPatient){
+    public JSONResponse clearStatisticsForGame(@RequestHeader("token") String token,
+                                               @Valid @RequestBody GameToPatient gameToPatient){
         try {
-            this.userService.verifyToken(token);
+            Tutor tutor = this.tutorService.getTutorByUser(this.userService.getUserById(this.userService.verifyToken(token)));
             Patient patient = this.patientService.getPatientById(UUID.fromString(gameToPatient.getPatient_id()));
             ArrayList<GameStatistic> newGameStatistic = new ArrayList<>();
             UUID gameToSearch = UUID.fromString(gameToPatient.getGame_id());
@@ -407,10 +421,51 @@ public class TutorController {
         }
     }
 
-    @PostMapping(path = "/patients/tests/adding")
-    public JSONResponse addingTestForPatient(@RequestHeader("token") String token, @Valid @RequestBody TestToPatient testToPatient) {
+    @GetMapping(path = "/patients/getStatusStatistic")
+    public JSONResponse getPatientStatusesStatistic(@RequestHeader("token") String token,
+                                                    @RequestParam String patientID) {
         try {
-            this.userService.verifyToken(token);
+            Tutor tutor = this.tutorService.getTutorByUser(this.userService.getUserById(this.userService.verifyToken(token)));
+            Patient patient = this.patientService.getPatientByUser(this.userService.getUserById(UUID.fromString(patientID)));
+            if (tutor.getOrganization().getId().equals(patient.getOrganization().getId())) {
+                JsonObject response = new JsonObject();
+                int done = 0;
+                int assigned = 0;
+                int failed = 0;
+                int started = 0;
+                List<GameStatus> gameStatusList = patient.getGameStatuses();
+                for (GameStatus gameStatus: gameStatusList) {
+                    switch (gameStatus.getStatus()){
+                        case DONE -> done++;
+                        case ASSIGNED -> assigned++;
+                        case FAILED -> failed++;
+                        case STARTED -> started++;
+                    }
+                }
+                response.put("Done", done);
+                response.put("Assigned", assigned);
+                response.put("Failed", failed);
+                response.put("Started", started);
+                return new JSONResponse(200, response);
+            }
+            else {
+                JsonObject exceptionResponse = new JsonObject();
+                exceptionResponse.put("message", "Organizations must be same");
+                return new JSONResponse(401, exceptionResponse);
+            }
+        }
+        catch (IllegalArgumentException e){
+            JsonObject exceptionResponse = new JsonObject();
+            exceptionResponse.put("message", e.getMessage());
+            return new JSONResponse(401, exceptionResponse);
+        }
+    }
+
+    @PostMapping(path = "/patients/tests/adding")
+    public JSONResponse addingTestForPatient(@RequestHeader("token") String token,
+                                             @Valid @RequestBody TestToPatient testToPatient) {
+        try {
+            Tutor tutor = this.tutorService.getTutorByUser(this.userService.getUserById(this.userService.verifyToken(token)));
             Test test = this.testService.getTestById(UUID.fromString(testToPatient.getTest_id()));
             Patient patient = this.patientService.getPatientById(UUID.fromString(testToPatient.getPatient_id()));
             patient.getTests().add(test);
@@ -427,9 +482,10 @@ public class TutorController {
     }
 
     @PostMapping(path = "/patients/tests/new")
-    public JSONResponse newTestsForPatient(@RequestHeader("token") String token, @Valid @RequestBody TestsToPatient testsToPatient) {
+    public JSONResponse newTestsForPatient(@RequestHeader("token") String token,
+                                           @Valid @RequestBody TestsToPatient testsToPatient) {
         try {
-            this.userService.verifyToken(token);
+            Tutor tutor = this.tutorService.getTutorByUser(this.userService.getUserById(this.userService.verifyToken(token)));
             Patient patient = this.patientService.getPatientById(UUID.fromString(testsToPatient.getPatient_id()));
             List<Test> listOfTests = new ArrayList<Test>();
             for (String id : testsToPatient.getTests_id()){
@@ -449,9 +505,10 @@ public class TutorController {
     }
 
     @DeleteMapping(path = "/patients/tests/removing")
-    public JSONResponse removeTestForPatient(@RequestHeader("token") String token, @Valid @RequestBody TestToPatient testToPatient) {
+    public JSONResponse removeTestForPatient(@RequestHeader("token") String token,
+                                             @Valid @RequestBody TestToPatient testToPatient) {
         try {
-            this.userService.verifyToken(token);
+            Tutor tutor = this.tutorService.getTutorByUser(this.userService.getUserById(this.userService.verifyToken(token)));
             Patient patient = this.patientService.getPatientById(UUID.fromString(testToPatient.getPatient_id()));
             List<Test> listOfTests = patient.getTests();
             for (Test test: listOfTests){
@@ -475,10 +532,11 @@ public class TutorController {
     }
 
     @DeleteMapping(path = "/patients/tests/clear")
-    public JSONResponse clearTestsForPatients(@RequestHeader("token") String token, @Valid @RequestBody PatientToTutor patientToTutor) {
+    public JSONResponse clearTestsForPatients(@RequestHeader("token") String token,
+                                              @Valid @RequestBody PatientToTutor patientToTutor) {
         //TODO
         try {
-            this.userService.verifyToken(token);
+            Tutor tutor = this.tutorService.getTutorByUser(this.userService.getUserById(this.userService.verifyToken(token)));
             Patient patient = this.patientService.getPatientById(UUID.fromString(patientToTutor.getPatient()));
             patient.setTests(new ArrayList<Test>());
             this.patientService.updatePatient(patient);
@@ -494,11 +552,12 @@ public class TutorController {
     }
 
     @GetMapping(path = "/patients/tests/get-statistics")
-    public JSONResponse getStatisticsForPatients(@RequestHeader("token") String token, @RequestParam UUID patientUUID, @RequestParam UUID testUUID) {
+    public JSONResponse getStatisticsForPatients(@RequestHeader("token") String token,
+                                                 @RequestParam String patientID) {
         //TODO
         try {
-            this.userService.verifyToken(token);
-            Patient patient = this.patientService.getPatientById(patientUUID);
+            Tutor tutor = this.tutorService.getTutorByUser(this.userService.getUserById(this.userService.verifyToken(token)));
+            Patient patient = this.patientService.getPatientById(UUID.fromString(patientID));
             List<TestStatistic> testStatistics = patient.getTestStatistics();
             ArrayList<JsonObject> testStatisticList = new ArrayList<>();
             for (TestStatistic statistic: testStatistics){
@@ -523,10 +582,11 @@ public class TutorController {
     }
 
     @DeleteMapping(path = "/patients/tests/clear-statistics")
-    public JSONResponse deleteStatisticForPatient(@RequestHeader("token") String token, @Valid @RequestBody TestToPatient testToPatient) {
+    public JSONResponse deleteStatisticForPatient(@RequestHeader("token") String token,
+                                                  @Valid @RequestBody TestToPatient testToPatient) {
         //TODO
         try {
-            this.userService.verifyToken(token);
+            Tutor tutor = this.tutorService.getTutorByUser(this.userService.getUserById(this.userService.verifyToken(token)));
             Patient patient = this.patientService.getPatientById(UUID.fromString(testToPatient.getPatient_id()));
             ArrayList<TestStatistic> newTestStatistic = new ArrayList<>();
             UUID testToSearch = UUID.fromString(testToPatient.getTest_id());
@@ -574,7 +634,8 @@ public class TutorController {
     }
 
     @PutMapping(path = "/account/changing")
-    public JSONResponse editAccountOfTutor(@RequestHeader("token") String token, @Valid @RequestBody EditTutorInfoRequest editTutorInfoRequest) {
+    public JSONResponse editAccountOfTutor(@RequestHeader("token") String token,
+                                           @Valid @RequestBody EditTutorInfoRequest editTutorInfoRequest) {
         try {
             Tutor tutor = this.tutorService.getTutorByUser(this.userService.getUserById(this.userService.verifyToken(token)));
             if (editTutorInfoRequest.getName() != null) {
@@ -602,7 +663,8 @@ public class TutorController {
     }
 
     @PostMapping(path = "/account/image/add")
-    public JSONResponse uploadTutorImage(@RequestHeader("token") String token, @RequestParam("image") MultipartFile file) {
+    public JSONResponse uploadTutorImage(@RequestHeader("token") String token,
+                                         @RequestParam("image") MultipartFile file) {
         try {
             Tutor tutor = this.tutorService.getTutorByUser(this.userService.getUserById(this.userService.verifyToken(token)));
             byte[] imageBytes = ImageUtility.compressImage(file.getBytes());
@@ -619,8 +681,10 @@ public class TutorController {
         }
     }
 
+    //TODO Подумать над удалением
     @PutMapping(path = "/account/image/edit")
-    public JSONResponse updateTutorImage(@RequestHeader("token") String token, @RequestParam("image") MultipartFile file) {
+    public JSONResponse updateTutorImage(@RequestHeader("token") String token,
+                                         @RequestParam("image") MultipartFile file) {
         try {
             Tutor tutor = this.tutorService.getTutorByUser(this.userService.getUserById(this.userService.verifyToken(token)));
             byte[] imageBytes = ImageUtility.compressImage(file.getBytes());

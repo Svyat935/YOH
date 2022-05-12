@@ -13,8 +13,9 @@ import java.util.UUID;
 public class Game {
     public Game() {}
 
-    public Game(String name, String description, String url, LocalDateTime dateAdding) {
+    public Game(String name, String type, String description, String url, LocalDateTime dateAdding) {
         this.name = name;
+        this.type = type;
         this.description = description;
         this.url = url;
         this.dateAdding = dateAdding;
@@ -45,7 +46,19 @@ public class Game {
     }
 
 
-    @Column(name = "description", length = 128, nullable = true)
+    @Column(name = "type", length = 128, nullable = false)
+    private String type;
+
+    public String getType() {
+        return this.type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+
+    @Column(name = "description", length = 128, nullable = false)
     private String description;
 
     public String getDescription(){
@@ -80,6 +93,17 @@ public class Game {
         this.dateAdding = dateAdding;
     }
 
+
+    @Column(name = "image", unique = false, nullable = true, length = 100000)
+    private byte[] image;
+
+    public byte[] getImage() {
+        return this.image;
+    }
+
+    public void setImage(byte[] image) {
+        this.image = image;
+    }
 
     //TODO переименовать
     @ManyToMany(mappedBy="games")

@@ -3,6 +3,7 @@ package com.yoh.backend.controller;
 import com.github.cliftonlabs.json_simple.JsonObject;
 import com.yoh.backend.entity.*;
 import com.yoh.backend.enums.Gender;
+import com.yoh.backend.enums.Status;
 import com.yoh.backend.request.*;
 import com.yoh.backend.response.*;
 import com.yoh.backend.service.*;
@@ -11,12 +12,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.persistence.criteria.CriteriaBuilder;
 import javax.validation.Valid;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/patient")
@@ -50,20 +54,36 @@ public class PatientController {
     private TestStatusService testStatusService;
 
     @GetMapping(path = "/games/getting")
-    public JSONResponse getAllGames(@RequestHeader("token") String token) {
+    public JSONResponse getAllGames(@RequestHeader("token") String token,
+                                    @RequestParam(value = "regex", required = false, defaultValue = "") String regex,
+                                    @RequestParam(value = "typeRegex", required = false, defaultValue = "") String typeRegex) {
         try {
             Patient patient = this.patientService.getPatientByUser(this.userService.getUserById(this.userService.verifyToken(token)));
             ArrayList<JsonObject> gamesArray = new ArrayList<>();
-            if (patient.getGames() != null){
-                for (Game game: patient.getGames()){
-                    JsonObject gamesInfo = new JsonObject();
-                    gamesInfo.put("id", game.getId().toString());
-                    gamesInfo.put("name", game.getName());
-                    gamesInfo.put("description", game.getDescription());
-                    gamesInfo.put("url", game.getUrl());
-                    gamesArray.add(gamesInfo);
-                }
+            List<Game> gameList = patient.getGames().stream().filter(i -> i.getName().toLowerCase().contains(regex.toLowerCase())
+                            && i.getType().toLowerCase().contains(typeRegex.toLowerCase())).collect(Collectors.toList());
+            for (Game game: gameList) {
+                JsonObject gamesInfo = new JsonObject();
+                gamesInfo.put("id", game.getId().toString());
+                gamesInfo.put("name", game.getName());
+                gamesInfo.put("type", game.getType());
+                gamesInfo.put("description", game.getDescription());
+                gamesInfo.put("image", ImageUtility.decompressImage(game.getImage()));
+                gamesInfo.put("url", game.getUrl());
+                gamesArray.add(gamesInfo);
             }
+//            if (patient.getGames() != null){
+//                for (Game game: patient.getGames()){
+//                    JsonObject gamesInfo = new JsonObject();
+//                    gamesInfo.put("id", game.getId().toString());
+//                    gamesInfo.put("name", game.getName());
+//                    gamesInfo.put("type", game.getType());
+//                    gamesInfo.put("description", game.getDescription());
+//                    gamesInfo.put("image", ImageUtility.decompressImage(game.getImage()));
+//                    gamesInfo.put("url", game.getUrl());
+//                    gamesArray.add(gamesInfo);
+//                }
+//            }
             JsonObject response = new JsonObject();
             response.put("gamesArray", gamesArray);
             return new JSONResponse(200, response);
@@ -76,7 +96,9 @@ public class PatientController {
     }
 
     @PostMapping(path = "/games/statistics/sending")
-    public JSONResponse sendGameStatistic(@RequestHeader("token") String token, @RequestHeader("game") String game, @Valid @RequestBody StatisticArray statisticArray) {
+    public JSONResponse sendGameStatistic(@RequestHeader("token") String token,
+                                          @RequestHeader("game") String game,
+                                          @Valid @RequestBody StatisticArray statisticArray) {
         try {
             Patient patient = this.patientService.getPatientByUser(this.userService.getUserById(this.userService.verifyToken(token)));
             System.out.println(statisticArray.getRecords());
@@ -132,10 +154,11 @@ public class PatientController {
     }
 
     @GetMapping(path = "/games/status")
-    public JSONResponse getStatusOfGame(@RequestHeader("token") String token, @RequestParam UUID game_id) {
+    public JSONResponse getStatusOfGame(@RequestHeader("token") String token,
+                                        @RequestParam String gameID) {
         try {
             Patient patient = this.patientService.getPatientByUser(this.userService.getUserById(this.userService.verifyToken(token)));
-            GameStatus gameStatus = this.gameStatusService.getGameStatusByGameAndPatient(this.gameService.getGameById(game_id), patient);
+            GameStatus gameStatus = this.gameStatusService.getGameStatusByGameAndPatient(this.gameService.getGameById(UUID.fromString(gameID)), patient);
             JsonObject response = new JsonObject();
             response.put("gameStatus", gameStatus.getStatus());
             return new JSONResponse(200, response);
@@ -148,12 +171,44 @@ public class PatientController {
     }
 
     @PutMapping(path = "/games/status/update")
-    public JSONResponse updateStatusOfGame(@RequestHeader("token") String token, @Valid @RequestBody StatusRequest statusRequest) {
+    public JSONResponse updateStatusOfGame(@RequestHeader("token") String token,
+                                           @Valid @RequestBody StatusRequest statusRequest) {
         // TODO Сделать это когда-нибудь
         try {
             Patient patient = this.patientService.getPatientByUser(this.userService.getUserById(this.userService.verifyToken(token)));
             JsonObject response = new JsonObject();
             response.put("message", "Status of the game was updated");
+            return new JSONResponse(200, response);
+        }
+        catch (IllegalArgumentException e){
+            JsonObject exceptionResponse = new JsonObject();
+            exceptionResponse.put("message", e.getMessage());
+            return new JSONResponse(401, exceptionResponse);
+        }
+    }
+
+    @GetMapping(path = "/games/status/statistic")
+    public JSONResponse getStatusesStatistic(@RequestHeader("token") String token) {
+        try {
+            Patient patient = this.patientService.getPatientByUser(this.userService.getUserById(this.userService.verifyToken(token)));
+            JsonObject response = new JsonObject();
+            int done = 0;
+            int assigned = 0;
+            int failed = 0;
+            int started = 0;
+            List<GameStatus> gameStatusList = patient.getGameStatuses();
+            for (GameStatus gameStatus: gameStatusList) {
+                switch (gameStatus.getStatus()){
+                    case DONE -> done++;
+                    case ASSIGNED -> assigned++;
+                    case FAILED -> failed++;
+                    case STARTED -> started++;
+                }
+            }
+            response.put("Done", done);
+            response.put("Assigned", assigned);
+            response.put("Failed", failed);
+            response.put("Started", started);
             return new JSONResponse(200, response);
         }
         catch (IllegalArgumentException e){
@@ -180,7 +235,8 @@ public class PatientController {
     }
 
     @PostMapping(path = "/tests/statistics/sending")
-    public JSONResponse sendStatisticOfGame(@RequestHeader("token") String token, @Valid @RequestBody TestStatisticToSend testStatisticToSend) {
+    public JSONResponse sendStatisticOfGame(@RequestHeader("token") String token,
+                                            @Valid @RequestBody TestStatisticToSend testStatisticToSend) {
         try {
             Patient patient = this.patientService.getPatientByUser(this.userService.getUserById(this.userService.verifyToken(token)));
             TestStatistic statistic = new TestStatistic(
@@ -205,10 +261,11 @@ public class PatientController {
     }
 
     @GetMapping(path = "/tests/status")
-    public JSONResponse getStatusOfTest(@RequestHeader("token") String token, @RequestParam UUID test_id) {
+    public JSONResponse getStatusOfTest(@RequestHeader("token") String token,
+                                        @RequestParam String testID) {
         try {
             Patient patient = this.patientService.getPatientByUser(this.userService.getUserById(this.userService.verifyToken(token)));
-            TestStatus testStatus = this.testStatusService.getTestStatusByTestAndPatient(this.testService.getTestById(test_id), patient);
+            TestStatus testStatus = this.testStatusService.getTestStatusByTestAndPatient(this.testService.getTestById(UUID.fromString(testID)), patient);
             JsonObject response = new JsonObject();
             response.put("testStatus", testStatus.getStatus());
             return new JSONResponse(200, response);
@@ -221,7 +278,8 @@ public class PatientController {
     }
 
     @PutMapping(path = "/tests/status/update")
-    public JSONResponse updateStatusOfTest(@RequestHeader("token") String token, @Valid @RequestBody StatusRequest statusRequest) {
+    public JSONResponse updateStatusOfTest(@RequestHeader("token") String token,
+                                           @Valid @RequestBody StatusRequest statusRequest) {
         try {
             // TODO Сделать это когда-нибудь
             Patient patient = this.patientService.getPatientByUser(this.userService.getUserById(this.userService.verifyToken(token)));
@@ -287,7 +345,8 @@ public class PatientController {
     }
 
     @PostMapping(path = "/account/image/add")
-    public JSONResponse uploadPatientImage(@RequestHeader("token") String token, @RequestParam("image") MultipartFile file) {
+    public JSONResponse uploadPatientImage(@RequestHeader("token") String token,
+                                           @RequestParam("image") MultipartFile file) {
         try {
             Patient patient = this.patientService.getPatientByUser(this.userService.getUserById(this.userService.verifyToken(token)));
             byte[] imageBytes = ImageUtility.compressImage(file.getBytes());
@@ -305,7 +364,8 @@ public class PatientController {
     }
 
     @PutMapping(path = "/account/image/edit")
-    public JSONResponse updatePatientImage(@RequestHeader("token") String token, @RequestParam("image") MultipartFile file) {
+    public JSONResponse updatePatientImage(@RequestHeader("token") String token,
+                                           @RequestParam("image") MultipartFile file) {
         try {
             Patient patient = this.patientService.getPatientByUser(this.userService.getUserById(this.userService.verifyToken(token)));
             byte[] imageBytes = ImageUtility.compressImage(file.getBytes());
@@ -364,7 +424,8 @@ public class PatientController {
     }
 
     @PutMapping(path = "/account/changing")
-    public JSONResponse editAccountOfTutor(@RequestHeader("token") String token, @Valid @RequestBody EditPatientInfoRequest editPatientInfoRequest) {
+    public JSONResponse editAccountOfPatient(@RequestHeader("token") String token,
+                                             @Valid @RequestBody EditPatientInfoRequest editPatientInfoRequest) {
         try {
             Patient patient = this.patientService.getPatientByUser(this.userService.getUserById(this.userService.verifyToken(token)));
             if (editPatientInfoRequest.getName() != null){

@@ -13,6 +13,7 @@ import com.yoh.backend.response.JSONResponse;
 import com.yoh.backend.service.AdminService;
 import com.yoh.backend.service.GameService;
 import com.yoh.backend.service.UserService;
+import com.yoh.backend.util.ImageUtility;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -51,18 +52,21 @@ public class GameController {
 
     @GetMapping(path = "/all")
     public JSONResponse allGames(@RequestHeader("token") String token,
-                                 @RequestParam(value = "regex", required = false, defaultValue = "") String regex) {
+                                 @RequestParam(value = "regex", required = false, defaultValue = "") String regex,
+                                 @RequestParam(value = "typeRegex", required = false, defaultValue = "") String typeRegex) {
         try{
             User user = this.userService.getUserById(this.userService.verifyToken(token));
-            List<Game> games = this.gameService.getAllGamesFiltered(regex);
+            List<Game> games = this.gameService.getAllGamesFiltered(regex, typeRegex);
             JsonArray jsonArray = new JsonArray();
             if (games != null){
                 for(Game game: games){
                     JsonObject response = new JsonObject();
                     response.put("id", game.getId());
                     response.put("name", game.getName());
+                    response.put("type", game.getType());
                     response.put("description", game.getDescription());
                     response.put("url", game.getUrl());
+                    response.put("image", ImageUtility.decompressImage(game.getImage()));
                     jsonArray.add(response);
                 }
             }
@@ -76,8 +80,32 @@ public class GameController {
         }
     }
 
+    @GetMapping(path = "/get")
+    public JSONResponse getGame(@RequestHeader("token") String token,
+                                @RequestParam String gameID) {
+        try{
+            User user = this.userService.getUserById(this.userService.verifyToken(token));
+            Game game = this.gameService.getGameById(UUID.fromString(gameID));
+            JsonObject response = new JsonObject();
+            response.put("id", game.getId());
+            response.put("name", game.getName());
+            response.put("type", game.getType());
+            response.put("description", game.getDescription());
+            response.put("url", game.getUrl());
+            response.put("image", ImageUtility.decompressImage(game.getImage()));
+            JsonObject jsonObject = new JsonObject();
+            jsonObject.put("gameInfo", response);
+            return new JSONResponse(200, jsonObject);
+        }catch (IllegalArgumentException e){
+            JsonObject exceptionResponse = new JsonObject();
+            exceptionResponse.put("message", e.getMessage());
+            return new JSONResponse(401, exceptionResponse);
+        }
+    }
+
     @DeleteMapping(path = "/removing")
-    public JSONResponse removeGame(@RequestHeader("token") String token, @Valid @RequestBody GameToRemove gameToRemove) {
+    public JSONResponse removeGame(@RequestHeader("token") String token,
+                                   @Valid @RequestBody GameToRemove gameToRemove) {
         try {
             //TODO Отцепление от пациентов, проверить возможно работает
             Admin admin = this.adminService.getAdminByUser(this.userService.getUserById(this.userService.verifyToken(token)));
@@ -95,7 +123,8 @@ public class GameController {
     }
 
     @PutMapping(path = "/changing")
-    public JSONResponse changeGame(@RequestHeader("token") String token, @Valid @RequestBody EditGameRequest editGameRequest) {
+    public JSONResponse changeGame(@RequestHeader("token") String token,
+                                   @Valid @RequestBody EditGameRequest editGameRequest) {
         try {
             Admin admin = this.adminService.getAdminByUser(this.userService.getUserById(this.userService.verifyToken(token)));
             Game game = this.gameService.getGameById(UUID.fromString(editGameRequest.getGame_id()));

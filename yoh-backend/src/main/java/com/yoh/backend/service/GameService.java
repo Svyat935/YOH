@@ -51,8 +51,10 @@ public class GameService {
         return gameRepository.getAllGames();
     }
 
-    public List<Game> getAllGamesFiltered(String regex) {
+    public List<Game> getAllGamesFiltered(String regex, String typeRegex) {
         List<Game> unfilteredList = gameRepository.getAllGames();
-        return unfilteredList.stream().filter(i -> i.getName().toLowerCase().contains(regex.toLowerCase())).collect(Collectors.toList());
+        return unfilteredList.stream().filter(i -> i.getName().toLowerCase().contains(regex.toLowerCase())
+                                                && i.getType().toLowerCase().contains(typeRegex.toLowerCase()))
+                                        .collect(Collectors.toList());
     }
 }
