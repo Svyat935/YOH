@@ -166,8 +166,9 @@ public class AdminController {
                                     @RequestParam MultipartFile file,
                                     @RequestParam String type,
                                     @RequestParam String name,
-                                    @RequestParam String description,
-                                    @RequestParam(value = "image", required = false, defaultValue = "") MultipartFile image) {
+                                    @RequestParam String description
+//                                    @RequestParam(value = "image", required = false, defaultValue = "") MultipartFile image
+    ) {
         try {
             Admin admin = this.adminService.getAdminByUser(this.userService.getUserById(this.userService.verifyToken(token)));
             if(this.gameService.checkGameByName(name)){
