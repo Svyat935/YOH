@@ -166,8 +166,8 @@ public class AdminController {
                                     @RequestParam MultipartFile file,
                                     @RequestParam String type,
                                     @RequestParam String name,
-                                    @RequestParam String description
-//                                    @RequestParam(value = "image", required = false, defaultValue = "") MultipartFile image
+                                    @RequestParam String description,
+                                    @RequestParam(value = "image", required = false) MultipartFile image
     ) {
         try {
             Admin admin = this.adminService.getAdminByUser(this.userService.getUserById(this.userService.verifyToken(token)));
@@ -188,10 +188,10 @@ public class AdminController {
                 tempFile.delete();
                 System.out.println(7);
                 Game game = new Game(name, type, description, wrapper+ "/" +name+"/", LocalDateTime.now());
-//                if (!image.equals("")) {
-//                    byte[] imageBytes = ImageUtility.compressImage(file.getBytes());
-//                    game.setImage(imageBytes);
-//                }
+                if (image != null) {
+                    byte[] imageBytes = ImageUtility.compressImage(file.getBytes());
+                    game.setImage(imageBytes);
+                }
                 System.out.println(8);
                 this.gameService.createGame(game);
                 System.out.println(9);
