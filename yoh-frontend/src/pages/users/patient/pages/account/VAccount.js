@@ -10,6 +10,7 @@ import {ProgressBar} from "../../../../../components/progressBar/ProgressBar";
 import {PatientNav} from "../../../../../components/navigate/Patient/PatientNav";
 import Modal from "react-bootstrap/Modal";
 import {ButtonB} from "../../../../../components/buttons/ButtonB/ButtonB";
+import {InputPhone} from "../../../../../components/inputPhone/InputPhone";
 
 export function VAccount(props) {
     // ChangePhoto - 0, ChangeInfo - 1;
@@ -35,7 +36,31 @@ export function VAccount(props) {
 
     const changeView = () => {
         return (
-            <p>Ok</p>
+            <div style={
+                {
+                    display: "flex",
+                    flexDirection: "column",
+                    padding: "0 10px"
+                }
+            }>
+                <label>Имя: </label>
+                <input id={"name"} type={"text"} style={
+                    {borderRadius: 40, border: "none", padding: "5px 15px", marginBottom: 10}
+                } required/>
+                <label>Фамилия: </label>
+                <input id={"surname"} type={"text"} style={
+                    {borderRadius: 40, border: "none", padding: "5px 15px", marginBottom: 10}
+                } required/>
+                <label>Отчество: </label>
+                <input id={"secondname"} type={"text"} style={
+                    {borderRadius: 40, border: "none", padding: "5px 15px", marginBottom: 10}
+                } required/>
+                <label>Телефон: </label>
+                <InputPhone id={"phone"}/>
+
+
+                {/*<p id={"description-validate"} style={{height: "5px", marginBottom: 0, color: "#800000"}}/>*/}
+            </div>
         )
     }
 
