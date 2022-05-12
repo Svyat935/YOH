@@ -45,6 +45,7 @@ public class TutorController {
 
     // [START] Patients
 
+    //TODO выборка
     @GetMapping(path = "/patients/getting")
     public JSONResponse getPatients(@RequestHeader("token") String token) {
         try {
@@ -78,12 +79,13 @@ public class TutorController {
     }
 
     @GetMapping(path = "/patients/getting/all")
-    public JSONResponse getAllPatients(@RequestHeader("token") String token) {
+    public JSONResponse getAllPatients(@RequestHeader("token") String token,
+                                       @RequestParam(value = "regex", required = false, defaultValue = "") String regex) {
         try {
             Tutor tutor = this.tutorService.getTutorByUser(this.userService.getUserById(this.userService.verifyToken(token)));
             Organization organization = this.tutorService.getTutorByUser(this.userService.getUserById(this.userService.verifyToken(token))).getOrganization();
             ArrayList<JsonObject> patientList = new ArrayList<JsonObject>();
-            for (Patient patient : patientService.getAllPatientsByOrganization(organization)){
+            for (Patient patient : patientService.getAllPatientsByOrganizationFiltered(organization, regex)){
                 JsonObject patientInfo = new JsonObject();
                 patientInfo.put("id", patient.getId().toString());
                 patientInfo.put("name", patient.getName());
