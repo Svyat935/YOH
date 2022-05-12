@@ -171,21 +171,29 @@ public class AdminController {
         try {
             Admin admin = this.adminService.getAdminByUser(this.userService.getUserById(this.userService.verifyToken(token)));
             if(this.gameService.checkGameByName(name)){
+                System.out.println(1);
                 String url = "/app/games/" + name;
-
+                System.out.println(2);
                 //Unzip
                 File tempFile = File.createTempFile("prefix-", "-suffix");
 //            tempFile.deleteOnExit();
+                System.out.println(3);
                 file.transferTo(tempFile);
+                System.out.println(4);
                 ZipFile zipFile = new ZipFile(tempFile);
+                System.out.println(5);
                 zipFile.extractAll(url);
+                System.out.println(6);
                 tempFile.delete();
+                System.out.println(7);
                 Game game = new Game(name, type, description, wrapper+ "/" +name+"/", LocalDateTime.now());
 //                if (!image.equals("")) {
 //                    byte[] imageBytes = ImageUtility.compressImage(file.getBytes());
 //                    game.setImage(imageBytes);
 //                }
+                System.out.println(8);
                 this.gameService.createGame(game);
+                System.out.println(9);
 
                 JsonObject response = new JsonObject();
                 response.put("message", "games successfully uploaded");
