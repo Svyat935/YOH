@@ -63,6 +63,7 @@ public class TutorController {
                     patientInfo.put("organization", null);
                 }
                 patientInfo.put("organizationString", patient.getOrganizationString());
+                if(patient.getImage() != null) patientInfo.put("image", patient.getImage());
                 patientInfo.put("login", patient.getUser().getLogin());
                 patientInfo.put("email", patient.getUser().getEmail());
                 patientList.add(patientInfo);
@@ -96,6 +97,7 @@ public class TutorController {
                 else {
                     patientInfo.put("organization", null);
                 }
+                if(patient.getImage() != null) patientInfo.put("image", patient.getImage());
                 patientInfo.put("organizationString", patient.getOrganizationString());
                 patientInfo.put("login", patient.getUser().getLogin());
                 patientInfo.put("email", patient.getUser().getEmail());
@@ -132,6 +134,7 @@ public class TutorController {
             else {
                 response.put("organization", null);
             }
+            if(patient.getImage() != null) response.put("image", patient.getImage());
             response.put("organization", patient.getOrganizationString());
             response.put("birthDate", patient.getBirthDate());
             response.put("numberPhone", patient.getNumberPhone());
@@ -147,7 +150,7 @@ public class TutorController {
                     gamesInfo.put("type", game.getType());
                     gamesInfo.put("description", game.getDescription());
                     gamesInfo.put("url", game.getUrl());
-                    gamesInfo.put("image", ImageUtility.decompressImage(game.getImage()));
+                    if (game.getImage() != null) gamesInfo.put("image", ImageUtility.decompressImage(game.getImage()));
                     gamesArray.add(gamesInfo);
                 }
             }

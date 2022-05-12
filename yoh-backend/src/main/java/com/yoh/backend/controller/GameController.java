@@ -66,7 +66,7 @@ public class GameController {
                     response.put("type", game.getType());
                     response.put("description", game.getDescription());
                     response.put("url", game.getUrl());
-                    response.put("image", ImageUtility.decompressImage(game.getImage()));
+                    if (game.getImage() != null) response.put("image", ImageUtility.decompressImage(game.getImage()));
                     jsonArray.add(response);
                 }
             }
@@ -92,7 +92,7 @@ public class GameController {
             response.put("type", game.getType());
             response.put("description", game.getDescription());
             response.put("url", game.getUrl());
-            response.put("image", ImageUtility.decompressImage(game.getImage()));
+            if (game.getImage() != null) response.put("image", ImageUtility.decompressImage(game.getImage()));
             JsonObject jsonObject = new JsonObject();
             jsonObject.put("gameInfo", response);
             return new JSONResponse(200, jsonObject);

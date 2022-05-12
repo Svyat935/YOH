@@ -68,7 +68,7 @@ public class PatientController {
                 gamesInfo.put("name", game.getName());
                 gamesInfo.put("type", game.getType());
                 gamesInfo.put("description", game.getDescription());
-                gamesInfo.put("image", ImageUtility.decompressImage(game.getImage()));
+                if (game.getImage() != null) gamesInfo.put("image", ImageUtility.decompressImage(game.getImage()));
                 gamesInfo.put("url", game.getUrl());
                 gamesArray.add(gamesInfo);
             }
