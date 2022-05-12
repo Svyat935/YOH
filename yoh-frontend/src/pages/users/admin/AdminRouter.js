@@ -3,9 +3,7 @@ import {Route, Routes} from "react-router-dom";
 import {CHomeAdmin} from "./pages/home/CHomeAdmin";
 import {CUsersAdmin} from "./pages/users/CUsersAdmin";
 import {CComponents} from "./pages/components/CComponents";
-// import {ComponentsPage} from "./pages/ComponentsPage";
-// import {OrganizationPage} from "./pages/OrganizationPage";
-// import {Game} from "./pages/p";
+import {VGame} from "./pages/game/VGame";
 
 
 export function AdminRouter() {
@@ -14,8 +12,7 @@ export function AdminRouter() {
             <Route path={'/'} element={<CHomeAdmin/>}/>
             <Route path={'/users/'} element={<CUsersAdmin/>}/>
             <Route path={'/components/'} element={<CComponents/>}/>
-            {/*<Route path={'/organization_page'} element={<OrganizationPage/>}/>*/}
-            {/*<Route path={'/game'} element={<Game/>}/>*/}
+            <Route path={'/game'} element={<VGame/>}/>
         </Routes>
     )
 }

@@ -40,7 +40,7 @@ export function VHomeAdmin(props) {
                         alignItems: "center"
                     }
                 }>
-                    <h3>Пользователей в системе отсутствует.</h3>
+                    <h3>Пользователи в системе отсутствуют.</h3>
                 </div>
             )
         }

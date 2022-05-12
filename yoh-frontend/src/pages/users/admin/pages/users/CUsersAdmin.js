@@ -62,7 +62,7 @@ export function CUsersAdmin() {
 
             if (responseUsers !== null){
                 responseUsers = responseUsers["jsonObject"]["userList"];
-                setUsers(responseUsers);
+                if (responseUsers !== undefined) setUsers(responseUsers);
             }
         }
     }, [context, _])

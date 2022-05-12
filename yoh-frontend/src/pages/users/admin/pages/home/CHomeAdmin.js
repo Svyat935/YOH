@@ -40,12 +40,12 @@ export function CHomeAdmin() {
 
             if (responseUsers !== null){
                 responseUsers = responseUsers["jsonObject"]["userList"];
-                setUsers(responseUsers);
+                if (responseUsers !== undefined) setUsers(responseUsers);
             }
 
             if (responseGames !== null){
                 responseGames = responseGames["jsonObject"]["games"];
-                setGames(responseGames);
+                if (responseGames !== undefined) setGames(responseGames);
             }
         }
     }, [context])
