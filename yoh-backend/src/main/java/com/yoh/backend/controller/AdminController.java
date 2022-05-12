@@ -181,10 +181,10 @@ public class AdminController {
                 zipFile.extractAll(url);
                 tempFile.delete();
                 Game game = new Game(name, type, description, wrapper+ "/" +name+"/", LocalDateTime.now());
-                if (!image.equals("")) {
-                    byte[] imageBytes = ImageUtility.compressImage(file.getBytes());
-                    game.setImage(imageBytes);
-                }
+//                if (!image.equals("")) {
+//                    byte[] imageBytes = ImageUtility.compressImage(file.getBytes());
+//                    game.setImage(imageBytes);
+//                }
                 this.gameService.createGame(game);
 
                 JsonObject response = new JsonObject();
