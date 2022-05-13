@@ -82,7 +82,7 @@ public class AdminRepository {
         try{
             Criteria criteria = session.createCriteria(Admin.class);
             List<Admin> adminList = criteria.list();
-            return adminList.isEmpty() ? null : adminList;
+            return adminList.isEmpty() ? List.of() : adminList;
         }finally {
             session.close();
         }
