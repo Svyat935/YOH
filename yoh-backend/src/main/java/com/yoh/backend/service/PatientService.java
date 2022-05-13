@@ -53,9 +53,9 @@ public class PatientService {
         if (!patientListUnfiltered.isEmpty())
             return patientListUnfiltered
                     .stream()
-                    .filter(i -> i.getSurname().toLowerCase().contains(regex.toLowerCase())
-                            || i.getName().toLowerCase().contains(regex.toLowerCase())
-                            || i.getSecondName().toLowerCase().contains(regex.toLowerCase()))
+                    .filter(i -> (i.getSurname() != null && i.getSurname().toLowerCase().contains(regex.toLowerCase()))
+                            || (i.getName() != null && i.getName().toLowerCase().contains(regex.toLowerCase()))
+                            || (i.getSecondName() != null && i.getSecondName().toLowerCase().contains(regex.toLowerCase())))
                     .collect(Collectors.toList());
         else return patientListUnfiltered;
     }
