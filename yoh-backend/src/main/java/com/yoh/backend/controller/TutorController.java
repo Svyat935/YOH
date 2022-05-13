@@ -86,22 +86,25 @@ public class TutorController {
             Tutor tutor = this.tutorService.getTutorByUser(this.userService.getUserById(this.userService.verifyToken(token)));
             Organization organization = this.tutorService.getTutorByUser(this.userService.getUserById(this.userService.verifyToken(token))).getOrganization();
             ArrayList<JsonObject> patientList = new ArrayList<JsonObject>();
-            for (Patient patient : patientService.getAllPatientsByOrganizationFiltered(organization, regex)){
-                JsonObject patientInfo = new JsonObject();
-                patientInfo.put("id", patient.getId().toString());
-                patientInfo.put("name", patient.getName());
-                patientInfo.put("surname", patient.getSurname());
-                if (patient.getOrganization() != null){
-                    patientInfo.put("organization", patient.getOrganization().getId().toString());
+            List<Patient> patientsFilteredList = patientService.getAllPatientsByOrganizationFiltered(organization, regex);
+            if (patientsFilteredList.size() != 0) {
+                for (Patient patient : patientsFilteredList){
+                    JsonObject patientInfo = new JsonObject();
+                    patientInfo.put("id", patient.getId().toString());
+                    patientInfo.put("name", patient.getName());
+                    patientInfo.put("surname", patient.getSurname());
+                    if (patient.getOrganization() != null){
+                        patientInfo.put("organization", patient.getOrganization().getId().toString());
+                    }
+                    else {
+                        patientInfo.put("organization", null);
+                    }
+                    if(patient.getImage() != null) patientInfo.put("image", patient.getImage());
+                    patientInfo.put("organizationString", patient.getOrganizationString());
+                    patientInfo.put("login", patient.getUser().getLogin());
+                    patientInfo.put("email", patient.getUser().getEmail());
+                    patientList.add(patientInfo);
                 }
-                else {
-                    patientInfo.put("organization", null);
-                }
-                if(patient.getImage() != null) patientInfo.put("image", patient.getImage());
-                patientInfo.put("organizationString", patient.getOrganizationString());
-                patientInfo.put("login", patient.getUser().getLogin());
-                patientInfo.put("email", patient.getUser().getEmail());
-                patientList.add(patientInfo);
             }
             JsonObject response = new JsonObject();
             response.put("patientList", patientList);

@@ -50,12 +50,14 @@ public class PatientService {
 
     public List<Patient> getAllPatientsByOrganizationFiltered(Organization organization, String regex){
         List<Patient> patientListUnfiltered = patientRepository.getAllPatientsByOrganization(organization);
+//        if (patientListUnfiltered != null)
         return patientListUnfiltered
                 .stream()
                 .filter(i -> i.getSurname().toLowerCase().contains(regex.toLowerCase())
                         || i.getName().toLowerCase().contains(regex.toLowerCase())
                         || i.getSecondName().toLowerCase().contains(regex.toLowerCase()))
                 .collect(Collectors.toList());
+//        else return List.of();
     }
 
     public List<Patient> getAllPatientsByOrganization(Organization organization){

@@ -58,7 +58,7 @@ public class GameController {
             User user = this.userService.getUserById(this.userService.verifyToken(token));
             List<Game> games = this.gameService.getAllGamesFiltered(regex, typeRegex);
             JsonArray jsonArray = new JsonArray();
-            if (games != null){
+            if (games.size() != 0){
                 for(Game game: games){
                     JsonObject response = new JsonObject();
                     response.put("id", game.getId());

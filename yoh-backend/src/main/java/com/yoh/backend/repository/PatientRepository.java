@@ -83,7 +83,7 @@ public class PatientRepository {
             Criteria criteria = session.createCriteria(Patient.class)
                     .add(Restrictions.eq("organization", organization));
             List<Patient> patientsList = criteria.list();
-            return patientsList.isEmpty() ? List.of() : patientsList;
+            return patientsList;
         }
         finally {
             session.close();

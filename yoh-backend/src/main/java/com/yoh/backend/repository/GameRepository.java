@@ -80,7 +80,8 @@ public class GameRepository {
         try{
             Criteria criteria = session.createCriteria(Game.class);
             List<Game> games = criteria.list();
-            return games.isEmpty() ? null : games;
+            return games;
+//            return games.isEmpty() ? null : games;
         }finally {
             session.close();
         }
