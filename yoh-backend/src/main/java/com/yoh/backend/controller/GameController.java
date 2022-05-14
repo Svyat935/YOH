@@ -4,6 +4,7 @@ import com.github.cliftonlabs.json_simple.JsonArray;
 import com.github.cliftonlabs.json_simple.JsonObject;
 import com.yoh.backend.entity.Admin;
 import com.yoh.backend.entity.Game;
+import com.yoh.backend.entity.Patient;
 import com.yoh.backend.entity.User;
 import com.yoh.backend.request.AddGamesRequest;
 import com.yoh.backend.request.EditGameRequest;
@@ -18,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -53,26 +55,53 @@ public class GameController {
     @GetMapping(path = "/all")
     public JSONResponse allGames(@RequestHeader("token") String token,
                                  @RequestParam(value = "regex", required = false, defaultValue = "") String regex,
-                                 @RequestParam(value = "typeRegex", required = false, defaultValue = "") String typeRegex) {
+                                 @RequestParam(value = "typeRegex", required = false, defaultValue = "") String typeRegex,
+                                 @RequestParam(value = "limit", required = true) Integer limit,
+                                 @RequestParam(value = "start", required = true) Integer start) {
         try{
             User user = this.userService.getUserById(this.userService.verifyToken(token));
             List<Game> games = this.gameService.getAllGamesFiltered(regex, typeRegex);
-            JsonArray jsonArray = new JsonArray();
-            if (games.size() != 0){
-                for(Game game: games){
-                    JsonObject response = new JsonObject();
-                    response.put("id", game.getId());
-                    response.put("name", game.getName());
-                    response.put("type", game.getType());
-                    response.put("description", game.getDescription());
-                    response.put("url", game.getUrl());
-                    if (game.getImage() != null) response.put("image", ImageUtility.decompressImage(game.getImage()));
-                    jsonArray.add(response);
-                }
+            ArrayList<JsonObject> gamesList = new ArrayList<JsonObject>();
+            JsonObject response = new JsonObject();
+
+            //Pagination
+            if (start >= games.size())
+                throw new IllegalArgumentException(
+                        String.format("No element at that index (%s)", start)
+                );
+            int lastIndex;
+            if (start + limit > games.size()){
+                lastIndex = games.size();
+                response.put("next", false);
             }
-            JsonObject jsonObject = new JsonObject();
-            jsonObject.put("games", jsonArray);
-            return new JSONResponse(200, jsonObject);
+            else {
+                lastIndex = start + limit;
+                response.put("next", true);
+            }
+            if (start == 0) response.put("previous", false);
+            else response.put("previous", true);
+            List<Game> paginatedGameList = new ArrayList<>();
+            for (int i = start; i < lastIndex; i++){
+                paginatedGameList.add(games.get(i));
+            }
+            response.put("count", paginatedGameList.size());
+
+
+//            if (games.size() != 0){
+            for(Game game: paginatedGameList){
+                JsonObject gameInfo = new JsonObject();
+                response.put("id", game.getId());
+                response.put("name", game.getName());
+                response.put("type", game.getType());
+                response.put("description", game.getDescription());
+                response.put("url", game.getUrl());
+                if (game.getImage() != null) response.put("image", ImageUtility.decompressImage(game.getImage()));
+                gamesList.add(gameInfo);
+            }
+//            }
+
+            response.put("results", gamesList);
+            return new JSONResponse(200, response);
         }catch (IllegalArgumentException e){
             JsonObject exceptionResponse = new JsonObject();
             exceptionResponse.put("message", e.getMessage());

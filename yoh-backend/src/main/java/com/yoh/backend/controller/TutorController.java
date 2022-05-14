@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/tutor")
@@ -48,11 +49,48 @@ public class TutorController {
 
     //TODO выборка
     @GetMapping(path = "/patients/getting")
-    public JSONResponse getPatients(@RequestHeader("token") String token) {
+    public JSONResponse getPatients(@RequestHeader("token") String token,
+                                    @RequestParam(value = "limit", required = true) Integer limit,
+                                    @RequestParam(value = "start", required = true) Integer start,
+                                    @RequestParam(value = "regex", required = false, defaultValue = "") String regex) {
         try {
             Tutor tutor = this.tutorService.getTutorByUser(this.userService.getUserById(this.userService.verifyToken(token)));
             ArrayList<JsonObject> patientList = new ArrayList<JsonObject>();
-            for (Patient patient : tutor.getPatients()){
+            JsonObject response = new JsonObject();
+
+            List<Patient> patients = tutor.getPatients();
+            //Search
+            if (!Objects.equals(regex, ""))
+                patients = patients.stream()
+                        .filter(i -> (i.getSurname() != null && i.getSurname().toLowerCase().contains(regex.toLowerCase()))
+                                || (i.getName() != null && i.getName().toLowerCase().contains(regex.toLowerCase()))
+                                || (i.getSecondName() != null && i.getSecondName().toLowerCase().contains(regex.toLowerCase())))
+                        .collect(Collectors.toList());
+
+
+            //Pagination
+            if (start >= patients.size())
+                throw new IllegalArgumentException(
+                        String.format("No element at that index (%s)", start)
+                );
+            int lastIndex;
+            if (start + limit > patients.size()){
+                lastIndex = patients.size();
+                response.put("next", false);
+            }
+            else {
+                lastIndex = start + limit;
+                response.put("next", true);
+            }
+            if (start == 0) response.put("previous", false);
+            else response.put("previous", true);
+            List<Patient> patientsFilteredList = new ArrayList<>();
+            for (int i = start; i < lastIndex; i++){
+                patientsFilteredList.add(patients.get(i));
+            }
+            response.put("count", patientsFilteredList.size());
+
+            for (Patient patient : patientsFilteredList){
                 JsonObject patientInfo = new JsonObject();
                 patientInfo.put("id", patient.getId().toString());
                 patientInfo.put("name", patient.getName());
@@ -69,8 +107,8 @@ public class TutorController {
                 patientInfo.put("email", patient.getUser().getEmail());
                 patientList.add(patientInfo);
             }
-            JsonObject response = new JsonObject();
-            response.put("patientList", patientList);
+
+            response.put("results", patientList);
             return new JSONResponse(200, response);
         }
         catch (IllegalArgumentException e){
@@ -89,7 +127,31 @@ public class TutorController {
             Tutor tutor = this.tutorService.getTutorByUser(this.userService.getUserById(this.userService.verifyToken(token)));
             Organization organization = this.tutorService.getTutorByUser(this.userService.getUserById(this.userService.verifyToken(token))).getOrganization();
             ArrayList<JsonObject> patientList = new ArrayList<JsonObject>();
-            List<Patient> patientsFilteredList = patientService.getAllPatientsByOrganizationFiltered(organization, regex, limit, start);
+            JsonObject response = new JsonObject();
+            List<Patient> patientsFilteredUnpaginatedList = patientService.getAllPatientsByOrganizationFiltered(organization, regex);
+
+            //Pagination
+            if (start >= patientsFilteredUnpaginatedList.size())
+                throw new IllegalArgumentException(
+                        String.format("No element at that index (%s)", start)
+                );
+            int lastIndex;
+            if (start + limit > patientsFilteredUnpaginatedList.size()){
+                lastIndex = patientsFilteredUnpaginatedList.size();
+                response.put("next", false);
+            }
+            else {
+                lastIndex = start + limit;
+                response.put("next", true);
+            }
+            if (start == 0) response.put("previous", false);
+            else response.put("previous", true);
+            List<Patient> patientsFilteredList = new ArrayList<>();
+            for (int i = start; i < lastIndex; i++){
+                patientsFilteredList.add(patientsFilteredUnpaginatedList.get(i));
+            }
+            response.put("count", patientsFilteredList.size());
+
 //            if (!patientsFilteredList.isEmpty()) {
             for (Patient patient : patientsFilteredList){
                 JsonObject patientInfo = new JsonObject();
@@ -110,8 +172,7 @@ public class TutorController {
                 patientList.add(patientInfo);
             }
 //            }
-            JsonObject response = new JsonObject();
-            response.put("patientList", patientList);
+            response.put("results", patientList);
             return new JSONResponse(200, response);
         }
         catch (IllegalArgumentException e){

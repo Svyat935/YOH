@@ -55,6 +55,8 @@ public class PatientController {
 
     @GetMapping(path = "/games/getting")
     public JSONResponse getAllGames(@RequestHeader("token") String token,
+                                    @RequestParam(value = "limit", required = true) Integer limit,
+                                    @RequestParam(value = "start", required = true) Integer start,
                                     @RequestParam(value = "regex", required = false, defaultValue = "") String regex,
                                     @RequestParam(value = "typeRegex", required = false, defaultValue = "") String typeRegex) {
         try {
@@ -62,6 +64,30 @@ public class PatientController {
             ArrayList<JsonObject> gamesArray = new ArrayList<>();
             List<Game> gameList = patient.getGames().stream().filter(i -> i.getName().toLowerCase().contains(regex.toLowerCase())
                             && i.getType().toLowerCase().contains(typeRegex.toLowerCase())).collect(Collectors.toList());
+            JsonObject response = new JsonObject();
+
+            //Pagination
+            if (start >= gameList.size())
+                throw new IllegalArgumentException(
+                        String.format("No element at that index (%s)", start)
+                );
+            int lastIndex;
+            if (start + limit > gameList.size()){
+                lastIndex = gameList.size();
+                response.put("next", false);
+            }
+            else {
+                lastIndex = start + limit;
+                response.put("next", true);
+            }
+            if (start == 0) response.put("previous", false);
+            else response.put("previous", true);
+            List<Game> paginatedGamesList = new ArrayList<>();
+            for (int i = start; i < lastIndex; i++){
+                paginatedGamesList.add(gameList.get(i));
+            }
+            response.put("count", paginatedGamesList.size());
+
             for (Game game: gameList) {
                 JsonObject gamesInfo = new JsonObject();
                 gamesInfo.put("id", game.getId().toString());
@@ -69,6 +95,7 @@ public class PatientController {
                 gamesInfo.put("type", game.getType());
                 gamesInfo.put("description", game.getDescription());
                 if (game.getImage() != null) gamesInfo.put("image", ImageUtility.decompressImage(game.getImage()));
+                else gamesInfo.put("image", null);
                 gamesInfo.put("url", game.getUrl());
                 gamesArray.add(gamesInfo);
             }
@@ -84,8 +111,8 @@ public class PatientController {
 //                    gamesArray.add(gamesInfo);
 //                }
 //            }
-            JsonObject response = new JsonObject();
-            response.put("gamesArray", gamesArray);
+
+            response.put("results", gamesArray);
             return new JSONResponse(200, response);
         }
         catch (IllegalArgumentException e){

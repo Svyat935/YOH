@@ -51,27 +51,18 @@ public class PatientService {
         );
     }
 
-    public List<Patient> getAllPatientsByOrganizationFiltered(Organization organization, String regex, Integer limit, Integer start){
+    public List<Patient> getAllPatientsByOrganizationFiltered(Organization organization, String regex){
         List<Patient> patientListUnfiltered = patientRepository.getAllPatientsByOrganization(organization);
         if (!regex.equals("")){
-            patientListUnfiltered = patientListUnfiltered
+            return patientListUnfiltered
                     .stream()
                     .filter(i -> (i.getSurname() != null && i.getSurname().toLowerCase().contains(regex.toLowerCase()))
                             || (i.getName() != null && i.getName().toLowerCase().contains(regex.toLowerCase()))
                             || (i.getSecondName() != null && i.getSecondName().toLowerCase().contains(regex.toLowerCase())))
                     .collect(Collectors.toList());
         }
-//        else return patientListUnfiltered;
-        if (start >= patientListUnfiltered.size())
-            throw new IllegalArgumentException(
-                    String.format("No element at that index (%s)", start)
-            );
-        int lastIndex = Math.min(start + limit, patientListUnfiltered.size());
-        List<Patient> result = new ArrayList<>();
-        for (int i = start; i < lastIndex; i++){
-            result.add(patientListUnfiltered.get(i));
-        }
-        return result;
+        else return patientListUnfiltered;
+
 //        Patient[] patientsArray = patientListUnfiltered.toArray(new Patient[0]);
 //        List<Patient> sdsd = Stream.iterate(0, )
 //        return java.util.Arrays.stream(patientsArray, start, lastIndex)
