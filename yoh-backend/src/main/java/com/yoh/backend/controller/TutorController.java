@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
+import java.awt.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -81,12 +82,14 @@ public class TutorController {
 
     @GetMapping(path = "/patients/getting/all")
     public JSONResponse getAllPatients(@RequestHeader("token") String token,
+                                       @RequestParam(value = "limit", required = true) Integer limit,
+                                       @RequestParam(value = "start", required = true) Integer start,
                                        @RequestParam(value = "regex", required = false, defaultValue = "") String regex) {
         try {
             Tutor tutor = this.tutorService.getTutorByUser(this.userService.getUserById(this.userService.verifyToken(token)));
             Organization organization = this.tutorService.getTutorByUser(this.userService.getUserById(this.userService.verifyToken(token))).getOrganization();
             ArrayList<JsonObject> patientList = new ArrayList<JsonObject>();
-            List<Patient> patientsFilteredList = patientService.getAllPatientsByOrganizationFiltered(organization, regex);
+            List<Patient> patientsFilteredList = patientService.getAllPatientsByOrganizationFiltered(organization, regex, limit, start);
 //            if (!patientsFilteredList.isEmpty()) {
             for (Patient patient : patientsFilteredList){
                 JsonObject patientInfo = new JsonObject();
@@ -100,6 +103,7 @@ public class TutorController {
                     patientInfo.put("organization", null);
                 }
                 if(patient.getImage() != null) patientInfo.put("image", patient.getImage());
+                    else patientInfo.put("image", null);
                 patientInfo.put("organizationString", patient.getOrganizationString());
                 patientInfo.put("login", patient.getUser().getLogin());
                 patientInfo.put("email", patient.getUser().getEmail());
@@ -138,6 +142,7 @@ public class TutorController {
                 response.put("organization", null);
             }
             if(patient.getImage() != null) response.put("image", patient.getImage());
+                else response.put("image", null);
             response.put("organization", patient.getOrganizationString());
             response.put("birthDate", patient.getBirthDate());
             response.put("numberPhone", patient.getNumberPhone());
