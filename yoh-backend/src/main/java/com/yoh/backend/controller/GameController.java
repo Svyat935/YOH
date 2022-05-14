@@ -90,12 +90,12 @@ public class GameController {
 //            if (games.size() != 0){
             for(Game game: paginatedGameList){
                 JsonObject gameInfo = new JsonObject();
-                response.put("id", game.getId());
-                response.put("name", game.getName());
-                response.put("type", game.getType());
-                response.put("description", game.getDescription());
-                response.put("url", game.getUrl());
-                if (game.getImage() != null) response.put("image", ImageUtility.decompressImage(game.getImage()));
+                gameInfo.put("id", game.getId());
+                gameInfo.put("name", game.getName());
+                gameInfo.put("type", game.getType());
+                gameInfo.put("description", game.getDescription());
+                gameInfo.put("url", game.getUrl());
+                if (game.getImage() != null) gameInfo.put("image", ImageUtility.decompressImage(game.getImage()));
                 gamesList.add(gameInfo);
             }
 //            }
