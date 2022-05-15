@@ -8,6 +8,7 @@ import com.yoh.backend.request.*;
 import com.yoh.backend.response.*;
 import com.yoh.backend.service.*;
 import com.yoh.backend.util.ImageUtility;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -136,7 +137,8 @@ public class PatientController {
                 System.out.println(statisticToSend.get("AnswerNumber"));
                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("M/d/yyyy, h:m:s a");
                 LocalDateTime localDateTime = LocalDateTime.parse(statisticToSend.get("DateAction").toString(), formatter);
-                Jsonb details = (Jsonb) statisticToSend.get("Details");
+//                Jsonb details = (Jsonb) statisticToSend.get("Details");
+                JSONObject details = new JSONObject(statisticToSend.get("details"));
 
                 Short AnswerNumber;
                 if (statisticToSend.get("AnswerNumber") != null)
@@ -150,7 +152,7 @@ public class PatientController {
                         Short.valueOf(statisticToSend.get("Type").toString()),
                         localDateTime,
                         AnswerNumber,
-                        details
+                        details.toString()
                 );
                 this.gameStatisticService.createGameStatistic(statistic);
                 patient.getGameStatistics().add(statistic);
