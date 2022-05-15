@@ -1,5 +1,9 @@
 package com.yoh.backend.entity;
 
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import org.hibernate.annotations.Type;
+
+import javax.json.bind.Jsonb;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.Date;
@@ -10,13 +14,14 @@ import java.util.UUID;
 public class GameStatistic {
     public GameStatistic() {}
 
-    public GameStatistic(Game game, Patient patient, Short type, LocalDateTime dateAction, Short answerNumber) {
+    public GameStatistic(Game game, Patient patient, Short type, LocalDateTime dateAction, Short answerNumber, Jsonb details) {
         //TODO
         this.game = game;
         this.patient = patient;
         this.type = type;
         this.dateAction = dateAction;
         this.answerNumber = answerNumber;
+        this.details = details;
 //        this.message = null;
     }
 
@@ -93,7 +98,20 @@ public class GameStatistic {
     }
 
 
-//    @Column(name = "message", length = 128, nullable = true)
+//    @Type(type = "jsonb")
+    @Transient
+    @Column(name = "details", nullable = true, columnDefinition = "jsonb")
+    private Jsonb details;
+
+    public Jsonb getDetails() {
+        return this.details;
+    }
+
+    public void setDetails(Jsonb details) {
+        this.details = details;
+    }
+
+    //    @Column(name = "message", length = 128, nullable = true)
 //    private String message;
 //
 //    public String getMessage(){

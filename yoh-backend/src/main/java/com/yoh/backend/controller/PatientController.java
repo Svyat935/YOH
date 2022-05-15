@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.json.bind.Jsonb;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.validation.Valid;
 import java.text.SimpleDateFormat;
@@ -135,6 +136,7 @@ public class PatientController {
                 System.out.println(statisticToSend.get("AnswerNumber"));
                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("M/d/yyyy, h:m:s a");
                 LocalDateTime localDateTime = LocalDateTime.parse(statisticToSend.get("DateAction").toString(), formatter);
+                Jsonb details = (Jsonb) statisticToSend.get("Details");
 
                 Short AnswerNumber;
                 if (statisticToSend.get("AnswerNumber") != null)
@@ -147,7 +149,8 @@ public class PatientController {
                         patient,
                         Short.valueOf(statisticToSend.get("Type").toString()),
                         localDateTime,
-                        AnswerNumber
+                        AnswerNumber,
+                        details
                 );
                 this.gameStatisticService.createGameStatistic(statistic);
                 patient.getGameStatistics().add(statistic);
