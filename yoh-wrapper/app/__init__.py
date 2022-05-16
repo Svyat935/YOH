@@ -17,6 +17,7 @@ def create_flask_app():
         app.config.update(dict(
             SECRET_KEY=str(config['FLASK_APP']['FLASK_APP_SECRET_KEY'])
         ))
+        app.config['CORS_HEADERS'] = 'Content-Type'
     except KeyError:
         print(f"\033[31m Файл {path} не найден или неверный")
 
