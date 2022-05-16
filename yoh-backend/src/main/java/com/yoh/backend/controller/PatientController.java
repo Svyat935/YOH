@@ -19,6 +19,7 @@ import javax.json.bind.Jsonb;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.validation.Valid;
 import java.io.File;
+import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
@@ -410,8 +411,14 @@ public class PatientController {
 
             File dest = new File(filePath);
             dest.getParentFile().mkdirs();
-            dest.createNewFile();
-            file.transferTo(dest);
+//            dest.createNewFile();
+//            file.transferTo(dest);
+//
+//            Path filepath = Paths.get(dir.toString(), file.getOriginalFilename());
+
+            try (OutputStream os = Files.newOutputStream(dest.toPath())) {
+                os.write(file.getBytes());
+            }
 
 //            Files.copy(file.getInputStream(), Paths.get(filePath), StandardCopyOption.REPLACE_EXISTING);
 
