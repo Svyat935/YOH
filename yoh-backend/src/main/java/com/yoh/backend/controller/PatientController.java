@@ -19,6 +19,9 @@ import javax.json.bind.Jsonb;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.validation.Valid;
 import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -400,11 +403,14 @@ public class PatientController {
             String orgName = patient.getId().toString() + "." + FilenameUtils.getExtension(file.getOriginalFilename());
             System.out.println(orgName);
             String filePath = image_folder + "/" + orgName;
-            if(new  File(filePath).exists()){
-                new File(filePath).delete();
-            }
-            File dest = new File(filePath);
-            file.transferTo(dest);
+//            if(new  File(filePath).exists()){
+//                new File(filePath).delete();
+//            }
+//            File dest = new File(filePath);
+//            file.transferTo(dest);
+
+            Files.copy(file.getInputStream(), Paths.get(filePath), StandardCopyOption.REPLACE_EXISTING);
+
             System.out.println(patient.getImage());
             patient.setImage(filePath);
             this.patientService.updatePatient(patient);
