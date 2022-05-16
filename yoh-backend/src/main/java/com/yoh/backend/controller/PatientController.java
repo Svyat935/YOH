@@ -423,7 +423,7 @@ public class PatientController {
         }
         catch (Exception e){
             JsonObject exceptionResponse = new JsonObject();
-            exceptionResponse.put("message", e.getStackTrace());
+            exceptionResponse.put("message", e.getMessage());
             return new JSONResponse(401, exceptionResponse);
         }
     }
