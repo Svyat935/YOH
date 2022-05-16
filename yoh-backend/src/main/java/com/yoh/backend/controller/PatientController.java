@@ -400,11 +400,15 @@ public class PatientController {
             String orgName = patient.getId().toString() + "." + FilenameUtils.getExtension(file.getOriginalFilename());
             System.out.println(orgName);
             String filePath = image_folder + "/" + orgName;
+            if(new  File(filePath).exists()){
+                new File(filePath).delete();
+            }
             File dest = new File(filePath);
             file.transferTo(dest);
-
+            System.out.println(patient.getImage());
             patient.setImage(filePath);
             this.patientService.updatePatient(patient);
+            System.out.println(patient.getImage());
             JsonObject response = new JsonObject();
             response.put("message", "Patient account image was added");
             return new JSONResponse(200, response);
