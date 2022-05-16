@@ -11,6 +11,10 @@ import profileStub from "../../../../../assets/profileStub.jpg";
 import {ButtonA} from "../../../../../components/buttons/ButtonA/ButtonA";
 import {ButtonB} from "../../../../../components/buttons/ButtonB/ButtonB";
 import Modal from "react-bootstrap/Modal";
+import {InputGender} from "../../../../../components/inputGender/InputGender";
+import {InputPhone} from "../../../../../components/inputPhone/InputPhone";
+import {InputBirthday} from "../../../../../components/inputBirthday/InputBirthday";
+import {InputOrganization} from "../../../../../components/InputOrganization/InputOrganization";
 
 export function VUsersAdmin(props) {
     const filterList = [
@@ -24,9 +28,26 @@ export function VUsersAdmin(props) {
     const [show, setShow] = useState(false);
     //TODO: replace the int type with something better.
     //Note: Adding user - 0, Removing user - 1, Confirm Removing - 2, Changing user - 3
+    //Choose role - 4, Add Info - 5
+    //TODO: And I think we can remove some the states.
     const [buttonStatus, setButtonStatus] = useState(0);
     const [userForRemoving, setRemovingUser] = useState(null);
     const [userForChanging, setChangingUser] = useState(null);
+    const [userInfo, setUserInfo] = useState({});
+    const [currentUserLogin, setCurrentUserLogin] = useState(null);
+    const [role, setRole] = useState(null);
+    const validStyle = "1px red solid";
+    const removeBorderStyle = "none";
+
+    const clearAll = () => {
+        setShow(false);
+        setRole(null);
+        setCurrentUserLogin(null);
+        setUserInfo(null);
+        setChangingUser(null);
+        setRemovingUser(null);
+        setButtonStatus(0);
+    }
 
     const createBasicViewUsers = () => {
         let users = props.users,
@@ -39,7 +60,13 @@ export function VUsersAdmin(props) {
                             user["role"] === 3 ? "Тьютор" : "Без Роли"
                 view.push(
                     <InfoBlock onClick={
-                        () => {
+                        async () => {
+                            let userInfo = await props.getInfoUser(user["id"]);
+                            if (userInfo !== null){
+                                userInfo = userInfo["jsonObject"];
+                                setUserInfo(userInfo);
+                            }
+
                             setChangingUser(user);
                             setButtonStatus(3);
                             setShow(true);
@@ -120,8 +147,6 @@ export function VUsersAdmin(props) {
     };
 
     const addUser = async () => {
-        const validStyle = "1px red solid",
-            removeBorderStyle = "none";
         let fLogin = document.getElementById("login"),
             fEmail = document.getElementById("email"),
             fPassword = document.getElementById("password"),
@@ -196,17 +221,143 @@ export function VUsersAdmin(props) {
 
         if (validStatus === true) {
             props.refresh();
-            setShow(false);
+            setCurrentUserLogin(fLogin.value);
+            setButtonStatus(4);
+        }
+    }
+
+    const addInfoForTutor = async () => {
+        let validStatus = true;
+        let fName = document.getElementById("name"),
+            fSurname = document.getElementById("surname"),
+            fSecondName = document.getElementById("secondName"),
+            fOrganization = document.getElementById("input-organizations");
+        let user = props.users.filter(user => user.login === currentUserLogin)[0];
+        if (!user) user = userForChanging;
+
+        if (!fName.value){
+            fName.style.border = validStyle;
+            validStatus = false;
+        }
+        if (!fSurname.value){
+            fSurname.style.border = validStyle;
+            validStatus = false;
+        }
+        if (!fSecondName.value){
+            fSecondName.style.border = validStyle;
+            validStatus = false;
+        }
+
+        if (validStatus) {
+            let body = {};
+            body["name"] = fName.value;
+            body["surname"] = fSurname.value;
+            body["secondName"] = fSecondName.value;
+            body["id"] = user.id;
+            body["organization"] = fOrganization.value;
+
+            let response = await props.editTutorInfo(body);
+
+            if (response){
+                if (response.code === 401) {
+                    console.log(response);
+                    validStatus = false;
+                }
+            }
+        }
+
+        if (validStatus){
+            props.refresh();
+            clearAll();
+        }
+    }
+
+    const addInfoForPatient = async () => {
+        let validStatus = true;
+        let fName = document.getElementById("name"),
+            fSurname = document.getElementById("surname"),
+            fSecondName = document.getElementById("secondName"),
+            fOrganization = document.getElementById("input-organizations"),
+            fAddress = document.getElementById("address"),
+            fPhone = document.getElementById("phone"),
+            fGender = document.getElementById("gender-input"),
+            fBirthday = document.getElementById("input-birthday");
+        let user = props.users.filter(user => user.login === currentUserLogin)[0];
+        if (!user) user = userForChanging;
+
+        if (!fName.value){
+            fName.style.border = validStyle;
+            validStatus = false;
+        }
+        if (!fSurname.value){
+            fSurname.style.border = validStyle;
+            validStatus = false;
+        }
+        if (!fSecondName.value){
+            fSecondName.style.border = validStyle;
+            validStatus = false;
+        }
+
+        if (validStatus){
+            let body = {};
+            body["name"] = fName.value;
+            body["surname"] = fSurname.value;
+            body["secondName"] = fSecondName.value;
+            body["id"] = user.id;
+            if (fPhone.value) body["numberPhone"] = fPhone.value;
+            if (fAddress.value) body["address"] = fAddress.value;
+            if (fBirthday.value) body["birthDate"] = fBirthday.value;
+            if (fOrganization.value) body["organization"] = fOrganization.value;
+            if (fGender.value) body["gender"] = fGender.value;
+
+            let response = await props.editPatientInfo(body);
+
+            if (response){
+                if (response.code === 401) {
+                    console.log(response);
+                    validStatus = false;
+                }
+            }
+        }
+
+        if (validStatus){
+            props.refresh();
+            clearAll();
         }
     }
 
     const removeUser = () => {
         //TODO: When we're adding a route.
         alert("Remove!");
-        setShow(false);
+        clearAll();
     }
 
-    const changingView = () => {
+    const chooseChangeAction = () => {
+        return (
+            <div style={
+                {
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center"
+                }
+            }>
+                <h3>Выберите действие: </h3>
+                <ButtonB text={"Изменить роль"} onClick={
+                    () => {
+                        setButtonStatus(4);
+                    }
+                }/>
+                <ButtonB text={"Изменить данные"} onClick={
+                    () => {
+                        setRole(userForChanging["role"]);
+                        setButtonStatus(5);
+                    }
+                }/>
+            </div>
+        )
+    }
+
+    const changingRoleView = () => {
         return (
             <div style={
                 {
@@ -218,25 +369,47 @@ export function VUsersAdmin(props) {
                 <h3>Выберите роль: </h3>
                 <ButtonB text={"Пациент"} onClick={
                     async () => {
-                        await props.assignRole(1, userForChanging["id"])
+                        let id = null;
+                        if (currentUserLogin !== null){
+                            let user = props.users.filter(
+                                (user_) => user_.login === currentUserLogin
+                            )[0];
+                            id = user["id"];
+                        }else{
+                            id = userForChanging["id"];
+                        }
+
+                        await props.assignRole(1, id);
                         props.refresh();
-                        setShow(false);
-                    }
-                }/>
-                <ButtonB text={"Исследователь"} onClick={
-                    async () => {
-                        await props.assignRole(2, userForChanging["id"])
-                        props.refresh();
-                        setShow(false);
+                        setRole(1);
+                        setButtonStatus(5);
                     }
                 }/>
                 <ButtonB text={"Тьютор"} onClick={
                     async () => {
-                        await props.assignRole(3, userForChanging["id"])
+                        let id = null;
+                        if (currentUserLogin !== null){
+                            let user = props.users.filter(
+                                (user_) => user_.login === currentUserLogin
+                            )[0];
+                            id = user["id"];
+                        }else{
+                            id = userForChanging["id"];
+                        }
+
+                        await props.assignRole(3, id);
                         props.refresh();
-                        setShow(false);
+                        setRole(3);
+                        setButtonStatus(5);
                     }
                 }/>
+                {/*<ButtonB text={"Исследователь"} onClick={*/}
+                {/*    async () => {*/}
+                {/*        await props.assignRole(2, userForChanging["id"]);*/}
+                {/*        setRole(2);*/}
+                {/*        setButtonStatus(5);*/}
+                {/*    }*/}
+                {/*}/>*/}
             </div>
         )
     }
@@ -275,19 +448,124 @@ export function VUsersAdmin(props) {
         )
     }
 
+    const fillPatientInfoView = () => {
+        return (
+            <div style={
+                {
+                    display: "flex",
+                    flexDirection: "column",
+                    padding: "0 10px"
+                }
+            }>
+                <label>Имя: </label>
+                <input id={"name"} type={"text"} style={
+                    {borderRadius: 40, border: "none", padding: "5px 15px", marginBottom: 10}
+                } required/>
+                <p id={"name-before"} style={{margin: "5px 0", textDecoration: "underline"}}>
+                    Имя: {userInfo["name"]}
+                </p>
+                <label>Фамилия: </label>
+                <input id={"surname"} type={"text"} style={
+                    {borderRadius: 40, border: "none", padding: "5px 15px", marginBottom: 10}
+                } required/>
+                <p id={"surname-before"} style={{margin: "5px 0", textDecoration: "underline"}}>
+                    Фамилия: {userInfo["surname"]}
+                </p>
+                <label>Отчество: </label>
+                <input id={"secondName"} type={"text"} style={
+                    {borderRadius: 40, border: "none", padding: "5px 15px", marginBottom: 10}
+                } required/>
+                <p id={"secondName-before"} style={{margin: "5px 0", textDecoration: "underline"}}>
+                    Отчество: {userInfo["secondName"]}
+                </p>
+                <label>День рождения: </label>
+                <InputBirthday/>
+                <p id={"birthday-before"} style={{margin: "5px 0", textDecoration: "underline"}}>
+                    День рождения: {userInfo["birthDate"] ? userInfo["birthDate"].slice(0, 10) : null}
+                </p>
+                <label>Пол: </label>
+                <InputGender/>
+                <p id={"inputGender-before"} style={{margin: "5px 0", textDecoration: "underline"}}>
+                    Пол: {userInfo["gender"]}
+                </p>
+                <label>Телефон: </label>
+                <InputPhone id={"phone"}/>
+                <p id={"inputPhone-before"} style={{margin: "5px 0", textDecoration: "underline"}}>
+                    Телефон: {userInfo["phone"]}
+                </p>
+                <label>Адрес: </label>
+                <input id={"address"} type={"text"} style={
+                    {borderRadius: 40, border: "none", padding: "5px 15px", marginBottom: 10}
+                }/>
+                <p id={"address-before"} style={{margin: "5px 0", textDecoration: "underline"}}>
+                    Адрес: {userInfo["address"]}
+                </p>
+                <label>Организация: </label>
+                <InputOrganization organizations={props.organizations}/>
+                <p id={"inputOrganization-before"} style={{margin: "5px 0", textDecoration: "underline"}}>
+                    Организация: {userInfo["organizationString"]}
+                </p>
+            </div>
+        )
+    }
+
+    const fillTutorInfoView = () => {
+        return (
+            <div style={
+                {
+                    display: "flex",
+                    flexDirection: "column",
+                    padding: "0 10px"
+                }
+            }>
+                <label>Имя: </label>
+                <input id={"name"} type={"text"} style={
+                    {borderRadius: 40, border: "none", padding: "5px 15px", marginBottom: 10}
+                } required/>
+                <p id={"name-before"} style={{margin: "5px 0", textDecoration: "underline"}}>
+                    Имя: {userInfo["name"]}
+                </p>
+                <label>Фамилия: </label>
+                <input id={"surname"} type={"text"} style={
+                    {borderRadius: 40, border: "none", padding: "5px 15px", marginBottom: 10}
+                } required/>
+                <p id={"surname-before"} style={{margin: "5px 0", textDecoration: "underline"}}>
+                    Фамилия: {userInfo["surname"]}
+                </p>
+                <label>Отчество: </label>
+                <input id={"secondName"} type={"text"} style={
+                    {borderRadius: 40, border: "none", padding: "5px 15px", marginBottom: 10}
+                } required/>
+                <p id={"secondName-before"} style={{margin: "5px 0", textDecoration: "underline"}}>
+                    Отчество: {userInfo["secondName"]}
+                </p>
+                <label>Организация: </label>
+                <InputOrganization organizations={props.organizations}/>
+                <p id={"inputOrganization-before"} style={{margin: "5px 0", textDecoration: "underline"}}>
+                    Организация: {userInfo["organizationString"]}
+                </p>
+            </div>
+        )
+    }
+
+    const fillUser = () => {
+        return role === 1 ? fillPatientInfoView() :
+            role === 3 ? fillTutorInfoView() : null;
+    }
+
     return (
         <Back navPanel={<AdminNav/>}>
             <Modal
                 show={show}
                 backdrop={true}
                 keyboard={true}
-                onHide={() => setShow(false)}
+                onHide={clearAll}
             >
                 <Modal.Header closeButton>
                     <Modal.Title>{
-                        userForChanging !== null ? "Изменение пользователя" :
-                            buttonStatus ? "Удаление пользователя" :
-                                "Добавление пользователя"
+                        buttonStatus === 0 || buttonStatus === 4 ? "Добавление пользователя" :
+                            buttonStatus === 1 || buttonStatus === 2 ? "Удаление пользователя" :
+                                buttonStatus === 3 || buttonStatus === 5 ? "Изменение пользователя" : "???"
                     }</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
@@ -295,8 +573,10 @@ export function VUsersAdmin(props) {
                         buttonStatus === 0 ?
                             createUserView() : buttonStatus === 1 ?
                                 createRemovingViewUsers() : buttonStatus === 2 ?
-                                "Вы уверен что хотите удалить пользователя c Логиным:" + userForRemoving["login"] + "?"
-                                : changingView()
+                                "Вы уверен что хотите удалить пользователя c Логиным:" + userForRemoving["login"] + "?" :
+                                buttonStatus === 3 ? chooseChangeAction() :
+                                    buttonStatus === 4 ? changingRoleView() :
+                                        buttonStatus === 5 ? fillUser() : null
                     }
                 </Modal.Body>
                 <Modal.Footer>
@@ -308,12 +588,18 @@ export function VUsersAdmin(props) {
                             justifyContent: "space-between"
                         }
                     }>
-                        <ButtonB text={"Отмена"} onClick={() => setShow(false)}/>
+                        <ButtonB text={"Отмена"} onClick={clearAll}/>
                         {
                             buttonStatus === 0 ?
                                 <ButtonB text={"Добавить"} onClick={addUser}/> :
                                     buttonStatus === 2 ?
-                                        <ButtonB text={"Удалить"} onClick={removeUser}/> : null
+                                        <ButtonB text={"Удалить"} onClick={removeUser}/> :
+                                        buttonStatus === 5 ?
+                                            <ButtonB text={"Добавить информацию"}
+                                                     onClick={
+                                                         () => role === 1 ?
+                                                             addInfoForPatient() : addInfoForTutor()}
+                                            /> : null
                         }
                     </div>
                 </Modal.Footer>

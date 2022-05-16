@@ -8,7 +8,6 @@ import {InfoBlock} from "../../../../../components/infoBlock/InfoBlock";
 import profileStub from "../../../../../assets/profileStub.jpg";
 import gameStub from "../../../../../assets/gameStub.jpg";
 import {RightArrow} from "../../../../../components/arrows/RightArrow";
-import "./HomeAdmin.css";
 import {useNavigate} from "react-router-dom";
 
 
@@ -91,7 +90,7 @@ export function VHomeAdmin(props) {
                 <h3 style={{marginTop: 20}}>Последние игры в системе:</h3>
                 <div style={{display: "flex", justifyContent: "space-evenly"}}>
                     {view}
-                    {view.length === 5 ? <RightArrow onClick={() => router("/admin/components_page/")}/> : null}
+                    {view.length === 5 ? <RightArrow onClick={() => router("/admin/components/")}/> : null}
                 </div>
             </div>
         )

@@ -3,7 +3,7 @@ import React from "react";
 
 export function Back(props) {
     return (
-        <div>
+        <div style={props.style}>
             {props.navPanel}
             <div id={"content"}>
                 <div id={"hat"}>{props.nav}</div>
