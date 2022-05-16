@@ -403,13 +403,15 @@ public class PatientController {
             String orgName = patient.getId().toString() + "." + FilenameUtils.getExtension(file.getOriginalFilename());
             System.out.println(orgName);
             String filePath = image_folder + "/" + orgName;
-//            if(new  File(filePath).exists()){
-//                new File(filePath).delete();
-//            }
-//            File dest = new File(filePath);
-//            file.transferTo(dest);
 
-            Files.copy(file.getInputStream(), Paths.get(filePath), StandardCopyOption.REPLACE_EXISTING);
+            if(new  File(filePath).exists()){
+                new File(filePath).delete();
+            }
+            File dest = new File(filePath);
+            dest.createNewFile();
+            file.transferTo(dest);
+
+//            Files.copy(file.getInputStream(), Paths.get(filePath), StandardCopyOption.REPLACE_EXISTING);
 
             System.out.println(patient.getImage());
             patient.setImage(filePath);
@@ -421,7 +423,7 @@ public class PatientController {
         }
         catch (Exception e){
             JsonObject exceptionResponse = new JsonObject();
-            exceptionResponse.put("message", e.getMessage());
+            exceptionResponse.put("message", e.getStackTrace());
             return new JSONResponse(401, exceptionResponse);
         }
     }
