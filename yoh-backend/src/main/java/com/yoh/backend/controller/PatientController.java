@@ -8,6 +8,7 @@ import com.yoh.backend.request.*;
 import com.yoh.backend.response.*;
 import com.yoh.backend.service.*;
 import com.yoh.backend.util.ImageUtility;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -405,14 +406,17 @@ public class PatientController {
             String orgName = patient.getId().toString() + "." + FilenameUtils.getExtension(file.getOriginalFilename());
             System.out.println(orgName);
 //            String filePath = image_folder + "/" + orgName;
-            Path filepath = Paths.get(image_folder, orgName);
+            Path filepath = Paths.get("/home/yoh/new_yoh_project/images", orgName);
 
             if(new  File(filepath.toString()).exists()){
                 System.out.println("File exists");
                 new File(filepath.toString()).delete();
             }
 
-            file.transferTo(filepath);
+            File filesd = new File("/home/yoh/new_yoh_project/images", orgName);
+            FileUtils.writeByteArrayToFile(filesd, file.getBytes());
+
+//            file.transferTo(filepath);
 //
 //            File dest = new File(filePath);
 //            dest.getParentFile().mkdirs();
@@ -436,7 +440,8 @@ public class PatientController {
             return new JSONResponse(200, response);
         }
         catch (Exception e){
-            System.out.println(e.getMessage());
+            e.printStackTrace();
+//            System.out.println(e.getMessage());
             JsonObject exceptionResponse = new JsonObject();
             exceptionResponse.put("message", e.getMessage());
             return new JSONResponse(401, exceptionResponse);
