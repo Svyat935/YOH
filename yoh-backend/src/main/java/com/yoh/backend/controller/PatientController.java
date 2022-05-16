@@ -21,6 +21,7 @@ import javax.validation.Valid;
 import java.io.File;
 import java.io.OutputStream;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.text.SimpleDateFormat;
@@ -403,27 +404,31 @@ public class PatientController {
             System.out.println("2132131232132132");
             String orgName = patient.getId().toString() + "." + FilenameUtils.getExtension(file.getOriginalFilename());
             System.out.println(orgName);
-            String filePath = image_folder + "/" + orgName;
+//            String filePath = image_folder + "/" + orgName;
+            Path filepath = Paths.get(image_folder, orgName);
 
-            if(new  File(filePath).exists()){
-                new File(filePath).delete();
+            if(new  File(filepath.toString()).exists()){
+                System.out.println("File exists");
+                new File(filepath.toString()).delete();
             }
 
-            File dest = new File(filePath);
-            dest.getParentFile().mkdirs();
+            file.transferTo(filepath);
+//
+//            File dest = new File(filePath);
+//            dest.getParentFile().mkdirs();
 //            dest.createNewFile();
 //            file.transferTo(dest);
 //
 //            Path filepath = Paths.get(dir.toString(), file.getOriginalFilename());
 
-            try (OutputStream os = Files.newOutputStream(dest.toPath())) {
-                os.write(file.getBytes());
-            }
+//            try (OutputStream os = Files.newOutputStream(dest.toPath())) {
+//                os.write(file.getBytes());
+//            }
 
 //            Files.copy(file.getInputStream(), Paths.get(filePath), StandardCopyOption.REPLACE_EXISTING);
 
             System.out.println(patient.getImage());
-            patient.setImage(filePath);
+            patient.setImage(filepath.toString());
             this.patientService.updatePatient(patient);
             System.out.println(patient.getImage());
             JsonObject response = new JsonObject();
