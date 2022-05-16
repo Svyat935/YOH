@@ -43,7 +43,7 @@ export function VUsersAdmin(props) {
         setShow(false);
         setRole(null);
         setCurrentUserLogin(null);
-        setUserInfo(null);
+        setUserInfo({});
         setChangingUser(null);
         setRemovingUser(null);
         setButtonStatus(0);
