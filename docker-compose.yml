@@ -40,8 +40,6 @@ services:
       - type: bind
         source: ${GAMES_FOLDER}
         target: /wrapper/games
-    depends_on:
-      - yoh-backend
     ports:
       - 5050:5050
     command: gunicorn main:"create_flask_app()" -b 0.0.0.0:5050 --reload --log-level debug --workers=4

@@ -44,7 +44,8 @@ def send_statistic_route():
         'game_end': 2,
         'missclick': 3,
         'correct_answer': 4,
-        'incorrect_answer': 5
+        'incorrect_answer': 5,
+        'clicks_info': 6
     }
     response_params = {
         'records': []
@@ -79,6 +80,17 @@ def send_statistic_route():
         'Type': event_type['game_end']
     }
     response_params['records'].append(end_rec)
+
+    if 'clicks' in data:
+        clicks_info_rec = {
+            'DateAction': data['endTime'],
+            'Type': event_type['clicks_info'],
+            'Details': {
+                'window_size': data['window_info'],
+                'clicks': data['clicks']
+            }
+        }
+        response_params['records'].append(clicks_info_rec)
 
     headers = {
         'Content-Type': 'application/json',
