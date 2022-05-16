@@ -393,10 +393,10 @@ public class PatientController {
             byte[] imageBytes = ImageUtility.compressImage(file.getBytes());
 
             String uploadsDir = image_folder;
-            if(! new File(uploadsDir).exists())
-            {
-                new File(uploadsDir).mkdir();
-            }
+//            if(! new File(uploadsDir).exists())
+//            {
+//                new File(uploadsDir).mkdir();
+//            }
             System.out.println("123213213213123");
             System.out.println(FilenameUtils.getExtension(file.getOriginalFilename()));
             System.out.println("2132131232132132");
@@ -407,7 +407,9 @@ public class PatientController {
             if(new  File(filePath).exists()){
                 new File(filePath).delete();
             }
+
             File dest = new File(filePath);
+            dest.getParentFile().mkdirs();
             dest.createNewFile();
             file.transferTo(dest);
 
@@ -422,6 +424,7 @@ public class PatientController {
             return new JSONResponse(200, response);
         }
         catch (Exception e){
+            System.out.println(e.getMessage());
             JsonObject exceptionResponse = new JsonObject();
             exceptionResponse.put("message", e.getMessage());
             return new JSONResponse(401, exceptionResponse);
