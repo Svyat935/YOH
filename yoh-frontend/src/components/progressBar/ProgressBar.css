@@ -1,6 +1,7 @@
 .container-progressbar {
     background-color: rgba(0, 0, 0, 0.1);
     border-radius: 9999px;
+    text-align: center;
 }
 
 .container-progressbar__progress {

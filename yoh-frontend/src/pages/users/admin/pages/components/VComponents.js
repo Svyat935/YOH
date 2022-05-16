@@ -173,8 +173,8 @@ export function VComponents(props) {
         let formData = new FormData();
         formData.append("name", fName.value);
         formData.append("description", fDescription.value);
-        formData.append("file", fFile.files[0]);
         formData.append("type", "stub");
+        formData.append("file", fFile.files[0]);
         let response = await props.sendGames(formData);
         //TODO: Validate.
         props.refresh();
