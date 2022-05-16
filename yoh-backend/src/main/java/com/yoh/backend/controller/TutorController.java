@@ -752,12 +752,14 @@ public class TutorController {
             System.out.println("123213213213123");
             System.out.println(FilenameUtils.getExtension(file.getOriginalFilename()));
             System.out.println("2132131232132132");
-            String orgName = tutor.getId().toString() + FilenameUtils.getExtension(file.getOriginalFilename());
+            String orgName = tutor.getId().toString() + "." + FilenameUtils.getExtension(file.getOriginalFilename());
             System.out.println(orgName);
             String filePath = image_folder + "/" + orgName;
+            if(new  File(filePath).exists()){
+                new File(filePath).delete();
+            }
             File dest = new File(filePath);
             file.transferTo(dest);
-
 //            byte[] imageBytes = ImageUtility.compressImage(file.getBytes());
             tutor.setImage(filePath);
             this.tutorService.updateTutor(tutor);
