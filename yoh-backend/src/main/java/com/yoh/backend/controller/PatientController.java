@@ -155,14 +155,17 @@ public class PatientController {
 //                Jsonb details = (Jsonb) statisticToSend.get("Details");
                 JSONObject details;
                 com.google.gson.JsonObject jsonObject;
+
+                String detailsString;
                 if (statisticToSend.containsKey("Details")){
 //                    details = new JSONObject(statisticToSend.get("Details"));
 //                    details = new JsonObject()
-                    jsonObject = new JsonParser().parse(statisticToSend.get("Details").toString()).getAsJsonObject();
-                    System.out.println(statisticToSend.get("Details"));
-                    System.out.println(jsonObject.toString());
+//                    jsonObject = new JsonParser().parse(statisticToSend.get("Details").toString()).getAsJsonObject();
+//                    System.out.println(statisticToSend.get("Details"));
+//                    System.out.println(jsonObject.toString());
+                    detailsString = statisticToSend.get("Details").toString();
                 }
-                else jsonObject = null;
+                else detailsString = null;
 
                 Short AnswerNumber;
                 if (statisticToSend.get("AnswerNumber") != null)
@@ -170,11 +173,11 @@ public class PatientController {
                 else
                     AnswerNumber = null;
 
-                String detailsString;
-                if (jsonObject != null) {
-                    detailsString = jsonObject.toString();
-                }
-                else detailsString = null;
+//                String detailsString;
+//                if (jsonObject != null) {
+//                    detailsString = jsonObject.toString();
+//                }
+//                else detailsString = null;
                 GameStatistic statistic = new GameStatistic(
                         this.gameService.getGameById(UUID.fromString(game)),
                         patient,
