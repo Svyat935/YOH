@@ -136,19 +136,20 @@ def heatmap_route():
     cursor = conn.cursor()
     cursor.execute('select "details" from game_statistics where "type" = 6 order by "id" desc limit 1')
     data = cursor.fetchone()
+    print(data)
     if data:
         data = data[0]
         points_data = []
         values = []
-        for point, value in data['clicks']:
+        for point, value in data['clicks'].items():
             values.append(value)
             x, y = point.split('.')
             points_data.append({'x': x, 'y': y, 'value': value})
         params_to_render = {
             'points': points_data,
             'window': {
-                'height': data['window_info']['height'],
-                'width': data['window_info']['width']
+                'height': data['window_size']['height'],
+                'width': data['window_size']['width']
             },
             'max_point': max(values)
         }
