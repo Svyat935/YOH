@@ -1,6 +1,7 @@
 package com.yoh.backend.controller;
 
 import com.github.cliftonlabs.json_simple.JsonObject;
+import com.google.gson.JsonParser;
 import com.yoh.backend.entity.*;
 import com.yoh.backend.enums.Gender;
 import com.yoh.backend.enums.Status;
@@ -153,12 +154,15 @@ public class PatientController {
                 LocalDateTime localDateTime = LocalDateTime.parse(statisticToSend.get("DateAction").toString(), formatter);
 //                Jsonb details = (Jsonb) statisticToSend.get("Details");
                 JSONObject details;
+                com.google.gson.JsonObject jsonObject;
                 if (statisticToSend.containsKey("Details")){
-                    details = new JSONObject(statisticToSend.get("Details"));
+//                    details = new JSONObject(statisticToSend.get("Details"));
+//                    details = new JsonObject()
+                    jsonObject = new JsonParser().parse(statisticToSend.get("Details").toString()).getAsJsonObject();
                     System.out.println(statisticToSend.get("Details"));
-                    System.out.println(details);
+                    System.out.println(jsonObject.toString());
                 }
-                else details = null;
+                else jsonObject = null;
 
                 Short AnswerNumber;
                 if (statisticToSend.get("AnswerNumber") != null)
@@ -167,8 +171,8 @@ public class PatientController {
                     AnswerNumber = null;
 
                 String detailsString;
-                if (details != null) {
-                    detailsString = details.toString();
+                if (jsonObject != null) {
+                    detailsString = jsonObject.toString();
                 }
                 else detailsString = null;
                 GameStatistic statistic = new GameStatistic(
