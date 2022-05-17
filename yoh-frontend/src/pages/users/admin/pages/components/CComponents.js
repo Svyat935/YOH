@@ -71,7 +71,7 @@ export function CComponents() {
             let responseGames = await requestGames();
 
             if (responseGames !== null){
-                responseGames = responseGames["jsonObject"]["games"];
+                responseGames = responseGames["jsonObject"]["results"];
                 if (responseGames !== undefined) setGames(responseGames);
             }
         }
