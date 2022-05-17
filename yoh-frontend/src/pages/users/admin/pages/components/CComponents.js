@@ -9,7 +9,7 @@ export function CComponents() {
 
     const requestGames = async () => {
         return await fetch("/games/all?" +
-            "start=" + encodeURIComponent(0) +
+            "start=" + encodeURIComponent(0) + "&" +
             "limit=" + encodeURIComponent(100), {
             method: 'GET',
             headers: {
