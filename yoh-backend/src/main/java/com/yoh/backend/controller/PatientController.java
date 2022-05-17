@@ -109,8 +109,7 @@ public class PatientController {
                 gamesInfo.put("name", game.getName());
                 gamesInfo.put("type", game.getType());
                 gamesInfo.put("description", game.getDescription());
-                if (game.getImage() != null) gamesInfo.put("image", ImageUtility.decompressImage(game.getImage()));
-                else gamesInfo.put("image", null);
+                gamesInfo.put("image", game.getImage());
                 gamesInfo.put("url", game.getUrl());
                 gamesArray.add(gamesInfo);
             }
@@ -452,7 +451,7 @@ public class PatientController {
 //            Files.copy(file.getInputStream(), Paths.get(filePath), StandardCopyOption.REPLACE_EXISTING);
 
             System.out.println(patient.getImage());
-            patient.setImage(filepath.toString());
+            patient.setImage("https://mobile.itkostroma.ru/images/" + orgName);
             this.patientService.updatePatient(patient);
             System.out.println(patient.getImage());
             JsonObject response = new JsonObject();

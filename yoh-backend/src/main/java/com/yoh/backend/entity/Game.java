@@ -94,14 +94,14 @@ public class Game {
     }
 
 
-    @Column(name = "image", unique = false, nullable = true, length = 100000)
-    private byte[] image;
+    @Column(name = "image", unique = false, nullable = true)
+    private String image;
 
-    public byte[] getImage() {
+    public String getImage() {
         return this.image;
     }
 
-    public void setImage(byte[] image) {
+    public void setImage(String image) {
         this.image = image;
     }
 

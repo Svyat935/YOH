@@ -11,6 +11,7 @@ import com.yoh.backend.service.*;
 import com.yoh.backend.util.ImageUtility;
 import net.lingala.zip4j.ZipFile;
 import net.lingala.zip4j.model.UnzipParameters;
+import org.apache.commons.io.FilenameUtils;
 import org.aspectj.weaver.ast.Or;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -40,6 +41,9 @@ public class AdminController {
 
     @Value("${WRAPPER}")
     private String wrapper;
+
+    @Value("${IMAGE_FOLDER}")
+    private String image_folder;
 
     @Autowired
     private AdminService adminService;
@@ -189,8 +193,23 @@ public class AdminController {
                 System.out.println(7);
                 Game game = new Game(name, type, description, wrapper+ "/" +name+"/", LocalDateTime.now());
                 if (image != null) {
-                    byte[] imageBytes = ImageUtility.compressImage(file.getBytes());
-                    game.setImage(imageBytes);
+                    String uploadsDir = image_folder;
+                    if(! new File(uploadsDir).exists())
+                    {
+                        new File(uploadsDir).mkdir();
+                    }
+                    System.out.println("123213213213123");
+                    System.out.println(FilenameUtils.getExtension(file.getOriginalFilename()));
+                    System.out.println("2132131232132132");
+                    String orgName = name + "." + FilenameUtils.getExtension(file.getOriginalFilename());
+                    System.out.println(orgName);
+                    String filePath = image_folder + "/" + orgName;
+                    if(new  File(filePath).exists()){
+                        new File(filePath).delete();
+                    }
+                    File dest = new File(filePath);
+                    file.transferTo(dest);
+                    game.setImage("https://mobile.itkostroma.ru/images/"+orgName);
                 }
                 System.out.println(8);
                 this.gameService.createGame(game);
@@ -220,8 +239,25 @@ public class AdminController {
         try {
             Admin admin = this.adminService.getAdminByUser(this.userService.getUserById(this.userService.verifyToken(token)));
             Game game = this.gameService.getGameById(UUID.fromString(gameID));
-            byte[] imageBytes = ImageUtility.compressImage(file.getBytes());
-            game.setImage(imageBytes);
+
+            String uploadsDir = image_folder;
+            if(! new File(uploadsDir).exists())
+            {
+                new File(uploadsDir).mkdir();
+            }
+            System.out.println("123213213213123");
+            System.out.println(FilenameUtils.getExtension(file.getOriginalFilename()));
+            System.out.println("2132131232132132");
+            String orgName = game.getName() + "." + FilenameUtils.getExtension(file.getOriginalFilename());
+            System.out.println(orgName);
+            String filePath = image_folder + "/" + orgName;
+            if(new  File(filePath).exists()){
+                new File(filePath).delete();
+            }
+            File dest = new File(filePath);
+            file.transferTo(dest);
+            game.setImage("https://mobile.itkostroma.ru/images/"+orgName);
+
             this.gameService.updateGame(game);
             JsonObject response = new JsonObject();
             response.put("message", "Game image was edited");

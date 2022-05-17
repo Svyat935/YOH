@@ -214,8 +214,8 @@ public class TutorController {
             response.put("address", patient.getAddress());
             response.put("login", patient.getUser().getLogin());
             response.put("email", patient.getUser().getEmail());
-            ArrayList<JsonObject> gamesArray = new ArrayList<>();
             if (patient.getGames() != null){
+                ArrayList<JsonObject> gamesArray = new ArrayList<>();
                 for (Game game: patient.getGames()){
                     JsonObject gamesInfo = new JsonObject();
                     gamesInfo.put("id", game.getId().toString());
@@ -223,27 +223,32 @@ public class TutorController {
                     gamesInfo.put("type", game.getType());
                     gamesInfo.put("description", game.getDescription());
                     gamesInfo.put("url", game.getUrl());
-                    if (game.getImage() != null) gamesInfo.put("image", ImageUtility.decompressImage(game.getImage()));
+                    gamesInfo.put("image", game.getImage());
                     gamesArray.add(gamesInfo);
                 }
+                response.put("games", gamesArray);
             }
-            response.put("games", gamesArray);
-            JsonObject tutorInfo = new JsonObject();
+            else response.put("games", null);
             Tutor tutor = patient.getTutor();
-            tutorInfo.put("id", tutor.getId().toString());
-            tutorInfo.put("name", tutor.getName());
-            tutorInfo.put("surname", tutor.getSurname());
-            tutorInfo.put("secondName", tutor.getSecondName());
-            if (tutor.getOrganization() != null){
-                tutorInfo.put("organization", tutor.getOrganization().getId().toString());
+            if (tutor != null) {
+                JsonObject tutorInfo = new JsonObject();
+                tutorInfo.put("id", tutor.getId().toString());
+                tutorInfo.put("name", tutor.getName());
+                tutorInfo.put("surname", tutor.getSurname());
+                tutorInfo.put("secondName", tutor.getSecondName());
+                if (tutor.getOrganization() != null){
+                    tutorInfo.put("organization", tutor.getOrganization().getId().toString());
+                }
+                else {
+                    tutorInfo.put("organization", null);
+                }
+                tutorInfo.put("organizationString", tutor.getOrganizationString());
+                tutorInfo.put("login", tutor.getUser().getLogin());
+                tutorInfo.put("email", tutor.getUser().getEmail());
+                response.put("tutor", tutorInfo);
             }
-            else {
-                tutorInfo.put("organization", null);
-            }
-            tutorInfo.put("organizationString", tutor.getOrganizationString());
-            tutorInfo.put("login", tutor.getUser().getLogin());
-            tutorInfo.put("email", tutor.getUser().getEmail());
-            response.put("tutor", tutorInfo);
+            else response.put("tutor", null);
+
             return new JSONResponse(200, response);
         }
         catch (IllegalArgumentException e){
@@ -761,7 +766,7 @@ public class TutorController {
             File dest = new File(filePath);
             file.transferTo(dest);
 //            byte[] imageBytes = ImageUtility.compressImage(file.getBytes());
-            tutor.setImage(filePath);
+            tutor.setImage("https://mobile.itkostroma.ru/images/" + orgName);
             this.tutorService.updateTutor(tutor);
             JsonObject response = new JsonObject();
             response.put("message", "Tutor account image was added");

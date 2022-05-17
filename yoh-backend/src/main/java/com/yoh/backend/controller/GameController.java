@@ -95,7 +95,7 @@ public class GameController {
                 gameInfo.put("type", game.getType());
                 gameInfo.put("description", game.getDescription());
                 gameInfo.put("url", game.getUrl());
-                if (game.getImage() != null) gameInfo.put("image", ImageUtility.decompressImage(game.getImage()));
+                gameInfo.put("image", game.getImage());
                 gamesList.add(gameInfo);
             }
 //            }
@@ -121,7 +121,7 @@ public class GameController {
             response.put("type", game.getType());
             response.put("description", game.getDescription());
             response.put("url", game.getUrl());
-            if (game.getImage() != null) response.put("image", ImageUtility.decompressImage(game.getImage()));
+            response.put("image", game.getImage());
             JsonObject jsonObject = new JsonObject();
             jsonObject.put("gameInfo", response);
             return new JSONResponse(200, jsonObject);
