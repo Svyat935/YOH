@@ -7,12 +7,15 @@ import com.yoh.backend.response.*;
 import com.yoh.backend.service.*;
 import com.yoh.backend.util.ImageUtility;
 import com.yoh.backend.enums.Status;
+import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 import java.awt.*;
+import java.io.File;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -23,6 +26,9 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping("/tutor")
 public class TutorController {
+
+    @Value("${IMAGE_FOLDER}")
+    private String image_folder;
 
     @Autowired
     private TutorService tutorService;
@@ -102,7 +108,7 @@ public class TutorController {
                     patientInfo.put("organization", null);
                 }
                 patientInfo.put("organizationString", patient.getOrganizationString());
-                if(patient.getImage() != null) patientInfo.put("image", patient.getImage());
+                patientInfo.put("image", patient.getImage());
                 patientInfo.put("login", patient.getUser().getLogin());
                 patientInfo.put("email", patient.getUser().getEmail());
                 patientList.add(patientInfo);
@@ -164,8 +170,7 @@ public class TutorController {
                 else {
                     patientInfo.put("organization", null);
                 }
-                if(patient.getImage() != null) patientInfo.put("image", patient.getImage());
-                    else patientInfo.put("image", null);
+                patientInfo.put("image", patient.getImage());
                 patientInfo.put("organizationString", patient.getOrganizationString());
                 patientInfo.put("login", patient.getUser().getLogin());
                 patientInfo.put("email", patient.getUser().getEmail());
@@ -202,8 +207,7 @@ public class TutorController {
             else {
                 response.put("organization", null);
             }
-            if(patient.getImage() != null) response.put("image", patient.getImage());
-                else response.put("image", null);
+            response.put("image", patient.getImage());
             response.put("organization", patient.getOrganizationString());
             response.put("birthDate", patient.getBirthDate());
             response.put("numberPhone", patient.getNumberPhone());
@@ -739,8 +743,25 @@ public class TutorController {
                                          @RequestParam("image") MultipartFile file) {
         try {
             Tutor tutor = this.tutorService.getTutorByUser(this.userService.getUserById(this.userService.verifyToken(token)));
-            byte[] imageBytes = ImageUtility.compressImage(file.getBytes());
-            tutor.setImage(imageBytes);
+
+            String uploadsDir = image_folder;
+            if(! new File(uploadsDir).exists())
+            {
+                new File(uploadsDir).mkdir();
+            }
+            System.out.println("123213213213123");
+            System.out.println(FilenameUtils.getExtension(file.getOriginalFilename()));
+            System.out.println("2132131232132132");
+            String orgName = tutor.getId().toString() + "." + FilenameUtils.getExtension(file.getOriginalFilename());
+            System.out.println(orgName);
+            String filePath = image_folder + "/" + orgName;
+            if(new  File(filePath).exists()){
+                new File(filePath).delete();
+            }
+            File dest = new File(filePath);
+            file.transferTo(dest);
+//            byte[] imageBytes = ImageUtility.compressImage(file.getBytes());
+            tutor.setImage(filePath);
             this.tutorService.updateTutor(tutor);
             JsonObject response = new JsonObject();
             response.put("message", "Tutor account image was added");
@@ -753,25 +774,25 @@ public class TutorController {
         }
     }
 
-    //TODO Подумать над удалением
-    @PutMapping(path = "/account/image/edit")
-    public JSONResponse updateTutorImage(@RequestHeader("token") String token,
-                                         @RequestParam("image") MultipartFile file) {
-        try {
-            Tutor tutor = this.tutorService.getTutorByUser(this.userService.getUserById(this.userService.verifyToken(token)));
-            byte[] imageBytes = ImageUtility.compressImage(file.getBytes());
-            tutor.setImage(imageBytes);
-            this.tutorService.updateTutor(tutor);
-            JsonObject response = new JsonObject();
-            response.put("message", "Tutor account image was edited");
-            return new JSONResponse(200, response);
-        }
-        catch (Exception e){
-            JsonObject exceptionResponse = new JsonObject();
-            exceptionResponse.put("message", e.getMessage());
-            return new JSONResponse(401, exceptionResponse);
-        }
-    }
+//    //TODO Подумать над удалением
+//    @PutMapping(path = "/account/image/edit")
+//    public JSONResponse updateTutorImage(@RequestHeader("token") String token,
+//                                         @RequestParam("image") MultipartFile file) {
+//        try {
+//            Tutor tutor = this.tutorService.getTutorByUser(this.userService.getUserById(this.userService.verifyToken(token)));
+//            byte[] imageBytes = ImageUtility.compressImage(file.getBytes());
+//            tutor.setImage(imageBytes);
+//            this.tutorService.updateTutor(tutor);
+//            JsonObject response = new JsonObject();
+//            response.put("message", "Tutor account image was edited");
+//            return new JSONResponse(200, response);
+//        }
+//        catch (Exception e){
+//            JsonObject exceptionResponse = new JsonObject();
+//            exceptionResponse.put("message", e.getMessage());
+//            return new JSONResponse(401, exceptionResponse);
+//        }
+//    }
 
     @DeleteMapping(path = "/account/image/delete")
     public JSONResponse deleteTutorImage(@RequestHeader("token") String token) {
@@ -798,7 +819,7 @@ public class TutorController {
             Tutor tutor = this.tutorService.getTutorByUser(this.userService.getUserById(this.userService.verifyToken(token)));
             if (tutor.getImage() != null) {
                 JsonObject response = new JsonObject();
-                response.put("image", ImageUtility.decompressImage(tutor.getImage()));
+                response.put("image", tutor.getImage());
                 return new JSONResponse(200, response);
             }
             else {

@@ -8,14 +8,23 @@ import com.yoh.backend.request.*;
 import com.yoh.backend.response.*;
 import com.yoh.backend.service.*;
 import com.yoh.backend.util.ImageUtility;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.json.bind.Jsonb;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.validation.Valid;
+import java.io.File;
+import java.io.OutputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -27,6 +36,9 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping("/patient")
 public class PatientController {
+
+    @Value("${IMAGE_FOLDER}")
+    private String image_folder;
 
     @Autowired
     private PatientService patientService;
@@ -382,37 +394,78 @@ public class PatientController {
         try {
             Patient patient = this.patientService.getPatientByUser(this.userService.getUserById(this.userService.verifyToken(token)));
             byte[] imageBytes = ImageUtility.compressImage(file.getBytes());
-            patient.setImage(imageBytes);
+
+            String uploadsDir = image_folder;
+//            if(! new File(uploadsDir).exists())
+//            {
+//                new File(uploadsDir).mkdir();
+//            }
+            System.out.println("123213213213123");
+            System.out.println(FilenameUtils.getExtension(file.getOriginalFilename()));
+            System.out.println("2132131232132132");
+            String orgName = patient.getId().toString() + "." + FilenameUtils.getExtension(file.getOriginalFilename());
+            System.out.println(orgName);
+//            String filePath = image_folder + "/" + orgName;
+            Path filepath = Paths.get("/home/yoh/new_yoh_project/images", orgName);
+
+            if(new  File(filepath.toString()).exists()){
+                System.out.println("File exists");
+                new File(filepath.toString()).delete();
+            }
+
+            File filesd = new File("/home/yoh/new_yoh_project/images", orgName);
+            FileUtils.writeByteArrayToFile(filesd, file.getBytes());
+
+//            file.transferTo(filepath);
+//
+//            File dest = new File(filePath);
+//            dest.getParentFile().mkdirs();
+//            dest.createNewFile();
+//            file.transferTo(dest);
+//
+//            Path filepath = Paths.get(dir.toString(), file.getOriginalFilename());
+
+//            try (OutputStream os = Files.newOutputStream(dest.toPath())) {
+//                os.write(file.getBytes());
+//            }
+
+//            Files.copy(file.getInputStream(), Paths.get(filePath), StandardCopyOption.REPLACE_EXISTING);
+
+            System.out.println(patient.getImage());
+            patient.setImage(filepath.toString());
             this.patientService.updatePatient(patient);
+            System.out.println(patient.getImage());
             JsonObject response = new JsonObject();
             response.put("message", "Patient account image was added");
             return new JSONResponse(200, response);
         }
         catch (Exception e){
+            e.printStackTrace();
+//            System.out.println(e.getMessage());
             JsonObject exceptionResponse = new JsonObject();
             exceptionResponse.put("message", e.getMessage());
             return new JSONResponse(401, exceptionResponse);
         }
     }
 
-    @PutMapping(path = "/account/image/edit")
-    public JSONResponse updatePatientImage(@RequestHeader("token") String token,
-                                           @RequestParam("image") MultipartFile file) {
-        try {
-            Patient patient = this.patientService.getPatientByUser(this.userService.getUserById(this.userService.verifyToken(token)));
-            byte[] imageBytes = ImageUtility.compressImage(file.getBytes());
-            patient.setImage(imageBytes);
-            this.patientService.updatePatient(patient);
-            JsonObject response = new JsonObject();
-            response.put("message", "Patient account image was edited");
-            return new JSONResponse(200, response);
-        }
-        catch (Exception e){
-            JsonObject exceptionResponse = new JsonObject();
-            exceptionResponse.put("message", e.getMessage());
-            return new JSONResponse(401, exceptionResponse);
-        }
-    }
+//    @PutMapping(path = "/account/image/edit")
+//    public JSONResponse updatePatientImage(@RequestHeader("token") String token,
+//                                           @RequestParam("image") MultipartFile file) {
+//        try {
+//            Patient patient = this.patientService.getPatientByUser(this.userService.getUserById(this.userService.verifyToken(token)));
+//            byte[] imageBytes = ImageUtility.compressImage(file.getBytes());
+//            patient.setImage(imageBytes);
+//            this.patientService.updatePatient(patient);
+//            JsonObject response = new JsonObject();
+//            response.put("message", "Patient account image was edited");
+//            return new JSONResponse(200, response);
+//        }
+//        catch (Exception e){
+//            JsonObject exceptionResponse = new JsonObject();
+//            exceptionResponse.put("message", e.getMessage());
+//            return new JSONResponse(401, exceptionResponse);
+//        }
+//    }
 
     @DeleteMapping(path = "/account/image/delete")
     public JSONResponse deletePatientImage(@RequestHeader("token") String token) {
@@ -439,7 +492,7 @@ public class PatientController {
             Patient patient = this.patientService.getPatientByUser(this.userService.getUserById(this.userService.verifyToken(token)));
             if (patient.getImage() != null) {
                 JsonObject response = new JsonObject();
-                response.put("image", ImageUtility.decompressImage(patient.getImage()));
+                response.put("image", patient.getImage());
                 return new JSONResponse(200, response);
             }
             else {

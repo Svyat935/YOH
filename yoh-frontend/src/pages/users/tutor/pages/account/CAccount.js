@@ -6,11 +6,10 @@ export function CAccount() {
     const context = useContext(UserContext);
     const [accountInfo, setAccountInfo] = useState(null);
     const [image, setImage] = useState(null);
-    const [statistics, setStatistics] = useState({});
     const [_, rerun] = useState(new class{});
 
     const requestAccountInfo = async () => {
-        return await fetch("/patient/account", {
+        return await fetch("/tutor/account", {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -26,7 +25,7 @@ export function CAccount() {
     }
 
     const requestChangeAccountInfo = async (body) => {
-        return await fetch("/patient/account/changing", {
+        return await fetch("/tutor/account/changing", {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
@@ -43,7 +42,7 @@ export function CAccount() {
     }
 
     const requestAccountImage = async () => {
-        return await fetch("/patient/account/image", {
+        return await fetch("/tutor/account/image", {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -56,20 +55,10 @@ export function CAccount() {
     }
 
     const requestChangeAccountImage = async (formData) => {
-        return await fetch("/patient/account/image/add", {
+        return await fetch("/tutor/account/image/add", {
             method: 'POST',
             headers: {"token": context.token},
             body: formData
-        }).then((response) => {
-            if (response.status === 200) return response.json();
-            else return null;
-        });
-    }
-
-    const requestStatistics = async () => {
-        return await fetch("/patient/games/status/statistic", {
-            method: 'GET',
-            headers: {"token": context.token},
         }).then((response) => {
             if (response.status === 200) return response.json();
             else return null;
@@ -80,7 +69,6 @@ export function CAccount() {
         if (context.token){
            let accountInfo = await requestAccountInfo();
            let accountImage = await requestAccountImage();
-           let statistics = await requestStatistics();
 
            if (accountInfo !== null){
                accountInfo = accountInfo["jsonObject"];
@@ -91,10 +79,6 @@ export function CAccount() {
                    setImage(accountImage["jsonObject"]["image"]);
                }
            }
-           if (statistics !== null){
-               statistics = statistics["jsonObject"];
-               setStatistics(statistics);
-           }
         }
     }, [context, _])
 
@@ -103,7 +87,6 @@ export function CAccount() {
         changeImage={requestChangeAccountImage}
         changeInfo={requestChangeAccountInfo}
         image={image}
-        statistics={statistics}
         refresh={() => rerun(new class{})}
     />
 }

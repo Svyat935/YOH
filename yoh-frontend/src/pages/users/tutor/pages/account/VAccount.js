@@ -33,41 +33,7 @@ export function VAccount(props) {
     }
 
     const changeInfo = async () => {
-        let fName = document.getElementById("name"),
-            fSurname = document.getElementById("surname"),
-            fSecondName = document.getElementById("secondName"),
-            fAddress = document.getElementById("address"),
-            fPhone = document.getElementById("phone"),
-            fGender = document.getElementById("gender-input"),
-            fBirthday = document.getElementById("input-birthday");
-        let validStatus = true;
 
-
-        if (validStatus){
-            let body = {};
-            body["id"] = props.accountInfo.id;
-            if (fName.value) body["name"] = fName.value;
-            if (fSurname.value) body["surname"] = fSurname.value;
-            if (fSecondName.value) body["secondName"] = fSecondName.value;
-            if (fPhone.value) body["numberPhone"] = fPhone.value;
-            if (fAddress.value) body["address"] = fAddress.value;
-            if (fBirthday.value) body["birthDate"] = fBirthday.value;
-            if (fGender.value) body["gender"] = fGender.value;
-
-            let response = await props.changeInfo(body);
-
-            if (response){
-                if (response.code === 401) {
-                    console.log(response);
-                    validStatus = false;
-                }
-            }
-        }
-
-        if (validStatus){
-            props.refresh();
-            setShow(false);
-        }
     }
 
     const changeView = () => {
@@ -102,28 +68,6 @@ export function VAccount(props) {
                 <p id={"secondName-before"} style={{margin: "5px 0", textDecoration: "underline"}}>
                     Отчество: {userInfo["secondName"]}
                 </p>
-                <label>День рождения: </label>
-                <InputBirthday/>
-                <p id={"birthday-before"} style={{margin: "5px 0", textDecoration: "underline"}}>
-                    День рождения: {userInfo["birthDate"] ? userInfo["birthDate"].slice(0, 10) : null}
-                </p>
-                <label>Пол: </label>
-                <InputGender/>
-                <p id={"inputGender-before"} style={{margin: "5px 0", textDecoration: "underline"}}>
-                    Пол: {userInfo["gender"]}
-                </p>
-                <label>Телефон: </label>
-                <InputPhone id={"phone"}/>
-                <p id={"inputPhone-before"} style={{margin: "5px 0", textDecoration: "underline"}}>
-                    Телефон: {userInfo["phone"]}
-                </p>
-                <label>Адрес: </label>
-                <input id={"address"} type={"text"} style={
-                    {borderRadius: 40, border: "none", padding: "5px 15px", marginBottom: 10}
-                }/>
-                <p id={"address-before"} style={{margin: "5px 0", textDecoration: "underline"}}>
-                    Адрес: {userInfo["address"]}
-                </p>
             </div>
         )
     }
@@ -144,29 +88,17 @@ export function VAccount(props) {
             fio = "Отсутствует ФИО";
         }
 
-        let phone = account["numberPhone"];
-        phone = phone ? phone : missing;
-
         let email = account["email"];
         email = email ? email : missing;
 
-        let gender = account["gender"];
-        gender = gender ? gender : missing;
-
-        let birthDate = account["birthDate"];
-        birthDate = birthDate ? birthDate.slice(0, 10) : missing;
-
-        let address = account["address"];
-        address = address ? address : missing;
+        let org = account["organizationString"];
+        org = org ? org : missing;
 
         return (
             <div className={"account-info"}>
                 <h2>{fio}</h2>
-                <p>Телефон: {phone}</p>
                 <p>Электронная почта: {email}</p>
-                <p>Адрес: {address}</p>
-                <p>Пол: {gender}</p>
-                <p>Дата Рождения: {birthDate}</p>
+                <p>Организация: {org}</p>
             </div>
         )
     }
@@ -258,31 +190,7 @@ export function VAccount(props) {
                                 setShow(true);
                             }}/>
                         </div>
-                        <div style={
-                            {
-                                marginTop: 30,
-                                marginBottom: 20,
-                                background: "#F5F5F5",
-                                boxShadow: "-10px 10px 30px rgba(0, 0, 0, 0.32)",
-                                borderRadius: 40,
-                            }
-                        }>
-                            <h3 style={{margin: "0px 50px"}}>Отслеживание успехов</h3>
-                            <div style={
-                                {
-                                    padding: "10px 20px 30px 20px"
-                                }
-                            }>
-                                <label>Начатых: </label>
-                                <ProgressBar percent={props.statistics["Done"]}/>
-                                <label>В ожидании: </label>
-                                <ProgressBar percent={props.statistics["Assigned"]}/>
-                                <label>Завершенных: </label>
-                                <ProgressBar percent={props.statistics["Done"]}/>
-                                <label>Неудачных: </label>
-                                <ProgressBar percent={props.statistics["Failed"]}/>
-                            </div>
-                        </div>
+                        <div style={{height: 295}}/>
                     </Col>
                 </Row>
             </Container>
