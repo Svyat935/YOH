@@ -114,7 +114,7 @@ def statistics_route():
         password="postgres")
     cursor = conn.cursor()
     cursor.execute('select * from game_statistics')
-    th = ['id', 'answer_number', 'date_action', 'type', 'game_id', 'patient_id', 'details']
+    th = ['id', 'answer_number', 'date_action', 'details', 'type', 'game_id', 'patient_id']
     td = cursor.fetchall()
     columns = len(th)
 
