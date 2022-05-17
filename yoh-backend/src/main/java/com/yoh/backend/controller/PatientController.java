@@ -150,7 +150,11 @@ public class PatientController {
                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("M/d/yyyy, h:m:s a");
                 LocalDateTime localDateTime = LocalDateTime.parse(statisticToSend.get("DateAction").toString(), formatter);
 //                Jsonb details = (Jsonb) statisticToSend.get("Details");
-                JSONObject details = new JSONObject(statisticToSend.get("details"));
+                JSONObject details;
+                if (statisticToSend.containsKey("details")){
+                    details = new JSONObject(statisticToSend.get("details"));
+                }
+                else details = null;
 
                 Short AnswerNumber;
                 if (statisticToSend.get("AnswerNumber") != null)
@@ -158,13 +162,18 @@ public class PatientController {
                 else
                     AnswerNumber = null;
 
+                String detailsString;
+                if (details != null) {
+                    detailsString = details.toString();
+                }
+                else detailsString = null;
                 GameStatistic statistic = new GameStatistic(
                         this.gameService.getGameById(UUID.fromString(game)),
                         patient,
                         Short.valueOf(statisticToSend.get("Type").toString()),
                         localDateTime,
                         AnswerNumber,
-                        details.toString()
+                        detailsString
                 );
                 this.gameStatisticService.createGameStatistic(statistic);
                 patient.getGameStatistics().add(statistic);

@@ -121,7 +121,7 @@ public class GameStatistic {
 //    }
 
     @Type(type = "jsonb")
-    @Column(name = "details", columnDefinition = "jsonb")
+    @Column(name = "details", columnDefinition = "jsonb", nullable = true)
     private String details;
 
     public String getDetails() {
