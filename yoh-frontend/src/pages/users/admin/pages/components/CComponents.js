@@ -8,7 +8,9 @@ export function CComponents() {
     const [_, rerun] = useState(new class{});
 
     const requestGames = async () => {
-        return await fetch("/games/all", {
+        return await fetch("/games/all?" +
+            "start=" + encodeURIComponent(0) + "&" +
+            "limit=" + encodeURIComponent(100), {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -69,7 +71,7 @@ export function CComponents() {
             let responseGames = await requestGames();
 
             if (responseGames !== null){
-                responseGames = responseGames["jsonObject"]["games"];
+                responseGames = responseGames["jsonObject"]["results"];
                 if (responseGames !== undefined) setGames(responseGames);
             }
         }

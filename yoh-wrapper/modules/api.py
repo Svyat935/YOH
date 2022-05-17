@@ -2,7 +2,7 @@ import json
 import psycopg2
 from prettytable import PrettyTable
 from datetime import datetime, date
-from flask import Blueprint, make_response, request, session, abort
+from flask import Blueprint, make_response, request, session, abort, render_template
 from werkzeug.exceptions import HTTPException
 from requests import post
 
@@ -95,7 +95,7 @@ def send_statistic_route():
     headers = {
         'Content-Type': 'application/json',
         'token': session['user'],
-        'game': '6d7795cb-126c-49bd-babd-ed02b56e78e7'  # session['current_game']
+        'game': 'ed03f7c8-6a95-4922-b7e5-b0d1ffd41f02'  # session['current_game']
     }
     send_url = 'http://yoh-backend:8080/patient/games/statistics/sending'
 
@@ -114,7 +114,7 @@ def statistics_route():
         password="postgres")
     cursor = conn.cursor()
     cursor.execute('select * from game_statistics')
-    th = ['id', 'answer_number', 'date_action', 'type', 'game_id', 'patient_id']
+    th = ['id', 'answer_number', 'date_action', 'type', 'game_id', 'patient_id', 'details']
     td = cursor.fetchall()
     columns = len(th)
 
@@ -123,3 +123,35 @@ def statistics_route():
     for td_data in td:
         table.add_row(td_data[:columns])
     return make_response(table.get_html_string())
+
+
+@api_bp.route('/heatmap')
+def heatmap_route():
+    conn = psycopg2.connect(
+        host="yoh-db",
+        port="5432",
+        database="yoh",
+        user="postgres",
+        password="postgres")
+    cursor = conn.cursor()
+    cursor.execute('select "details" from game_statistics where "type" = 6 order by "id" desc limit 1')
+    data = cursor.fetchone()
+    if data:
+        data = data[0]
+        points_data = []
+        values = []
+        for point, value in data['clicks']:
+            values.append(value)
+            x, y = point.split('.')
+            points_data.append({'x': x, 'y': y, 'value': value})
+        params_to_render = {
+            'points': points_data,
+            'window': {
+                'height': data['window_info']['height'],
+                'width': data['window_info']['width']
+            },
+            'max_point': max(values)
+        }
+        return render_template(f'test_heatmap/index.html', **params_to_render)
+    else:
+        abort(404)
