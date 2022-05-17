@@ -153,8 +153,8 @@ public class PatientController {
                 LocalDateTime localDateTime = LocalDateTime.parse(statisticToSend.get("DateAction").toString(), formatter);
 //                Jsonb details = (Jsonb) statisticToSend.get("Details");
                 JSONObject details;
-                if (statisticToSend.containsKey("details")){
-                    details = new JSONObject(statisticToSend.get("details"));
+                if (statisticToSend.containsKey("Details")){
+                    details = new JSONObject(statisticToSend.get("Details"));
                 }
                 else details = null;
 
