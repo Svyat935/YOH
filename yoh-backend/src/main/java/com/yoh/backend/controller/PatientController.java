@@ -160,12 +160,12 @@ public class PatientController {
                 if (statisticToSend.containsKey("Details")){
 //                    details = new JSONObject(statisticToSend.get("Details"));
 //                    details = new JsonObject()
-//                    jsonObject = new JsonParser().parse(statisticToSend.get("Details").toString()).getAsJsonObject();
-//                    System.out.println(statisticToSend.get("Details"));
-//                    System.out.println(jsonObject.toString());
-                    detailsString = statisticToSend.get("Details").toString();
+                    jsonObject = new JsonParser().parse(statisticToSend.get("Details").toString()).getAsJsonObject();
+                    System.out.println(statisticToSend.get("Details"));
+                    System.out.println(jsonObject.toString());
+//                    detailsString = statisticToSend.get("Details").toString();
                 }
-                else detailsString = null;
+                else jsonObject = null;
 
                 Short AnswerNumber;
                 if (statisticToSend.get("AnswerNumber") != null)
@@ -174,10 +174,10 @@ public class PatientController {
                     AnswerNumber = null;
 
 //                String detailsString;
-//                if (jsonObject != null) {
-//                    detailsString = jsonObject.toString();
-//                }
-//                else detailsString = null;
+                if (jsonObject != null) {
+                    detailsString = jsonObject.toString();
+                }
+                else detailsString = null;
                 GameStatistic statistic = new GameStatistic(
                         this.gameService.getGameById(UUID.fromString(game)),
                         patient,
