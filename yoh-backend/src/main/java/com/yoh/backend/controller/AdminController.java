@@ -45,6 +45,9 @@ public class AdminController {
     @Value("${IMAGE_FOLDER}")
     private String image_folder;
 
+    @Value("${SITE_URL}")
+    private String site_url;
+
     @Autowired
     private AdminService adminService;
 
@@ -256,7 +259,7 @@ public class AdminController {
             }
             File dest = new File(filePath);
             file.transferTo(dest);
-            game.setImage("https://mobile.itkostroma.ru/images/"+orgName);
+            game.setImage(site_url + "images/" + orgName);
 
             this.gameService.updateGame(game);
             JsonObject response = new JsonObject();

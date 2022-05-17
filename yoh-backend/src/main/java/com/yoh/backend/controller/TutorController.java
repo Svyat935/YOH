@@ -30,6 +30,9 @@ public class TutorController {
     @Value("${IMAGE_FOLDER}")
     private String image_folder;
 
+    @Value("${SITE_URL}")
+    private String site_url;
+
     @Autowired
     private TutorService tutorService;
 
@@ -766,7 +769,7 @@ public class TutorController {
             File dest = new File(filePath);
             file.transferTo(dest);
 //            byte[] imageBytes = ImageUtility.compressImage(file.getBytes());
-            tutor.setImage("https://mobile.itkostroma.ru/images/" + orgName);
+            tutor.setImage(site_url + "images/" + orgName);
             this.tutorService.updateTutor(tutor);
             JsonObject response = new JsonObject();
             response.put("message", "Tutor account image was added");

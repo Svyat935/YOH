@@ -41,6 +41,9 @@ public class PatientController {
     @Value("${IMAGE_FOLDER}")
     private String image_folder;
 
+    @Value("${SITE_URL}")
+    private String site_url;
+
     @Autowired
     private PatientService patientService;
 
@@ -450,7 +453,7 @@ public class PatientController {
 //            Files.copy(file.getInputStream(), Paths.get(filePath), StandardCopyOption.REPLACE_EXISTING);
 
             System.out.println(patient.getImage());
-            patient.setImage("https://mobile.itkostroma.ru/images/" + orgName);
+            patient.setImage(site_url + "images/" + orgName);
             this.patientService.updatePatient(patient);
             System.out.println(patient.getImage());
             JsonObject response = new JsonObject();
