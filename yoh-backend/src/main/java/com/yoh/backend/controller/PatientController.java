@@ -155,6 +155,8 @@ public class PatientController {
                 JSONObject details;
                 if (statisticToSend.containsKey("Details")){
                     details = new JSONObject(statisticToSend.get("Details"));
+                    System.out.println(statisticToSend.get("Details"));
+                    System.out.println(details);
                 }
                 else details = null;
 
