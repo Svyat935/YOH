@@ -141,7 +141,9 @@ public class PatientController {
                                           @RequestHeader("game") String game,
                                           @Valid @RequestBody StatisticArray statisticArray) {
         try {
-            Patient patient = this.patientService.getPatientByUser(this.userService.getUserById(this.userService.verifyToken(token)));
+//            Patient patient = this.patientService.getPatientByUser(this.userService.getUserById(this.userService.verifyToken(token)));
+            Patient patient = this.patientService.getPatientByUser(this.userService.getUserById(this.userService.verifyToken("" +
+                    "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2NTMzODM2NjQsInVzZXIiOiI3YzQ5NTMyNi03NzljLTRiZjMtYTk0OS03OTlhZGEyMmY4YzUifQ.RkwaPL_WQmVi2_t6weGHbj8BwwPr7m7mT8LcH6tJ-GY")));
             System.out.println(statisticArray.getRecords());
             for (JsonObject statisticToSend: statisticArray.getRecords()){
                 System.out.println(statisticToSend.get("DateAction"));
