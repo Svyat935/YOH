@@ -140,7 +140,7 @@ def heatmap_route():
         data = data[0]
         points_data = []
         values = []
-        for point, value in data['clicks']:
+        for point, value in data['clicks'].items():
             values.append(value)
             x, y = point.split('.')
             points_data.append({'x': x, 'y': y, 'value': value})
