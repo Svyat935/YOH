@@ -11,6 +11,7 @@ import com.yoh.backend.service.*;
 import com.yoh.backend.util.ImageUtility;
 import net.lingala.zip4j.ZipFile;
 import net.lingala.zip4j.model.UnzipParameters;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.aspectj.weaver.ast.Or;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -179,40 +180,25 @@ public class AdminController {
         try {
             Admin admin = this.adminService.getAdminByUser(this.userService.getUserById(this.userService.verifyToken(token)));
             if(this.gameService.checkGameByName(name)){
-                System.out.println(1);
                 String url = "/app/games/" + name;
-                System.out.println(2);
                 //Unzip
                 File tempFile = File.createTempFile("prefix-", "-suffix");
 //            tempFile.deleteOnExit();
-                System.out.println(3);
                 file.transferTo(tempFile);
-                System.out.println(4);
                 ZipFile zipFile = new ZipFile(tempFile);
-                System.out.println(5);
                 zipFile.extractAll(url);
-                System.out.println(6);
                 tempFile.delete();
-                System.out.println(7);
                 Game game = new Game(name, type, description, wrapper+ "/" +name+"/", LocalDateTime.now());
                 if (image != null) {
-                    String uploadsDir = image_folder;
-                    if(! new File(uploadsDir).exists())
-                    {
-                        new File(uploadsDir).mkdir();
+                    String orgName = game.getName() + "." + FilenameUtils.getExtension(file.getOriginalFilename());
+                    Path filepath = Paths.get("/app/images", orgName);
+                    if(new  File(filepath.toString()).exists()){
+                        System.out.println("File exists");
+                        new File(filepath.toString()).delete();
                     }
-                    System.out.println("123213213213123");
-                    System.out.println(FilenameUtils.getExtension(file.getOriginalFilename()));
-                    System.out.println("2132131232132132");
-                    String orgName = name + "." + FilenameUtils.getExtension(file.getOriginalFilename());
-                    System.out.println(orgName);
-                    String filePath = image_folder + "/" + orgName;
-                    if(new  File(filePath).exists()){
-                        new File(filePath).delete();
-                    }
-                    File dest = new File(filePath);
-                    file.transferTo(dest);
-                    game.setImage("https://mobile.itkostroma.ru/images/"+orgName);
+                    File filesd = new File("/app/images", orgName);
+                    FileUtils.writeByteArrayToFile(filesd, file.getBytes());
+                    game.setImage(site_url + "images/" + orgName);
                 }
                 System.out.println(8);
                 this.gameService.createGame(game);
@@ -243,22 +229,14 @@ public class AdminController {
             Admin admin = this.adminService.getAdminByUser(this.userService.getUserById(this.userService.verifyToken(token)));
             Game game = this.gameService.getGameById(UUID.fromString(gameID));
 
-            String uploadsDir = image_folder;
-            if(! new File(uploadsDir).exists())
-            {
-                new File(uploadsDir).mkdir();
-            }
-            System.out.println("123213213213123");
-            System.out.println(FilenameUtils.getExtension(file.getOriginalFilename()));
-            System.out.println("2132131232132132");
             String orgName = game.getName() + "." + FilenameUtils.getExtension(file.getOriginalFilename());
-            System.out.println(orgName);
-            String filePath = image_folder + "/" + orgName;
-            if(new  File(filePath).exists()){
-                new File(filePath).delete();
+            Path filepath = Paths.get("/app/images", orgName);
+            if(new  File(filepath.toString()).exists()){
+                System.out.println("File exists");
+                new File(filepath.toString()).delete();
             }
-            File dest = new File(filePath);
-            file.transferTo(dest);
+            File filesd = new File("/app/images", orgName);
+            FileUtils.writeByteArrayToFile(filesd, file.getBytes());
             game.setImage(site_url + "images/" + orgName);
 
             this.gameService.updateGame(game);

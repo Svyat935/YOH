@@ -38,8 +38,8 @@ import java.util.stream.Collectors;
 @RequestMapping("/patient")
 public class PatientController {
 
-    @Value("${IMAGE_FOLDER}")
-    private String image_folder;
+//    @Value("${IMAGE_FOLDER}")
+//    private String image_folder;
 
     @Value("${SITE_URL}")
     private String site_url;
@@ -414,45 +414,16 @@ public class PatientController {
                                            @RequestParam("image") MultipartFile file) {
         try {
             Patient patient = this.patientService.getPatientByUser(this.userService.getUserById(this.userService.verifyToken(token)));
-            byte[] imageBytes = ImageUtility.compressImage(file.getBytes());
 
-            String uploadsDir = image_folder;
-//            if(! new File(uploadsDir).exists())
-//            {
-//                new File(uploadsDir).mkdir();
-//            }
-            System.out.println("123213213213123");
-            System.out.println(FilenameUtils.getExtension(file.getOriginalFilename()));
-            System.out.println("2132131232132132");
             String orgName = patient.getId().toString() + "." + FilenameUtils.getExtension(file.getOriginalFilename());
-            System.out.println(orgName);
-//            String filePath = image_folder + "/" + orgName;
-            Path filepath = Paths.get("/home/yoh/new_yoh_project/images", orgName);
-
+            Path filepath = Paths.get("/app/images", orgName);
             if(new  File(filepath.toString()).exists()){
                 System.out.println("File exists");
                 new File(filepath.toString()).delete();
             }
-
-            File filesd = new File("/home/yoh/new_yoh_project/images", orgName);
+            File filesd = new File("/app/images", orgName);
             FileUtils.writeByteArrayToFile(filesd, file.getBytes());
 
-//            file.transferTo(filepath);
-//
-//            File dest = new File(filePath);
-//            dest.getParentFile().mkdirs();
-//            dest.createNewFile();
-//            file.transferTo(dest);
-//
-//            Path filepath = Paths.get(dir.toString(), file.getOriginalFilename());
-
-//            try (OutputStream os = Files.newOutputStream(dest.toPath())) {
-//                os.write(file.getBytes());
-//            }
-
-//            Files.copy(file.getInputStream(), Paths.get(filePath), StandardCopyOption.REPLACE_EXISTING);
-
-            System.out.println(patient.getImage());
             patient.setImage(site_url + "images/" + orgName);
             this.patientService.updatePatient(patient);
             System.out.println(patient.getImage());

@@ -12,6 +12,9 @@ services:
       - type: bind
         source: ${GAMES_FOLDER}
         target: /app/games
+      - type: bind
+        source: ${IMAGE_FOLDER}
+        target: /app/images
     depends_on:
       - yoh-db
     links:

@@ -7,6 +7,7 @@ import com.yoh.backend.response.*;
 import com.yoh.backend.service.*;
 import com.yoh.backend.util.ImageUtility;
 import com.yoh.backend.enums.Status;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -16,6 +17,8 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.validation.Valid;
 import java.awt.*;
 import java.io.File;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -752,23 +755,15 @@ public class TutorController {
         try {
             Tutor tutor = this.tutorService.getTutorByUser(this.userService.getUserById(this.userService.verifyToken(token)));
 
-            String uploadsDir = image_folder;
-            if(! new File(uploadsDir).exists())
-            {
-                new File(uploadsDir).mkdir();
-            }
-            System.out.println("123213213213123");
-            System.out.println(FilenameUtils.getExtension(file.getOriginalFilename()));
-            System.out.println("2132131232132132");
             String orgName = tutor.getId().toString() + "." + FilenameUtils.getExtension(file.getOriginalFilename());
-            System.out.println(orgName);
-            String filePath = image_folder + "/" + orgName;
-            if(new  File(filePath).exists()){
-                new File(filePath).delete();
+            Path filepath = Paths.get("/app/images", orgName);
+            if(new  File(filepath.toString()).exists()){
+                System.out.println("File exists");
+                new File(filepath.toString()).delete();
             }
-            File dest = new File(filePath);
-            file.transferTo(dest);
-//            byte[] imageBytes = ImageUtility.compressImage(file.getBytes());
+            File filesd = new File("/app/images", orgName);
+            FileUtils.writeByteArrayToFile(filesd, file.getBytes());
+
             tutor.setImage(site_url + "images/" + orgName);
             this.tutorService.updateTutor(tutor);
             JsonObject response = new JsonObject();
