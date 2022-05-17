@@ -43,7 +43,7 @@
           }
     });
     // now generate some random data
-    var points = {{ points }};
+    var points = {{ points|tojson|safe }};
     var max = {{ max_point }};
     var width = {{ window.width }};
     var height = {{ window.height }};

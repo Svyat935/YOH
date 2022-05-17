@@ -145,7 +145,7 @@ def heatmap_route():
             x, y = point.split('.')
             points_data.append({"x": int(x), "y": int(y), "value": value})
         params_to_render = {
-            'points': json.dumps(points_data),
+            'points': points_data,
             'window': {
                 'height': data['window_size']['height'],
                 'width': data['window_size']['width']
