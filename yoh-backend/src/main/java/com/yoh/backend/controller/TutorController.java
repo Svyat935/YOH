@@ -756,24 +756,29 @@ public class TutorController {
         try {
             Tutor tutor = this.tutorService.getTutorByUser(this.userService.getUserById(this.userService.verifyToken(token)));
 
-            String orgName = tutor.getId().toString() + "." + FilenameUtils.getExtension(file.getOriginalFilename());
+            String orgName = UUID.randomUUID() + "." + FilenameUtils.getExtension(file.getOriginalFilename());
+
+//            String orgName = tutor.getId().toString() + "." + FilenameUtils.getExtension(file.getOriginalFilename());
 //            Path filepath = Paths.get("/app/images", orgName);
 //            if(new  File(filepath.toString()).exists()){
 //                System.out.println("File exists");
 //                new File(filepath.toString()).delete();
 //            }
             if(tutor.getImage() != null){
-                new File("/app/images/" + tutor.getImage().replace(site_url + "images/", "")).delete();
+//                new File("/app/images/" + tutor.getImage().replace(site_url + "images/", "")).delete();
+                new File("/app/images/" + tutor.getImage()).delete();
+                System.out.println("Old image was deleted");
+
             }
             File filesd = new File("/app/images", orgName);
             FileUtils.writeByteArrayToFile(filesd, file.getBytes());
 
-            String url = site_url + "images/" + orgName;
-            tutor.setImage(url);
+//            String url = site_url + "images/" + orgName;
+            tutor.setImage(orgName);
             this.tutorService.updateTutor(tutor);
             JsonObject response = new JsonObject();
             response.put("message", "Tutor account image was added");
-            response.put("image", url);
+            response.put("image", orgName);
             System.out.println();
             System.out.println(tutor.getImage());
             System.out.println();

@@ -229,24 +229,28 @@ public class AdminController {
             Admin admin = this.adminService.getAdminByUser(this.userService.getUserById(this.userService.verifyToken(token)));
             Game game = this.gameService.getGameById(UUID.fromString(gameID));
 
-            String orgName = game.getName() + "." + FilenameUtils.getExtension(file.getOriginalFilename());
+//            String orgName = game.getName() + "." + FilenameUtils.getExtension(file.getOriginalFilename());
+            String orgName = UUID.randomUUID() + "." + FilenameUtils.getExtension(file.getOriginalFilename());
+
 //            Path filepath = Paths.get("/app/images", orgName);
 //            if(new  File(filepath.toString()).exists()){
 //                System.out.println("File exists");
 //                new File(filepath.toString()).delete();
 //            }
             if(game.getImage() != null){
-                new File("/app/images/" + game.getImage().replace(site_url + "images/", "")).delete();
+                new File("/app/images/" + game.getImage()).delete();
+                System.out.println("Old image was deleted");
+
             }
             File filesd = new File("/app/images", orgName);
             FileUtils.writeByteArrayToFile(filesd, file.getBytes());
-            String url = site_url + "images/" + orgName;
-            game.setImage(url);
+//            String url = site_url + "images/" + orgName;
+            game.setImage(orgName);
 
             this.gameService.updateGame(game);
             JsonObject response = new JsonObject();
             response.put("message", "Game image was edited");
-            response.put("image", url);
+            response.put("image", orgName);
             return new JSONResponse(200, response);
         }
         catch (Exception e){

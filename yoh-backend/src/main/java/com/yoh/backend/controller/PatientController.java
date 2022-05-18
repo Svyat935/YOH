@@ -416,25 +416,27 @@ public class PatientController {
         try {
             Patient patient = this.patientService.getPatientByUser(this.userService.getUserById(this.userService.verifyToken(token)));
 
-            String orgName = patient.getId().toString() + "." + FilenameUtils.getExtension(file.getOriginalFilename());
+            String orgName = UUID.randomUUID() + "." + FilenameUtils.getExtension(file.getOriginalFilename());
+//            String orgName = patient.getId().toString() + "." + FilenameUtils.getExtension(file.getOriginalFilename());
 //            Path filepath = Paths.get("/app/images", orgName);
 //            if(new  File(filepath.toString()).exists()){
 //                System.out.println("File exists");
 //                new File(filepath.toString()).delete();
 //            }
             if(patient.getImage() != null){
-                new File("/app/images/" + patient.getImage().replace(site_url + "images/", "")).delete();
+                new File("/app/images/" + patient.getImage()).delete();
+                System.out.println("Old image was deleted");
             }
             File filesd = new File("/app/images", orgName);
             FileUtils.writeByteArrayToFile(filesd, file.getBytes());
 
-            String url = site_url + "images/" + orgName;
-            patient.setImage(url);
+//            String url = orgName;
+            patient.setImage(orgName);
             this.patientService.updatePatient(patient);
             System.out.println(patient.getImage());
             JsonObject response = new JsonObject();
             response.put("message", "Patient account image was added");
-            response.put("image", url);
+            response.put("image", orgName);
             System.out.println();
             System.out.println(patient.getImage());
             System.out.println();
