@@ -173,9 +173,8 @@ export function VAccount(props) {
 
     const createImageAccount = () => {
         let imageClass = new Image();
-        if (props.image !== null){
-            let base64 = props.image;
-            imageClass.src = 'data:image/jpg;base64,' + base64;
+        if (props.accountInfo !== null && props.accountInfo["image"] !== null){
+            imageClass.src = "https://mobile.itkostroma.ru/images/"+props.accountInfo["image"];
         }
 
         return (
