@@ -757,10 +757,13 @@ public class TutorController {
             Tutor tutor = this.tutorService.getTutorByUser(this.userService.getUserById(this.userService.verifyToken(token)));
 
             String orgName = tutor.getId().toString() + "." + FilenameUtils.getExtension(file.getOriginalFilename());
-            Path filepath = Paths.get("/app/images", orgName);
-            if(new  File(filepath.toString()).exists()){
-                System.out.println("File exists");
-                new File(filepath.toString()).delete();
+//            Path filepath = Paths.get("/app/images", orgName);
+//            if(new  File(filepath.toString()).exists()){
+//                System.out.println("File exists");
+//                new File(filepath.toString()).delete();
+//            }
+            if(tutor.getImage() != null){
+                new File("/app/images/" + tutor.getImage().replace(site_url + "images/", "")).delete();
             }
             File filesd = new File("/app/images", orgName);
             FileUtils.writeByteArrayToFile(filesd, file.getBytes());
@@ -771,6 +774,9 @@ public class TutorController {
             JsonObject response = new JsonObject();
             response.put("message", "Tutor account image was added");
             response.put("image", url);
+            System.out.println();
+            System.out.println(tutor.getImage());
+            System.out.println();
             return new JSONResponse(200, response);
         }
         catch (Exception e){

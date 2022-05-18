@@ -417,10 +417,13 @@ public class PatientController {
             Patient patient = this.patientService.getPatientByUser(this.userService.getUserById(this.userService.verifyToken(token)));
 
             String orgName = patient.getId().toString() + "." + FilenameUtils.getExtension(file.getOriginalFilename());
-            Path filepath = Paths.get("/app/images", orgName);
-            if(new  File(filepath.toString()).exists()){
-                System.out.println("File exists");
-                new File(filepath.toString()).delete();
+//            Path filepath = Paths.get("/app/images", orgName);
+//            if(new  File(filepath.toString()).exists()){
+//                System.out.println("File exists");
+//                new File(filepath.toString()).delete();
+//            }
+            if(patient.getImage() != null){
+                new File("/app/images/" + patient.getImage().replace(site_url + "images/", "")).delete();
             }
             File filesd = new File("/app/images", orgName);
             FileUtils.writeByteArrayToFile(filesd, file.getBytes());
@@ -432,6 +435,9 @@ public class PatientController {
             JsonObject response = new JsonObject();
             response.put("message", "Patient account image was added");
             response.put("image", url);
+            System.out.println();
+            System.out.println(patient.getImage());
+            System.out.println();
             return new JSONResponse(200, response);
         }
         catch (Exception e){

@@ -230,10 +230,13 @@ public class AdminController {
             Game game = this.gameService.getGameById(UUID.fromString(gameID));
 
             String orgName = game.getName() + "." + FilenameUtils.getExtension(file.getOriginalFilename());
-            Path filepath = Paths.get("/app/images", orgName);
-            if(new  File(filepath.toString()).exists()){
-                System.out.println("File exists");
-                new File(filepath.toString()).delete();
+//            Path filepath = Paths.get("/app/images", orgName);
+//            if(new  File(filepath.toString()).exists()){
+//                System.out.println("File exists");
+//                new File(filepath.toString()).delete();
+//            }
+            if(game.getImage() != null){
+                new File("/app/images/" + game.getImage().replace(site_url + "images/", "")).delete();
             }
             File filesd = new File("/app/images", orgName);
             FileUtils.writeByteArrayToFile(filesd, file.getBytes());
