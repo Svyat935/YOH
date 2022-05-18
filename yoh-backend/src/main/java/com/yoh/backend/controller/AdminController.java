@@ -237,11 +237,13 @@ public class AdminController {
             }
             File filesd = new File("/app/images", orgName);
             FileUtils.writeByteArrayToFile(filesd, file.getBytes());
-            game.setImage(site_url + "images/" + orgName);
+            String url = site_url + "images/" + orgName;
+            game.setImage(url);
 
             this.gameService.updateGame(game);
             JsonObject response = new JsonObject();
             response.put("message", "Game image was edited");
+            response.put("image", url);
             return new JSONResponse(200, response);
         }
         catch (Exception e){

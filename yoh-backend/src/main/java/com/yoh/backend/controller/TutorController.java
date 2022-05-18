@@ -711,6 +711,7 @@ public class TutorController {
             response.put("organizationString",tutor.getOrganizationString());
             response.put("login", tutor.getUser().getLogin());
             response.put("email", tutor.getUser().getEmail());
+            response.put("image", tutor.getImage());
             return new JSONResponse(200, response);
         }
         catch (IllegalArgumentException e){
@@ -764,10 +765,12 @@ public class TutorController {
             File filesd = new File("/app/images", orgName);
             FileUtils.writeByteArrayToFile(filesd, file.getBytes());
 
-            tutor.setImage(site_url + "images/" + orgName);
+            String url = site_url + "images/" + orgName;
+            tutor.setImage(url);
             this.tutorService.updateTutor(tutor);
             JsonObject response = new JsonObject();
             response.put("message", "Tutor account image was added");
+            response.put("image", url);
             return new JSONResponse(200, response);
         }
         catch (Exception e){

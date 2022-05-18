@@ -384,6 +384,7 @@ public class PatientController {
             response.put("address", patient.getAddress());
             response.put("login", patient.getUser().getLogin());
             response.put("email", patient.getUser().getEmail());
+            response.put("image", patient.getImage());
 
             JsonObject tutorInfo = new JsonObject();
             Tutor tutor = patient.getTutor();
@@ -424,11 +425,13 @@ public class PatientController {
             File filesd = new File("/app/images", orgName);
             FileUtils.writeByteArrayToFile(filesd, file.getBytes());
 
-            patient.setImage(site_url + "images/" + orgName);
+            String url = site_url + "images/" + orgName;
+            patient.setImage(url);
             this.patientService.updatePatient(patient);
             System.out.println(patient.getImage());
             JsonObject response = new JsonObject();
             response.put("message", "Patient account image was added");
+            response.put("image", url);
             return new JSONResponse(200, response);
         }
         catch (Exception e){
