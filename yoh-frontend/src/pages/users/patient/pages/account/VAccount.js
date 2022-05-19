@@ -40,33 +40,26 @@ export function VAccount(props) {
             fPhone = document.getElementById("phone"),
             fGender = document.getElementById("gender-input"),
             fBirthday = document.getElementById("input-birthday");
-        let validStatus = true;
 
+        let body = {};
+        body["id"] = props.accountInfo.id;
+        if (fName.value) body["name"] = fName.value;
+        if (fSurname.value) body["surname"] = fSurname.value;
+        if (fSecondName.value) body["secondName"] = fSecondName.value;
+        if (fPhone.value) body["numberPhone"] = fPhone.value;
+        if (fAddress.value) body["address"] = fAddress.value;
+        if (fBirthday.value) body["birthDate"] = fBirthday.value;
+        if (fGender.value) body["gender"] = fGender.value;
 
-        if (validStatus){
-            let body = {};
-            body["id"] = props.accountInfo.id;
-            if (fName.value) body["name"] = fName.value;
-            if (fSurname.value) body["surname"] = fSurname.value;
-            if (fSecondName.value) body["secondName"] = fSecondName.value;
-            if (fPhone.value) body["numberPhone"] = fPhone.value;
-            if (fAddress.value) body["address"] = fAddress.value;
-            if (fBirthday.value) body["birthDate"] = fBirthday.value;
-            if (fGender.value) body["gender"] = fGender.value;
+        let response = await props.changeInfo(body);
 
-            let response = await props.changeInfo(body);
-
-            if (response){
-                if (response.code === 401) {
-                    console.log(response);
-                    validStatus = false;
-                }
+        if (response){
+            if (response.code === 401) {
+                console.log(response);
+            }else{
+                props.refresh();
+                setShow(false);
             }
-        }
-
-        if (validStatus){
-            props.refresh();
-            setShow(false);
         }
     }
 
@@ -173,9 +166,9 @@ export function VAccount(props) {
 
     const createImageAccount = () => {
         let imageClass = new Image();
-        if (props.image !== null){
-            let base64 = props.image;
-            imageClass.src = 'data:image/jpg;base64,' + base64;
+        if (props.accountInfo !== null && props.accountInfo["image"] !== null){
+            //TODO: Add site url.
+            imageClass.src = "https://mobile.itkostroma.ru/images/"+props.accountInfo["image"];
         }
 
         return (

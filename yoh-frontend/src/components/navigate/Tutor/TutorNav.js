@@ -13,7 +13,8 @@ export function TutorNav() {
             <ul className="menu__box">
                 <li><Link className="menu__item" to={"/user/tutor/"}>Домашняя страница</Link></li>
                 <li><Link className="menu__item" to={"/user/tutor/account"}>Личный кабинет</Link></li>
-                <li><Link className="menu__item" to={"/user/tutor/users"}>Пользователи</Link></li>
+                <li><Link className="menu__item" to={"/user/tutor/allPatients"}>Все наблюдаемые</Link></li>
+                <li><Link className="menu__item" to={"/user/tutor/patients"}>Наблюдаемые</Link></li>
                 <li><Link className="menu__item" to={"/user/tutor/chat"}>Чат</Link></li>
                 <li><Link className="menu__item" to={"/"}>Выйти</Link></li>
             </ul>

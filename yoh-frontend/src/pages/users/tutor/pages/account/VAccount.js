@@ -13,6 +13,7 @@ import {ButtonB} from "../../../../../components/buttons/ButtonB/ButtonB";
 import {InputPhone} from "../../../../../components/inputPhone/InputPhone";
 import {InputBirthday} from "../../../../../components/inputBirthday/InputBirthday";
 import {InputGender} from "../../../../../components/inputGender/InputGender";
+import {TutorNav} from "../../../../../components/navigate/Tutor/TutorNav";
 
 export function VAccount(props) {
     // ChangePhoto - 0, ChangeInfo - 1;
@@ -33,7 +34,26 @@ export function VAccount(props) {
     }
 
     const changeInfo = async () => {
+        let fName = document.getElementById("name"),
+            fSurname = document.getElementById("surname"),
+            fSecondName = document.getElementById("secondName");
 
+        let body = {};
+        body["id"] = props.accountInfo.id;
+        if (fName.value) body["name"] = fName.value;
+        if (fSurname.value) body["surname"] = fSurname.value;
+        if (fSecondName.value) body["secondName"] = fSecondName.value;
+
+        let response = await props.changeInfo(body);
+
+        if (response){
+            if (response.code === 401) {
+                console.log(response);
+            }else{
+                props.refresh();
+                setShow(false);
+            }
+        }
     }
 
     const changeView = () => {
@@ -105,9 +125,9 @@ export function VAccount(props) {
 
     const createImageAccount = () => {
         let imageClass = new Image();
-        if (props.image !== null){
-            let base64 = props.image;
-            imageClass.src = 'data:image/jpg;base64,' + base64;
+        if (props.accountInfo !== null && props.accountInfo["image"] !== null){
+            //TODO: Add site url.
+            imageClass.src = "https://mobile.itkostroma.ru/images/"+props.accountInfo["image"];
         }
 
         return (
@@ -120,7 +140,7 @@ export function VAccount(props) {
     }
 
     return (
-        <Back navPanel={<PatientNav/>}>
+        <Back navPanel={<TutorNav/>}>
             <Modal
                 show={show}
                 backdrop={true}

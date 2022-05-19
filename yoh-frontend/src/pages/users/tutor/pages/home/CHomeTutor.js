@@ -7,14 +7,16 @@ export function CHomeTutor() {
     const [users, setUsers] = useState([]);
 
     const requestAttachingUser = async () => {
-        return await fetch("/tutor/patients/getting", {
+        return await fetch("/tutor/patients/getting?" +
+            "start=" + encodeURIComponent(0) + "&" +
+            "limit=" + encodeURIComponent(5), {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
-                "token": context.token
+                'token': context.token
             },
         }).then((response) => {
-            if (response.status === 200) return response.json()
+            if (response.status === 200) return response.json();
             else return null;
         });
     }
@@ -23,8 +25,9 @@ export function CHomeTutor() {
         if (context.token !== null){
             let response = await requestAttachingUser();
 
+            console.log(response);
             if (response !== null){
-                let users = response["jsonObject"]["patientList"];
+                let users = response["jsonObject"]["results"];
                 setUsers(users);
             }
         }
