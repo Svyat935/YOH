@@ -19,7 +19,10 @@ export function VHomeTutor(props) {
         if (users.length > 0){
             users.forEach((user) => {
                 view.push(
-                    <InfoBlock key={user["id"]} text={user["login"]}>
+                    <InfoBlock key={user["id"]} text={
+                        user["surname"] && user["name"] ?
+                            user["surname"] + user["name"] : "Отсутствует ФИО"
+                    }>
                         <div>
                             <img style={{width: "100%"}} src={profileStub} alt={'profile'}/>
                         </div>
@@ -47,7 +50,7 @@ export function VHomeTutor(props) {
                 <h3 style={{marginTop: 20}}>Последняя активность пользователей:</h3>
                 <div style={{display: "flex", justifyContent: "space-evenly"}}>
                     {view}
-                    {view.length === 5 ? <RightArrow onClick={() => router("/user/admin/users/")}/> : null}
+                    {view.length === 5 ? <RightArrow onClick={() => router("/user/tutor/patients/")}/> : null}
                 </div>
             </div>
         )

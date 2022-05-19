@@ -6,8 +6,7 @@ export function CAllPatients() {
     const context = useContext(UserContext);
     const [patients, setPatients] = useState([]);
     const [attachedPatients, setAttachedPatients] = useState([]);
-    const [_, rerun] = useState(new class {
-    });
+    const [_, rerun] = useState(new class {});
 
     const requestPatients = async (start, limit) => {
         return await fetch("/tutor/patients/getting/all?" +

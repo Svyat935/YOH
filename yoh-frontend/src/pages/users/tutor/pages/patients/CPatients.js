@@ -35,7 +35,7 @@ export function CPatients() {
     }, [context, _])
 
     return <VPatients
-        // saveUser={(info) => context.addInfo(info)}
+        saveUser={(info) => context.addInfo(info)}
         attachedPatients={attachedPatients}
         refresh={() => rerun(new class{})}
     />

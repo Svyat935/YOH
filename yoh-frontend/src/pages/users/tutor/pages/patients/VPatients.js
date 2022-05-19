@@ -38,7 +38,7 @@ export function VPatients(props) {
                 view.push(
                     <InfoBlock onClick={
                         async () => {
-                            props.saveUser(patient);
+                            props.saveUser({patient: patient});
                             router("/user/tutor/detail");
                         }
                     } key={patient["id"]} text={fio}>

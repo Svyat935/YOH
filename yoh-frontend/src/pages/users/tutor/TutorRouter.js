@@ -6,6 +6,8 @@ import {CAllPatients} from "./pages/allPatients/CAllPatients";
 import {VChat} from "./pages/chat/VChat";
 import {CPatients} from "./pages/patients/CPatients";
 import {CDetailInfo} from "./pages/detailInfo/СDetailInfo";
+import {CVector} from "./pages/vector/CVector";
+import {VGame} from "./pages/game/VGame";
 
 
 export function TutorRouter() {
@@ -17,6 +19,8 @@ export function TutorRouter() {
             <Route path={'/patients'} element={<CPatients/>}/>
             <Route path={'/chat'} element={<VChat/>}/>
             <Route path={'/detail'} element={<CDetailInfo/>}/>
+            <Route path={'/vector'} element={<CVector/>}/>
+            <Route path={'/game'} element={<VGame/>}/>
         </Routes>
     )
 }
