@@ -14,4 +14,15 @@ public class RoleForAssign {
     public void setRole(Integer role) {
         this.role = role;
     }
+
+    @NotNull
+    private String user;
+
+    public String getUser() {
+        return user;
+    }
+
+    public void setUser(String user) {
+        this.user = user;
+    }
 }

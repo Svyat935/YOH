@@ -1,11 +1,11 @@
 package com.yoh.backend.service;
 
-import com.yoh.backend.entity.Researcher;
-import com.yoh.backend.entity.User;
+import com.yoh.backend.entity.*;
 import com.yoh.backend.repository.ResearcherRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -20,6 +20,18 @@ public class ResearcherService {
         researcherRepository.createResearcher(researcher);
     }
 
+    public void updateResearcher(Researcher researcher) throws IllegalArgumentException{
+        researcherRepository.createResearcher(researcher);
+    }
+
+    public void deleteResearcher(Researcher researcher) throws IllegalArgumentException{
+        researcherRepository.deleteResearcher(researcher);
+    }
+
+    public List<Researcher> getAllResearchers(){
+        return researcherRepository.getAllResearchers();
+    }
+
     public Researcher getResearcherByUser(User user) {
         return researcherRepository.getResearcherByUser(user);
     }
@@ -32,5 +44,9 @@ public class ResearcherService {
         else throw new IllegalArgumentException(
                 String.format("Sorry, but Researcher with this id (%s) wasn't found.", id)
         );
+    }
+
+    public List<Researcher> getAllResearchersByOrganization(Organization organization){
+        return researcherRepository.getAllResearchersByOrganization(organization);
     }
 }

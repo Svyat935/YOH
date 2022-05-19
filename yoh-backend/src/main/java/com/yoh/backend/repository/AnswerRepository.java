@@ -1,6 +1,7 @@
 package com.yoh.backend.repository;
 
 import com.yoh.backend.entity.Answer;
+import com.yoh.backend.entity.Game;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -21,22 +22,54 @@ public class AnswerRepository {
 
     public void createAnswer(Answer answer) {
         Session session = sessionFactory.openSession();
+        try {
+            //Start transaction
+            session.beginTransaction();
 
-        //Start transaction
-        session.beginTransaction();
+            //Transaction
+            session.saveOrUpdate(answer);
+            //End transaction
+            session.getTransaction().commit();
+        }
+        finally {
+            session.close();
+        }
+    }
 
-        //Transaction
-        session.saveOrUpdate(answer);
-
-        //End transaction
-        session.getTransaction().commit();
+    public void deleteAnswer(Answer answer) {
+        Session session = sessionFactory.openSession();
+        try {
+            session.beginTransaction();
+            session.delete(answer);
+            session.getTransaction().commit();
+        }
+        finally {
+            session.close();
+        }
     }
 
     public Answer getAnswerByUUID(UUID id) {
         Session session = sessionFactory.openSession();
-        Criteria criteria = session.createCriteria(Answer.class)
-                .add(Restrictions.eq("id", id));
-        List<Answer> answers = criteria.list();
-        return answers.isEmpty() ? null : answers.get(0);
+        try {
+            Criteria criteria = session.createCriteria(Answer.class)
+                    .add(Restrictions.eq("id", id));
+            List<Answer> answers = criteria.list();
+            return answers.isEmpty() ? null : answers.get(0);
+        }
+        finally {
+            session.close();
+        }
     }
+
+    public List<Answer> getAllAnswers(){
+        Session session = sessionFactory.openSession();
+        try{
+            Criteria criteria = session.createCriteria(Answer.class);
+            List<Answer> answerList = criteria.list();
+            return answerList.isEmpty() ? null : answerList;
+        }finally {
+            session.close();
+        }
+    }
+
 }

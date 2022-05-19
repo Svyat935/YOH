@@ -1,20 +1,25 @@
-import './App.css';
+import 'bootstrap/dist/css/bootstrap.min.css';
 import React from "react";
-import {UserContext} from "./authentication/userContext";
-import {LocalAuthorizeUser} from "./authentication/authorizeUser";
-import {AppRouters} from "./AppRouters";
+import {UserContext} from "./context/userContext";
+import {LocalAuthorizeUser} from "./context/authorizeUser";
+import {Router} from "./Router";
 
 function App() {
-    //TODO DELETE
-    let data = JSON.stringify({token: 'testToken', userRole: 'testUserRole', theme: 'testTheme'});
-    localStorage.setItem("userContext", data);
-    //TODO END
-
-    const {token, userRole, theme} = LocalAuthorizeUser();
+    const {token, userRole, theme, info, login, logout, addInfo} = LocalAuthorizeUser();
 
     return (
-        <UserContext.Provider value={{token: token, userRole: userRole, theme: theme}}>
-            <AppRouters/>
+        <UserContext.Provider value={
+            {
+                token: token,
+                userRole: userRole,
+                theme: theme,
+                info: info,
+                login: login,
+                logout: logout,
+                addInfo: addInfo
+            }
+        }>
+            <Router/>
         </UserContext.Provider>
     );
 }

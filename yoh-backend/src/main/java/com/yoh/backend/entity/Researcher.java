@@ -52,7 +52,7 @@ public class Researcher {
     }
 
 
-    @Column(name = "surname", length = 128, nullable = false)
+    @Column(name = "surname", length = 128, nullable = true)
     private String surname;
 
     public String getSurname(){
@@ -64,7 +64,7 @@ public class Researcher {
     }
 
 
-    @Column(name = "name", length = 128, nullable = false)
+    @Column(name = "name", length = 128, nullable = true)
     private String name;
 
     public String getName(){
@@ -76,7 +76,7 @@ public class Researcher {
     }
 
 
-    @Column(name = "secondName", length = 128, nullable = false)
+    @Column(name = "secondName", length = 128, nullable = true)
     private String secondName;
 
     public String getSecondName(){

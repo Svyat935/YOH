@@ -1,5 +1,6 @@
 package com.yoh.backend.repository;
 
+import com.yoh.backend.entity.Game;
 import com.yoh.backend.entity.GameStatistic;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
@@ -21,22 +22,54 @@ public class GameStatisticRepository {
 
     public void createGameStatistic(GameStatistic gameStatistic) {
         Session session = sessionFactory.openSession();
+        try {
+            //Start transaction
+            session.beginTransaction();
 
-        //Start transaction
-        session.beginTransaction();
+            //Transaction
+            session.saveOrUpdate(gameStatistic);
 
-        //Transaction
-        session.saveOrUpdate(gameStatistic);
+            //End transaction
+            session.getTransaction().commit();
+        }
+        finally {
+            session.close();
+        }
+    }
 
-        //End transaction
-        session.getTransaction().commit();
+    public void deleteGameStatistic(GameStatistic gameStatistic) {
+        Session session = sessionFactory.openSession();
+        try {
+            session.beginTransaction();
+            session.delete(gameStatistic);
+            session.getTransaction().commit();
+        }
+        finally {
+            session.close();
+        }
     }
 
     public GameStatistic getGameStatisticByUUID(UUID id) {
         Session session = sessionFactory.openSession();
-        Criteria criteria = session.createCriteria(GameStatistic.class)
-                .add(Restrictions.eq("id", id));
-        List<GameStatistic> gameStatistics = criteria.list();
-        return gameStatistics.isEmpty() ? null : gameStatistics.get(0);
+        try {
+            Criteria criteria = session.createCriteria(GameStatistic.class)
+                    .add(Restrictions.eq("id", id));
+            List<GameStatistic> gameStatistics = criteria.list();
+            return gameStatistics.isEmpty() ? null : gameStatistics.get(0);
+        }
+        finally {
+            session.close();
+        }
+    }
+
+    public List<GameStatistic> getAllGameStatistics(){
+        Session session = sessionFactory.openSession();
+        try{
+            Criteria criteria = session.createCriteria(GameStatistic.class);
+            List<GameStatistic> gameStatisticList = criteria.list();
+            return gameStatisticList.isEmpty() ? null : gameStatisticList;
+        }finally {
+            session.close();
+        }
     }
 }

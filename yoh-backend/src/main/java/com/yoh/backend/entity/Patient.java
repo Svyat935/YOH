@@ -1,9 +1,12 @@
 package com.yoh.backend.entity;
 
 import javax.persistence.*;
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 import com.yoh.backend.enums.Gender;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 
 @Entity
 @Table(name = "patients")
@@ -39,7 +42,7 @@ public class Patient {
         this.user = user;
     }
 
-    @Column(name = "surname", length = 128, nullable = false)
+    @Column(name = "surname", length = 128, nullable = true)
     private String surname;
 
     public String getSurname(){
@@ -50,7 +53,7 @@ public class Patient {
         this.surname = surname;
     }
 
-    @Column(name = "name", length = 128, nullable = false)
+    @Column(name = "name", length = 128, nullable = true)
     private String name;
 
     public String getName(){
@@ -61,7 +64,7 @@ public class Patient {
         this.name = name;
     }
 
-    @Column(name = "secondName", length = 128, nullable = false)
+    @Column(name = "secondName", length = 128, nullable = true)
     private String secondName;
 
     public String getSecondName(){
@@ -72,18 +75,18 @@ public class Patient {
         this.secondName = secondName;
     }
 
-    @Column(name = "birthDate", length = 128, nullable = false)
-    private String birthDate;
+    @Column(name = "birthDate", length = 128, nullable = true)
+    private Date birthDate;
 
-    public String getBirthDate(){
+    public Date getBirthDate(){
         return this.birthDate;
     }
 
-    public void setBirthDate(String birthDate){
+    public void setBirthDate(Date birthDate){
         this.birthDate = birthDate;
     }
 
-    @Column(name = "NumberPhone", length = 128, nullable = false)
+    @Column(name = "NumberPhone", length = 128, nullable = true)
     private String numberPhone;
 
     public String getNumberPhone(){
@@ -94,7 +97,7 @@ public class Patient {
         this.numberPhone = numberPhone;
     }
 
-    @Column(name = "address", length = 128, nullable = false)
+    @Column(name = "address", length = 128, nullable = true)
     private String address;
 
     public String getAddress(){
@@ -113,7 +116,7 @@ public class Patient {
     public void setGender(Gender gender) { this.gender = gender; }
 
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     private Tutor tutor;
 
     public Tutor getTutor() {
@@ -124,7 +127,8 @@ public class Patient {
         this.tutor = tutor;
     }
 
-    @OneToOne
+    //TODO Проверить
+    @ManyToOne
     @JoinColumn(name = "organization_id")
     private Organization organization;
 
@@ -134,6 +138,20 @@ public class Patient {
 
     public void setOrganization(Organization organization){
         this.organization = organization;
+        if (organization != null)
+            this.setOrganizationString(organization.getName());
+        else this.setOrganizationString(null);
+    }
+
+    @Column(name = "organizationString", length = 128, nullable = true)
+    private String organizationString;
+
+    public String getOrganizationString(){
+        return this.organizationString;
+    }
+
+    public void setOrganizationString(String organizationString){
+        this.organizationString = organizationString;
     }
 
 
@@ -162,6 +180,11 @@ public class Patient {
 
 
     @ManyToMany
+    @LazyCollection(LazyCollectionOption.FALSE)
+    @JoinTable(name = "game_patient",
+            joinColumns = @JoinColumn(name = "game_id"),
+            inverseJoinColumns = @JoinColumn(name = "patient_id")
+    )
     private List<Game> games;
 
     public List<Game> getGames() {
@@ -174,6 +197,7 @@ public class Patient {
 
 
     @OneToMany(mappedBy = "patient")
+    @LazyCollection(LazyCollectionOption.FALSE)
     private List<GameStatistic> gameStatistics;
 
     public List<GameStatistic> getGameStatistics() {
@@ -198,6 +222,7 @@ public class Patient {
 
 
     @OneToMany(mappedBy = "patient")
+    @LazyCollection(LazyCollectionOption.FALSE)
     private List<GameStatus> gameStatuses;
 
     public List<GameStatus> getGameStatuses() { return gameStatuses; }
@@ -214,6 +239,18 @@ public class Patient {
 
     public void setTestStatuses(List<TestStatus> testStatuses) {
         this.testStatuses = testStatuses;
+    }
+
+
+    @Column(name = "image", unique = false, nullable = true)
+    private String image;
+
+    public String getImage() {
+        return this.image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
     }
 
 

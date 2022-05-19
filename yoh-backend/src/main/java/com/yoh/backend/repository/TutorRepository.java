@@ -21,23 +21,44 @@ public class TutorRepository {
 
     public void createTutor(Tutor tutor) {
         Session session = sessionFactory.openSession();
+        try {
+            //Start transaction
+            session.beginTransaction();
 
-        //Start transaction
-        session.beginTransaction();
+            //Transaction
+            session.saveOrUpdate(tutor);
 
-        //Transaction
-        session.saveOrUpdate(tutor);
+            //End transaction
+            session.getTransaction().commit();
+        }
+        finally {
+            session.close();
+        }
+    }
 
-        //End transaction
-        session.getTransaction().commit();
+    public void deleteTutor(Tutor tutor) {
+        Session session = sessionFactory.openSession();
+        try {
+            session.beginTransaction();
+            session.delete(tutor);
+            session.getTransaction().commit();
+        }
+        finally {
+            session.close();
+        }
     }
 
     public Tutor getTutorByUser(User user) {
         Session session = sessionFactory.openSession();
-        Criteria criteria = session.createCriteria(Tutor.class)
-                .add(Restrictions.eq("user", user));
-        List<Tutor> tutorList = criteria.list();
-        return tutorList.isEmpty() ? null : tutorList.get(0);
+        try {
+            Criteria criteria = session.createCriteria(Tutor.class)
+                    .add(Restrictions.eq("user", user));
+            List<Tutor> tutorList = criteria.list();
+            return tutorList.isEmpty() ? null : tutorList.get(0);
+        }
+        finally {
+            session.close();
+        }
     }
 
 //    public List<Patient> getPatientsByTutor(Tutor tutor) {
@@ -50,9 +71,38 @@ public class TutorRepository {
 
     public Tutor getTutorByUUID(UUID id) {
         Session session = sessionFactory.openSession();
-        Criteria criteria = session.createCriteria(Tutor.class)
-                .add(Restrictions.eq("id", id));
-        List<Tutor> tutors = criteria.list();
-        return tutors.isEmpty() ? null : tutors.get(0);
+        try {
+            Criteria criteria = session.createCriteria(Tutor.class)
+                    .add(Restrictions.eq("id", id));
+            List<Tutor> tutors = criteria.list();
+            return tutors.isEmpty() ? null : tutors.get(0);
+        }
+        finally {
+            session.close();
+        }
+    }
+
+    public List<Tutor> getAllTutors(){
+        Session session = sessionFactory.openSession();
+        try{
+            Criteria criteria = session.createCriteria(Tutor.class);
+            List<Tutor> tutorList = criteria.list();
+            return tutorList.isEmpty() ? null : tutorList;
+        }finally {
+            session.close();
+        }
+    }
+
+    public List<Tutor> getAllTutorsByOrganization(Organization organization) {
+        Session session = sessionFactory.openSession();
+        try {
+            Criteria criteria = session.createCriteria(Tutor.class)
+                    .add(Restrictions.eq("organization", organization));
+            List<Tutor> tutorList = criteria.list();
+            return tutorList.isEmpty() ? List.of() : tutorList;
+        }
+        finally {
+            session.close();
+        }
     }
 }

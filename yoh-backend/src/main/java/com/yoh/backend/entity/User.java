@@ -1,6 +1,7 @@
 package com.yoh.backend.entity;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
@@ -8,10 +9,19 @@ import java.util.UUID;
 public class User {
     public User() {}
 
-    public User(String login, String email, String password) {
+    public User(String login, String email, String password, LocalDateTime dateRegistration, Integer role) {
         this.login = login;
         this.email = email;
         this.password = password;
+        this.dateRegistration = dateRegistration;
+        this.role = role;
+    }
+
+    public User(String login, String email, String password, Integer role) {
+        this.login = login;
+        this.email = email;
+        this.password = password;
+        this.role = role;
     }
 
 
@@ -55,6 +65,30 @@ public class User {
     public void setPassword(String password) {
         this.password = password;
     }
+
+    @Column(name = "role", nullable = true)
+    private Integer role;
+
+    public Integer getRole() {
+        return this.role;
+    }
+
+    public void setRole(Integer role) {
+        this.role = role;
+    }
+
+    //TODO Сменить на nullable false после полной очистки бд
+    @Column(name = "dateRegistration", nullable = true)
+    private LocalDateTime dateRegistration;
+
+    public LocalDateTime getDateRegistration() {
+        return this.dateRegistration;
+    }
+
+    public void setDateRegistration(LocalDateTime dateRegistration) {
+        this.dateRegistration = dateRegistration;
+    }
+
 
     @Override
     public String toString() {

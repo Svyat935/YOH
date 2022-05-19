@@ -1,0 +1,14 @@
+.container-progressbar {
+    background-color: rgba(0, 0, 0, 0.1);
+    border-radius: 9999px;
+    text-align: center;
+}
+
+.container-progressbar__progress {
+    align-items: center;
+    display: flex;
+    justify-content: center;
+    background: linear-gradient(90deg, #6A6DCD 0%, #6357FE 100%);;
+    color: #FFFFFF;
+    border-radius: 9999px;
+}

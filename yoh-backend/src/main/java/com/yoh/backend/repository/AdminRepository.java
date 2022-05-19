@@ -1,6 +1,8 @@
 package com.yoh.backend.repository;
 
 import com.yoh.backend.entity.Admin;
+import com.yoh.backend.entity.Game;
+import com.yoh.backend.entity.Tutor;
 import com.yoh.backend.entity.User;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
@@ -22,22 +24,67 @@ public class AdminRepository {
 
     public void createAdmin(Admin admin) {
         Session session = sessionFactory.openSession();
+        try {
+            //Start transaction
+            session.beginTransaction();
 
-        //Start transaction
-        session.beginTransaction();
+            //Transaction
+            session.saveOrUpdate(admin);
 
-        //Transaction
-        session.saveOrUpdate(admin);
+            //End transaction
+            session.getTransaction().commit();
+        }
+        finally {
+           session.close();
+        }
+    }
 
-        //End transaction
-        session.getTransaction().commit();
+    public void deleteAdmin(Admin admin) {
+        Session session = sessionFactory.openSession();
+        try {
+            session.beginTransaction();
+            session.delete(admin);
+            session.getTransaction().commit();
+        }
+        finally {
+            session.close();
+        }
     }
 
     public Admin getAdminByUUID(UUID id) {
         Session session = sessionFactory.openSession();
-        Criteria criteria = session.createCriteria(User.class)
-                .add(Restrictions.eq("id", id));
-        List<Admin> admins = criteria.list();
-        return admins.isEmpty() ? null : admins.get(0);
+        try {
+            Criteria criteria = session.createCriteria(User.class)
+                    .add(Restrictions.eq("id", id));
+            List<Admin> admins = criteria.list();
+            return admins.isEmpty() ? null : admins.get(0);
+        }
+        finally {
+            session.close();
+        }
+    }
+
+    public Admin getAdminByUser(User user) {
+        Session session = sessionFactory.openSession();
+        try {
+            Criteria criteria = session.createCriteria(Admin.class)
+                    .add(Restrictions.eq("user", user));
+            List<Admin> adminList = criteria.list();
+            return adminList.isEmpty() ? null : adminList.get(0);
+        }
+        finally {
+            session.close();
+        }
+    }
+
+    public List<Admin> getAllAdmins(){
+        Session session = sessionFactory.openSession();
+        try{
+            Criteria criteria = session.createCriteria(Admin.class);
+            List<Admin> adminList = criteria.list();
+            return adminList.isEmpty() ? List.of() : adminList;
+        }finally {
+            session.close();
+        }
     }
 }

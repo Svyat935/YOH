@@ -1,7 +1,6 @@
 package com.yoh.backend.repository;
 
-import com.yoh.backend.entity.Researcher;
-import com.yoh.backend.entity.User;
+import com.yoh.backend.entity.*;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -23,30 +22,81 @@ public class ResearcherRepository {
 
     public void createResearcher(Researcher researcher) {
         Session session = sessionFactory.openSession();
+        try {
+            //Start transaction
+            session.beginTransaction();
 
-        //Start transaction
-        session.beginTransaction();
+            //Transaction
+            session.saveOrUpdate(researcher);
 
-        //Transaction
-        session.saveOrUpdate(researcher);
+            //End transaction
+            session.getTransaction().commit();
+        }
+        finally {
+            session.close();
+        }
 
-        //End transaction
-        session.getTransaction().commit();
+    }
+
+    public void deleteResearcher(Researcher researcher) {
+        Session session = sessionFactory.openSession();
+        try {
+            session.beginTransaction();
+            session.delete(researcher);
+            session.getTransaction().commit();
+        }
+        finally {
+            session.close();
+        }
     }
 
     public Researcher getResearcherByUser(User user) {
         Session session = sessionFactory.openSession();
-        Criteria criteria = session.createCriteria(Researcher.class)
-                .add(Restrictions.eq("user", user));
-        List<Researcher> researcherList = criteria.list();
-        return researcherList.isEmpty() ? null : researcherList.get(0);
+        try {
+            Criteria criteria = session.createCriteria(Researcher.class)
+                    .add(Restrictions.eq("user", user));
+            List<Researcher> researcherList = criteria.list();
+            return researcherList.isEmpty() ? null : researcherList.get(0);
+        }
+        finally {
+            session.close();
+        }
     }
 
     public Researcher getResearcherByUUID(UUID id) {
         Session session = sessionFactory.openSession();
-        Criteria criteria = session.createCriteria(Researcher.class)
-                .add(Restrictions.eq("id", id));
-        List<Researcher> researchers = criteria.list();
-        return researchers.isEmpty() ? null : researchers.get(0);
+        try {
+            Criteria criteria = session.createCriteria(Researcher.class)
+                    .add(Restrictions.eq("id", id));
+            List<Researcher> researchers = criteria.list();
+            return researchers.isEmpty() ? null : researchers.get(0);
+        }
+        finally {
+            session.close();
+        }
+    }
+
+    public List<Researcher> getAllResearchers(){
+        Session session = sessionFactory.openSession();
+        try{
+            Criteria criteria = session.createCriteria(Researcher.class);
+            List<Researcher> researcherList = criteria.list();
+            return researcherList.isEmpty() ? null : researcherList;
+        }finally {
+            session.close();
+        }
+    }
+
+    public List<Researcher> getAllResearchersByOrganization(Organization organization) {
+        Session session = sessionFactory.openSession();
+        try {
+            Criteria criteria = session.createCriteria(Researcher.class)
+                    .add(Restrictions.eq("organization", organization));
+            List<Researcher> researcherList = criteria.list();
+            return researcherList.isEmpty() ? List.of() : researcherList;
+        }
+        finally {
+            session.close();
+        }
     }
 }

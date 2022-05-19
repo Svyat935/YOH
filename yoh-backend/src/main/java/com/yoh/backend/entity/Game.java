@@ -1,6 +1,10 @@
 package com.yoh.backend.entity;
 
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
+
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -9,6 +13,13 @@ import java.util.UUID;
 public class Game {
     public Game() {}
 
+    public Game(String name, String type, String description, String url, LocalDateTime dateAdding) {
+        this.name = name;
+        this.type = type;
+        this.description = description;
+        this.url = url;
+        this.dateAdding = dateAdding;
+    }
 
     @Id
     @GeneratedValue
@@ -23,7 +34,7 @@ public class Game {
     }
 
 
-    @Column(name = "name", length = 128, nullable = false)
+    @Column(name = "name", length = 128, nullable = false, unique = true)
     private String name;
 
     public String getName(){
@@ -32,6 +43,18 @@ public class Game {
 
     public void setName(String name){
         this.name = name;
+    }
+
+
+    @Column(name = "type", length = 128, nullable = false)
+    private String type;
+
+    public String getType() {
+        return this.type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 
 
@@ -59,15 +82,40 @@ public class Game {
     }
 
 
-    @ManyToMany
-    private List<Patient> patients;
+    @Column(name = "dateAdding", nullable = false)
+    private LocalDateTime dateAdding;
 
-    public List<Patient> getPatients() {
-        return patients;
+    public LocalDateTime getDateAdding() {
+        return this.dateAdding;
     }
 
-    public void setPatients(List<Patient> patients) {
-        this.patients = patients;
+    public void setDateAdding(LocalDateTime dateAdding) {
+        this.dateAdding = dateAdding;
+    }
+
+
+    @Column(name = "image", unique = false, nullable = true)
+    private String image;
+
+    public String getImage() {
+        return this.image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
+    }
+
+    //TODO переименовать
+    @ManyToMany(mappedBy="games")
+    @LazyCollection(LazyCollectionOption.FALSE)
+    private List<Patient> patient;
+
+    public List<Patient> getPatient() {
+        return patient;
+    }
+
+    public void setPatients(List<Patient> patient) {
+        this.patient = patient;
     }
 
 

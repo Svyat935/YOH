@@ -1,4 +1,4 @@
-version: '3'
+version: '3.2'
 
 services:
   yoh-backend:
@@ -7,6 +7,14 @@ services:
     build:
       context: ./yoh-backend
       dockerfile: Dockerfile
+    restart: on-failure
+    volumes:
+      - type: bind
+        source: ${GAMES_FOLDER}
+        target: /app/games
+      - type: bind
+        source: ${IMAGE_FOLDER}
+        target: /app/images
     depends_on:
       - yoh-db
     links:
@@ -22,3 +30,31 @@ services:
     env_file: *envfile
     ports:
       - 5432:5432
+      
+  yoh-wrapper:
+    build: ./yoh-wrapper
+    container_name: yoh-wrapper
+    image: yoh-wrapper
+    env_file: *envfile
+    environment:
+      - PYTHONUNBUFFERED=True                   
+    restart: on-failure
+    volumes:
+      - type: bind
+        source: ${GAMES_FOLDER}
+        target: /wrapper/games
+    ports:
+      - 5050:5050
+    command: gunicorn main:"create_flask_app()" -b 0.0.0.0:5050 --reload --log-level debug --workers=4
+
+#  yoh-frontend:
+#    build: ./yoh-frontend
+#    container_name: yoh-frontend
+#    image: yoh-frontend
+#    restart: on-failure
+#    links:
+#      - yoh-backend
+#    depends_on:
+#      - yoh-backend
+#    ports:
+#      - 3000:3000

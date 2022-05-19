@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        body, html { margin:0; padding:0; height:100%;}
+      body { font-family:sans-serif; }
+      body * { font-weight:200;}
+        #heatmapContainerWrapper { height:{{ window.height }}px; width:{{ window.width }}px; background:rgba(0,0,0,.03); position:absolute; border:3px solid black; }
+        #heatmapContainer { width:100%; height:100%; }
+        #heatmapLegend { background: rgba(255,255,255,.7); position:absolute; bottom:0; right:0; padding:10px; }
+        #min { float:left; }
+        #max { float:right; }
+    </style>
+</head>
+<body>
+    <div id="heatmapContainerWrapper">
+      <div id="heatmapContainer">
+
+      </div>
+        <div id="heatmapLegend">
+           <span id="min"></span>
+           <span id="max"></span>
+           <img id="gradient" src="" style="width:100%" />
+     </div>
+    </div>
+</body>
+<script src="https://mobile.itkostroma.ru/staticfiles/heatmap.js"></script>
+<script>
+
+    window.onload = function() {
+        function $(id) {
+          return document.getElementById(id);
+        };
+    // minimal heatmap instance configuration
+    var heatmapInstance = h337.create({
+      // only container is required, the rest will be defaults
+      container: document.getElementById('heatmapContainer'),
+        // update the legend whenever there's an extrema change
+          onExtremaChange: function onExtremaChange(data) {
+            updateLegend(data);
+          }
+    });
+    // now generate some random data
+    var points = {{ points|tojson|safe }};
+    var max = {{ max_point }};
+    var width = {{ window.width }};
+    var height = {{ window.height }};
+    var len = points.length;
+
+    //while (len--) {
+    //  var val = Math.floor(Math.random()*100);
+    //  max = Math.max(max, val);
+    //  var point = {
+    //    x: Math.floor(Math.random()*width),
+    //    y: Math.floor(Math.random()*height),
+    //    value: val
+    //  };
+    //  points.push(point);
+    //}
+    // heatmap data format
+    var data = {
+      max: max,
+      data: points
+    };
+    // if you have a set of datapoints always use setData instead of addData
+    // for data initialization
+
+    /*  legend code */
+        // we want to display the gradient, so we have to draw it
+        var legendCanvas = document.createElement('canvas');
+        legendCanvas.width = 100;
+        legendCanvas.height = 10;
+
+        var legendCtx = legendCanvas.getContext('2d');
+        var gradientCfg = {};
+
+        function updateLegend(data) {
+          // the onExtremaChange callback gives us min, max, and the gradientConfig
+          // so we can update the legend
+          $('min').innerHTML = data.min;
+          $('max').innerHTML = data.max;
+          // regenerate gradient image
+          if (data.gradient != gradientCfg) {
+            gradientCfg = data.gradient;
+            var gradient = legendCtx.createLinearGradient(0, 0, 100, 1);
+            for (var key in gradientCfg) {
+              gradient.addColorStop(key, gradientCfg[key]);
+            }
+
+            legendCtx.fillStyle = gradient;
+            legendCtx.fillRect(0, 0, 100, 10);
+            $('gradient').src = legendCanvas.toDataURL();
+          }
+        };
+        /* legend code end */
+        heatmapInstance.setData(data);
+    }
+    </script>
+</html>

@@ -12,6 +12,7 @@ public class PatientInfoResponse {
     private final String secondName;
     private final String gender;
     private final String organization;
+    private final String organizationString;
     private final String birthDate;
     private final String numberPhone;
     private final String address;
@@ -24,7 +25,8 @@ public class PatientInfoResponse {
         this.secondName = patient.getSecondName();
         this.gender = patient.getGender().toString();
         this.organization = patient.getOrganization().getId().toString();
-        this.birthDate = patient.getBirthDate();
+        this.organizationString = patient.getOrganizationString();
+        this.birthDate = patient.getBirthDate().toString();
         this.numberPhone = patient.getNumberPhone();
         this.address = patient.getAddress();
         this.tutor = new TutorInfoResponse(patient.getTutor());
@@ -41,6 +43,8 @@ public class PatientInfoResponse {
     public String getGender() { return gender; }
 
     public String getOrganization() { return organization; }
+
+    public String getOrganizationString() { return organizationString; }
 
     public String getBirthDate() { return birthDate; }
 

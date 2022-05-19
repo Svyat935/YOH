@@ -24,31 +24,68 @@ public class GameStatusRepository {
 
     public void createGameStatus(GameStatus gameStatus) {
         Session session = sessionFactory.openSession();
+        try {
+            //Start transaction
+            session.beginTransaction();
 
-        //Start transaction
-        session.beginTransaction();
+            //Transaction
+            session.saveOrUpdate(gameStatus);
 
-        //Transaction
-        session.saveOrUpdate(gameStatus);
+            //End transaction
+            session.getTransaction().commit();
+        }
+        finally {
+            session.close();
+        }
+    }
 
-        //End transaction
-        session.getTransaction().commit();
+    public void deleteGameStatus(GameStatus gameStatus) {
+        Session session = sessionFactory.openSession();
+        try {
+            session.beginTransaction();
+            session.delete(gameStatus);
+            session.getTransaction().commit();
+        }
+        finally {
+            session.close();
+        }
     }
 
     public GameStatus getGameStatusByUUID(UUID id) {
         Session session = sessionFactory.openSession();
-        Criteria criteria = session.createCriteria(GameStatus.class)
-                .add(Restrictions.eq("id", id));
-        List<GameStatus> gameStatuses = criteria.list();
-        return gameStatuses.isEmpty() ? null : gameStatuses.get(0);
+        try {
+            Criteria criteria = session.createCriteria(GameStatus.class)
+                    .add(Restrictions.eq("id", id));
+            List<GameStatus> gameStatuses = criteria.list();
+            return gameStatuses.isEmpty() ? null : gameStatuses.get(0);
+        }
+        finally {
+            session.close();
+        }
     }
 
     public GameStatus getGameStatusByGameAndPatient(Game game, Patient patient) {
         Session session = sessionFactory.openSession();
-        Criteria criteria = session.createCriteria(GameStatus.class)
-                .add(Restrictions.eq("game", game))
-                .add(Restrictions.eq("patient", patient));
-        List<GameStatus> gameStatuses = criteria.list();
-        return gameStatuses.isEmpty() ? null : gameStatuses.get(0);
+        try {
+            Criteria criteria = session.createCriteria(GameStatus.class)
+                    .add(Restrictions.eq("game", game))
+                    .add(Restrictions.eq("patient", patient));
+            List<GameStatus> gameStatuses = criteria.list();
+            return gameStatuses.isEmpty() ? null : gameStatuses.get(0);
+        }
+        finally {
+            session.close();
+        }
+    }
+
+    public List<GameStatus> getAllGameStatuses(){
+        Session session = sessionFactory.openSession();
+        try{
+            Criteria criteria = session.createCriteria(GameStatus.class);
+            List<GameStatus> gameStatusList = criteria.list();
+            return gameStatusList.isEmpty() ? null : gameStatusList;
+        }finally {
+            session.close();
+        }
     }
 }

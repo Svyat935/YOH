@@ -1,10 +1,12 @@
 package com.yoh.backend.service;
 
+import com.yoh.backend.entity.Game;
 import com.yoh.backend.entity.GameStatistic;
 import com.yoh.backend.repository.GameStatisticRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -20,8 +22,21 @@ public class GameStatisticService {
         gameStatisticRepository.createGameStatistic(gameStatistic);
     }
 
+    public void updateGameStatistic(GameStatistic gameStatistic) throws IllegalArgumentException{
+        gameStatisticRepository.createGameStatistic(gameStatistic);
+    }
+
+    public void deleteGameStatistic(GameStatistic gameStatistic) throws IllegalArgumentException{
+        gameStatisticRepository.deleteGameStatistic(gameStatistic);
+    }
+
+
     private void checkExistGameStatistic(GameStatistic gameStatistic) throws IllegalArgumentException{
 
+    }
+
+    public List<GameStatistic> getAllGameStatistics(){
+        return gameStatisticRepository.getAllGameStatistics();
     }
 
     public GameStatistic getGameStatisticById(UUID id) throws IllegalArgumentException{

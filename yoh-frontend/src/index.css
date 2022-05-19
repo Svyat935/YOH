@@ -1,3 +1,9 @@
+.modal-content{
+    background: #6A6DCD !important;
+    color: #FFFFFF !important;
+    border-radius: 40px !important;
+}
+
 /*body {*/
 /*  margin: 0;*/
 /*  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',*/

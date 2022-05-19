@@ -1,6 +1,10 @@
 package com.yoh.backend.entity;
 
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
+
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -38,7 +42,7 @@ public class Tutor {
         this.user = user;
     }
 
-    @Column(name = "surname", length = 128, nullable = false)
+    @Column(name = "surname", length = 128, nullable = true)
     private String surname;
 
     public String getSurname(){
@@ -49,7 +53,7 @@ public class Tutor {
         this.surname = surname;
     }
 
-    @Column(name = "name", length = 128, nullable = false)
+    @Column(name = "name", length = 128, nullable = true)
     private String name;
 
     public String getName(){
@@ -60,7 +64,7 @@ public class Tutor {
         this.name = name;
     }
 
-    @Column(name = "secondName", length = 128, nullable = false)
+    @Column(name = "secondName", length = 128, nullable = true)
     private String secondName;
 
     public String getSecondName(){
@@ -72,7 +76,8 @@ public class Tutor {
     }
 
     @OneToMany(mappedBy = "tutor")
-    private List<Patient> patients;
+    @LazyCollection(LazyCollectionOption.FALSE)
+    private List<Patient> patients = new ArrayList<>();
 
     public List<Patient> getPatients() {
         return patients;
@@ -83,7 +88,8 @@ public class Tutor {
     }
 
 
-    @OneToOne
+    //TODO Проверить
+    @ManyToOne
     @JoinColumn(name = "organization_id")
     private Organization organization;
 
@@ -93,7 +99,34 @@ public class Tutor {
 
     public void setOrganization(Organization organization){
         this.organization = organization;
+        if (organization != null)
+            this.setOrganizationString(organization.getName());
+        else this.setOrganizationString(null);
     }
+
+    @Column(name = "organizationString", length = 128, nullable = true)
+    private String organizationString;
+
+    public String getOrganizationString(){
+        return this.organizationString;
+    }
+
+    public void setOrganizationString(String organizationString){
+        this.organizationString = organizationString;
+    }
+
+
+    @Column(name = "image", unique = false, nullable = true)
+    private String image;
+
+    public String getImage() {
+        return this.image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
+    }
+
 
     @Override
     public String toString() {
