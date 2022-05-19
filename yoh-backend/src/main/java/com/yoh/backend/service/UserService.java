@@ -46,10 +46,16 @@ public class UserService {
     }
 
     public List<User> getAllUsersByAdmin(Integer role, String regex) {
+//        List<User> unfilteredList = userRepository.getAllUsersByAdmin(role);
+////        if (!unfilteredList.isEmpty())
+//        return unfilteredList.stream().filter(i -> i.getLogin().toLowerCase().contains(regex.toLowerCase())).collect(Collectors.toList());
+////        else return unfilteredList;
         List<User> unfilteredList = userRepository.getAllUsersByAdmin(role);
-//        if (!unfilteredList.isEmpty())
-        return unfilteredList.stream().filter(i -> i.getLogin().toLowerCase().contains(regex.toLowerCase())).collect(Collectors.toList());
-//        else return unfilteredList;
+        if (!regex.equals("")) {
+            return unfilteredList.stream().filter(i -> i.getLogin().toLowerCase().contains(regex.toLowerCase())).collect(Collectors.toList());
+        }
+        else
+            return unfilteredList;
     }
 
     public void updateUser(User user) throws IllegalArgumentException{

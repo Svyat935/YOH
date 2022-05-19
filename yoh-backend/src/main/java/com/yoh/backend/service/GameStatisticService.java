@@ -1,6 +1,7 @@
 package com.yoh.backend.service;
 
 import com.yoh.backend.entity.Game;
+import com.yoh.backend.entity.GamePatient;
 import com.yoh.backend.entity.GameStatistic;
 import com.yoh.backend.repository.GameStatisticRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,5 +48,9 @@ public class GameStatisticService {
         else throw new IllegalArgumentException(
                 String.format("Sorry, but GameStatistic with this id (%s) wasn't found.", id)
         );
+    }
+
+    public List<GameStatistic> getGameStatisticByGamePatient(GamePatient gamePatient) throws IllegalArgumentException{
+        return gameStatisticRepository.getGameStatisticByGamePatient(gamePatient);
     }
 }

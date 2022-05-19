@@ -1,9 +1,6 @@
 package com.yoh.backend.repository;
 
-import com.yoh.backend.entity.Game;
-import com.yoh.backend.entity.GameStatistic;
-import com.yoh.backend.entity.GameStatus;
-import com.yoh.backend.entity.Patient;
+import com.yoh.backend.entity.*;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -64,12 +61,25 @@ public class GameStatusRepository {
         }
     }
 
-    public GameStatus getGameStatusByGameAndPatient(Game game, Patient patient) {
+//    public GameStatus getGameStatusByGameAndPatient(Game game, Patient patient) {
+//        Session session = sessionFactory.openSession();
+//        try {
+//            Criteria criteria = session.createCriteria(GameStatus.class)
+//                    .add(Restrictions.eq("game", game))
+//                    .add(Restrictions.eq("patient", patient));
+//            List<GameStatus> gameStatuses = criteria.list();
+//            return gameStatuses.isEmpty() ? null : gameStatuses.get(0);
+//        }
+//        finally {
+//            session.close();
+//        }
+//    }
+
+    public GameStatus getGameStatusByGamePatient(GamePatient gamePatient) {
         Session session = sessionFactory.openSession();
         try {
             Criteria criteria = session.createCriteria(GameStatus.class)
-                    .add(Restrictions.eq("game", game))
-                    .add(Restrictions.eq("patient", patient));
+                    .add(Restrictions.eq("gamePatient", gamePatient));
             List<GameStatus> gameStatuses = criteria.list();
             return gameStatuses.isEmpty() ? null : gameStatuses.get(0);
         }

@@ -179,34 +179,34 @@ public class Patient {
     }
 
 
-    @ManyToMany
-    @LazyCollection(LazyCollectionOption.FALSE)
-    @JoinTable(name = "game_patient",
-            joinColumns = @JoinColumn(name = "game_id"),
-            inverseJoinColumns = @JoinColumn(name = "patient_id")
-    )
-    private List<Game> games;
+//    @ManyToMany
+//    @LazyCollection(LazyCollectionOption.FALSE)
+//    @JoinTable(name = "game_patient",
+//            joinColumns = @JoinColumn(name = "game_id"),
+//            inverseJoinColumns = @JoinColumn(name = "patient_id")
+//    )
+//    private List<Game> games;
+//
+//    public List<Game> getGames() {
+//        return games;
+//    }
+//
+//    public void setGames(List<Game> games) {
+//        this.games = games;
+//    }
 
-    public List<Game> getGames() {
-        return games;
-    }
 
-    public void setGames(List<Game> games) {
-        this.games = games;
-    }
-
-
-    @OneToMany(mappedBy = "patient")
-    @LazyCollection(LazyCollectionOption.FALSE)
-    private List<GameStatistic> gameStatistics;
-
-    public List<GameStatistic> getGameStatistics() {
-        return gameStatistics;
-    }
-
-    public void setGameStatistics(List<GameStatistic> gameStatistics){
-        this.gameStatistics = gameStatistics;
-    }
+//    @OneToMany(mappedBy = "patient")
+//    @LazyCollection(LazyCollectionOption.FALSE)
+//    private List<GameStatistic> gameStatistics;
+//
+//    public List<GameStatistic> getGameStatistics() {
+//        return gameStatistics;
+//    }
+//
+//    public void setGameStatistics(List<GameStatistic> gameStatistics){
+//        this.gameStatistics = gameStatistics;
+//    }
 
 
     @OneToMany(mappedBy = "patient")
@@ -222,14 +222,25 @@ public class Patient {
 
 
     @OneToMany(mappedBy = "patient")
-    @LazyCollection(LazyCollectionOption.FALSE)
-    private List<GameStatus> gameStatuses;
+    private List<GamePatient> gamePatientList;
 
-    public List<GameStatus> getGameStatuses() { return gameStatuses; }
-
-    public void setGameStatuses(List<GameStatus> gameStatuses) {
-        this.gameStatuses = gameStatuses;
+    public List<GamePatient> getGamePatientList() {
+        return gamePatientList;
     }
+
+    public void setGamePatientList(List<GamePatient> gamePatientList) {
+        this.gamePatientList = gamePatientList;
+    }
+
+    //    @OneToMany(mappedBy = "patient")
+//    @LazyCollection(LazyCollectionOption.FALSE)
+//    private List<GameStatus> gameStatuses;
+//
+//    public List<GameStatus> getGameStatuses() { return gameStatuses; }
+//
+//    public void setGameStatuses(List<GameStatus> gameStatuses) {
+//        this.gameStatuses = gameStatuses;
+//    }
 
 
     @OneToMany(mappedBy = "patient")

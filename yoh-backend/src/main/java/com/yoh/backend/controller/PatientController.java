@@ -71,6 +71,9 @@ public class PatientController {
     @Autowired
     private TestStatusService testStatusService;
 
+    @Autowired
+    private GamePatientService gamePatientService;
+
     @GetMapping(path = "/games/getting")
     public JSONResponse getAllGames(@RequestHeader("token") String token,
                                     @RequestParam(value = "limit", required = true) Integer limit,
@@ -80,9 +83,24 @@ public class PatientController {
         try {
             Patient patient = this.patientService.getPatientByUser(this.userService.getUserById(this.userService.verifyToken(token)));
             ArrayList<JsonObject> gamesArray = new ArrayList<>();
-            List<Game> gameList = patient.getGames().stream().filter(i -> i.getName().toLowerCase().contains(regex.toLowerCase())
-                            && i.getType().toLowerCase().contains(typeRegex.toLowerCase())).collect(Collectors.toList());
             JsonObject response = new JsonObject();
+//            List<Game> gameList = patient.getGames().stream().filter(i -> i.getName().toLowerCase().contains(regex.toLowerCase())
+//                            && i.getType().toLowerCase().contains(typeRegex.toLowerCase())).collect(Collectors.toList());
+            List<Game> gameList = this.gamePatientService.getAllGamesByPatient(patient);
+            if (!typeRegex.equals("")){
+                gameList = gameList.stream().filter(i -> i.getType().toLowerCase().contains(typeRegex.toLowerCase())).collect(Collectors.toList());
+            }
+            if (!regex.equals(""))
+                gameList = gameList.stream().filter(i -> i.getName().toLowerCase().contains(regex.toLowerCase())).collect(Collectors.toList());
+            if (gameList.size() == 0) {
+//                JsonObject response = new JsonObject();
+                response.put("previous", false);
+                response.put("next", false);
+                response.put("count", 0);
+                response.put("results", new ArrayList<>());
+                return new JSONResponse(200, response);
+            }
+
 
             //Pagination
             if (start >= gameList.size())
@@ -106,7 +124,7 @@ public class PatientController {
             }
             response.put("count", paginatedGamesList.size());
 
-            for (Game game: gameList) {
+            for (Game game: paginatedGamesList) {
                 JsonObject gamesInfo = new JsonObject();
                 gamesInfo.put("id", game.getId().toString());
                 gamesInfo.put("name", game.getName());
@@ -141,11 +159,12 @@ public class PatientController {
 
     @PostMapping(path = "/games/statistics/sending")
     public JSONResponse sendGameStatistic(@RequestHeader("token") String token,
-                                          @RequestHeader("game") String game,
+                                          @RequestHeader("game") String gameID,
                                           @Valid @RequestBody StatisticArray statisticArray) {
         try {
 //            Patient patient = this.patientService.getPatientByUser(this.userService.getUserById(this.userService.verifyToken(token)));
             Patient patient = this.patientService.getPatientByUser(this.userService.getUserById(this.userService.verifyToken(token)));
+            Game game = this.gameService.getGameById(UUID.fromString(gameID));
             System.out.println(statisticArray.getRecords());
             for (JsonObject statisticToSend: statisticArray.getRecords()){
                 System.out.println(statisticToSend.get("DateAction"));
@@ -179,16 +198,22 @@ public class PatientController {
                     detailsString = jsonObject.toString();
                 }
                 else detailsString = null;
-                GameStatistic statistic = new GameStatistic(
-                        this.gameService.getGameById(UUID.fromString(game)),
-                        patient,
+                GamePatient gamePatient = this.gamePatientService.getGamePatientByGameAndPatient(game, patient);
+                GameStatistic statistic = new GameStatistic(gamePatient,
                         Short.valueOf(statisticToSend.get("Type").toString()),
                         localDateTime,
                         AnswerNumber,
-                        detailsString
-                );
+                        detailsString);
+//                GameStatistic statistic = new GameStatistic(
+//                        this.gameService.getGameById(UUID.fromString(game)),
+//                        patient,
+//                        Short.valueOf(statisticToSend.get("Type").toString()),
+//                        localDateTime,
+//                        AnswerNumber,
+//                        detailsString
+//                );
                 this.gameStatisticService.createGameStatistic(statistic);
-                patient.getGameStatistics().add(statistic);
+//                patient.getGameStatistics().add(statistic);
                 this.patientService.updatePatient(patient);
             }
 //            GameStatistic statistic = new GameStatistic(
@@ -223,7 +248,10 @@ public class PatientController {
                                         @RequestParam String gameID) {
         try {
             Patient patient = this.patientService.getPatientByUser(this.userService.getUserById(this.userService.verifyToken(token)));
-            GameStatus gameStatus = this.gameStatusService.getGameStatusByGameAndPatient(this.gameService.getGameById(UUID.fromString(gameID)), patient);
+//            GameStatus gameStatus = this.gameStatusService.getGameStatusByGameAndPatient(this.gameService.getGameById(UUID.fromString(gameID)), patient);
+            Game game = this.gameService.getGameById(UUID.fromString(gameID));
+            GamePatient gamePatient = this.gamePatientService.getGamePatientByGameAndPatient(game, patient);
+            GameStatus gameStatus = this.gameStatusService.getGameStatusByGamePatient(gamePatient);
             JsonObject response = new JsonObject();
             response.put("gameStatus", gameStatus.getStatus());
             return new JSONResponse(200, response);
@@ -261,14 +289,24 @@ public class PatientController {
             int assigned = 0;
             int failed = 0;
             int started = 0;
-            List<GameStatus> gameStatusList = patient.getGameStatuses();
-            for (GameStatus gameStatus: gameStatusList) {
+//            List<GameStatus> gameStatusList = patient.getGameStatuses();
+//            for (GameStatus gameStatus: gameStatusList) {
+//                switch (gameStatus.getStatus()){
+//                    case DONE -> done++;
+//                    case ASSIGNED -> assigned++;
+//                    case FAILED -> failed++;
+//                    case STARTED -> started++;
+//                }
+//            }
+            for (GamePatient gamePatient: this.gamePatientService.getAllGamePatientsByPatient(patient)){
+                GameStatus gameStatus = this.gameStatusService.getGameStatusByGamePatient(gamePatient);
                 switch (gameStatus.getStatus()){
                     case DONE -> done++;
                     case ASSIGNED -> assigned++;
                     case FAILED -> failed++;
                     case STARTED -> started++;
                 }
+
             }
             response.put("Done", done);
             response.put("Assigned", assigned);

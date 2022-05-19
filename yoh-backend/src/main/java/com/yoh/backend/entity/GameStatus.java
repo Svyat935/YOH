@@ -11,9 +11,10 @@ public class GameStatus {
 
     public GameStatus() { }
 
-    public GameStatus(Game game, Patient patient, Tutor tutor, LocalDateTime assignmentDate, Status status) {
-        this.game = game;
-        this.patient = patient;
+    public GameStatus(GamePatient gamePatient, Tutor tutor, LocalDateTime assignmentDate, Status status) {
+//        this.game = game;
+//        this.patient = patient;
+        this.gamePatient = gamePatient;
         this.tutor = tutor;
         this.assignmentDate = assignmentDate;
         this.status = status;
@@ -32,28 +33,38 @@ public class GameStatus {
     }
 
 
-    @ManyToOne
-    private Game game;
+    @OneToOne
+    private GamePatient gamePatient;
 
-    public Game getGame(){
-        return this.game;
+    public GamePatient getGamePatient() {
+        return gamePatient;
     }
 
-    public void setGame(Game game){
-        this.game = game;
+    public void setGamePatient(GamePatient gamePatient) {
+        this.gamePatient = gamePatient;
     }
-
-
-    @ManyToOne(fetch = FetchType.EAGER)
-    private Patient patient;
-
-    public Patient getPatient(){
-        return this.patient;
-    }
-
-    public void setPatient(Patient patient){
-        this.patient = patient;
-    }
+//    @ManyToOne
+//    private Game game;
+//
+//    public Game getGame(){
+//        return this.game;
+//    }
+//
+//    public void setGame(Game game){
+//        this.game = game;
+//    }
+//
+//
+//    @ManyToOne(fetch = FetchType.EAGER)
+//    private Patient patient;
+//
+//    public Patient getPatient(){
+//        return this.patient;
+//    }
+//
+//    public void setPatient(Patient patient){
+//        this.patient = patient;
+//    }
 
 
     @ManyToOne

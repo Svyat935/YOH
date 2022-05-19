@@ -1,6 +1,7 @@
 package com.yoh.backend.repository;
 
 import com.yoh.backend.entity.Game;
+import com.yoh.backend.entity.GamePatient;
 import com.yoh.backend.entity.GameStatistic;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
@@ -56,6 +57,19 @@ public class GameStatisticRepository {
                     .add(Restrictions.eq("id", id));
             List<GameStatistic> gameStatistics = criteria.list();
             return gameStatistics.isEmpty() ? null : gameStatistics.get(0);
+        }
+        finally {
+            session.close();
+        }
+    }
+
+    public List<GameStatistic> getGameStatisticByGamePatient(GamePatient gamePatient) {
+        Session session = sessionFactory.openSession();
+        try {
+            Criteria criteria = session.createCriteria(GameStatistic.class)
+                    .add(Restrictions.eq("gamePatient", gamePatient));
+            List<GameStatistic> gameStatisticsList = criteria.list();
+            return gameStatisticsList.isEmpty() ? null : gameStatisticsList;
         }
         finally {
             session.close();

@@ -23,10 +23,11 @@ import java.util.UUID;
 public class GameStatistic {
     public GameStatistic() {}
 
-    public GameStatistic(Game game, Patient patient, Short type, LocalDateTime dateAction, Short answerNumber, String details) {
+    public GameStatistic(GamePatient gamePatient, Short type, LocalDateTime dateAction, Short answerNumber, String details) {
         //TODO
-        this.game = game;
-        this.patient = patient;
+//        this.game = game;
+//        this.patient = patient;
+        this.gamePatient = gamePatient;
         this.type = type;
         this.dateAction = dateAction;
         this.answerNumber = answerNumber;
@@ -48,27 +49,38 @@ public class GameStatistic {
 
 
     @ManyToOne
-    private Game game;
+    private GamePatient gamePatient;
 
-    public Game getGame(){
-        return this.game;
+    public GamePatient getGamePatient() {
+        return gamePatient;
     }
 
-    public void setGame(Game game){
-        this.game = game;
+    public void setGamePatient(GamePatient gamePatient) {
+        this.gamePatient = gamePatient;
     }
 
-
-    @ManyToOne(fetch = FetchType.EAGER)
-    private Patient patient;
-
-    public Patient getPatient(){
-        return this.patient;
-    }
-
-    public void setPatient(Patient patient){
-        this.patient = patient;
-    }
+    //    @ManyToOne
+//    private Game game;
+//
+//    public Game getGame(){
+//        return this.game;
+//    }
+//
+//    public void setGame(Game game){
+//        this.game = game;
+//    }
+//
+//
+//    @ManyToOne(fetch = FetchType.EAGER)
+//    private Patient patient;
+//
+//    public Patient getPatient(){
+//        return this.patient;
+//    }
+//
+//    public void setPatient(Patient patient){
+//        this.patient = patient;
+//    }
 
 
     @Column(name = "type", nullable = false)

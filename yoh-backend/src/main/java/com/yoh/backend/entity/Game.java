@@ -105,28 +105,40 @@ public class Game {
         this.image = image;
     }
 
-    //TODO переименовать
-    @ManyToMany(mappedBy="games")
-    @LazyCollection(LazyCollectionOption.FALSE)
-    private List<Patient> patient;
-
-    public List<Patient> getPatient() {
-        return patient;
-    }
-
-    public void setPatients(List<Patient> patient) {
-        this.patient = patient;
-    }
-
 
     @OneToMany(mappedBy = "game")
-    private List<GameStatistic> gameStatistics;
+    private List<GamePatient> gamePatientList;
 
-    public List<GameStatistic> getStatistics() {
-        return gameStatistics;
+    public List<GamePatient> getGamePatientList() {
+        return gamePatientList;
     }
 
-    public void setStatistics(List<GameStatistic> gameStatistics) {
-        this.gameStatistics = gameStatistics;
+    public void setGamePatientList(List<GamePatient> gamePatientList) {
+        this.gamePatientList = gamePatientList;
     }
+
+    //    //TODO переименовать
+//    @ManyToMany(mappedBy="games")
+//    @LazyCollection(LazyCollectionOption.FALSE)
+//    private List<Patient> patient;
+//
+//    public List<Patient> getPatient() {
+//        return patient;
+//    }
+//
+//    public void setPatients(List<Patient> patient) {
+//        this.patient = patient;
+//    }
+
+
+//    @OneToMany(mappedBy = "game")
+//    private List<GameStatistic> gameStatistics;
+//
+//    public List<GameStatistic> getStatistics() {
+//        return gameStatistics;
+//    }
+//
+//    public void setStatistics(List<GameStatistic> gameStatistics) {
+//        this.gameStatistics = gameStatistics;
+//    }
 }

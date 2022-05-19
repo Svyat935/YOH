@@ -22,6 +22,7 @@ import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/games")
@@ -60,18 +61,33 @@ public class GameController {
                                  @RequestParam(value = "start", required = true) Integer start) {
         try{
             User user = this.userService.getUserById(this.userService.verifyToken(token));
-            List<Game> games = this.gameService.getAllGamesFiltered(regex, typeRegex);
-            ArrayList<JsonObject> gamesList = new ArrayList<JsonObject>();
+            List<Game> gameList = this.gameService.getAllGamesFiltered(typeRegex);
             JsonObject response = new JsonObject();
+            if (!regex.equals("")){
+                gameList = gameList.stream().filter(i -> i.getName().toLowerCase().contains(regex.toLowerCase()))
+                        .collect(Collectors.toList());
+            }
+            if (gameList.size() == 0) {
+//                JsonObject response = new JsonObject();
+                response.put("previous", false);
+                response.put("next", false);
+                response.put("count", 0);
+                response.put("results", new ArrayList<>());
+                return new JSONResponse(200, response);
+            }
+            ArrayList<JsonObject> gamesList = new ArrayList<JsonObject>();
+//            JsonObject response = new JsonObject();
+
+
 
             //Pagination
-            if (start >= games.size())
+            if (start >= gameList.size())
                 throw new IllegalArgumentException(
                         String.format("No element at that index (%s)", start)
                 );
             int lastIndex;
-            if (start + limit > games.size()){
-                lastIndex = games.size();
+            if (start + limit > gameList.size()){
+                lastIndex = gameList.size();
                 response.put("next", false);
             }
             else {
@@ -82,7 +98,7 @@ public class GameController {
             else response.put("previous", true);
             List<Game> paginatedGameList = new ArrayList<>();
             for (int i = start; i < lastIndex; i++){
-                paginatedGameList.add(games.get(i));
+                paginatedGameList.add(gameList.get(i));
             }
             response.put("count", paginatedGameList.size());
 
