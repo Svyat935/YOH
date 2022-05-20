@@ -9,7 +9,9 @@ export function CUsersAdmin() {
     const [_, rerun] = useState(new class{});
 
     const requestUsers = async () => {
-        return await fetch("/admins/users/all", {
+        return await fetch("/admins/users/all?" +
+            "start=" + encodeURIComponent(0) + "&" +
+            "limit=" + encodeURIComponent(100), {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
