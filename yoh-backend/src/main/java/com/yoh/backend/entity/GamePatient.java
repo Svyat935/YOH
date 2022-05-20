@@ -1,5 +1,7 @@
 package com.yoh.backend.entity;
 
+import com.yoh.backend.enums.GamePatientStatus;
+
 import javax.persistence.*;
 import java.util.UUID;
 
@@ -8,9 +10,10 @@ import java.util.UUID;
 public class GamePatient {
     public GamePatient() {}
 
-    public GamePatient(Game game, Patient patient){
+    public GamePatient(Game game, Patient patient, GamePatientStatus gamePatientStatus){
         this.game = game;
         this.patient = patient;
+        this.gamePatientStatus = gamePatientStatus;
     }
 
     @Id
@@ -45,5 +48,16 @@ public class GamePatient {
 
     public void setPatient(Patient patient) {
         this.patient = patient;
+    }
+
+
+    private GamePatientStatus gamePatientStatus;
+
+    public GamePatientStatus getGamePatientStatus() {
+        return gamePatientStatus;
+    }
+
+    public void setGamePatientStatus(GamePatientStatus gamePatientStatus) {
+        this.gamePatientStatus = gamePatientStatus;
     }
 }

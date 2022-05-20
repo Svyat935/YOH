@@ -1,6 +1,7 @@
 package com.yoh.backend.service;
 
 import com.yoh.backend.entity.*;
+import com.yoh.backend.enums.GamePatientStatus;
 import com.yoh.backend.repository.GamePatientRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -27,9 +28,9 @@ public class GamePatientService {
         gamePatientRepository.createGamePatient(gamePatient);
     }
 
-    public void deleteGamePatient(GamePatient gamePatient) throws IllegalArgumentException{
-        gamePatientRepository.deleteGamePatient(gamePatient);
-    }
+//    public void deleteGamePatient(GamePatient gamePatient) throws IllegalArgumentException{
+//        gamePatientRepository.deleteGamePatient(gamePatient);
+//    }
 
     private void checksExistGamePatient(GamePatient gamePatient) throws IllegalArgumentException{
         GamePatient gamePatient_copy = gamePatientRepository.getGamePatientByGameAndPatient(gamePatient.getGame(), gamePatient.getPatient());
@@ -50,7 +51,11 @@ public class GamePatientService {
 
     public List<Game> getAllGamesByPatient(Patient patient) throws IllegalArgumentException{
         List<GamePatient> gamePatientList = gamePatientRepository.getAllGamesPatientByPatient(patient);
-        return gamePatientList.stream().map(GamePatient::getGame).collect(Collectors.toList());
+        return gamePatientList
+                .stream()
+                .filter(i -> i.getGamePatientStatus().equals(GamePatientStatus.ACTIVE))
+                .map(GamePatient::getGame)
+                .collect(Collectors.toList());
     }
 
     public List<Patient> getAllPatientsByGame(Game game) throws IllegalArgumentException{

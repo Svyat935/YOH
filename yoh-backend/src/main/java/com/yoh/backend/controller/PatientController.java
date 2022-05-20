@@ -3,6 +3,7 @@ package com.yoh.backend.controller;
 import com.github.cliftonlabs.json_simple.JsonObject;
 import com.google.gson.JsonParser;
 import com.yoh.backend.entity.*;
+import com.yoh.backend.enums.GamePatientStatus;
 import com.yoh.backend.enums.Gender;
 import com.yoh.backend.enums.Status;
 import com.yoh.backend.request.*;
@@ -165,6 +166,9 @@ public class PatientController {
 //            Patient patient = this.patientService.getPatientByUser(this.userService.getUserById(this.userService.verifyToken(token)));
             Patient patient = this.patientService.getPatientByUser(this.userService.getUserById(this.userService.verifyToken(token)));
             Game game = this.gameService.getGameById(UUID.fromString(gameID));
+            GamePatient gamePatient = this.gamePatientService.getGamePatientByGameAndPatient(game, patient);
+            if (!gamePatient.getGamePatientStatus().equals(GamePatientStatus.ACTIVE))
+                throw new Exception("Game is not Active for this account");
             System.out.println(statisticArray.getRecords());
             for (JsonObject statisticToSend: statisticArray.getRecords()){
                 System.out.println(statisticToSend.get("DateAction"));
@@ -198,7 +202,6 @@ public class PatientController {
                     detailsString = jsonObject.toString();
                 }
                 else detailsString = null;
-                GamePatient gamePatient = this.gamePatientService.getGamePatientByGameAndPatient(game, patient);
                 GameStatistic statistic = new GameStatistic(gamePatient,
                         Short.valueOf(statisticToSend.get("Type").toString()),
                         localDateTime,

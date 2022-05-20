@@ -2,6 +2,7 @@ package com.yoh.backend.controller;
 
 import com.github.cliftonlabs.json_simple.JsonObject;
 import com.yoh.backend.entity.*;
+import com.yoh.backend.enums.GamePatientStatus;
 import com.yoh.backend.request.*;
 import com.yoh.backend.response.*;
 import com.yoh.backend.service.*;
@@ -349,25 +350,27 @@ public class TutorController {
             Tutor tutor = this.tutorService.getTutorByUser(this.userService.getUserById(this.userService.verifyToken(token)));
             Game game = this.gameService.getGameById(UUID.fromString(gameToPatient.getGame_id()));
             Patient patient = this.patientService.getPatientById(UUID.fromString(gameToPatient.getPatient_id()));
-            GamePatient gamePatient = new GamePatient(game, patient);
+            GamePatient gamePatient;
+            try {
+                gamePatient = this.gamePatientService.getGamePatientByGameAndPatient(game, patient);
+                gamePatient.setGamePatientStatus(GamePatientStatus.ACTIVE);
+                this.gamePatientService.saveGamePatient(gamePatient);
+            }
+            catch (IllegalArgumentException ds){
+                gamePatient = new GamePatient(game, patient, GamePatientStatus.ACTIVE);
+                this.gamePatientService.createGamePatient(gamePatient);
+            }
             GameStatus gameStatus = new GameStatus(gamePatient, tutor, LocalDateTime.now(), Status.ASSIGNED);
-            this.gamePatientService.createGamePatient(gamePatient);
             patient.getGamePatientList().add(gamePatient);
             game.getGamePatientList().add(gamePatient);
-//            patient.getGames().add(game);
-//            patient.getGameStatuses().add(gameStatus);
-//            game.getPatient().add(patient);
-
             this.patientService.updatePatient(patient);
-
             this.gameService.updateGame(game);
-
             this.gameStatusService.createGameStatus(gameStatus);
             JsonObject response = new JsonObject();
             response.put("message", "Game was added");
             return new JSONResponse(200, response);
         }
-        catch (IllegalArgumentException e){
+        catch (Exception e){
             JsonObject exceptionResponse = new JsonObject();
             exceptionResponse.put("message", e.getMessage());
             return new JSONResponse(401, exceptionResponse);
@@ -384,7 +387,7 @@ public class TutorController {
             Patient patient = this.patientService.getPatientById(UUID.fromString(gamesToPatient.getPatient_id()));
             for (String id : gamesToPatient.getGames_id()) {
                 Game game = this.gameService.getGameById(UUID.fromString(id));
-                GamePatient gamePatient = new GamePatient(game, patient);
+                GamePatient gamePatient = new GamePatient(game, patient, GamePatientStatus.ACTIVE);
                 this.gamePatientService.createGamePatient(gamePatient);
                 GameStatus gameStatus = new GameStatus(gamePatient, tutor, LocalDateTime.now(), Status.ASSIGNED);
                 game.getGamePatientList().add(gamePatient);
@@ -425,37 +428,14 @@ public class TutorController {
             Patient patient = this.patientService.getPatientById(UUID.fromString(gameToPatient.getPatient_id()));
             Game gameToRemove = this.gameService.getGameById(UUID.fromString(gameToPatient.getGame_id()));
             GamePatient gamePatient = this.gamePatientService.getGamePatientByGameAndPatient(gameToRemove, patient);
+
             patient.getGamePatientList().remove(gamePatient);
             gameToRemove.getGamePatientList().remove(gamePatient);
-
-//            for (Patient patient1: gameToRemove.getPatient()){
-//                if(patient1.getId() == patient.getId()) {
-//                    patient1.getGames().remove(gameToRemove);
-//                    this.patientService.updatePatient(patient1);
-//                }
-//            }
-
-//            patient.getGames().remove(gameToRemove);
-
             this.patientService.updatePatient(patient);
-//
-//            gameToRemove.getPatient().remove(patient);
             this.gameService.updateGame(gameToRemove);
 
-            this.gamePatientService.deleteGamePatient(gamePatient);
-//            List<Game> listOfGames = patient.getGames();
-//            listOfGames.remove(game);
-//            patient.setGames(listOfGames);
-//
-//            for (Game game: listOfGames){
-//                if (game.getId().toString().equals(gameToPatient.getGame_id())){
-//                    patient.getGames().remove(this.gameService.getGameById(UUID.fromString(gameToPatient.getGame_id())));
-//                    this.patientService.updatePatient(patient);
-//                    JsonObject response = new JsonObject();
-//                    response.put("message", "Game was removed");
-//                    return new JSONResponse(200, response);
-//                }
-//            }
+            gamePatient.setGamePatientStatus(GamePatientStatus.DELETED);
+            this.gamePatientService.saveGamePatient(gamePatient);
             JsonObject errorResponse = new JsonObject();
             errorResponse.put("message", "Game was detached");
             return new JSONResponse(200, errorResponse);
@@ -478,7 +458,9 @@ public class TutorController {
                 Game game = gamePatient.getGame();
                 game.getGamePatientList().remove(gamePatient);
                 this.gameService.updateGame(game);
-                this.gamePatientService.deleteGamePatient(gamePatient);
+                gamePatient.setGamePatientStatus(GamePatientStatus.DELETED);
+                this.gamePatientService.saveGamePatient(gamePatient);
+//                this.gamePatientService.deleteGamePatient(gamePatient);
             }
             patient.setGamePatientList(new ArrayList<GamePatient>());
             this.patientService.updatePatient(patient);
