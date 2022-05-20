@@ -54,7 +54,7 @@ public class GamePatientRepository {
     public GamePatient getGamePatientByUUID(UUID id) {
         Session session = sessionFactory.openSession();
         try {
-            Criteria criteria = session.createCriteria(Game.class)
+            Criteria criteria = session.createCriteria(GamePatient.class)
                     .add(Restrictions.eq("id", id));
             List<GamePatient> gamePatientList = criteria.list();
             return gamePatientList.isEmpty() ? null : gamePatientList.get(0);
@@ -67,7 +67,7 @@ public class GamePatientRepository {
     public GamePatient getGamePatientByGameAndPatient(Game game, Patient patient) {
         Session session = sessionFactory.openSession();
         try {
-            Criteria criteria = session.createCriteria(Game.class)
+            Criteria criteria = session.createCriteria(GamePatient.class)
                     .add(Restrictions.eq("game", game))
                     .add(Restrictions.eq("patient", patient));
             List<GamePatient> gamePatientList = criteria.list();
@@ -107,7 +107,7 @@ public class GamePatientRepository {
     public List<GamePatient> getAllGamePatients(){
         Session session = sessionFactory.openSession();
         try{
-            Criteria criteria = session.createCriteria(Game.class);
+            Criteria criteria = session.createCriteria(GamePatient.class);
             List<GamePatient> gamePatientList = criteria.list();
             return gamePatientList;
         }finally {

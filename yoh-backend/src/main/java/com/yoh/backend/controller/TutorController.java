@@ -467,8 +467,8 @@ public class TutorController {
 
 //            patient.getGamePatientList().remove(gamePatient);
 //            gameToRemove.getGamePatientList().remove(gamePatient);
-            this.patientService.updatePatient(patient);
-            this.gameService.updateGame(gameToRemove);
+//            this.patientService.updatePatient(patient);
+//            this.gameService.updateGame(gameToRemove);
 
             gamePatient.setGamePatientStatus(GamePatientStatus.DELETED);
             this.gamePatientService.saveGamePatient(gamePatient);
@@ -483,13 +483,13 @@ public class TutorController {
         }
     }
 
-//    @DeleteMapping(path = "/patients/games/clear")
-//    public JSONResponse clearGamesForPatient(@RequestHeader("token") String token,
-//                                             @Valid @RequestBody PatientToTutor patientToTutor) {
-//        try {
-//            Tutor tutor = this.tutorService.getTutorByUser(this.userService.getUserById(this.userService.verifyToken(token)));
-//            Patient patient = this.patientService.getPatientById(UUID.fromString(patientToTutor.getPatient()));
-////            List<GamePatient> gamePatientList = patient.getGamePatientList();
+    @DeleteMapping(path = "/patients/games/clear")
+    public JSONResponse clearGamesForPatient(@RequestHeader("token") String token,
+                                             @Valid @RequestBody PatientToTutor patientToTutor) {
+        try {
+            Tutor tutor = this.tutorService.getTutorByUser(this.userService.getUserById(this.userService.verifyToken(token)));
+            Patient patient = this.patientService.getPatientById(UUID.fromString(patientToTutor.getPatient()));
+//            List<GamePatient> gamePatientList = patient.getGamePatientList();
 //            for (GamePatient gamePatient : patient.getGamePatientList()){
 //                Game game = gamePatient.getGame();
 //                game.getGamePatientList().remove(gamePatient);
@@ -498,21 +498,25 @@ public class TutorController {
 //                this.gamePatientService.saveGamePatient(gamePatient);
 ////                this.gamePatientService.deleteGamePatient(gamePatient);
 //            }
+            for (GamePatient gamePatient: this.gamePatientService.getAllGamePatientsByPatient(patient)){
+                gamePatient.setGamePatientStatus(GamePatientStatus.DELETED);
+                this.gamePatientService.saveGamePatient(gamePatient);
+            }
 //            patient.setGamePatientList(new ArrayList<GamePatient>());
 //            this.patientService.updatePatient(patient);
-////            Patient patient = this.patientService.getPatientById(UUID.fromString(patientToTutor.getPatient()));
-////            patient.setGames(new ArrayList<Game>());
-////            this.patientService.updatePatient(patient);
-//            JsonObject response = new JsonObject();
-//            response.put("message", "List of games was cleared");
-//            return new JSONResponse(200, response);
-//        }
-//        catch (IllegalArgumentException e){
-//            JsonObject exceptionResponse = new JsonObject();
-//            exceptionResponse.put("message", e.getMessage());
-//            return new JSONResponse(401, exceptionResponse);
-//        }
-//    }
+//            Patient patient = this.patientService.getPatientById(UUID.fromString(patientToTutor.getPatient()));
+//            patient.setGames(new ArrayList<Game>());
+//            this.patientService.updatePatient(patient);
+            JsonObject response = new JsonObject();
+            response.put("message", "List of games was cleared");
+            return new JSONResponse(200, response);
+        }
+        catch (IllegalArgumentException e){
+            JsonObject exceptionResponse = new JsonObject();
+            exceptionResponse.put("message", e.getMessage());
+            return new JSONResponse(401, exceptionResponse);
+        }
+    }
 
     @GetMapping(path = "/patients/games/get-statistics")
     public JSONResponse getStatisticsForGame(@RequestHeader("token") String token,
