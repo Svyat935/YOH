@@ -77,11 +77,12 @@ public class GamePatientService {
     }
 
     public GamePatient getGamePatientByGameAndPatient(Game game, Patient patient) throws IllegalArgumentException{
-        GamePatient gamePatient = gamePatientRepository.getGamePatientByGameAndPatient(game, patient);
-        if (gamePatient != null) {
-            return gamePatient;
-        }
-        else throw new IllegalArgumentException("Sorry, but GamePatient was not found.");
+//        GamePatient gamePatient = gamePatientRepository.getGamePatientByGameAndPatient(game, patient);
+//        if (gamePatient != null) {
+//            return gamePatient;
+//        }
+//        else throw new IllegalArgumentException("Sorry, but GamePatient was not found.");
+        return gamePatientRepository.getGamePatientByGameAndPatient(game, patient);
     }
 
 }

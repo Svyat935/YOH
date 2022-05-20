@@ -353,22 +353,37 @@ public class TutorController {
             System.out.println("2");
             Patient patient = this.patientService.getPatientById(UUID.fromString(gameToPatient.getPatient_id()));
             System.out.println("3");
-            GamePatient gamePatient;
-            System.out.println("4");
-            try {
-                gamePatient = this.gamePatientService.getGamePatientByGameAndPatient(game, patient);
+            GamePatient gamePatient = this.gamePatientService.getGamePatientByGameAndPatient(game, patient);
+            if (gamePatient!= null){
                 System.out.println("5");
                 gamePatient.setGamePatientStatus(GamePatientStatus.ACTIVE);
                 System.out.println("6");
                 this.gamePatientService.saveGamePatient(gamePatient);
                 System.out.println("7");
             }
-            catch (IllegalArgumentException ds){
+            else {
                 gamePatient = new GamePatient(game, patient, GamePatientStatus.ACTIVE);
                 System.out.println("8");
                 this.gamePatientService.createGamePatient(gamePatient);
                 System.out.println("9");
             }
+            System.out.println("4");
+
+//            try {
+//                gamePatient = this.gamePatientService.getGamePatientByGameAndPatient(game, patient);
+//                System.out.println("5");
+//                gamePatient.setGamePatientStatus(GamePatientStatus.ACTIVE);
+//                System.out.println("6");
+//                this.gamePatientService.saveGamePatient(gamePatient);
+//                System.out.println("7");
+//            }
+//            catch (IllegalArgumentException ds){
+//                gamePatient = new GamePatient(game, patient, GamePatientStatus.ACTIVE);
+//                System.out.println("8");
+//                this.gamePatientService.createGamePatient(gamePatient);
+//                System.out.println("9");
+//            }
+
             GameStatus gameStatus = new GameStatus(gamePatient, tutor, LocalDateTime.now(), Status.ASSIGNED);
             System.out.println("10");
             patient.getGamePatientList().add(gamePatient);
@@ -447,6 +462,7 @@ public class TutorController {
             Patient patient = this.patientService.getPatientById(UUID.fromString(gameToPatient.getPatient_id()));
             Game gameToRemove = this.gameService.getGameById(UUID.fromString(gameToPatient.getGame_id()));
             GamePatient gamePatient = this.gamePatientService.getGamePatientByGameAndPatient(gameToRemove, patient);
+            if (gamePatient == null) throw new IllegalArgumentException("Sorry, but GamePatient was not found.");
 
             patient.getGamePatientList().remove(gamePatient);
             gameToRemove.getGamePatientList().remove(gamePatient);
@@ -553,6 +569,11 @@ public class TutorController {
             Patient patient = this.patientService.getPatientById(UUID.fromString(gameToPatient.getPatient_id()));
             Game game = this.gameService.getGameById(UUID.fromString(gameToPatient.getGame_id()));
             GamePatient gamePatient = this.gamePatientService.getGamePatientByGameAndPatient(game, patient);
+            if (gamePatient == null) throw new IllegalArgumentException("Sorry, but GamePatient was not found.");
+            List<GameStatistic> gameStatisticList = this.gameStatisticService.getGameStatisticByGamePatient(gamePatient);
+            for (GameStatistic gameStatistic: gameStatisticList){
+                this.gameStatisticService.deleteGameStatistic(gameStatistic);
+            }
 //            ArrayList<GameStatistic> newGameStatistic = new ArrayList<>();
 //            UUID gameToSearch = UUID.fromString(gameToPatient.getGame_id());
 //            for (GameStatistic gameStatistic : patient.getGameStatistics()){
@@ -561,7 +582,7 @@ public class TutorController {
 //                }
 //            }
 //            patient.setGameStatistics(newGameStatistic);
-            this.patientService.updatePatient(patient);
+//            this.patientService.updatePatient(patient);
             JsonObject response = new JsonObject();
             response.put("message", "Game statistic was cleared");
             return new JSONResponse(200, response);

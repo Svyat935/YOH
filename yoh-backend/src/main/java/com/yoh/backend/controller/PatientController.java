@@ -167,6 +167,7 @@ public class PatientController {
             Patient patient = this.patientService.getPatientByUser(this.userService.getUserById(this.userService.verifyToken(token)));
             Game game = this.gameService.getGameById(UUID.fromString(gameID));
             GamePatient gamePatient = this.gamePatientService.getGamePatientByGameAndPatient(game, patient);
+            if (gamePatient == null) throw new IllegalArgumentException("Sorry, but GamePatient was not found.");
             if (!gamePatient.getGamePatientStatus().equals(GamePatientStatus.ACTIVE))
                 throw new Exception("Game is not Active for this account");
             System.out.println(statisticArray.getRecords());
@@ -254,6 +255,7 @@ public class PatientController {
 //            GameStatus gameStatus = this.gameStatusService.getGameStatusByGameAndPatient(this.gameService.getGameById(UUID.fromString(gameID)), patient);
             Game game = this.gameService.getGameById(UUID.fromString(gameID));
             GamePatient gamePatient = this.gamePatientService.getGamePatientByGameAndPatient(game, patient);
+            if (gamePatient == null) throw new IllegalArgumentException("Sorry, but GamePatient was not found.");
             GameStatus gameStatus = this.gameStatusService.getGameStatusByGamePatient(gamePatient);
             JsonObject response = new JsonObject();
             response.put("gameStatus", gameStatus.getStatus());
