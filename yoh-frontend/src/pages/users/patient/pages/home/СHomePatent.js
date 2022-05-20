@@ -27,7 +27,7 @@ export function CHomePatient() {
             let responseGames = await requestGames();
 
             if (responseGames !== null){
-                responseGames = responseGames["jsonObject"]["gamesArray"];
+                responseGames = responseGames["jsonObject"]["results"];
                 setGames(responseGames);
             }
         }
