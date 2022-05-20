@@ -82,7 +82,9 @@ export function VDetailInfo(props) {
                         <ButtonA width={300} text={"Добавить траекторию"} onClick={() => {
                             router("/user/tutor/vector/");
                         }}/>
-                        <ButtonA width={300} text={"Удалить траекторию"}/>
+                        <ButtonA width={300} text={"Удалить траекторию"} onClick={() => {
+                            router("/user/tutor/delete/");
+                        }}/>
                     </Col>
                     <Col md={8}>
                         <h2>Статистика успеваемости: </h2>

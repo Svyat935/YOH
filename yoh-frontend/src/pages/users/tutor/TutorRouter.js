@@ -8,6 +8,7 @@ import {CPatients} from "./pages/patients/CPatients";
 import {CDetailInfo} from "./pages/detailInfo/СDetailInfo";
 import {CVector} from "./pages/vector/CVector";
 import {VGame} from "./pages/game/VGame";
+import {CDelete} from "./pages/delete/CDelete";
 
 
 export function TutorRouter() {
@@ -21,6 +22,7 @@ export function TutorRouter() {
             <Route path={'/detail'} element={<CDetailInfo/>}/>
             <Route path={'/vector'} element={<CVector/>}/>
             <Route path={'/game'} element={<VGame/>}/>
+            <Route path={'/delete'} element={<CDelete/>}/>
         </Routes>
     )
 }
