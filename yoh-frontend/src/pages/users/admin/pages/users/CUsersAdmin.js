@@ -119,7 +119,7 @@ export function CUsersAdmin() {
             let responseOrganizations = await requestGetAllOrganizations();
 
             if (responseUsers !== null){
-                responseUsers = responseUsers["jsonObject"]["userList"];
+                responseUsers = responseUsers["jsonObject"]["results"];
                 if (responseUsers !== undefined) setUsers(responseUsers);
             }
 
