@@ -353,36 +353,37 @@ public class TutorController {
             System.out.println("2");
             Patient patient = this.patientService.getPatientById(UUID.fromString(gameToPatient.getPatient_id()));
             System.out.println("3");
-            GamePatient gamePatient = this.gamePatientService.getGamePatientByGameAndPatient(game, patient);
-            if (gamePatient!= null){
-                System.out.println("5");
-                gamePatient.setGamePatientStatus(GamePatientStatus.ACTIVE);
-                System.out.println("6");
-                this.gamePatientService.saveGamePatient(gamePatient);
-                System.out.println("7");
-            }
-            else {
-                gamePatient = new GamePatient(game, patient, GamePatientStatus.ACTIVE);
-                System.out.println("8");
-                this.gamePatientService.createGamePatient(gamePatient);
-                System.out.println("9");
-            }
-            System.out.println("4");
-
-//            try {
-//                gamePatient = this.gamePatientService.getGamePatientByGameAndPatient(game, patient);
+//            GamePatient gamePatient = this.gamePatientService.getGamePatientByGameAndPatient(game, patient);
+//            if (gamePatient!= null){
 //                System.out.println("5");
 //                gamePatient.setGamePatientStatus(GamePatientStatus.ACTIVE);
 //                System.out.println("6");
 //                this.gamePatientService.saveGamePatient(gamePatient);
 //                System.out.println("7");
 //            }
-//            catch (IllegalArgumentException ds){
+//            else {
 //                gamePatient = new GamePatient(game, patient, GamePatientStatus.ACTIVE);
 //                System.out.println("8");
 //                this.gamePatientService.createGamePatient(gamePatient);
 //                System.out.println("9");
 //            }
+            System.out.println("4");
+            GamePatient gamePatient;
+
+            try {
+                gamePatient = this.gamePatientService.getGamePatientByGameAndPatient(game, patient);
+                System.out.println("5");
+                gamePatient.setGamePatientStatus(GamePatientStatus.ACTIVE);
+                System.out.println("6");
+                this.gamePatientService.saveGamePatient(gamePatient);
+                System.out.println("7");
+            }
+            catch (IllegalArgumentException ds){
+                gamePatient = new GamePatient(game, patient, GamePatientStatus.ACTIVE);
+                System.out.println("8");
+                this.gamePatientService.createGamePatient(gamePatient);
+                System.out.println("9");
+            }
 
             GameStatus gameStatus = new GameStatus(gamePatient, tutor, LocalDateTime.now(), Status.ASSIGNED);
             System.out.println("10");
