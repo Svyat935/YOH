@@ -68,8 +68,8 @@ public class GamePatientRepository {
         Session session = sessionFactory.openSession();
         try {
             Criteria criteria = session.createCriteria(Game.class)
-                    .add(Restrictions.eq("game_id", game.getId()))
-                    .add(Restrictions.eq("patient_id", patient.getId()));
+                    .add(Restrictions.eq("game", game))
+                    .add(Restrictions.eq("patient", patient));
             List<GamePatient> gamePatientList = criteria.list();
             return gamePatientList.isEmpty() ? null : gamePatientList.get(0);
         }
@@ -82,7 +82,7 @@ public class GamePatientRepository {
         Session session = sessionFactory.openSession();
         try {
             Criteria criteria = session.createCriteria(GamePatient.class)
-                    .add(Restrictions.eq("patient_id", patient.getId()));
+                    .add(Restrictions.eq("patient", patient));
             List<GamePatient> gamePatientList = criteria.list();
             return gamePatientList.isEmpty() ? List.of() : gamePatientList;
         }
@@ -95,7 +95,7 @@ public class GamePatientRepository {
         Session session = sessionFactory.openSession();
         try {
             Criteria criteria = session.createCriteria(GamePatient.class)
-                    .add(Restrictions.eq("game_id", game.getId()));
+                    .add(Restrictions.eq("game", game));
             List<GamePatient> gamePatientList = criteria.list();
             return gamePatientList.isEmpty() ? List.of() : gamePatientList;
         }
