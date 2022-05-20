@@ -467,8 +467,8 @@ public class TutorController {
 
 //            patient.getGamePatientList().remove(gamePatient);
 //            gameToRemove.getGamePatientList().remove(gamePatient);
-            this.patientService.updatePatient(patient);
-            this.gameService.updateGame(gameToRemove);
+//            this.patientService.updatePatient(patient);
+//            this.gameService.updateGame(gameToRemove);
 
             gamePatient.setGamePatientStatus(GamePatientStatus.DELETED);
             this.gamePatientService.saveGamePatient(gamePatient);
