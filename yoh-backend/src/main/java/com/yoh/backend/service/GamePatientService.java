@@ -15,7 +15,7 @@ import java.util.stream.Stream;
 public class GamePatientService {
 
     @Autowired
-    GamePatientRepository gamePatientRepository;
+    private GamePatientRepository gamePatientRepository;
 
     public void createGamePatient(GamePatient gamePatient) throws IllegalArgumentException{
         // TODO Добоавить валидацию и проверку на существование
