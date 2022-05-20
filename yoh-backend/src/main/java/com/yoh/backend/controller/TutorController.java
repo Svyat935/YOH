@@ -348,31 +348,50 @@ public class TutorController {
         //TODO проверить статусы
         try {
             Tutor tutor = this.tutorService.getTutorByUser(this.userService.getUserById(this.userService.verifyToken(token)));
+            System.out.println("1");
             Game game = this.gameService.getGameById(UUID.fromString(gameToPatient.getGame_id()));
+            System.out.println("2");
             Patient patient = this.patientService.getPatientById(UUID.fromString(gameToPatient.getPatient_id()));
+            System.out.println("3");
             GamePatient gamePatient;
+            System.out.println("4");
             try {
                 gamePatient = this.gamePatientService.getGamePatientByGameAndPatient(game, patient);
+                System.out.println("5");
                 gamePatient.setGamePatientStatus(GamePatientStatus.ACTIVE);
+                System.out.println("6");
                 this.gamePatientService.saveGamePatient(gamePatient);
+                System.out.println("7");
             }
             catch (IllegalArgumentException ds){
                 gamePatient = new GamePatient(game, patient, GamePatientStatus.ACTIVE);
+                System.out.println("8");
                 this.gamePatientService.createGamePatient(gamePatient);
+                System.out.println("9");
             }
             GameStatus gameStatus = new GameStatus(gamePatient, tutor, LocalDateTime.now(), Status.ASSIGNED);
+            System.out.println("10");
             patient.getGamePatientList().add(gamePatient);
+            System.out.println("11");
             game.getGamePatientList().add(gamePatient);
+            System.out.println("12");
             this.patientService.updatePatient(patient);
+            System.out.println("13");
             this.gameService.updateGame(game);
+            System.out.println("14");
             this.gameStatusService.createGameStatus(gameStatus);
+            System.out.println("15");
             JsonObject response = new JsonObject();
+            System.out.println("16");
             response.put("message", "Game was added");
+            System.out.println("17");
             return new JSONResponse(200, response);
         }
         catch (Exception e){
             JsonObject exceptionResponse = new JsonObject();
+            System.out.println("18");
             exceptionResponse.put("message", e.getMessage());
+            System.out.println("19");
             return new JSONResponse(401, exceptionResponse);
         }
     }
