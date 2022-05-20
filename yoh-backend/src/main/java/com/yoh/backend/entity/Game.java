@@ -106,16 +106,17 @@ public class Game {
     }
 
 
-    @OneToMany(mappedBy = "game")
-    private List<GamePatient> gamePatientList;
+//    @OneToMany(mappedBy = "game")
+//    private List<GamePatient> gamePatientList;
+//
+//    public List<GamePatient> getGamePatientList() {
+//        return gamePatientList;
+//    }
+//
+//    public void setGamePatientList(List<GamePatient> gamePatientList) {
+//        this.gamePatientList = gamePatientList;
+//    }
 
-    public List<GamePatient> getGamePatientList() {
-        return gamePatientList;
-    }
-
-    public void setGamePatientList(List<GamePatient> gamePatientList) {
-        this.gamePatientList = gamePatientList;
-    }
 
     //    //TODO переименовать
 //    @ManyToMany(mappedBy="games")

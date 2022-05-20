@@ -221,16 +221,16 @@ public class Patient {
     }
 
 
-    @OneToMany(mappedBy = "patient")
-    private List<GamePatient> gamePatientList;
-
-    public List<GamePatient> getGamePatientList() {
-        return gamePatientList;
-    }
-
-    public void setGamePatientList(List<GamePatient> gamePatientList) {
-        this.gamePatientList = gamePatientList;
-    }
+//    @OneToMany(mappedBy = "patient")
+//    private List<GamePatient> gamePatientList;
+//
+//    public List<GamePatient> getGamePatientList() {
+//        return gamePatientList;
+//    }
+//
+//    public void setGamePatientList(List<GamePatient> gamePatientList) {
+//        this.gamePatientList = gamePatientList;
+//    }
 
     //    @OneToMany(mappedBy = "patient")
 //    @LazyCollection(LazyCollectionOption.FALSE)
