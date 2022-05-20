@@ -387,9 +387,9 @@ public class TutorController {
 
             GameStatus gameStatus = new GameStatus(gamePatient, tutor, LocalDateTime.now(), Status.ASSIGNED);
             System.out.println("10");
-            patient.getGamePatientList().add(gamePatient);
+//            patient.getGamePatientList().add(gamePatient);
             System.out.println("11");
-            game.getGamePatientList().add(gamePatient);
+//            game.getGamePatientList().add(gamePatient);
             System.out.println("12");
             this.patientService.updatePatient(patient);
             System.out.println("13");
@@ -425,8 +425,8 @@ public class TutorController {
                 GamePatient gamePatient = new GamePatient(game, patient, GamePatientStatus.ACTIVE);
                 this.gamePatientService.createGamePatient(gamePatient);
                 GameStatus gameStatus = new GameStatus(gamePatient, tutor, LocalDateTime.now(), Status.ASSIGNED);
-                game.getGamePatientList().add(gamePatient);
-                patient.getGamePatientList().add(gamePatient);
+//                game.getGamePatientList().add(gamePatient);
+//                patient.getGamePatientList().add(gamePatient);
                 this.gameStatusService.createGameStatus(gameStatus);
                 this.patientService.updatePatient(patient);
 //                patient.getGames().add(game);
@@ -465,8 +465,8 @@ public class TutorController {
             GamePatient gamePatient = this.gamePatientService.getGamePatientByGameAndPatient(gameToRemove, patient);
             if (gamePatient == null) throw new IllegalArgumentException("Sorry, but GamePatient was not found.");
 
-            patient.getGamePatientList().remove(gamePatient);
-            gameToRemove.getGamePatientList().remove(gamePatient);
+//            patient.getGamePatientList().remove(gamePatient);
+//            gameToRemove.getGamePatientList().remove(gamePatient);
             this.patientService.updatePatient(patient);
             this.gameService.updateGame(gameToRemove);
 
@@ -483,36 +483,36 @@ public class TutorController {
         }
     }
 
-    @DeleteMapping(path = "/patients/games/clear")
-    public JSONResponse clearGamesForPatient(@RequestHeader("token") String token,
-                                             @Valid @RequestBody PatientToTutor patientToTutor) {
-        try {
-            Tutor tutor = this.tutorService.getTutorByUser(this.userService.getUserById(this.userService.verifyToken(token)));
-            Patient patient = this.patientService.getPatientById(UUID.fromString(patientToTutor.getPatient()));
-//            List<GamePatient> gamePatientList = patient.getGamePatientList();
-            for (GamePatient gamePatient : patient.getGamePatientList()){
-                Game game = gamePatient.getGame();
-                game.getGamePatientList().remove(gamePatient);
-                this.gameService.updateGame(game);
-                gamePatient.setGamePatientStatus(GamePatientStatus.DELETED);
-                this.gamePatientService.saveGamePatient(gamePatient);
-//                this.gamePatientService.deleteGamePatient(gamePatient);
-            }
-            patient.setGamePatientList(new ArrayList<GamePatient>());
-            this.patientService.updatePatient(patient);
+//    @DeleteMapping(path = "/patients/games/clear")
+//    public JSONResponse clearGamesForPatient(@RequestHeader("token") String token,
+//                                             @Valid @RequestBody PatientToTutor patientToTutor) {
+//        try {
+//            Tutor tutor = this.tutorService.getTutorByUser(this.userService.getUserById(this.userService.verifyToken(token)));
 //            Patient patient = this.patientService.getPatientById(UUID.fromString(patientToTutor.getPatient()));
-//            patient.setGames(new ArrayList<Game>());
+////            List<GamePatient> gamePatientList = patient.getGamePatientList();
+//            for (GamePatient gamePatient : patient.getGamePatientList()){
+//                Game game = gamePatient.getGame();
+//                game.getGamePatientList().remove(gamePatient);
+//                this.gameService.updateGame(game);
+//                gamePatient.setGamePatientStatus(GamePatientStatus.DELETED);
+//                this.gamePatientService.saveGamePatient(gamePatient);
+////                this.gamePatientService.deleteGamePatient(gamePatient);
+//            }
+//            patient.setGamePatientList(new ArrayList<GamePatient>());
 //            this.patientService.updatePatient(patient);
-            JsonObject response = new JsonObject();
-            response.put("message", "List of games was cleared");
-            return new JSONResponse(200, response);
-        }
-        catch (IllegalArgumentException e){
-            JsonObject exceptionResponse = new JsonObject();
-            exceptionResponse.put("message", e.getMessage());
-            return new JSONResponse(401, exceptionResponse);
-        }
-    }
+////            Patient patient = this.patientService.getPatientById(UUID.fromString(patientToTutor.getPatient()));
+////            patient.setGames(new ArrayList<Game>());
+////            this.patientService.updatePatient(patient);
+//            JsonObject response = new JsonObject();
+//            response.put("message", "List of games was cleared");
+//            return new JSONResponse(200, response);
+//        }
+//        catch (IllegalArgumentException e){
+//            JsonObject exceptionResponse = new JsonObject();
+//            exceptionResponse.put("message", e.getMessage());
+//            return new JSONResponse(401, exceptionResponse);
+//        }
+//    }
 
     @GetMapping(path = "/patients/games/get-statistics")
     public JSONResponse getStatisticsForGame(@RequestHeader("token") String token,
