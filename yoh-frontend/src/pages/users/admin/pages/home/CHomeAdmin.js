@@ -8,7 +8,9 @@ export function CHomeAdmin() {
     const [games, setGames] = useState([]);
 
     const requestUsers = async () => {
-        return await fetch("/admins/users/all", {
+        return await fetch("/admins/users/all?" +
+            "start=" + encodeURIComponent(0) + "&" +
+            "limit=" + encodeURIComponent(100), {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -21,14 +23,16 @@ export function CHomeAdmin() {
     }
 
     const requestGames = async () => {
-        return await fetch("/games/all", {
+        return await fetch("/games/all?" +
+            "start=" + encodeURIComponent(0) + "&" +
+            "limit=" + encodeURIComponent(100), {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
                 'token': context.token
             }
         }).then((response) => {
-            if (response.status === 200) return response.json();
+            if (response.status === 200) return response.json()
             else return null;
         });
     }
@@ -39,16 +43,20 @@ export function CHomeAdmin() {
             let responseGames = await requestGames();
 
             if (responseUsers !== null){
-                responseUsers = responseUsers["jsonObject"]["userList"];
+                responseUsers = responseUsers["jsonObject"]["results"];
                 if (responseUsers !== undefined) setUsers(responseUsers);
             }
 
             if (responseGames !== null){
-                responseGames = responseGames["jsonObject"]["games"];
+                responseGames = responseGames["jsonObject"]["results"];
                 if (responseGames !== undefined) setGames(responseGames);
             }
         }
     }, [context])
 
-    return <VHomeAdmin users={users} games={games}/>
+    return <VHomeAdmin
+        context={context}
+        users={users}
+        games={games}
+    />
 }

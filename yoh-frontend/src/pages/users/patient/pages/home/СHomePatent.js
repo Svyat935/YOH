@@ -8,7 +8,9 @@ export function CHomePatient() {
     const [_, rerun] = useState(new class{});
 
     const requestGames = async () => {
-        return await fetch("/patient/games/getting", {
+        return await fetch("/patient/games/getting?" +
+            "start=" + encodeURIComponent(0) + "&" +
+            "limit=" + encodeURIComponent(100), {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',

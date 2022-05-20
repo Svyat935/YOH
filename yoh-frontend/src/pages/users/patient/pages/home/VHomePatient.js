@@ -9,6 +9,7 @@ import {FilterBlock} from "../../../../../components/filterBlock/FilterBlock";
 import {ButtonA} from "../../../../../components/buttons/ButtonA/ButtonA";
 import {SearchInput} from "../../../../../components/searchInput/SearchInput";
 import {PatientNav} from "../../../../../components/navigate/Patient/PatientNav";
+import {useNavigate} from "react-router-dom";
 
 export function VHomePatient(props) {
     let filterList =[
@@ -16,14 +17,19 @@ export function VHomePatient(props) {
         {"text": "По описанию", "value": 2},
         {"text": "По статусу", "value": 3},
     ]
-
+    const router = useNavigate();
     const createBasicViewGames = () => {
         let games = props.games,
             view = [];
         if (games.length > 0) {
             games.forEach((game) => {
                 view.push(
-                    <InfoBlock key={game["id"]} text={game["name"]}>
+                    <InfoBlock key={game["id"]} text={game["name"]} onClick={() => {
+                        let info = props.context.info;
+                        info["url"] = "http://" + game["url"] + "?token=" + props.context.token;
+                        props.context.addInfo(info);
+                        router("/user/patient/game");
+                    }}>
                         <div>
                             <img style={{width: "100%"}} src={gameStub} alt={'game'}/>
                         </div>

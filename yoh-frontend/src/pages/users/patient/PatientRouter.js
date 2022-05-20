@@ -3,6 +3,7 @@ import {Route, Routes} from "react-router-dom";
 import {CHomePatient} from "./pages/home/СHomePatent";
 import {CAccount} from "./pages/account/CAccount";
 import {VChat} from "./pages/chat/VChat";
+import {VGame} from "./pages/game/VGame";
 
 
 export function PatientRouter() {
@@ -11,9 +12,7 @@ export function PatientRouter() {
             <Route path={'/'} element={<CHomePatient/>}/>
             <Route path={'/account'} element={<CAccount/>}/>
             <Route path={'/chat'} element={<VChat/>}/>
-            {/*<Route path={'/games_page'} element={<GamesPage/>}/>*/}
-            {/*<Route path={'/tests_page'} element={<TestsPage/>}/>*/}
-            {/*<Route path={'/game'} element={<Game/>}/>*/}
+            <Route path={'/game'} element={<VGame/>}/>
         </Routes>
     )
 }
