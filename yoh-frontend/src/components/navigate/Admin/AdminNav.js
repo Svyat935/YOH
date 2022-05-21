@@ -4,7 +4,7 @@ import {Offcanvas} from "bootstrap";
 import "./AdminNav.css";
 import {Link} from "react-router-dom";
 
-export function AdminNav() {
+export function AdminNav(props) {
     return (
         <div className="hamburger-menu">
             <input id="menu__toggle" type="checkbox"/>
@@ -16,7 +16,9 @@ export function AdminNav() {
                 <li><Link className="menu__item" to={"/user/admin/"}>Домашняя страница</Link></li>
                 <li><Link className="menu__item" to={"/user/admin/users"}>Пользователи</Link></li>
                 <li><Link className="menu__item" to={"/user/admin/components"}>Компоненты</Link></li>
-                <li><Link className="menu__item" to={"/"}>Выйти</Link></li>
+                <li><Link className="menu__item" to={"/"} onClick={
+                    props.context ? props.context.logout : null
+                }>Выйти</Link></li>
             </ul>
         </div>
     )

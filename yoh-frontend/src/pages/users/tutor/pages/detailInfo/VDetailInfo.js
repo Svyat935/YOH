@@ -54,7 +54,7 @@ export function VDetailInfo(props) {
     }
 
     return (
-        <Back navPanel={<TutorNav/>}>
+        <Back navPanel={<TutorNav context={props.context}/>}>
             <Container>
                 <Row>
                     <Col md={4} style={

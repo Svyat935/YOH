@@ -25,9 +25,11 @@ export function VHomePatient(props) {
             games.forEach((game) => {
                 view.push(
                     <InfoBlock key={game["id"]} text={game["name"]} onClick={() => {
-                        let info = props.context.info;
-                        info["url"] = "http://" + game["url"] + "?token=" + props.context.token;
-                        props.context.addInfo(info);
+                        props.context.addInfo(
+                            {
+                                "url": "http://" + game["url"] + "?token=" + props.context.token
+                            }
+                        );
                         router("/user/patient/game");
                     }}>
                         <div>
@@ -54,7 +56,7 @@ export function VHomePatient(props) {
     }
 
     return (
-        <Back navPanel={<PatientNav/>}>
+        <Back navPanel={<PatientNav context={props.context}/>}>
             <Container style={{marginTop: 20}}>
                 <Row>
                     <h1 style={{fontWeight: "bold"}}>Добрый день!</h1>

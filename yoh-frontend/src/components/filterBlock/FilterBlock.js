@@ -9,7 +9,7 @@ export function FilterBlock(props) {
         if (filterList !== undefined){
             filterList.forEach((filterOne) => {
                 view.push(
-                    <div className={"filter-one"}>
+                    <div key={filterOne["text"]} className={"filter-one"}>
                         <input
                             id={filterOne["text"]}
                             name={"filterName"}

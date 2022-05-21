@@ -181,7 +181,7 @@ export function VAccount(props) {
     }
 
     return (
-        <Back navPanel={<PatientNav/>}>
+        <Back navPanel={<PatientNav context={props.context}/>}>
             <Modal
                 show={show}
                 backdrop={true}

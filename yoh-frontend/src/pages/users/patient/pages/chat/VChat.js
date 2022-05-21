@@ -1,15 +1,18 @@
 import {Col, Container, Row} from "react-bootstrap";
-import React from "react";
+import React, {useContext} from "react";
 import {ChatContainerSend} from "../../../../../components/chatContainer/chatContainerSend/ChatContainerSend";
 import {Back} from "../../../../../components/back/Back";
 import ImageStub from "../../../../../assets/news1.png";
 import {ChatContainerReceive} from "../../../../../components/chatContainer/chatContainerReceive/ChatContainerReceive";
 import {ButtonB} from "../../../../../components/buttons/ButtonB/ButtonB";
 import {PatientNav} from "../../../../../components/navigate/Patient/PatientNav";
+import {UserContext} from "../../../../../context/userContext";
 
 export function VChat() {
+    let context = useContext(UserContext);
+
     return (
-        <Back navPanel={<PatientNav/>}>
+        <Back navPanel={<PatientNav context={context}/>}>
             <Container style={{border: "1px solid #6A6DCD", borderRadius: 40, padding: 20}}>
                 <Row>
                     <Col>

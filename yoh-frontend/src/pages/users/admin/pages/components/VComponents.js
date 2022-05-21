@@ -35,7 +35,7 @@ export function VComponents(props) {
         if (games.length > 0) {
             games.forEach((game) => {
                 view.push(
-                    <InfoBlock key={game["id"]} text={game["name"]} onClick={
+                    <InfoBlock ikey={game["id"]} text={game["name"]} onClick={
                         () => {
                             setButtonStatus(3);
                             setChangingGame(game);
@@ -262,7 +262,7 @@ export function VComponents(props) {
     }
 
     return (
-        <Back navPanel={<AdminNav/>}>
+        <Back navPanel={<AdminNav context={props.context}/>}>
             <Modal
                 show={show}
                 backdrop={true}

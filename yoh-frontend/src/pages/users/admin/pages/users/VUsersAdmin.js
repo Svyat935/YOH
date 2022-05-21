@@ -71,7 +71,7 @@ export function VUsersAdmin(props) {
                             setButtonStatus(3);
                             setShow(true);
                         }
-                    } key={user["id"]} text={user["login"]} addText={role}>
+                    } ikey={user["id"]} text={user["login"]} addText={role}>
                         <div>
                             <img style={{width: "100%"}} src={profileStub} alt={'profile'}/>
                         </div>
@@ -112,7 +112,7 @@ export function VUsersAdmin(props) {
                             alignItems: "center",
                             marginBottom: "20px"
                         }
-                    }>
+                    } key={user["login"]}>
                         <p>Login: {user["login"]}; Email: {user["email"]}</p>
                         <ButtonB text={"Удалить"} fontSize={"medium"} onClick={
                             () => {
@@ -554,7 +554,7 @@ export function VUsersAdmin(props) {
     }
 
     return (
-        <Back navPanel={<AdminNav/>}>
+        <Back navPanel={<AdminNav context={props.context}/>}>
             <Modal
                 show={show}
                 backdrop={true}

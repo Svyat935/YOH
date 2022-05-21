@@ -57,7 +57,7 @@ export function VHomeTutor(props) {
     }
 
     return (
-        <Back navPanel={<TutorNav/>}>
+        <Back navPanel={<TutorNav context={props.context}/>}>
             <Container style={{marginTop: 20}}>
                 <Row>
                     <h1 style={{fontWeight: "bold"}}>Добрый день!</h1>
