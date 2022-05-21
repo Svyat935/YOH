@@ -58,6 +58,13 @@ public class GamePatientService {
                 .collect(Collectors.toList());
     }
 
+    public List<GamePatient> getActiveGamePatientByPatient(Patient patient) throws IllegalArgumentException{
+        return gamePatientRepository.getAllGamesPatientByPatient(patient)
+                .stream()
+                .filter(i -> i.getGamePatientStatus().equals(GamePatientStatus.ACTIVE))
+                .collect(Collectors.toList());
+    }
+
     public List<Patient> getAllPatientsByGame(Game game) throws IllegalArgumentException{
         List<GamePatient> gamePatientList = gamePatientRepository.getAllPatientByGame(game);
         return gamePatientList.stream().map(GamePatient::getPatient).collect(Collectors.toList());

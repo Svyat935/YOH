@@ -87,13 +87,13 @@ public class PatientController {
             JsonObject response = new JsonObject();
 //            List<Game> gameList = patient.getGames().stream().filter(i -> i.getName().toLowerCase().contains(regex.toLowerCase())
 //                            && i.getType().toLowerCase().contains(typeRegex.toLowerCase())).collect(Collectors.toList());
-            List<Game> gameList = this.gamePatientService.getAllGamesByPatient(patient);
+            List<GamePatient> gamePatientList = this.gamePatientService.getActiveGamePatientByPatient(patient);
             if (!typeRegex.equals("")){
-                gameList = gameList.stream().filter(i -> i.getType().toLowerCase().contains(typeRegex.toLowerCase())).collect(Collectors.toList());
+                gamePatientList = gamePatientList.stream().filter(i -> i.getGame().getType().toLowerCase().contains(typeRegex.toLowerCase())).collect(Collectors.toList());
             }
             if (!regex.equals(""))
-                gameList = gameList.stream().filter(i -> i.getName().toLowerCase().contains(regex.toLowerCase())).collect(Collectors.toList());
-            if (gameList.size() == 0) {
+                gamePatientList = gamePatientList.stream().filter(i -> i.getGame().getName().toLowerCase().contains(regex.toLowerCase())).collect(Collectors.toList());
+            if (gamePatientList.size() == 0) {
 //                JsonObject response = new JsonObject();
                 response.put("previous", false);
                 response.put("next", false);
@@ -104,13 +104,13 @@ public class PatientController {
 
 
             //Pagination
-            if (start >= gameList.size())
+            if (start >= gamePatientList.size())
                 throw new IllegalArgumentException(
                         String.format("No element at that index (%s)", start)
                 );
             int lastIndex;
-            if (start + limit > gameList.size()){
-                lastIndex = gameList.size();
+            if (start + limit > gamePatientList.size()){
+                lastIndex = gamePatientList.size();
                 response.put("next", false);
             }
             else {
@@ -119,35 +119,27 @@ public class PatientController {
             }
             if (start == 0) response.put("previous", false);
             else response.put("previous", true);
-            List<Game> paginatedGamesList = new ArrayList<>();
+            List<GamePatient> paginatedGamesList = new ArrayList<>();
             for (int i = start; i < lastIndex; i++){
-                paginatedGamesList.add(gameList.get(i));
+                paginatedGamesList.add(gamePatientList.get(i));
             }
             response.put("count", paginatedGamesList.size());
 
-            for (Game game: paginatedGamesList) {
+            for (GamePatient gamePatient: paginatedGamesList) {
                 JsonObject gamesInfo = new JsonObject();
-                gamesInfo.put("id", game.getId().toString());
-                gamesInfo.put("name", game.getName());
-                gamesInfo.put("type", game.getType());
-                gamesInfo.put("description", game.getDescription());
-                gamesInfo.put("image", game.getImage());
-                gamesInfo.put("url", game.getUrl());
+                GameStatus gameStatus = this.gameStatusService.getGameStatusByGamePatient(gamePatient);
+                gamesInfo.put("id", gamePatient.getGame().getId().toString());
+                gamesInfo.put("name", gamePatient.getGame().getName());
+                gamesInfo.put("type", gamePatient.getGame().getType());
+                gamesInfo.put("description", gamePatient.getGame().getDescription());
+                gamesInfo.put("image", gamePatient.getGame().getImage());
+                gamesInfo.put("url", gamePatient.getGame().getUrl());
+                gamesInfo.put("assignmentDate", gameStatus.getAssignmentDate());
+                gamesInfo.put("assignedBy", gameStatus.getTutor().getId().toString());
+                gamesInfo.put("status", gameStatus.getStatus().toString());
+                gamesInfo.put("active", gamePatient.getGamePatientStatus().toString());
                 gamesArray.add(gamesInfo);
             }
-//            if (patient.getGames() != null){
-//                for (Game game: patient.getGames()){
-//                    JsonObject gamesInfo = new JsonObject();
-//                    gamesInfo.put("id", game.getId().toString());
-//                    gamesInfo.put("name", game.getName());
-//                    gamesInfo.put("type", game.getType());
-//                    gamesInfo.put("description", game.getDescription());
-//                    gamesInfo.put("image", ImageUtility.decompressImage(game.getImage()));
-//                    gamesInfo.put("url", game.getUrl());
-//                    gamesArray.add(gamesInfo);
-//                }
-//            }
-
             response.put("results", gamesArray);
             return new JSONResponse(200, response);
         }
@@ -163,32 +155,19 @@ public class PatientController {
                                           @RequestHeader("game") String gameID,
                                           @Valid @RequestBody StatisticArray statisticArray) {
         try {
-//            Patient patient = this.patientService.getPatientByUser(this.userService.getUserById(this.userService.verifyToken(token)));
             Patient patient = this.patientService.getPatientByUser(this.userService.getUserById(this.userService.verifyToken(token)));
             Game game = this.gameService.getGameById(UUID.fromString(gameID));
             GamePatient gamePatient = this.gamePatientService.getGamePatientByGameAndPatient(game, patient);
-            if (gamePatient == null) throw new IllegalArgumentException("Sorry, but GamePatient was not found.");
             if (!gamePatient.getGamePatientStatus().equals(GamePatientStatus.ACTIVE))
                 throw new Exception("Game is not Active for this account");
-            System.out.println(statisticArray.getRecords());
             for (JsonObject statisticToSend: statisticArray.getRecords()){
-                System.out.println(statisticToSend.get("DateAction"));
-                System.out.println(statisticToSend.get("Type"));
-                System.out.println(statisticToSend.get("AnswerNumber"));
                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("M/d/yyyy, h:m:s a");
                 LocalDateTime localDateTime = LocalDateTime.parse(statisticToSend.get("DateAction").toString(), formatter);
-//                Jsonb details = (Jsonb) statisticToSend.get("Details");
-                JSONObject details;
                 com.google.gson.JsonObject jsonObject;
 
                 String detailsString;
                 if (statisticToSend.containsKey("Details")){
-//                    details = new JSONObject(statisticToSend.get("Details"));
-//                    details = new JsonObject()
                     jsonObject = new JsonParser().parse(statisticToSend.get("Details").toString()).getAsJsonObject();
-                    System.out.println(statisticToSend.get("Details"));
-                    System.out.println(jsonObject.toString());
-//                    detailsString = statisticToSend.get("Details").toString();
                 }
                 else jsonObject = null;
 
@@ -203,21 +182,21 @@ public class PatientController {
                     detailsString = jsonObject.toString();
                 }
                 else detailsString = null;
+
+                Short type = Short.valueOf(statisticToSend.get("Type").toString());
+                //Ставим статус завершения при типе 2
+                if (type == 2){
+                    GameStatus gameStatus = this.gameStatusService.getGameStatusByGamePatient(gamePatient);
+                    gameStatus.setStatus(Status.DONE);
+                    this.gameStatusService.updateGameStatus(gameStatus);
+                }
+
                 GameStatistic statistic = new GameStatistic(gamePatient,
-                        Short.valueOf(statisticToSend.get("Type").toString()),
+                        type,
                         localDateTime,
                         AnswerNumber,
                         detailsString);
-//                GameStatistic statistic = new GameStatistic(
-//                        this.gameService.getGameById(UUID.fromString(game)),
-//                        patient,
-//                        Short.valueOf(statisticToSend.get("Type").toString()),
-//                        localDateTime,
-//                        AnswerNumber,
-//                        detailsString
-//                );
                 this.gameStatisticService.createGameStatistic(statistic);
-//                patient.getGameStatistics().add(statistic);
                 this.patientService.updatePatient(patient);
             }
 //            GameStatistic statistic = new GameStatistic(
