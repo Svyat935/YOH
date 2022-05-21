@@ -8,7 +8,7 @@ export function VGame() {
     let context = useContext(UserContext);
 
     return (
-        <Back navPanel={<AdminNav/>}>
+        <Back navPanel={<AdminNav context={context}/>}>
             <Container>
                 <iframe src={context.info} style={{width: "90vw", height: "100vh"}}/>
             </Container>

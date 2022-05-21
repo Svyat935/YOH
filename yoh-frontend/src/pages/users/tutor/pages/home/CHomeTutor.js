@@ -33,5 +33,5 @@ export function CHomeTutor() {
         }
     }, [context])
 
-    return <VHomeTutor users={users}/>
+    return <VHomeTutor context={context} users={users}/>
 }

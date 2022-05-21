@@ -34,6 +34,7 @@ export function CHomePatient() {
     }, [context, _])
 
     return <VHomePatient
+        context={context ? context : {}}
         games={games}
         refresh={() => rerun(new class{})}
     />

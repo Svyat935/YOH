@@ -85,6 +85,7 @@ export function CAllPatients() {
     }, [context, _])
 
     return <VAllPatients
+        context={context}
         patients={patients}
         attachedPatients={attachedPatients}
         attach={requestAttachPatient}

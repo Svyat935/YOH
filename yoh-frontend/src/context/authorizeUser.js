@@ -21,6 +21,7 @@ export const LocalAuthorizeUser = () => {
     const logout = () => {
         setToken(null);
         setUserRole(null);
+        setInfo(null);
 
         localStorage.removeItem(STORAGE_NAME)
     };

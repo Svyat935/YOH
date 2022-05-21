@@ -3,7 +3,7 @@ import "./InfoBlockStatic.css";
 
 export function InfoBlockStatic(props){
     return (
-        <div onClick={props.onClick} className={"info-block-static"}>
+        <div key={props.key} onClick={props.onClick} className={"info-block-static"}>
             <div className={"info-block-static-content"}>
                 {props.children}
             </div>
