@@ -1,8 +1,6 @@
 import json
-import psycopg2
-from prettytable import PrettyTable
 from datetime import datetime, date
-from flask import Blueprint, make_response, request, session, abort, render_template
+from flask import Blueprint, make_response, request, session, abort
 from werkzeug.exceptions import HTTPException
 from requests import post
 
@@ -105,56 +103,3 @@ def send_statistic_route():
     post(send_url, data=json.dumps(response_params, default=json_serial), headers=headers)
 
     return make_response(json.dumps({'message': 'Success'}))
-
-
-@api_bp.route('/statistics')
-def statistics_route():
-    conn = psycopg2.connect(
-        host="yoh-db",
-        port="5432",
-        database="yoh",
-        user="postgres",
-        password="postgres")
-    cursor = conn.cursor()
-    cursor.execute('select * from game_statistics')
-    th = ['id', 'answer_number', 'date_action', 'details', 'type', 'game_id', 'patient_id']
-    td = cursor.fetchall()
-    columns = len(th)
-
-    table = PrettyTable(th)
-
-    for td_data in td:
-        table.add_row(td_data[:columns])
-    return make_response(table.get_html_string())
-
-
-@api_bp.route('/heatmap')
-def heatmap_route():
-    conn = psycopg2.connect(
-        host="yoh-db",
-        port="5432",
-        database="yoh",
-        user="postgres",
-        password="postgres")
-    cursor = conn.cursor()
-    cursor.execute('select "details" from game_statistics where "type" = 6 order by "id" desc limit 1')
-    data = cursor.fetchone()
-    if data:
-        data = data[0]
-        points_data = []
-        values = []
-        for point, value in data['clicks'].items():
-            values.append(value)
-            x, y = point.split('.')
-            points_data.append({"x": int(x), "y": int(y), "value": value})
-        params_to_render = {
-            'points': points_data,
-            'window': {
-                'height': data['window_size']['height'],
-                'width': data['window_size']['width']
-            },
-            'max_point': max(values)
-        }
-        return render_template(f'test_heatmap/index.html', **params_to_render)
-    else:
-        abort(404)
