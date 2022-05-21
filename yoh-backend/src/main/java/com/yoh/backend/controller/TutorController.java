@@ -480,7 +480,10 @@ public class TutorController {
                         gameStatisticInfo.put("gameID", statistic.getGamePatient().getGame().getId().toString());
                         gameStatisticInfo.put("type", statistic.getType().toString());
                         gameStatisticInfo.put("dateAction", statistic.getDateAction().toString());
-                        gameStatisticInfo.put("answerNumber", statistic.getDateAction().toString());
+                        gameStatisticInfo.put("answerNumber", statistic.getAnswerNumber().toString());
+                        gameStatisticInfo.put("dateStart", statistic.getDateStart().toString());
+                        gameStatisticInfo.put("clicks", statistic.getClicks().toString());
+                        gameStatisticInfo.put("missClicks", statistic.getMissClicks().toString());
                         gameStatisticList.add(gameStatisticInfo);
                     }
                 }
@@ -516,7 +519,10 @@ public class TutorController {
                     gameStatisticInfo.put("gameID", statistic.getGamePatient().getGame().getId().toString());
                     gameStatisticInfo.put("type", statistic.getType().toString());
                     gameStatisticInfo.put("dateAction", statistic.getDateAction().toString());
-                    gameStatisticInfo.put("answerNumber", statistic.getDateAction().toString());
+                    gameStatisticInfo.put("answerNumber", statistic.getAnswerNumber().toString());
+                    gameStatisticInfo.put("dateStart", statistic.getDateStart().toString());
+                    gameStatisticInfo.put("clicks", statistic.getClicks().toString());
+                    gameStatisticInfo.put("missClicks", statistic.getMissClicks().toString());
                     gameStatisticList.add(gameStatisticInfo);
                 }
             }

@@ -31,6 +31,9 @@ public class GameStatistic {
         this.type = type;
         this.dateAction = dateAction;
         this.answerNumber = answerNumber;
+        this.dateStart = dateStart;
+        this.clicks = clicks;
+        this.missClicks = missClicks;
         this.details = details;
 //        this.message = null;
     }
