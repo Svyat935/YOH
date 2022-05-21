@@ -14,11 +14,20 @@ import profileStub from "../../../../../assets/profileStub.jpg";
 
 export function VAllPatients(props) {
     const filterList = [
-        {"text": "По алфавиту", "value": 1},
-        {"text": "По дате", "value": 2},
+        {"text": "По алфавиту", "value": 1, "onClick": () => {
+                setFilterStatus(1);
+                props.refresh();
+            }
+        },
+        {"text": "По дате", "value": 2, "onClick": () => {
+                setFilterStatus(2);
+                props.refresh();
+            }
+        },
     ]
     const [show, setShow] = useState(false);
     const [currentPatient, setCurrentPatient] = useState(null);
+    const [filterStatus, setFilterStatus] = useState(0);
 
     const clearAll = () => {
         setCurrentPatient(null);
@@ -26,9 +35,23 @@ export function VAllPatients(props) {
     }
 
     const createPatientsView = () => {
-        let patients = props.patients,
+        let patients = props.patients.slice(0, 9),
             view = [];
         if (patients.length > 0) {
+            if (filterStatus === 1) {
+                patients = patients.sort((a, b) => {
+                    if (a["surname"] > b["surname"]) return 1;
+                    else if (a["surname"] < b["surname"]) return -1;
+                    else return 0;
+                });
+            } else if (filterStatus === 2) {
+                patients = patients.sort((a, b) => {
+                    if (a["dateRegistration"] > b["dateRegistration"]) return 1;
+                    else if (a["dateRegistration"] < b["dateRegistration"]) return -1;
+                    else return 0;
+                })
+            }
+
             patients.forEach((patient) => {
                 let fio = patient["surname"] + " " + patient["name"];
                 let imageSrc = patient["image"] ? "https://mobile.itkostroma.ru/images/" + patient["image"] : profileStub;
@@ -64,6 +87,12 @@ export function VAllPatients(props) {
             )
         }
         return view;
+    }
+
+    const searchPatients = () => {
+        let searchValue = document.getElementById("searchInput").value;
+        props.setRegex(searchValue);
+        props.refresh();
     }
 
     return (
@@ -125,7 +154,16 @@ export function VAllPatients(props) {
 
                     </Col>
                     <Col md={8}>
-                        <SearchInput onClick={() => console.log("onClick is waiting")}/>
+                        <SearchInput
+                            id={"searchInput"}
+                            onKeyDown={(e) => {
+                                if (e.key === "Enter") {
+                                    searchPatients()
+                                }
+                            }}
+                            onBlur={searchPatients}
+                            onClick={searchPatients}
+                        />
                         <Container>
                             <Row>
                                 <Col style={
@@ -138,6 +176,23 @@ export function VAllPatients(props) {
                                 }>
                                     {createPatientsView()}
                                 </Col>
+                            </Row>
+                            <Row style={
+                                {
+                                    display: "flex",
+                                    flexDirection: "row",
+                                    justifyContent: "space-around",
+                                    marginTop: 20
+                                }
+                            }>
+                                {props.start ? <ButtonA width={300} text={"Предыдущая страница"} onClick={() => {
+                                    props.setStart(props.start - 9);
+                                    props.refresh();
+                                }}/> : null}
+                                {props.patients.length === 10 ? <ButtonA width={300} text={"Следующая страница"} onClick={() => {
+                                    props.setStart(props.start + 9);
+                                    props.refresh();
+                                }}/>: null}
                             </Row>
                         </Container>
                     </Col>

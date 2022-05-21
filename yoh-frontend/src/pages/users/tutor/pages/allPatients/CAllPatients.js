@@ -1,15 +1,20 @@
 import React, {useContext, useEffect, useState} from "react";
 import {VAllPatients} from "./VAllPatients";
 import {UserContext} from "../../../../../context/userContext";
+import {VUsersAdmin} from "../../../admin/pages/users/VUsersAdmin";
 
 export function CAllPatients() {
     const context = useContext(UserContext);
     const [patients, setPatients] = useState([]);
     const [attachedPatients, setAttachedPatients] = useState([]);
+    const [regex, setRegex] = useState("");
+    const [start, setStart] = useState(0);
+    const [limit, setLimit] = useState(10);
     const [_, rerun] = useState(new class {});
 
-    const requestPatients = async (start, limit) => {
+    const requestPatients = async () => {
         return await fetch("/tutor/patients/getting/all?" +
+            "regex=" + encodeURIComponent(regex) + "&" +
             "start=" + encodeURIComponent(start) + "&" +
             "limit=" + encodeURIComponent(limit), {
             method: 'GET',
@@ -68,7 +73,7 @@ export function CAllPatients() {
 
     useEffect(async () => {
         if (context.token) {
-            let responsePatients = await requestPatients(0, 100);
+            let responsePatients = await requestPatients();
             let responseAttachedPatients = await requestAttachedPatients(0, 100);
 
             if (responsePatients !== null) {
@@ -88,6 +93,9 @@ export function CAllPatients() {
         context={context}
         patients={patients}
         attachedPatients={attachedPatients}
+        setRegex={setRegex}
+        setStart={setStart}
+        start={start}
         attach={requestAttachPatient}
         detach={requestDetachPatient}
         refresh={() => rerun(new class{})}

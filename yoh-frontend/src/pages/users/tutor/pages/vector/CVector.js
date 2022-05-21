@@ -7,6 +7,9 @@ export function CVector() {
     const context = useContext(UserContext);
     const [userId, setUserId] = useState(null);
     const [games, setGames] = useState([]);
+    const [regex, setRegex] = useState("");
+    const [start, setStart] = useState(0);
+    const [limit, setLimit] = useState(10);
     const [_, rerun] = useState(new class{});
 
     const requestAddingGameForPatient = async (game_id) => {
@@ -25,8 +28,9 @@ export function CVector() {
 
     const requestGetGames = async () => {
         return await fetch("/games/all?" +
-            "start=" + encodeURIComponent(0) + "&" +
-            "limit=" + encodeURIComponent(100), {
+            "regex=" + encodeURIComponent(regex) + "&" +
+            "start=" + encodeURIComponent(start) + "&" +
+            "limit=" + encodeURIComponent(limit), {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -54,6 +58,9 @@ export function CVector() {
     return <VVector
         context={context}
         games={games}
+        setRegex={setRegex}
+        setStart={setStart}
+        start={start}
         addGame={requestAddingGameForPatient}
         refresh={() => rerun(new class{})}
     />

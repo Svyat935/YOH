@@ -6,12 +6,18 @@ export function CUsersAdmin() {
     const context = useContext(UserContext);
     const [users, setUsers] = useState([]);
     const [organizations, setOrganizations] = useState([]);
+    const [regex, setRegex] = useState("");
+    const [start, setStart] = useState(0);
+    const [limit, setLimit] = useState(10);
+    const [role, setRole] = useState(-1);
     const [_, rerun] = useState(new class{});
 
     const requestUsers = async () => {
         return await fetch("/admins/users/all?" +
-            "start=" + encodeURIComponent(0) + "&" +
-            "limit=" + encodeURIComponent(100), {
+            "regex=" + encodeURIComponent(regex) + "&" +
+            "role=" + encodeURIComponent(role) + "&" +
+            "start=" + encodeURIComponent(start) + "&" +
+            "limit=" + encodeURIComponent(limit), {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -139,6 +145,10 @@ export function CUsersAdmin() {
         editPatientInfo={requestEditPatientInfo}
         editTutorInfo={requestEditTutorInfo}
         getInfoUser={requestDetailUserInfo}
+        setRegex={setRegex}
+        setRole={setRole}
+        setStart={setStart}
+        start={start}
         refresh={() => rerun(new class{})}
     />
 }

@@ -15,6 +15,7 @@ export function FilterBlock(props) {
                             name={"filterName"}
                             type={"radio"}
                             value={filterOne["value"]}
+                            onClick={filterOne["onClick"]}
                         />
                         <label htmlFor={filterOne["text"]}>{filterOne["text"]}</label>
                     </div>

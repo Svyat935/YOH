@@ -3,7 +3,7 @@ import {AdminNav} from "../../../../../components/navigate/Admin/AdminNav";
 import {Container} from "react-bootstrap";
 import Col from "react-bootstrap/Col";
 import Row from "react-bootstrap/Row";
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import {FilterBlock} from "../../../../../components/filterBlock/FilterBlock";
 import {SearchInput} from "../../../../../components/searchInput/SearchInput";
 import {InfoBlock} from "../../../../../components/infoBlock/InfoBlock";
@@ -18,12 +18,42 @@ import {InputOrganization} from "../../../../../components/InputOrganization/Inp
 
 export function VUsersAdmin(props) {
     const filterList = [
-        {"text": "По алфавиту", "value": 1},
-        {"text": "По дате", "value": 2},
-        {"text": "Пилигрим", "value": 3},
-        {"text": "Тьютор", "value": 4},
-        {"text": "Пациент", "value": 5},
-        {"text": "Исследователь", "value": 6},
+        {
+            "text": "По алфавиту", "value": 1, "onClick": () => {
+                props.setRole(-1);
+                setFilterStatus(1);
+                props.refresh();
+            }
+        },
+        {
+            "text": "По дате", "value": 2, "onClick": () => {
+                props.setRole(-1);
+                setFilterStatus(2);
+                props.refresh();
+            }
+        },
+        {
+            "text": "Пилигрим", "value": 3, "onClick": () => {
+                props.setRole(4);
+                setFilterStatus(3);
+                props.refresh();
+            }
+        },
+        {
+            "text": "Тьютор", "value": 4, "onClick": () => {
+                props.setRole(3);
+                setFilterStatus(4);
+                props.refresh();
+            }
+        },
+        {
+            "text": "Пациент", "value": 5, "onClick": () => {
+                props.setRole(1);
+                setFilterStatus(5);
+                props.refresh();
+            }
+        },
+        // {"text": "Исследователь", "value": 6, "onClick": null},
     ]
     const [show, setShow] = useState(false);
     //TODO: replace the int type with something better.
@@ -31,6 +61,9 @@ export function VUsersAdmin(props) {
     //Choose role - 4, Add Info - 5
     //TODO: And I think we can remove some the states.
     const [buttonStatus, setButtonStatus] = useState(0);
+    //Note: FilterStatus is FilterList value.
+    const [filterStatus, setFilterStatus] = useState(0);
+
     const [userForRemoving, setRemovingUser] = useState(null);
     const [userForChanging, setChangingUser] = useState(null);
     const [userInfo, setUserInfo] = useState({});
@@ -50,11 +83,26 @@ export function VUsersAdmin(props) {
     }
 
     const createBasicViewUsers = () => {
-        let users = props.users,
+        let users = props.users.slice(0, 9),
             view = [];
+
         if (users.length > 0) {
+            if (filterStatus === 1) {
+                users = users.sort((a, b) => {
+                    if (a["login"] > b["login"]) return 1;
+                    else if (a["login"] < b["login"]) return -1;
+                    else return 0;
+                });
+            } else if (filterStatus === 2) {
+                users = users.sort((a, b) => {
+                    if (a["dateRegistration"] > b["dateRegistration"]) return 1;
+                    else if (a["dateRegistration"] < b["dateRegistration"]) return -1;
+                    else return 0;
+                })
+            }
+
             users.forEach((user) => {
-                let role = user["role"] === 0 ? "Администратор":
+                let role = user["role"] === 0 ? "Администратор" :
                     user["role"] === 1 ? "Наблюдаемый" :
                         user["role"] === 2 ? "Исследователь" :
                             user["role"] === 3 ? "Тьютор" : "Без Роли"
@@ -62,7 +110,7 @@ export function VUsersAdmin(props) {
                     <InfoBlock onClick={
                         async () => {
                             let userInfo = await props.getInfoUser(user["id"]);
-                            if (userInfo !== null){
+                            if (userInfo !== null) {
                                 userInfo = userInfo["jsonObject"];
                                 setUserInfo(userInfo);
                             }
@@ -235,15 +283,15 @@ export function VUsersAdmin(props) {
         let user = props.users.filter(user => user.login === currentUserLogin)[0];
         if (!user) user = userForChanging;
 
-        if (!fName.value){
+        if (!fName.value) {
             fName.style.border = validStyle;
             validStatus = false;
         }
-        if (!fSurname.value){
+        if (!fSurname.value) {
             fSurname.style.border = validStyle;
             validStatus = false;
         }
-        if (!fSecondName.value){
+        if (!fSecondName.value) {
             fSecondName.style.border = validStyle;
             validStatus = false;
         }
@@ -258,7 +306,7 @@ export function VUsersAdmin(props) {
 
             let response = await props.editTutorInfo(body);
 
-            if (response){
+            if (response) {
                 if (response.code === 401) {
                     console.log(response);
                     validStatus = false;
@@ -266,7 +314,7 @@ export function VUsersAdmin(props) {
             }
         }
 
-        if (validStatus){
+        if (validStatus) {
             props.refresh();
             clearAll();
         }
@@ -285,20 +333,20 @@ export function VUsersAdmin(props) {
         let user = props.users.filter(user => user.login === currentUserLogin)[0];
         if (!user) user = userForChanging;
 
-        if (!fName.value){
+        if (!fName.value) {
             fName.style.border = validStyle;
             validStatus = false;
         }
-        if (!fSurname.value){
+        if (!fSurname.value) {
             fSurname.style.border = validStyle;
             validStatus = false;
         }
-        if (!fSecondName.value){
+        if (!fSecondName.value) {
             fSecondName.style.border = validStyle;
             validStatus = false;
         }
 
-        if (validStatus){
+        if (validStatus) {
             let body = {};
             body["name"] = fName.value;
             body["surname"] = fSurname.value;
@@ -312,7 +360,7 @@ export function VUsersAdmin(props) {
 
             let response = await props.editPatientInfo(body);
 
-            if (response){
+            if (response) {
                 if (response.code === 401) {
                     console.log(response);
                     validStatus = false;
@@ -320,7 +368,7 @@ export function VUsersAdmin(props) {
             }
         }
 
-        if (validStatus){
+        if (validStatus) {
             props.refresh();
             clearAll();
         }
@@ -370,12 +418,12 @@ export function VUsersAdmin(props) {
                 <ButtonB text={"Пациент"} onClick={
                     async () => {
                         let id = null;
-                        if (currentUserLogin !== null){
+                        if (currentUserLogin !== null) {
                             let user = props.users.filter(
                                 (user_) => user_.login === currentUserLogin
                             )[0];
                             id = user["id"];
-                        }else{
+                        } else {
                             id = userForChanging["id"];
                         }
 
@@ -388,12 +436,12 @@ export function VUsersAdmin(props) {
                 <ButtonB text={"Тьютор"} onClick={
                     async () => {
                         let id = null;
-                        if (currentUserLogin !== null){
+                        if (currentUserLogin !== null) {
                             let user = props.users.filter(
                                 (user_) => user_.login === currentUserLogin
                             )[0];
                             id = user["id"];
-                        }else{
+                        } else {
                             id = userForChanging["id"];
                         }
 
@@ -553,6 +601,12 @@ export function VUsersAdmin(props) {
             role === 3 ? fillTutorInfoView() : null;
     }
 
+    const searchUser = () => {
+        let searchValue = document.getElementById("searchInput").value;
+        props.setRegex(searchValue);
+        props.refresh();
+    }
+
     return (
         <Back navPanel={<AdminNav context={props.context}/>}>
             <Modal
@@ -572,7 +626,7 @@ export function VUsersAdmin(props) {
                     {
                         buttonStatus === 0 ?
                             createUserView() : buttonStatus === 1 ?
-                                createRemovingViewUsers() : buttonStatus === 2 ?
+                            createRemovingViewUsers() : buttonStatus === 2 ?
                                 "Вы уверен что хотите удалить пользователя c Логиным:" + userForRemoving["login"] + "?" :
                                 buttonStatus === 3 ? chooseChangeAction() :
                                     buttonStatus === 4 ? changingRoleView() :
@@ -592,14 +646,14 @@ export function VUsersAdmin(props) {
                         {
                             buttonStatus === 0 ?
                                 <ButtonB text={"Добавить"} onClick={addUser}/> :
-                                    buttonStatus === 2 ?
-                                        <ButtonB text={"Удалить"} onClick={removeUser}/> :
-                                        buttonStatus === 5 ?
-                                            <ButtonB text={"Добавить информацию"}
-                                                     onClick={
-                                                         () => role === 1 ?
-                                                             addInfoForPatient() : addInfoForTutor()}
-                                            /> : null
+                                buttonStatus === 2 ?
+                                    <ButtonB text={"Удалить"} onClick={removeUser}/> :
+                                    buttonStatus === 5 ?
+                                        <ButtonB text={"Добавить информацию"}
+                                                 onClick={
+                                                     () => role === 1 ?
+                                                         addInfoForPatient() : addInfoForTutor()}
+                                        /> : null
                         }
                     </div>
                 </Modal.Footer>
@@ -626,7 +680,16 @@ export function VUsersAdmin(props) {
                         }}/>
                     </Col>
                     <Col md={8}>
-                        <SearchInput onClick={() => console.log("onClick is waiting")}/>
+                        <SearchInput
+                            id={"searchInput"}
+                            onKeyDown={(e) => {
+                                if (e.key === "Enter") {
+                                    searchUser()
+                                }
+                            }}
+                            onBlur={searchUser}
+                            onClick={searchUser}
+                        />
                         <Container>
                             <Row>
                                 <Col style={
@@ -639,6 +702,23 @@ export function VUsersAdmin(props) {
                                 }>
                                     {createBasicViewUsers()}
                                 </Col>
+                            </Row>
+                            <Row style={
+                                {
+                                    display: "flex",
+                                    flexDirection: "row",
+                                    justifyContent: "space-around",
+                                    marginTop: 20
+                                }
+                            }>
+                                {props.start ? <ButtonA width={300} text={"Предыдущая страница"} onClick={() => {
+                                    props.setStart(props.start - 9);
+                                    props.refresh();
+                                }}/> : null}
+                                {props.users.length === 10 ? <ButtonA width={300} text={"Следующая страница"} onClick={() => {
+                                    props.setStart(props.start + 9);
+                                    props.refresh();
+                                }}/>: null}
                             </Row>
                         </Container>
                     </Col>

@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useState} from "react";
 import {Container} from "react-bootstrap";
 import Col from "react-bootstrap/Col";
 import Row from "react-bootstrap/Row";
@@ -13,15 +13,43 @@ import {useNavigate} from "react-router-dom";
 
 export function VHomePatient(props) {
     let filterList =[
-        {"text": "По названию", "value": 1},
-        {"text": "По описанию", "value": 2},
-        {"text": "По статусу", "value": 3},
+        {"text": "По названию", "value": 1, "onClick": () => {
+                setFilterStatus(1);
+                props.refresh();
+            }
+        },
+        {"text": "По описанию", "value": 2, "onClick": () => {
+                setFilterStatus(2);
+                props.refresh();
+            }
+        },
+        {"text": "По статусу", "value": 3, "onClick": () => {
+                setFilterStatus(3);
+                props.refresh();
+            }
+        },
     ]
     const router = useNavigate();
+    const [filterStatus, setFilterStatus] = useState(0);
+
     const createBasicViewGames = () => {
-        let games = props.games,
+        let games = props.games.slice(0, 9),
             view = [];
         if (games.length > 0) {
+            if (filterStatus === 1) {
+                games = games.sort((a, b) => {
+                    if (a["name"] > b["name"]) return 1;
+                    else if (a["name"] < b["name"]) return -1;
+                    else return 0;
+                });
+            } else if (filterStatus === 2){
+                games = games.sort((a, b) => {
+                    if (a["description"] > b["description"]) return 1;
+                    else if (a["description"] < b["description"]) return -1;
+                    else return 0;
+                })
+            }
+
             games.forEach((game) => {
                 view.push(
                     <InfoBlock key={game["id"]} text={game["name"]} onClick={() => {
@@ -55,6 +83,12 @@ export function VHomePatient(props) {
         return view;
     }
 
+    const searchGame = () => {
+        let searchValue = document.getElementById("searchInput").value;
+        props.setRegex(searchValue);
+        props.refresh();
+    }
+
     return (
         <Back navPanel={<PatientNav context={props.context}/>}>
             <Container style={{marginTop: 20}}>
@@ -72,7 +106,16 @@ export function VHomePatient(props) {
                         <FilterBlock filters={filterList}/>
                     </Col>
                     <Col md={8}>
-                        <SearchInput onClick={() => console.log("onClick is waiting")}/>
+                        <SearchInput
+                            id={"searchInput"}
+                            onKeyDown={(e) => {
+                                if (e.key === "Enter") {
+                                    searchGame()
+                                }
+                            }}
+                            onBlur={searchGame}
+                            onClick={searchGame}
+                        />
                         <Container>
                             <Row>
                                 <Col style={
@@ -85,6 +128,23 @@ export function VHomePatient(props) {
                                 }>
                                     {createBasicViewGames()}
                                 </Col>
+                            </Row>
+                            <Row style={
+                                {
+                                    display: "flex",
+                                    flexDirection: "row",
+                                    justifyContent: "space-around",
+                                    marginTop: 20
+                                }
+                            }>
+                                {props.start ? <ButtonA width={300} text={"Предыдущая страница"} onClick={() => {
+                                    props.setStart(props.start - 9);
+                                    props.refresh();
+                                }}/> : null}
+                                {props.games.length === 10 ? <ButtonA width={300} text={"Следующая страница"} onClick={() => {
+                                    props.setStart(props.start + 9);
+                                    props.refresh();
+                                }}/>: null}
                             </Row>
                         </Container>
                     </Col>

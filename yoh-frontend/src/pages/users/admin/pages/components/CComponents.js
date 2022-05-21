@@ -1,16 +1,21 @@
 import {VComponents} from "./VComponents";
 import React, {useContext, useEffect, useState} from "react";
 import {UserContext} from "../../../../../context/userContext";
+import {VUsersAdmin} from "../users/VUsersAdmin";
 
 export function CComponents() {
     const context = useContext(UserContext);
     const [games, setGames] = useState([]);
+    const [regex, setRegex] = useState("");
+    const [start, setStart] = useState(0);
+    const [limit, setLimit] = useState(10);
     const [_, rerun] = useState(new class{});
 
     const requestGames = async () => {
         return await fetch("/games/all?" +
-            "start=" + encodeURIComponent(0) + "&" +
-            "limit=" + encodeURIComponent(100), {
+            "regex=" + encodeURIComponent(regex) + "&" +
+            "start=" + encodeURIComponent(start) + "&" +
+            "limit=" + encodeURIComponent(limit), {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -83,6 +88,9 @@ export function CComponents() {
         sendGames={requestSendGames}
         removeGame={requestRemoveGame}
         changeGame={requestChangeGame}
+        setRegex={setRegex}
+        setStart={setStart}
+        start={start}
         context={context}
     />
 }

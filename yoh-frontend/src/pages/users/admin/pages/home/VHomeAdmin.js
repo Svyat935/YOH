@@ -47,7 +47,7 @@ export function VHomeAdmin(props) {
         return (
             <div>
                 <h3 style={{marginTop: 20}}>Последние зарегистрированные пользователи:</h3>
-                <div style={{display: "flex", justifyContent: "space-evenly"}}>
+                <div style={{display: "flex", justifyContent: "space-evenly", flexWrap: "wrap"}}>
                     {view}
                     {view.length === 5 ? <RightArrow onClick={() => router("/user/admin/users/")}/> : null}
                 </div>
@@ -88,9 +88,9 @@ export function VHomeAdmin(props) {
         return (
             <div>
                 <h3 style={{marginTop: 20}}>Последние игры в системе:</h3>
-                <div style={{display: "flex", justifyContent: "space-evenly"}}>
+                <div style={{display: "flex", justifyContent: "space-evenly", flexWrap: "wrap"}}>
                     {view}
-                    {view.length === 5 ? <RightArrow onClick={() => router("/admin/components/")}/> : null}
+                    {view.length === 5 ? <RightArrow onClick={() => router("/user/admin/components/")}/> : null}
                 </div>
             </div>
         )

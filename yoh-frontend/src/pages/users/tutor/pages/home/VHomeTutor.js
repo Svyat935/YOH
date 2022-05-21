@@ -22,7 +22,7 @@ export function VHomeTutor(props) {
                     <InfoBlock key={user["id"]} text={
                         user["surname"] && user["name"] ?
                             user["surname"] + user["name"] : "Отсутствует ФИО"
-                    }>
+                    } onClick={() => router("/user/tutor/patients/")}>
                         <div>
                             <img style={{width: "100%"}} src={profileStub} alt={'profile'}/>
                         </div>
