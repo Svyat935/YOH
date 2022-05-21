@@ -4,7 +4,6 @@ import gameStub from "../../../../../assets/gameStub.jpg";
 import {useNavigate} from "react-router-dom";
 import {ButtonB} from "../../../../../components/buttons/ButtonB/ButtonB";
 import {Back} from "../../../../../components/back/Back";
-import {AdminNav} from "../../../../../components/navigate/Admin/AdminNav";
 import Modal from "react-bootstrap/Modal";
 import {Container} from "react-bootstrap";
 import Row from "react-bootstrap/Row";
@@ -86,7 +85,7 @@ export function VVector(props) {
     }
 
     return (
-        <Back navPanel={<TutorNav/>}>
+        <Back navPanel={<TutorNav context={props.context}/>}>
             <Modal
                 show={show}
                 backdrop={true}

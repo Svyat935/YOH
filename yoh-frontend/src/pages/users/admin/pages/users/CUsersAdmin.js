@@ -131,6 +131,7 @@ export function CUsersAdmin() {
     }, [context, _])
 
     return <VUsersAdmin
+        context={context}
         users={users}
         organizations={organizations}
         createUser={requestCreateUser}

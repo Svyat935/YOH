@@ -19,7 +19,7 @@ export function VGame() {
     }, [context])
 
     return (
-        <Back navPanel={<TutorNav/>}>
+        <Back navPanel={<TutorNav context={context}/>}>
             {view}
         </Back>
     )

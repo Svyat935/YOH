@@ -66,7 +66,7 @@ export function VPatients(props) {
     }
 
     return (
-        <Back navPanel={<TutorNav/>}>
+        <Back navPanel={<TutorNav context={props.context}/>}>
             <Modal
                 show={show}
                 backdrop={true}

@@ -33,6 +33,7 @@ export function CDetailInfo() {
     }, [context, _])
 
     return <VDetailInfo
+        context={context}
         user={user}
         refresh={() => rerun(new class{})}
     />

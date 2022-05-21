@@ -79,6 +79,7 @@ export function CAccount() {
     }, [context, _])
 
     return <VAccount
+        context={context}
         accountInfo={accountInfo}
         changeImage={requestChangeAccountImage}
         changeInfo={requestChangeAccountInfo}
