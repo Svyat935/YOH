@@ -23,7 +23,7 @@ import java.util.UUID;
 public class GameStatistic {
     public GameStatistic() {}
 
-    public GameStatistic(GamePatient gamePatient, Short type, LocalDateTime dateAction, Short answerNumber, String details) {
+    public GameStatistic(GamePatient gamePatient, Short type, LocalDateTime dateAction, Short answerNumber, LocalDateTime dateStart, Integer clicks, Integer missClicks, String details) {
         //TODO
 //        this.game = game;
 //        this.patient = patient;
@@ -119,7 +119,42 @@ public class GameStatistic {
     }
 
 
-////    @Type(type = "jsonb")
+    @Column(name = "dateStart", nullable = true)
+    private LocalDateTime dateStart;
+
+    public LocalDateTime getDateStart() {
+        return dateStart;
+    }
+
+    public void setDateStart(LocalDateTime dateStart) {
+        this.dateStart = dateStart;
+    }
+
+
+    @Column(name = "clicks", nullable = true)
+    private Integer clicks;
+
+    public Integer getClicks() {
+        return clicks;
+    }
+
+    public void setClicks(Integer clicks) {
+        this.clicks = clicks;
+    }
+
+
+    @Column(name = "missClicks", nullable = true)
+    private Integer missClicks;
+
+    public Integer getMissClicks() {
+        return missClicks;
+    }
+
+    public void setMissClicks(Integer missClicks) {
+        this.missClicks = missClicks;
+    }
+
+    ////    @Type(type = "jsonb")
 //    @Transient
 //    @Column(name = "details", nullable = true, columnDefinition = "jsonb")
 //    private Jsonb details;
