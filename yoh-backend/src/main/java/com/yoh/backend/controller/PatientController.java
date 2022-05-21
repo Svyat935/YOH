@@ -162,7 +162,7 @@ public class PatientController {
                 throw new Exception("Game is not Active for this account");
             for (JsonObject statisticToSend: statisticArray.getRecords()){
                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("M/d/yyyy, h:m:s a");
-                LocalDateTime localDateTime = LocalDateTime.parse(statisticToSend.get("DateAction").toString(), formatter);
+                LocalDateTime dateAction = LocalDateTime.parse(statisticToSend.get("DateAction").toString(), formatter);
                 com.google.gson.JsonObject jsonObject;
 
                 String detailsString;
@@ -176,6 +176,22 @@ public class PatientController {
                     AnswerNumber = Short.valueOf(statisticToSend.get("AnswerNumber").toString());
                 else
                     AnswerNumber = null;
+
+                LocalDateTime dateStart;
+                if (statisticToSend.get("DateStart") != null)
+                    dateStart = LocalDateTime.parse(statisticToSend.get("DateStart").toString(), formatter);
+                else
+                    dateStart = null;
+
+                Integer clicks;
+                if (statisticToSend.get("Clicks") != null)
+                    clicks = Integer.valueOf(statisticToSend.get("Clicks").toString());
+                else clicks = null;
+
+                Integer missClicks;
+                if (statisticToSend.get("MissClicks") != null)
+                    missClicks = Integer.valueOf(statisticToSend.get("MissClicks").toString());
+                else missClicks = null;
 
 //                String detailsString;
                 if (jsonObject != null) {
@@ -191,10 +207,14 @@ public class PatientController {
                     this.gameStatusService.updateGameStatus(gameStatus);
                 }
 
-                GameStatistic statistic = new GameStatistic(gamePatient,
+                GameStatistic statistic = new GameStatistic(
+                        gamePatient,
                         type,
-                        localDateTime,
+                        dateAction,
                         AnswerNumber,
+                        dateStart,
+                        clicks,
+                        missClicks,
                         detailsString);
                 this.gameStatisticService.createGameStatistic(statistic);
                 this.patientService.updatePatient(patient);
