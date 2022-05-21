@@ -4,50 +4,52 @@ class StatRecord {
 		this.endTime = null;
 		this.missClicks = [];
 		this.answers = [];
-		this.clicks_info = {};
-		this.stat_func = function (stat_class) {
-			return function (event) {
-				let x = event.layerX - event.layerX % 10;
-				let y = event.layerY - event.layerY % 10;
-				let x_y = x + '.' + y;
+		this.current_level = 1;
+		this.current_level_time_start = null;
+	}
 
-				if (x_y in stat_class.clicks_info) {
-					stat_class.clicks_info[x_y]++;
-				}
-				else {
-					stat_class.clicks_info[x_y] = 1;
-				}
-			};
-		};
+	getTime() {
+		return new Date().toLocaleString("en-US", {timeZone: "Europe/Moscow"});
+	}
+
+	enterLevel(params) {
+		this.current_level = params['answer_number'];
+		this.current_level_time_start = this.getTime();
 	}
 
 	gameStart(params) {
-		this.startTime = new Date().toLocaleString("en-US", {timeZone: "Europe/Moscow"});
-		window.addEventListener('click', this.stat_func(this));
+		this.startTime = this.getTime();
+		this.enterLevel({
+			answer_number: 1
+		});
 	}
 
 	sendMissClick(params) {
 		if (this.startTime) {
-			this.missClicks.push([new Date().toLocaleString("en-US", {timeZone: "Europe/Moscow"}), params]);
+			if (params === null) {
+				params = {};
+			}
+			params['answer_number'] = this.current_level;
+			this.missClicks.push([this.getTime(), params]);
 		}
 	}
 
 	sendAnswer(params) {
-		this.answers.push([new Date().toLocaleString("en-US", {timeZone: "Europe/Moscow"}), params]);
+		if (params === null) {
+			params = {};
+		}
+		params['time_start'] = this.current_level_time_start;
+		params['answer_number'] = this.current_level;
+		this.answers.push([this.getTime(), params]);
 	}
 
 	endGame(params) {
-		this.endTime = new Date().toLocaleString("en-US", {timeZone: "Europe/Moscow"});
+		this.endTime = this.getTime();
 		let stats = {
 			startTime: this.startTime,
 			endTime: this.endTime,
 			missClicks: this.missClicks,
-			answers: this.answers,
-			clicks: this.clicks_info,
-			window_info: {
-				width: window.innerWidth,
-				height: window.innerHeight
-			}
+			answers: this.answers
 		};
 		fetch('/api/send_statistic', {method: 'POST', body: JSON.stringify(stats)});
 		this.#sendEndGameForMobile();
