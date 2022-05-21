@@ -65,7 +65,10 @@ def send_statistic_route():
         record = {
             'DateAction': event_date,
             'Type': event_type['correct_answer' if event_params['correct'] else 'incorrect_answer'],
-            'AnswerNumber': event_params['answer_number']
+            'AnswerNumber': event_params['answer_number'],
+            'Details': {
+                'time_start': event_params.get('time_start')
+            }
         }
         response_params['records'].append(record)
 
@@ -95,7 +98,7 @@ def send_statistic_route():
     headers = {
         'Content-Type': 'application/json',
         'token': session['user'],
-        'game': 'ed03f7c8-6a95-4922-b7e5-b0d1ffd41f02'  # session['current_game']
+        'game': '8e520e72-def0-4f05-8173-691e687e8931'  # session['current_game']
     }
     send_url = 'http://yoh-backend:8080/patient/games/statistics/sending'
 
