@@ -42,7 +42,7 @@ public class GameStatisticRepository {
     public List<?> sdsasdew(GamePatient gamePatient) {
         Session session = sessionFactory.openSession();
         try {
-            String sql = String.format("select array_agg(\"id\") as \"ids\" from \"started_game\" where \"gamePatient\" = %s and \"date_end\" is not null order by \"date_end\";", gamePatient.getId());
+            String sql = String.format("select array_agg(\"id\") as \"ids\" from \"started_game\" where \"gamePatient\" = '%s' and \"date_end\" is not null order by \"date_end\";", gamePatient.getId());
 //            List<?> result = session.createSQLQuery(sql).list();
             return session.createSQLQuery(sql).list();
         }
