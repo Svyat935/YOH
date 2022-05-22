@@ -1,6 +1,7 @@
 package com.yoh.backend.controller;
 
 import antlr.StringUtils;
+import at.favre.lib.crypto.bcrypt.BCrypt;
 import com.github.cliftonlabs.json_simple.JsonObject;
 import com.yoh.backend.entity.*;
 import com.yoh.backend.enums.Gender;
@@ -215,7 +216,11 @@ public class AdminController {
         try {
             Admin admin = this.adminService.getAdminByUser(this.userService.getUserById(this.userService.verifyToken(token)));
             if(this.gameService.checkGameByName(name)){
-                String url = "/app/games/" + name;
+
+                Game game = new Game(name, type, description, null, LocalDateTime.now());
+
+                String url = "/app/games/" + game.getId().toString();
+//                String sd = wrapper+ "/" +game.getId().toString()+"/";
                 //Unzip
                 File tempFile = File.createTempFile("prefix-", "-suffix");
 //            tempFile.deleteOnExit();
@@ -223,9 +228,13 @@ public class AdminController {
                 ZipFile zipFile = new ZipFile(tempFile);
                 zipFile.extractAll(url);
                 tempFile.delete();
-                Game game = new Game(name, type, description, wrapper+ "/" +name+"/", LocalDateTime.now());
+
+                game.setUrl(wrapper+ "/" +game.getId().toString()+"/");
+
+
                 if (image != null) {
-                    String orgName = game.getName() + "." + FilenameUtils.getExtension(file.getOriginalFilename());
+//                    String orgName = game.getName() + "." + FilenameUtils.getExtension(file.getOriginalFilename());
+                    String orgName = game.getId() + "." + FilenameUtils.getExtension(file.getOriginalFilename());
                     Path filepath = Paths.get("/app/images", orgName);
                     if(new  File(filepath.toString()).exists()){
                         System.out.println("File exists");
@@ -306,6 +315,46 @@ public class AdminController {
         }
 
         return destFile;
+    }
+
+    @PostMapping(path = "/user/changePassword")
+    public JSONResponse changePassword(@RequestParam("token") String token,
+                                       @Valid @RequestBody ChangePasswordRequest changePasswordRequest){
+        try {
+            Admin admin = this.adminService.getAdminByUser(this.userService.getUserById(this.userService.verifyToken(token)));
+            User user = this.userService.getUserById(UUID.fromString(changePasswordRequest.getUser_id()));
+            String password = changePasswordRequest.getPassword();
+            String hashString = BCrypt.withDefaults().hashToString(13, password.toCharArray());
+            user.setPassword(hashString);
+            this.userService.saveUser(user);
+            JsonObject response = new JsonObject();
+            response.put("message", "Password was changed");
+            return new JSONResponse(200, response);
+        }
+        catch (IllegalArgumentException e){
+            JsonObject exceptionResponse = new JsonObject();
+            exceptionResponse.put("message", e.getMessage());
+            return new JSONResponse(401, exceptionResponse);
+        }
+    }
+
+    @PostMapping(path = "/user/changeEmail")
+    public JSONResponse changePassword(@RequestParam("token") String token,
+                                       @Valid @RequestBody ChangeEmailRequest changeEmailRequest){
+        try {
+            Admin admin = this.adminService.getAdminByUser(this.userService.getUserById(this.userService.verifyToken(token)));
+            User user = this.userService.getUserById(UUID.fromString(changeEmailRequest.getUser_id()));
+            user.setEmail(changeEmailRequest.getEmail());
+            this.userService.saveUser(user);
+            JsonObject response = new JsonObject();
+            response.put("message", "Email was changed");
+            return new JSONResponse(200, response);
+        }
+        catch (IllegalArgumentException e){
+            JsonObject exceptionResponse = new JsonObject();
+            exceptionResponse.put("message", e.getMessage());
+            return new JSONResponse(401, exceptionResponse);
+        }
     }
 
     @GetMapping(path = "/organizations/all")

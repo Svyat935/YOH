@@ -462,113 +462,104 @@ public class TutorController {
         }
     }
 
-    @GetMapping(path = "/patients/games/get-statistics")
-    public JSONResponse getStatisticsForGame(@RequestHeader("token") String token,
-                                             @RequestParam String patientID) {
-        try {
-            //TODO message
-            Tutor tutor = this.tutorService.getTutorByUser(this.userService.getUserById(this.userService.verifyToken(token)));
-            Patient patient = this.patientService.getPatientById(UUID.fromString(patientID));
-            ArrayList<JsonObject> gameStatisticList = new ArrayList<>();
-            for (GamePatient gamePatient : this.gamePatientService.getAllGamePatientsByPatient(patient)){
-                List<GameStatistic> statisticList = this.gameStatisticService.getGameStatisticByGamePatient(gamePatient);
-                if (statisticList != null) {
-                    for (GameStatistic statistic: statisticList) {
-                        JsonObject gameStatisticInfo = new JsonObject();
-                        gameStatisticInfo.put("id", statistic.getId().toString());
-                        gameStatisticInfo.put("patientID", statistic.getGamePatient().getPatient().getId().toString());
-                        gameStatisticInfo.put("gameID", statistic.getGamePatient().getGame().getId().toString());
-                        gameStatisticInfo.put("type", statistic.getType().toString());
-                        gameStatisticInfo.put("dateAction", statistic.getDateAction().toString());
-                        gameStatisticInfo.put("answerNumber", statistic.getAnswerNumber().toString());
-                        gameStatisticInfo.put("dateStart", statistic.getDateStart().toString());
-                        gameStatisticInfo.put("clicks", statistic.getClicks().toString());
-                        gameStatisticInfo.put("missClicks", statistic.getMissClicks().toString());
-                        gameStatisticList.add(gameStatisticInfo);
-                    }
-                }
-            }
-            JsonObject response = new JsonObject();
-            response.put("gameStatisticList", gameStatisticList);
-            return new JSONResponse(200, response);
-        }
-        catch (IllegalArgumentException e){
-            JsonObject exceptionResponse = new JsonObject();
-            exceptionResponse.put("message", e.getMessage());
-            return new JSONResponse(401, exceptionResponse);
-        }
-    }
-
-    @GetMapping(path = "/patients/games/get-statistic")
-    public JSONResponse getStatisticsForGame(@RequestHeader("token") String token,
-                                             @RequestParam String patientID,
-                                             @RequestParam String gameID) {
-        try {
-            //TODO message
-            Tutor tutor = this.tutorService.getTutorByUser(this.userService.getUserById(this.userService.verifyToken(token)));
-            Patient patient = this.patientService.getPatientById(UUID.fromString(patientID));
-            Game game = this.gameService.getGameById(UUID.fromString(gameID));
-            ArrayList<JsonObject> gameStatisticList = new ArrayList<>();
-            GamePatient gamePatient = this.gamePatientService.getGamePatientByGameAndPatient(game, patient);
-            List<GameStatistic> statisticList = this.gameStatisticService.getGameStatisticByGamePatient(gamePatient);
-            if (statisticList != null) {
-                for (GameStatistic statistic: statisticList) {
-                    JsonObject gameStatisticInfo = new JsonObject();
-                    gameStatisticInfo.put("id", statistic.getId().toString());
-                    gameStatisticInfo.put("patientID", statistic.getGamePatient().getPatient().getId().toString());
-                    gameStatisticInfo.put("gameID", statistic.getGamePatient().getGame().getId().toString());
-                    gameStatisticInfo.put("type", statistic.getType().toString());
-                    gameStatisticInfo.put("dateAction", statistic.getDateAction().toString());
-                    gameStatisticInfo.put("answerNumber", statistic.getAnswerNumber().toString());
-                    gameStatisticInfo.put("dateStart", statistic.getDateStart().toString());
-                    gameStatisticInfo.put("clicks", statistic.getClicks().toString());
-                    gameStatisticInfo.put("missClicks", statistic.getMissClicks().toString());
-                    gameStatisticList.add(gameStatisticInfo);
-                }
-            }
-            JsonObject response = new JsonObject();
-            response.put("gameStatisticList", gameStatisticList);
-            return new JSONResponse(200, response);
-        }
-        catch (IllegalArgumentException e){
-            JsonObject exceptionResponse = new JsonObject();
-            exceptionResponse.put("message", e.getMessage());
-            return new JSONResponse(401, exceptionResponse);
-        }
-    }
-
-    @DeleteMapping(path = "/patients/games/clear-statistics")
-    public JSONResponse clearStatisticsForGame(@RequestHeader("token") String token,
-                                               @Valid @RequestBody GameToPatient gameToPatient){
-        try {
-            Tutor tutor = this.tutorService.getTutorByUser(this.userService.getUserById(this.userService.verifyToken(token)));
-            Patient patient = this.patientService.getPatientById(UUID.fromString(gameToPatient.getPatient_id()));
-            Game game = this.gameService.getGameById(UUID.fromString(gameToPatient.getGame_id()));
-            GamePatient gamePatient = this.gamePatientService.getGamePatientByGameAndPatient(game, patient);
-            if (gamePatient == null) throw new IllegalArgumentException("Sorry, but GamePatient was not found.");
-            List<GameStatistic> gameStatisticList = this.gameStatisticService.getGameStatisticByGamePatient(gamePatient);
-            for (GameStatistic gameStatistic: gameStatisticList){
-                this.gameStatisticService.deleteGameStatistic(gameStatistic);
-            }
-//            ArrayList<GameStatistic> newGameStatistic = new ArrayList<>();
-//            UUID gameToSearch = UUID.fromString(gameToPatient.getGame_id());
-//            for (GameStatistic gameStatistic : patient.getGameStatistics()){
-//                if (gameStatistic.getGame().getId() != gameToSearch){
-//                    newGameStatistic.add(gameStatistic);
+//    @GetMapping(path = "/patients/games/get-statistics")
+//    public JSONResponse getStatisticsForGame(@RequestHeader("token") String token,
+//                                             @RequestParam String patientID) {
+//        try {
+//            //TODO message
+//            Tutor tutor = this.tutorService.getTutorByUser(this.userService.getUserById(this.userService.verifyToken(token)));
+//            Patient patient = this.patientService.getPatientById(UUID.fromString(patientID));
+//            ArrayList<JsonObject> gameStatisticList = new ArrayList<>();
+//            for (GamePatient gamePatient : this.gamePatientService.getAllGamePatientsByPatient(patient)){
+//                List<GameStatistic> statisticList = this.gameStatisticService.getGameStatisticByGamePatient(gamePatient);
+//                if (statisticList != null) {
+//                    for (GameStatistic statistic: statisticList) {
+//                        JsonObject gameStatisticInfo = new JsonObject();
+//                        gameStatisticInfo.put("id", statistic.getId().toString());
+//                        gameStatisticInfo.put("patientID", statistic.getGamePatient().getPatient().getId().toString());
+//                        gameStatisticInfo.put("gameID", statistic.getGamePatient().getGame().getId().toString());
+//                        gameStatisticInfo.put("type", statistic.getType().toString());
+//                        gameStatisticInfo.put("dateAction", statistic.getDateAction().toString());
+//                        gameStatisticInfo.put("answerNumber", statistic.getAnswerNumber().toString());
+//                        gameStatisticInfo.put("dateStart", statistic.getDateStart().toString());
+//                        gameStatisticInfo.put("clicks", statistic.getClicks().toString());
+//                        gameStatisticInfo.put("missClicks", statistic.getMissClicks().toString());
+//                        gameStatisticList.add(gameStatisticInfo);
+//                    }
 //                }
 //            }
-//            patient.setGameStatistics(newGameStatistic);
-//            this.patientService.updatePatient(patient);
-            JsonObject response = new JsonObject();
-            response.put("message", "Game statistic was cleared");
-            return new JSONResponse(200, response);
-        }
-        catch (IllegalArgumentException e){
-            JsonObject exceptionResponse = new JsonObject();
-            exceptionResponse.put("message", e.getMessage());
-            return new JSONResponse(401, exceptionResponse);
-        }
-    }
+//            JsonObject response = new JsonObject();
+//            response.put("gameStatisticList", gameStatisticList);
+//            return new JSONResponse(200, response);
+//        }
+//        catch (IllegalArgumentException e){
+//            JsonObject exceptionResponse = new JsonObject();
+//            exceptionResponse.put("message", e.getMessage());
+//            return new JSONResponse(401, exceptionResponse);
+//        }
+//    }
+
+//    @GetMapping(path = "/patients/games/get-statistic")
+//    public JSONResponse getStatisticsForGame(@RequestHeader("token") String token,
+//                                             @RequestParam String patientID,
+//                                             @RequestParam String gameID) {
+//        try {
+//            //TODO message
+//            Tutor tutor = this.tutorService.getTutorByUser(this.userService.getUserById(this.userService.verifyToken(token)));
+//            Patient patient = this.patientService.getPatientById(UUID.fromString(patientID));
+//            Game game = this.gameService.getGameById(UUID.fromString(gameID));
+//            ArrayList<JsonObject> gameStatisticList = new ArrayList<>();
+//            GamePatient gamePatient = this.gamePatientService.getGamePatientByGameAndPatient(game, patient);
+//            List<GameStatistic> statisticList = this.gameStatisticService.getGameStatisticByGamePatient(gamePatient);
+//            if (statisticList != null) {
+//                for (GameStatistic statistic: statisticList) {
+//                    JsonObject gameStatisticInfo = new JsonObject();
+//                    gameStatisticInfo.put("id", statistic.getId().toString());
+//                    gameStatisticInfo.put("patientID", statistic.getGamePatient().getPatient().getId().toString());
+//                    gameStatisticInfo.put("gameID", statistic.getGamePatient().getGame().getId().toString());
+//                    gameStatisticInfo.put("type", statistic.getType().toString());
+//                    gameStatisticInfo.put("dateAction", statistic.getDateAction().toString());
+//                    gameStatisticInfo.put("answerNumber", statistic.getAnswerNumber().toString());
+//                    gameStatisticInfo.put("dateStart", statistic.getDateStart().toString());
+//                    gameStatisticInfo.put("clicks", statistic.getClicks().toString());
+//                    gameStatisticInfo.put("missClicks", statistic.getMissClicks().toString());
+//                    gameStatisticList.add(gameStatisticInfo);
+//                }
+//            }
+//            JsonObject response = new JsonObject();
+//            response.put("gameStatisticList", gameStatisticList);
+//            return new JSONResponse(200, response);
+//        }
+//        catch (IllegalArgumentException e){
+//            JsonObject exceptionResponse = new JsonObject();
+//            exceptionResponse.put("message", e.getMessage());
+//            return new JSONResponse(401, exceptionResponse);
+//        }
+//    }
+
+//    @DeleteMapping(path = "/patients/games/clear-statistics")
+//    public JSONResponse clearStatisticsForGame(@RequestHeader("token") String token,
+//                                               @Valid @RequestBody GameToPatient gameToPatient){
+//        try {
+//            Tutor tutor = this.tutorService.getTutorByUser(this.userService.getUserById(this.userService.verifyToken(token)));
+//            Patient patient = this.patientService.getPatientById(UUID.fromString(gameToPatient.getPatient_id()));
+//            Game game = this.gameService.getGameById(UUID.fromString(gameToPatient.getGame_id()));
+//            GamePatient gamePatient = this.gamePatientService.getGamePatientByGameAndPatient(game, patient);
+//            if (gamePatient == null) throw new IllegalArgumentException("Sorry, but GamePatient was not found.");
+//            List<GameStatistic> gameStatisticList = this.gameStatisticService.getGameStatisticByGamePatient(gamePatient);
+//            for (GameStatistic gameStatistic: gameStatisticList){
+//                this.gameStatisticService.deleteGameStatistic(gameStatistic);
+//            }
+//            JsonObject response = new JsonObject();
+//            response.put("message", "Game statistic was cleared");
+//            return new JSONResponse(200, response);
+//        }
+//        catch (IllegalArgumentException e){
+//            JsonObject exceptionResponse = new JsonObject();
+//            exceptionResponse.put("message", e.getMessage());
+//            return new JSONResponse(401, exceptionResponse);
+//        }
+//    }
 
     @GetMapping(path = "/patients/getStatusStatistic")
     public JSONResponse getPatientStatusesStatistic(@RequestHeader("token") String token,
@@ -592,15 +583,6 @@ public class TutorController {
                     }
 
                 }
-//                List<GameStatus> gameStatusList = patient.getGameStatuses();
-//                for (GameStatus gameStatus: gameStatusList) {
-//                    switch (gameStatus.getStatus()){
-//                        case DONE -> done++;
-//                        case ASSIGNED -> assigned++;
-//                        case FAILED -> failed++;
-//                        case STARTED -> started++;
-//                    }
-//                }
                 response.put("Done", done);
                 response.put("Assigned", assigned);
                 response.put("Failed", failed);

@@ -75,6 +75,9 @@ public class PatientController {
     @Autowired
     private GamePatientService gamePatientService;
 
+    @Autowired
+    private StartedGameService startedGameService;
+
     @GetMapping(path = "/games/getting")
     public JSONResponse getAllGames(@RequestHeader("token") String token,
                                     @RequestParam(value = "limit", required = true) Integer limit,
@@ -150,101 +153,251 @@ public class PatientController {
         }
     }
 
-    @PostMapping(path = "/games/statistics/sending")
-    public JSONResponse sendGameStatistic(@RequestHeader("token") String token,
-                                          @RequestHeader("game") String gameID,
-                                          @Valid @RequestBody StatisticArray statisticArray) {
-        try {
-            Patient patient = this.patientService.getPatientByUser(this.userService.getUserById(this.userService.verifyToken(token)));
-            Game game = this.gameService.getGameById(UUID.fromString(gameID));
-            GamePatient gamePatient = this.gamePatientService.getGamePatientByGameAndPatient(game, patient);
-            if (!gamePatient.getGamePatientStatus().equals(GamePatientStatus.ACTIVE))
-                throw new Exception("Game is not Active for this account");
-            for (JsonObject statisticToSend: statisticArray.getRecords()){
-                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("M/d/yyyy, h:m:s a");
-                LocalDateTime dateAction = LocalDateTime.parse(statisticToSend.get("DateAction").toString(), formatter);
-                com.google.gson.JsonObject jsonObject;
-
-                String detailsString;
-                if (statisticToSend.containsKey("Details")){
-                    jsonObject = new JsonParser().parse(statisticToSend.get("Details").toString()).getAsJsonObject();
-                }
-                else jsonObject = null;
-
-                Short AnswerNumber;
-                if (statisticToSend.get("AnswerNumber") != null)
-                    AnswerNumber = Short.valueOf(statisticToSend.get("AnswerNumber").toString());
-                else
-                    AnswerNumber = null;
-
-                LocalDateTime dateStart;
-                if (statisticToSend.get("DateStart") != null)
-                    dateStart = LocalDateTime.parse(statisticToSend.get("DateStart").toString(), formatter);
-                else
-                    dateStart = null;
-
-                Integer clicks;
-                if (statisticToSend.get("Clicks") != null)
-                    clicks = Integer.valueOf(statisticToSend.get("Clicks").toString());
-                else clicks = null;
-
-                Integer missClicks;
-                if (statisticToSend.get("MissClicks") != null)
-                    missClicks = Integer.valueOf(statisticToSend.get("MissClicks").toString());
-                else missClicks = null;
-
+//    @PostMapping(path = "/games/statistics/sending")
+//    public JSONResponse sendGameStatistic(@RequestHeader("token") String token,
+//                                          @RequestHeader("game") String gameID,
+//                                          @Valid @RequestBody StatisticArray statisticArray) {
+//        try {
+//            Patient patient = this.patientService.getPatientByUser(this.userService.getUserById(this.userService.verifyToken(token)));
+//            Game game = this.gameService.getGameById(UUID.fromString(gameID));
+//            GamePatient gamePatient = this.gamePatientService.getGamePatientByGameAndPatient(game, patient);
+//            if (!gamePatient.getGamePatientStatus().equals(GamePatientStatus.ACTIVE))
+//                throw new Exception("Game is not Active for this account");
+//            for (JsonObject statisticToSend: statisticArray.getRecords()){
+//                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("M/d/yyyy, h:m:s a");
+//                LocalDateTime dateAction = LocalDateTime.parse(statisticToSend.get("DateAction").toString(), formatter);
+//                com.google.gson.JsonObject jsonObject;
+//
 //                String detailsString;
-                if (jsonObject != null) {
-                    detailsString = jsonObject.toString();
-                }
-                else detailsString = null;
-
-                Short type = Short.valueOf(statisticToSend.get("Type").toString());
-                //Ставим статус завершения при типе 2
-                if (type == 2){
-                    GameStatus gameStatus = this.gameStatusService.getGameStatusByGamePatient(gamePatient);
-                    gameStatus.setStatus(Status.DONE);
-                    this.gameStatusService.updateGameStatus(gameStatus);
-                }
-
-                GameStatistic statistic = new GameStatistic(
-                        gamePatient,
-                        type,
-                        dateAction,
-                        AnswerNumber,
-                        dateStart,
-                        clicks,
-                        missClicks,
-                        detailsString);
-                this.gameStatisticService.createGameStatistic(statistic);
-                this.patientService.updatePatient(patient);
-            }
-//            GameStatistic statistic = new GameStatistic(
-//                    this.gameService.getGameById(UUID.fromString(gameStatisticToSend.getGame_id())),
-//                    patient,
-//                    gameStatisticToSend.getType(),
-//                    gameStatisticToSend.getDateAction(),
-//                    gameStatisticToSend.getMessage()
-//            );
-//            this.gameStatisticService.createGameStatistic(statistic);
-//            patient.getGameStatistics().add(statistic);
-//            this.patientService.updatePatient(patient);
-            JsonObject response = new JsonObject();
-            response.put("message", "GameStatistic was added");
-            return new JSONResponse(200, response);
-        }
-        catch (Exception e){
-            System.out.println(e.getMessage());
-            JsonObject exceptionResponse = new JsonObject();
-            exceptionResponse.put("message", e.getMessage());
-            return new JSONResponse(401, exceptionResponse);
-        }
-//        catch (IllegalArgumentException e){
+//                if (statisticToSend.containsKey("Details")){
+//                    jsonObject = new JsonParser().parse(statisticToSend.get("Details").toString()).getAsJsonObject();
+//                }
+//                else jsonObject = null;
+//
+//                Short AnswerNumber;
+//                if (statisticToSend.get("AnswerNumber") != null)
+//                    AnswerNumber = Short.valueOf(statisticToSend.get("AnswerNumber").toString());
+//                else
+//                    AnswerNumber = null;
+//
+//                LocalDateTime dateStart;
+//                if (statisticToSend.get("DateStart") != null)
+//                    dateStart = LocalDateTime.parse(statisticToSend.get("DateStart").toString(), formatter);
+//                else
+//                    dateStart = null;
+//
+//                Integer clicks;
+//                if (statisticToSend.get("Clicks") != null)
+//                    clicks = Integer.valueOf(statisticToSend.get("Clicks").toString());
+//                else clicks = null;
+//
+//                Integer missClicks;
+//                if (statisticToSend.get("MissClicks") != null)
+//                    missClicks = Integer.valueOf(statisticToSend.get("MissClicks").toString());
+//                else missClicks = null;
+//
+//
+//                if (jsonObject != null) {
+//                    detailsString = jsonObject.toString();
+//                }
+//                else detailsString = null;
+//
+//                Short type = Short.valueOf(statisticToSend.get("Type").toString());
+//                //Ставим статус завершения при типе 2
+//                if (type == 2){
+//                    GameStatus gameStatus = this.gameStatusService.getGameStatusByGamePatient(gamePatient);
+//                    gameStatus.setStatus(Status.DONE);
+//                    this.gameStatusService.updateGameStatus(gameStatus);
+//                }
+//
+//                GameStatistic statistic = new GameStatistic(
+//                        gamePatient,
+//                        type,
+//                        dateAction,
+//                        AnswerNumber,
+//                        dateStart,
+//                        clicks,
+//                        missClicks,
+//                        detailsString);
+//                this.gameStatisticService.createGameStatistic(statistic);
+//                this.patientService.updatePatient(patient);
+//            }
+//            JsonObject response = new JsonObject();
+//            response.put("message", "GameStatistic was added");
+//            return new JSONResponse(200, response);
+//        }
+//        catch (Exception e){
+//            System.out.println(e.getMessage());
 //            JsonObject exceptionResponse = new JsonObject();
 //            exceptionResponse.put("message", e.getMessage());
 //            return new JSONResponse(401, exceptionResponse);
 //        }
+//    }
+
+
+    @GetMapping(path = "/games/statistics/test")
+    public JSONResponse sad(@RequestHeader("token") String token, @RequestHeader("game") String gameID) {
+        try {
+            Patient patient = this.patientService.getPatientByUser(this.userService.getUserById(this.userService.verifyToken(token)));
+            Game game = this.gameService.getGameById(UUID.fromString(gameID));
+            GamePatient gamePatient = this.gamePatientService.getGamePatientByGameAndPatient(game, patient);
+            if (gamePatient == null) throw new IllegalArgumentException("Sorry, but GamePatient was not found.");
+            JsonObject response = new JsonObject();
+            response.put("result", this.gameStatisticService.sdasdasds(gamePatient));
+            response.put("class", this.gameStatisticService.sdasdasds(gamePatient).getClass());
+            return new JSONResponse(200, response);
+        }
+        catch (IllegalArgumentException e){
+            JsonObject exceptionResponse = new JsonObject();
+            exceptionResponse.put("message", e.getMessage());
+            return new JSONResponse(401, exceptionResponse);
+        }
     }
+
+
+    @GetMapping(path = "/games/statistics/additional_fields")
+    public JSONResponse getAdditionalFields(@RequestHeader("token") String token,
+                                            @RequestHeader("game") String gameID) {
+        try {
+            Patient patient = this.patientService.getPatientByUser(this.userService.getUserById(this.userService.verifyToken(token)));
+            Game game = this.gameService.getGameById(UUID.fromString(gameID));
+            GamePatient gamePatient = this.gamePatientService.getGamePatientByGameAndPatient(game, patient);
+            if (gamePatient == null) throw new IllegalArgumentException("Sorry, but GamePatient was not found.");
+            String details = this.startedGameService.getLatestDetailsByGamePatient(gamePatient);
+            JsonObject response = new JsonObject();
+            response.put("result", details);
+            return new JSONResponse(200, response);
+        }
+        catch (IllegalArgumentException e){
+            JsonObject exceptionResponse = new JsonObject();
+            exceptionResponse.put("message", e.getMessage());
+            return new JSONResponse(401, exceptionResponse);
+        }
+    }
+
+    @PostMapping(path = "/games/statistics/additional_fields")
+    public JSONResponse setAdditionalFields(@RequestHeader("token") String token,
+                                            @RequestHeader("game") String gameID,
+                                            @Valid @RequestBody JsonRequest data) {
+        try {
+            Patient patient = this.patientService.getPatientByUser(this.userService.getUserById(this.userService.verifyToken(token)));
+            Game game = this.gameService.getGameById(UUID.fromString(gameID));
+            GamePatient gamePatient = this.gamePatientService.getGamePatientByGameAndPatient(game, patient);
+            if (gamePatient == null) throw new IllegalArgumentException("Sorry, but GamePatient was not found.");
+            StartedGame startedGame = this.startedGameService.getLatestStartedGameByGamePatient(gamePatient);
+            if (startedGame == null) throw new IllegalArgumentException("Sorry, but StartedGame was not found.");
+            startedGame.setDetails(data.getJsonObject().toString());
+            this.startedGameService.saveStartedGame(startedGame);
+            JsonObject response = new JsonObject();
+            response.put("result", "OK");
+            return new JSONResponse(200, response);
+        }
+        catch (IllegalArgumentException e){
+            JsonObject exceptionResponse = new JsonObject();
+            exceptionResponse.put("message", e.getMessage());
+            return new JSONResponse(401, exceptionResponse);
+        }
+    }
+
+
+    @PostMapping(path = "/games/statistics/game_start")
+    public JSONResponse addGameStart(@RequestHeader("token") String token,
+                                     @RequestHeader("game") String gameID,
+                                     @Valid @RequestBody GameStartRequest data) {
+        try {
+            Patient patient = this.patientService.getPatientByUser(this.userService.getUserById(this.userService.verifyToken(token)));
+            Game game = this.gameService.getGameById(UUID.fromString(gameID));
+            GamePatient gamePatient = this.gamePatientService.getGamePatientByGameAndPatient(game, patient);
+            if (gamePatient == null) throw new IllegalArgumentException("Sorry, but GamePatient was not found.");
+
+            LocalDateTime dateStart = LocalDateTime.parse(data.getDate_start());
+
+//            String detailsString;
+//            if (data.getDetails() != null) {
+//                detailsString = data.getDetails().toString();
+//            }
+//            else detailsString = null;
+
+            StartedGame startedGame = new StartedGame(gamePatient, dateStart, null, data.getDetails());
+            this.startedGameService.saveStartedGame(startedGame);
+
+            JsonObject response = new JsonObject();
+            response.put("result", "OK");
+            return new JSONResponse(200, response);
+        }
+        catch (IllegalArgumentException e){
+            JsonObject exceptionResponse = new JsonObject();
+            exceptionResponse.put("message", e.getMessage());
+            return new JSONResponse(401, exceptionResponse);
+        }
+    }
+
+    @PostMapping(path = "/games/statistics/game_end")
+    public JSONResponse addGameEnd(@RequestHeader("token") String token,
+                                   @RequestHeader("game") String gameID,
+                                   @Valid @RequestBody GameEndRequest data) {
+        try {
+            Patient patient = this.patientService.getPatientByUser(this.userService.getUserById(this.userService.verifyToken(token)));
+            Game game = this.gameService.getGameById(UUID.fromString(gameID));
+            GamePatient gamePatient = this.gamePatientService.getGamePatientByGameAndPatient(game, patient);
+            if (gamePatient == null) throw new IllegalArgumentException("Sorry, but GamePatient was not found.");
+            StartedGame startedGame = this.startedGameService.getUnfinishedStartedGameByGamePatient(gamePatient);
+            if (startedGame == null) throw new IllegalArgumentException("Sorry, but StartedGame was not found.");
+
+            LocalDateTime dateEnd = LocalDateTime.parse(data.getDate_end());
+
+            startedGame.setDateEnd(dateEnd);
+            startedGame.setDetails(data.getDetails());
+            this.startedGameService.saveStartedGame(startedGame);
+
+            JsonObject response = new JsonObject();
+            response.put("result", "OK");
+            return new JSONResponse(200, response);
+        }
+        catch (IllegalArgumentException e){
+            JsonObject exceptionResponse = new JsonObject();
+            exceptionResponse.put("message", e.getMessage());
+            return new JSONResponse(401, exceptionResponse);
+        }
+    }
+
+
+    @PostMapping(path = "/games/statistics/send_statistic")
+    public JSONResponse sendStatistic(@RequestHeader("token") String token,
+                                      @RequestHeader("game") String gameID,
+                                      @Valid @RequestBody StatisticToSend statisticToSend) {
+        try {
+            Patient patient = this.patientService.getPatientByUser(this.userService.getUserById(this.userService.verifyToken(token)));
+            Game game = this.gameService.getGameById(UUID.fromString(gameID));
+            GamePatient gamePatient = this.gamePatientService.getGamePatientByGameAndPatient(game, patient);
+            StartedGame startedGame = this.startedGameService.getUnfinishedStartedGameByGamePatient(gamePatient);
+            if (startedGame == null) throw new IllegalArgumentException("Sorry, but StartedGame was not found.");
+            startedGame.setDetails(statisticToSend.getDetails());
+            GameStatistic gameStatistic = new GameStatistic(
+                    startedGame,
+                    statisticToSend.getLevel(),
+                    statisticToSend.getLevel_name(),
+                    LocalDateTime.parse(statisticToSend.getDate_start()),
+                    LocalDateTime.parse(statisticToSend.getDate_end()),
+                    statisticToSend.getType(),
+                    statisticToSend.getClicks(),
+                    statisticToSend.getMissclicks(),
+                    statisticToSend.getDetails()
+            );
+            this.startedGameService.saveStartedGame(startedGame);
+            this.gameStatisticService.saveGameStatistic(gameStatistic);
+
+            JsonObject response = new JsonObject();
+            response.put("result", "OK");
+            return new JSONResponse(200, response);
+        }
+        catch (IllegalArgumentException e){
+            JsonObject exceptionResponse = new JsonObject();
+            exceptionResponse.put("message", e.getMessage());
+            return new JSONResponse(401, exceptionResponse);
+        }
+    }
+
 
     @GetMapping(path = "/games/status")
     public JSONResponse getStatusOfGame(@RequestHeader("token") String token,

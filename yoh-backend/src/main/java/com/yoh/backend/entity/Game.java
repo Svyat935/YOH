@@ -70,7 +70,7 @@ public class Game {
     }
 
 
-    @Column(name = "url", length = 128, nullable = false)
+    @Column(name = "url", length = 128, nullable = true)
     private String url;
 
     public String getUrl(){

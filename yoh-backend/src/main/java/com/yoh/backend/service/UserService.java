@@ -40,6 +40,10 @@ public class UserService {
         userRepository.createUser(user);
     }
 
+    public void saveUser(User user) throws IllegalArgumentException{
+        userRepository.createUser(user);
+    }
+
     //Не применяется
     public List<User> getAllUsers() {
         return userRepository.getAllUsers();
