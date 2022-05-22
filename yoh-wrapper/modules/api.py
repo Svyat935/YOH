@@ -31,75 +31,67 @@ def error_handler_route(error):
     return response
 
 
-@api_bp.route('/send_statistic', methods=['POST'])
-def send_statistic_route():
+@api_bp.route('/game_start', methods=['POST'])
+def send_game_start_route():
     data = json.loads(request.data)
     if not session.get('user') or not session.get('current_game'):
         abort(401)
 
-    event_type = {
-        'game_start': 1,
-        'game_end': 2,
-        'missclick': 3,
-        'correct_answer': 4,
-        'incorrect_answer': 5,
-        'clicks_info': 6
+    headers = {
+        'Content-Type': 'application/json',
+        'token': session['user'],
+        'game': session['current_game']
     }
-    response_params = {
-        'records': []
-    }
+    send_url = 'http://yoh-backend:8080/patient/games/statistics/game_start'
 
-    # Обрабатываем миссклики
-    for event_date, event_params in data['missClicks']:
-        record = {
-            'DateAction': event_date,
-            'Type': event_type['missclick'],
-            'AnswerNumber': event_params['answer_number']
-        }
-        response_params['records'].append(record)
+    post(send_url, data=json.dumps(data, default=json_serial), headers=headers)
 
-    # Обрабатываем ответы
-    for event_date, event_params in data['answers']:
-        record = {
-            'DateAction': event_date,
-            'Type': event_type['correct_answer' if event_params['correct'] else 'incorrect_answer'],
-            'AnswerNumber': event_params['answer_number'],
-            'Details': {
-                'time_start': event_params.get('time_start')
-            }
-        }
-        response_params['records'].append(record)
+    return make_response(json.dumps({'message': 'Success'}))
 
-    start_rec = {
-        'DateAction': data['startTime'],
-        'Type': event_type['game_start']
-    }
-    response_params['records'].append(start_rec)
 
-    end_rec = {
-        'DateAction': data['endTime'],
-        'Type': event_type['game_end']
-    }
-    response_params['records'].append(end_rec)
-
-    if 'clicks' in data:
-        clicks_info_rec = {
-            'DateAction': data['endTime'],
-            'Type': event_type['clicks_info'],
-            'Details': {
-                'window_size': data['window_info'],
-                'clicks': data['clicks']
-            }
-        }
-        response_params['records'].append(clicks_info_rec)
+@api_bp.route('/game_end', methods=['POST'])
+def send_game_end_route():
+    data = json.loads(request.data)
+    if not session.get('user') or not session.get('current_game'):
+        abort(401)
 
     headers = {
         'Content-Type': 'application/json',
         'token': session['user'],
-        'game': '8e520e72-def0-4f05-8173-691e687e8931'  # session['current_game']
+        'game': session['current_game']
     }
-    send_url = 'http://yoh-backend:8080/patient/games/statistics/sending'
+    send_url = 'http://yoh-backend:8080/patient/games/statistics/game_end'
 
-    post(send_url, data=json.dumps(response_params, default=json_serial), headers=headers)
+    post(send_url, data=json.dumps(data, default=json_serial), headers=headers)
 
     return make_response(json.dumps({'message': 'Success'}))
+
+
+@api_bp.route('/statistics', methods=['POST'])
+def statistics_route():
+    data = json.loads(request.data)
+    if not session.get('user') or not session.get('current_game'):
+        abort(401)
+
+    # statistic_types = {
+    #     Решили вопрос полностью правильно: 1
+    #     Решили вопрос полностью неправильно: 2
+    #     Просто переключили уровень: 3
+    # }
+
+    headers = {
+        'Content-Type': 'application/json',
+        'token': session['user'],
+        'game': session['current_game']
+    }
+    send_url = 'http://yoh-backend:8080/patient/games/statistics/send_statistic'
+
+    post(send_url, data=json.dumps(data, default=json_serial), headers=headers)
+
+    return make_response(json.dumps({'message': 'Success'}))
+
+
+@api_bp.route('/additional_fields', methods=['GET'])
+def additional_fields_route():
+    add_fields = session.get('additional_fields')
+    return make_response(add_fields)

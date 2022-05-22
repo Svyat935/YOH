@@ -1,5 +1,6 @@
 from flask import Blueprint, make_response, render_template, request, session, abort, send_from_directory
 from jinja2.exceptions import TemplateNotFound
+from requests import get
 
 game_bp = Blueprint('Game', __name__, template_folder='../games', static_folder='../games', url_prefix='/games')
 
@@ -18,6 +19,14 @@ def game_route(game):
         abort(401)
 
     session['user'] = request.args.get('token')
+
+    headers = {
+        'Content-Type': 'application/json',
+        'token': session['user'],
+        'game': session['current_game']
+    }
+    send_url = 'http://yoh-backend:8080/patient/games/statistics/additional_fields'
+    session['additional_fields'] = get(send_url, headers=headers)
 
     try:
         resp = make_response(render_template(f'{game}/index.html'))
