@@ -19,9 +19,9 @@ export function VAccount(props) {
     const [buttonStatus, setButtonStatus] = useState(0);
     const [show, setShow] = useState(false);
     const allGames = props.statistics["Done"] + props.statistics["Assigned"] + props.statistics["Failed"];
-    const statDone = Math.round(props.statistics["Done"] / allGames * 100);
-    const statAssigned =  Math.round(props.statistics["Assigned"] / allGames * 100);
-    const statFailed =  Math.round(props.statistics["Failed"] / allGames * 100);
+    const statDone = allGames !== 0 ? Math.round(props.statistics["Done"] / allGames * 100) : 0;
+    const statAssigned = allGames !== 0 ? Math.round(props.statistics["Assigned"] / allGames * 100) : 0;
+    const statFailed = allGames !== 0 ? Math.round(props.statistics["Failed"] / allGames * 100) : 0;
 
     const changeImage = async () => {
         let fImage = document.getElementById("fileImage");

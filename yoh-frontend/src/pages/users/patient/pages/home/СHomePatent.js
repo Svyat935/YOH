@@ -2,6 +2,7 @@ import {VHomePatient} from "./VHomePatient";
 import React, {useContext, useEffect, useState} from "react";
 import {UserContext} from "../../../../../context/userContext";
 import {VUsersAdmin} from "../../../admin/pages/users/VUsersAdmin";
+import {LoadPage} from "../../../../../components/loadpage/LoadPage";
 
 export function CHomePatient() {
     const context = useContext(UserContext);
@@ -10,6 +11,7 @@ export function CHomePatient() {
     const [start, setStart] = useState(0);
     const [limit, setLimit] = useState(10);
     const [_, rerun] = useState(new class{});
+    const [load, setLoad] = useState(true);
 
     const requestGames = async () => {
         return await fetch("/patient/games/getting?" +
@@ -35,15 +37,21 @@ export function CHomePatient() {
                 responseGames = responseGames["jsonObject"]["results"];
                 setGames(responseGames);
             }
+
+            if (load === true) setLoad(false);
         }
     }, [context, _])
 
-    return <VHomePatient
-        context={context ? context : {}}
-        games={games}
-        setRegex={setRegex}
-        setStart={setStart}
-        start={start}
-        refresh={() => rerun(new class{})}
-    />
+    return (
+        <LoadPage status={load}>
+            <VHomePatient
+                context={context ? context : {}}
+                games={games}
+                setRegex={setRegex}
+                setStart={setStart}
+                start={start}
+                refresh={() => rerun(new class{})}
+            />
+        </LoadPage>
+    )
 }

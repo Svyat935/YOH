@@ -143,47 +143,55 @@ export function VUsersAdmin(props) {
         return view;
     }
 
-    const createRemovingViewUsers = () => {
-        let users = props.users,
-            view = [];
+    const createUserPasswordView = () => {
+        return (
+            <div style={
+                {
+                    display: "flex",
+                    flexDirection: "column",
+                    padding: "0 10px"
+                }
+            }>
+                <label>Пароль: </label>
+                <input id={"password"} type={"password"} style={
+                    {borderRadius: 40, border: "none", padding: "5px 15px", marginBottom: 15}
+                } required/>
+                <p id={"password-validate"} style={{height: "5px", marginBottom: 0, color: "#800000"}}/>
+                <label>Подтвердить пароль: </label>
+                <input id={"confirmPassword"} type={"password"} style={
+                    {borderRadius: 40, border: "none", padding: "5px 15px", marginBottom: 15}
+                } required/>
+                <p id={"confirmPassword-validate"} style={{height: "5px", marginBottom: 0, color: "#800000"}}/>
+            </div>
+        )
+    }
 
-        if (users.length > 0) {
-            users.forEach((user) => {
-                view.push(
-                    <div style={
-                        {
-                            borderRadius: 40,
-                            color: "#FFFFFF",
-                            background: "#6A6DCD",
-                            display: "flex",
-                            justifyContent: "space-between",
-                            alignItems: "center",
-                            marginBottom: "20px"
-                        }
-                    } key={user["login"]}>
-                        <p>Login: {user["login"]}; Email: {user["email"]}</p>
-                        <ButtonB text={"Удалить"} fontSize={"medium"} onClick={
-                            () => {
-                                setRemovingUser(user);
-                                setButtonStatus(2);
-                            }
-                        }/>
-                    </div>
-                )
-            })
-        } else {
-            view.push(
-                <div style={{display: "flex", justifyContent: "center", alignItems: "center"}}>
-                    <h3>Пользователей в системе отсутствует.</h3>
-                </div>
-            )
+    const changeUserPassword = () => {
+        let fPassword = document.getElementById("password"),
+            fConfirmPassword = document.getElementById("confirmPassword");
+        let vPassword = document.getElementById("password-validate");
+        let validStatus = true;
+
+        if (!fPassword.value) {
+            fPassword.style.border = validStyle;
+            validStatus = false;
+        }
+        if (!fConfirmPassword.value) {
+            fConfirmPassword.style.border = validStyle;
+            validStatus = false;
         }
 
-        return (
-            <div style={{display: "flex", flexDirection: "column"}}>
-                {view}
-            </div>
-        );
+        if (fPassword.value !== fConfirmPassword.value) {
+            fPassword.style.border = validStyle;
+            fConfirmPassword.style.border = validStyle;
+            vPassword.textContent = "Пароли не совпадают."
+            vPassword.style.marginBottom = "20px";
+            validStatus = false;
+        }
+
+        if (validStatus){
+            //TODO Add route
+        }
     }
 
     const validateEmail = (email) => {
@@ -374,12 +382,6 @@ export function VUsersAdmin(props) {
         }
     }
 
-    const removeUser = () => {
-        //TODO: When we're adding a route.
-        alert("Remove!");
-        clearAll();
-    }
-
     const chooseChangeAction = () => {
         return (
             <div style={
@@ -390,17 +392,20 @@ export function VUsersAdmin(props) {
                 }
             }>
                 <h3>Выберите действие: </h3>
-                <ButtonB text={"Изменить роль"} onClick={
+                <ButtonB width={"70%"} text={"Изменить роль"} onClick={
                     () => {
                         setButtonStatus(4);
                     }
                 }/>
-                <ButtonB text={"Изменить данные"} onClick={
+                <ButtonB width={"70%"} text={"Изменить данные"} onClick={
                     () => {
                         setRole(userForChanging["role"]);
                         setButtonStatus(5);
                     }
                 }/>
+                <ButtonB width={"70%"} text={"Изменить пароль"} onClick={() => {
+                    setButtonStatus(1);
+                }}/>
             </div>
         )
     }
@@ -618,7 +623,7 @@ export function VUsersAdmin(props) {
                 <Modal.Header closeButton>
                     <Modal.Title>{
                         buttonStatus === 0 || buttonStatus === 4 ? "Добавление пользователя" :
-                            buttonStatus === 1 || buttonStatus === 2 ? "Удаление пользователя" :
+                            buttonStatus === 1 || buttonStatus === 2 ? "Изменить пароль" :
                                 buttonStatus === 3 || buttonStatus === 5 ? "Изменение пользователя" : "???"
                     }</Modal.Title>
                 </Modal.Header>
@@ -626,8 +631,8 @@ export function VUsersAdmin(props) {
                     {
                         buttonStatus === 0 ?
                             createUserView() : buttonStatus === 1 ?
-                            createRemovingViewUsers() : buttonStatus === 2 ?
-                                "Вы уверен что хотите удалить пользователя c Логиным:" + userForRemoving["login"] + "?" :
+                            createUserPasswordView() : buttonStatus === 2 ?
+                                "Вы уверен что хотите изменить пароль у пользователя c Логиным:" + userForRemoving["login"] + "?" :
                                 buttonStatus === 3 ? chooseChangeAction() :
                                     buttonStatus === 4 ? changingRoleView() :
                                         buttonStatus === 5 ? fillUser() : null
@@ -647,7 +652,7 @@ export function VUsersAdmin(props) {
                             buttonStatus === 0 ?
                                 <ButtonB text={"Добавить"} onClick={addUser}/> :
                                 buttonStatus === 2 ?
-                                    <ButtonB text={"Удалить"} onClick={removeUser}/> :
+                                    <ButtonB text={"Изменить"} onClick={changeUserPassword}/> :
                                     buttonStatus === 5 ?
                                         <ButtonB text={"Добавить информацию"}
                                                  onClick={
@@ -672,10 +677,6 @@ export function VUsersAdmin(props) {
                         <FilterBlock filters={filterList}/>
                         <ButtonA width={300} text={"Добавить +"} onClick={() => {
                             setButtonStatus(0);
-                            setShow(true);
-                        }}/>
-                        <ButtonA width={300} text={"Удалить -"} onClick={() => {
-                            setButtonStatus(1);
                             setShow(true);
                         }}/>
                     </Col>

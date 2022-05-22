@@ -1,10 +1,12 @@
 import {VHomeTutor} from "./VHomeTutor";
 import React, {useContext, useEffect, useState} from "react";
 import {UserContext} from "../../../../../context/userContext";
+import {LoadPage} from "../../../../../components/loadpage/LoadPage";
 
 export function CHomeTutor() {
     const context = useContext(UserContext);
     const [users, setUsers] = useState([]);
+    const [load, setLoad] = useState(true);
 
     const requestAttachingUser = async () => {
         return await fetch("/tutor/patients/getting?" +
@@ -29,8 +31,14 @@ export function CHomeTutor() {
                 let users = response["jsonObject"]["results"];
                 setUsers(users);
             }
+
+            if (load === true) setLoad(false);
         }
     }, [context])
 
-    return <VHomeTutor context={context} users={users}/>
+    return (
+        <LoadPage status={load}>
+            <VHomeTutor context={context} users={users}/>
+        </LoadPage>
+    )
 }
