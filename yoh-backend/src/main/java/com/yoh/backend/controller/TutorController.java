@@ -197,6 +197,10 @@ public class TutorController {
                 else {
                     patientInfo.put("organization", null);
                 }
+                if (patient.getTutor() != null){
+                    patientInfo.put("tutor", patient.getTutor().getId().toString());
+                }
+                else patientInfo.put("tutor", null);
                 patientInfo.put("image", patient.getImage());
                 patientInfo.put("organizationString", patient.getOrganizationString());
                 patientInfo.put("login", patient.getUser().getLogin());
