@@ -112,6 +112,7 @@ public class GameController {
                 gameInfo.put("description", game.getDescription());
                 gameInfo.put("url", game.getUrl());
                 gameInfo.put("image", game.getImage());
+                gameInfo.put("addAdding", game.getDateAdding());
                 gamesList.add(gameInfo);
             }
 //            }

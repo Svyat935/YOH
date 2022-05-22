@@ -25,7 +25,6 @@ export function CHomeTutor() {
         if (context.token !== null){
             let response = await requestAttachingUser();
 
-            console.log(response);
             if (response !== null){
                 let users = response["jsonObject"]["results"];
                 setUsers(users);
