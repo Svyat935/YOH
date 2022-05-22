@@ -1,14 +1,21 @@
 import React, {useContext, useEffect, useState} from "react";
 import {VPatients} from "./VPatients";
 import {UserContext} from "../../../../../context/userContext";
+import {VUsersAdmin} from "../../../admin/pages/users/VUsersAdmin";
+import {LoadPage} from "../../../../../components/loadpage/LoadPage";
 
 export function CPatients() {
     const context = useContext(UserContext);
     const [attachedPatients, setAttachedPatients] = useState([]);
+    const [regex, setRegex] = useState("");
+    const [start, setStart] = useState(0);
+    const [limit, setLimit] = useState(10);
     const [_, rerun] = useState(new class {});
+    const [load, setLoad] = useState(true);
 
-    const requestAttachedPatients = async (start, limit) => {
+    const requestAttachedPatients = async () => {
         return await fetch("/tutor/patients/getting?" +
+            "regex=" + encodeURIComponent(regex) + "&" +
             "start=" + encodeURIComponent(start) + "&" +
             "limit=" + encodeURIComponent(limit), {
             method: 'GET',
@@ -31,13 +38,22 @@ export function CPatients() {
                 if (responseAttachedPatients !== undefined) setAttachedPatients(responseAttachedPatients);
                 else setAttachedPatients([]);
             }
+
+            if (load === true) setLoad(false);
         }
     }, [context, _])
 
-    return <VPatients
-        context={context}
-        saveUser={(info) => context.addInfo(info)}
-        attachedPatients={attachedPatients}
-        refresh={() => rerun(new class{})}
-    />
+    return (
+        <LoadPage status={load}>
+            <VPatients
+                context={context}
+                setRegex={setRegex}
+                setStart={setStart}
+                start={start}
+                saveUser={(info) => context.addInfo(info)}
+                attachedPatients={attachedPatients}
+                refresh={() => rerun(new class{})}
+            />
+        </LoadPage>
+    )
 }

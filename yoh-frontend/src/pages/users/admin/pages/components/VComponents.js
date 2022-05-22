@@ -16,23 +16,63 @@ import {useNavigate} from "react-router-dom";
 
 export function VComponents(props) {
     const filterList = [
-        {"text": "По алфавиту", "value": 1},
-        {"text": "По дате", "value": 2},
-        {"text": "По описанию", "value": 3},
-        {"text": "По типу", "value": 4},
+        {
+            "text": "По алфавиту", "value": 1, "onClick": () => {
+                setFilterStatus(1);
+                props.refresh();
+            }
+        },
+        {"text": "По дате", "value": 2, "onClick": () => {
+                setFilterStatus(2);
+                props.refresh();
+            }
+        },
+        {"text": "По описанию", "value": 3, "onClick": () => {
+                setFilterStatus(3);
+                props.refresh();
+            }
+        },
+        // {"text": "По типу", "value": 4, "onClick": () => {
+        //         setFilterStatus(4);
+        //         props.refresh();
+        //     }
+        // },
     ]
     const router = useNavigate();
     const [show, setShow] = useState(false);
     //TODO: replace the int type with something better.
     //Note: Adding Game - 0, Removing Game - 1, Confirm Removing - 2, Changing Game - 3, Look At Game - 4.
     const [buttonStatus, setButtonStatus] = useState(0);
+    const [filterStatus, setFilterStatus] = useState(0);
+
     const [gameForRemoving, setRemovingGame] = useState(null);
     const [gameForChanging, setChangingGame] = useState(null);
 
     const createBasicViewGames = () => {
-        let games = props.games,
+        let games = props.games.slice(0, 9),
             view = [];
+
         if (games.length > 0) {
+            if (filterStatus === 1) {
+                games = games.sort((a, b) => {
+                    if (a["name"] > b["name"]) return 1;
+                    else if (a["name"] < b["name"]) return -1;
+                    else return 0;
+                });
+            } else if (filterStatus === 2) {
+                games = games.sort((a, b) => {
+                    if (a["dateAdding"] > b["dateAdding"]) return 1;
+                    else if (a["dateAdding"] < b["dateAdding"]) return -1;
+                    else return 0;
+                })
+            } else if (filterStatus === 3){
+                games = games.sort((a, b) => {
+                    if (a["description"] > b["description"]) return 1;
+                    else if (a["description"] < b["description"]) return -1;
+                    else return 0;
+                })
+            }
+
             games.forEach((game) => {
                 view.push(
                     <InfoBlock ikey={game["id"]} text={game["name"]} onClick={
@@ -184,7 +224,7 @@ export function VComponents(props) {
     const removeGame = () => {
         //TODO: Validate.
         let response = props.removeGame(gameForRemoving["id"]);
-        if (response !== null){
+        if (response !== null) {
             props.refresh();
             setShow(false);
         }
@@ -199,7 +239,7 @@ export function VComponents(props) {
         if (fName.value) body["name"] = fName.value;
         if (fDescription.value) body["description"] = fDescription.value;
 
-        if (JSON.stringify(body) !== '{}'){
+        if (JSON.stringify(body) !== '{}') {
             body["game_id"] = gameForChanging["id"];
             let response = await props.changeGame(body);
             props.refresh();
@@ -259,6 +299,12 @@ export function VComponents(props) {
                 <p id={"file-validate"} style={{height: "5px", marginBottom: 0, color: "#800000"}}/>
             </div>
         )
+    }
+
+    const searchGame = () => {
+        let searchValue = document.getElementById("searchInput").value;
+        props.setRegex(searchValue);
+        props.refresh();
     }
 
     return (
@@ -332,7 +378,16 @@ export function VComponents(props) {
                         }}/>
                     </Col>
                     <Col md={8}>
-                        <SearchInput onClick={() => console.log("onClick is waiting")}/>
+                        <SearchInput
+                            id={"searchInput"}
+                            onKeyDown={(e) => {
+                                if (e.key === "Enter") {
+                                    searchGame()
+                                }
+                            }}
+                            onBlur={searchGame}
+                            onClick={searchGame}
+                        />
                         <Container>
                             <Row>
                                 <Col style={
@@ -345,6 +400,23 @@ export function VComponents(props) {
                                 }>
                                     {createBasicViewGames()}
                                 </Col>
+                            </Row>
+                            <Row style={
+                                {
+                                    display: "flex",
+                                    flexDirection: "row",
+                                    justifyContent: "space-around",
+                                    marginTop: 20
+                                }
+                            }>
+                                {props.start ? <ButtonA width={300} text={"Предыдущая страница"} onClick={() => {
+                                    props.setStart(props.start - 9);
+                                    props.refresh();
+                                }}/> : null}
+                                {props.games.length === 10 ? <ButtonA width={300} text={"Следующая страница"} onClick={() => {
+                                    props.setStart(props.start + 9);
+                                    props.refresh();
+                                }}/>: null}
                             </Row>
                         </Container>
                     </Col>

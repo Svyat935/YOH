@@ -16,21 +16,63 @@ import {TutorNav} from "../../../../../components/navigate/Tutor/TutorNav";
 
 export function VVector(props) {
     const filterList = [
-        {"text": "По алфавиту", "value": 1},
-        {"text": "По дате", "value": 2},
-        {"text": "По описанию", "value": 3},
-        {"text": "По типу", "value": 4},
+        {
+            "text": "По алфавиту", "value": 1, "onClick": () => {
+                setFilterStatus(1);
+                props.refresh();
+            }
+        },
+        {
+            "text": "По дате", "value": 2, "onClick": () => {
+                setFilterStatus(2);
+                props.refresh();
+            }
+        },
+        {
+            "text": "По описанию", "value": 3, "onClick": () => {
+                setFilterStatus(3);
+                props.refresh();
+            }
+        },
+        // {"text": "По типу", "value": 4, "onClick": () => {
+        //         setFilterStatus(4);
+        //         props.refresh();
+        //     }
+        // },
     ]
     const router = useNavigate();
     const [show, setShow] = useState(false);
     //TODO: replace the int type with something better.
     //Note: Choose action - 0; Confirm Add Game - 1;
     const [buttonStatus, setButtonStatus] = useState(0);
+    const [filterStatus, setFilterStatus] = useState(0);
+
     const [game, setGame] = useState(null);
 
     const createBasicViewGames = () => {
-        let games = props.games,
+        let games = props.games.slice(0, 9),
             view = [];
+
+        if (filterStatus === 1) {
+            games = games.sort((a, b) => {
+                if (a["name"] > b["name"]) return 1;
+                else if (a["name"] < b["name"]) return -1;
+                else return 0;
+            });
+        } else if (filterStatus === 2) {
+            games = games.sort((a, b) => {
+                if (a["dateAdding"] > b["dateAdding"]) return 1;
+                else if (a["dateAdding"] < b["dateAdding"]) return -1;
+                else return 0;
+            })
+        } else if (filterStatus === 3){
+            games = games.sort((a, b) => {
+                if (a["description"] > b["description"]) return 1;
+                else if (a["description"] < b["description"]) return -1;
+                else return 0;
+            })
+        }
+
         if (games.length > 0) {
             games.forEach((game) => {
                 view.push(
@@ -82,6 +124,12 @@ export function VVector(props) {
                 }}/>
             </div>
         )
+    }
+
+    const searchGame = () => {
+        let searchValue = document.getElementById("searchInput").value;
+        props.setRegex(searchValue);
+        props.refresh();
     }
 
     return (
@@ -140,7 +188,16 @@ export function VVector(props) {
                         }}/>
                     </Col>
                     <Col md={8}>
-                        <SearchInput onClick={() => console.log("onClick is waiting")}/>
+                        <SearchInput
+                            id={"searchInput"}
+                            onKeyDown={(e) => {
+                                if (e.key === "Enter") {
+                                    searchGame()
+                                }
+                            }}
+                            onBlur={searchGame}
+                            onClick={searchGame}
+                        />
                         <Container>
                             <Row>
                                 <Col style={
@@ -153,6 +210,23 @@ export function VVector(props) {
                                 }>
                                     {createBasicViewGames()}
                                 </Col>
+                            </Row>
+                            <Row style={
+                                {
+                                    display: "flex",
+                                    flexDirection: "row",
+                                    justifyContent: "space-around",
+                                    marginTop: 20
+                                }
+                            }>
+                                {props.start ? <ButtonA width={300} text={"Предыдущая страница"} onClick={() => {
+                                    props.setStart(props.start - 9);
+                                    props.refresh();
+                                }}/> : null}
+                                {props.games.length === 10 ? <ButtonA width={300} text={"Следующая страница"} onClick={() => {
+                                    props.setStart(props.start + 9);
+                                    props.refresh();
+                                }}/>: null}
                             </Row>
                         </Container>
                     </Col>

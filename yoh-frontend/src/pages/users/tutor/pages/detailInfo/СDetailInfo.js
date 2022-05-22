@@ -1,11 +1,13 @@
 import {VDetailInfo} from "./VDetailInfo";
 import React, {useContext, useEffect, useState} from "react";
 import {UserContext} from "../../../../../context/userContext";
+import {LoadPage} from "../../../../../components/loadpage/LoadPage";
 
 export function CDetailInfo() {
     const context = useContext(UserContext);
     const [user, setUser] = useState({});
     const [_, rerun] = useState(new class{});
+    const [load, setLoad] = useState(true);
 
     const requestGetInfoForUser = async (patientId) => {
         return await fetch("/tutor/patients/getting/one?" +
@@ -29,12 +31,19 @@ export function CDetailInfo() {
                 responseUser = responseUser["jsonObject"];
                 setUser(responseUser);
             }
+
+            if (load === true) setLoad(false);
         }
     }, [context, _])
 
-    return <VDetailInfo
-        context={context}
-        user={user}
-        refresh={() => rerun(new class{})}
-    />
+    return (
+        <LoadPage status={load}>
+            <VDetailInfo
+                context={context}
+                user={user}
+                refresh={() => rerun(new class{})}
+            />
+        </LoadPage>
+    )
+
 }

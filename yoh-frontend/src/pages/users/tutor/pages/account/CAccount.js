@@ -1,11 +1,13 @@
 import {VAccount} from "./VAccount";
 import React, {useContext, useEffect, useState} from "react";
 import {UserContext} from "../../../../../context/userContext";
+import {LoadPage} from "../../../../../components/loadpage/LoadPage";
 
 export function CAccount() {
     const context = useContext(UserContext);
     const [accountInfo, setAccountInfo] = useState(null);
     const [_, rerun] = useState(new class{});
+    const [load, setLoad] = useState(true);
 
     const requestAccountInfo = async () => {
         return await fetch("/tutor/account", {
@@ -59,13 +61,19 @@ export function CAccount() {
                accountInfo = accountInfo["jsonObject"];
                setAccountInfo(accountInfo);
            }
+
+           if (load === true) setLoad(false);
         }
     }, [context, _])
 
-    return <VAccount
-        accountInfo={accountInfo}
-        changeImage={requestChangeAccountImage}
-        changeInfo={requestChangeAccountInfo}
-        refresh={() => rerun(new class{})}
-    />
+    return (
+        <LoadPage status={load}>
+            <VAccount
+                accountInfo={accountInfo}
+                changeImage={requestChangeAccountImage}
+                changeInfo={requestChangeAccountInfo}
+                refresh={() => rerun(new class{})}
+            />
+        </LoadPage>
+    )
 }

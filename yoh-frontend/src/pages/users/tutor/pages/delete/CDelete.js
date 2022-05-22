@@ -2,12 +2,14 @@ import {VDelete} from "./VDelete";
 import React, {useContext, useEffect, useState} from "react";
 import {UserContext} from "../../../../../context/userContext";
 import {VComponents} from "../../../admin/pages/components/VComponents";
+import {LoadPage} from "../../../../../components/loadpage/LoadPage";
 
 export function CDelete() {
     const context = useContext(UserContext);
     const [userId, setUserId] = useState(null);
     const [games, setGames] = useState([]);
     const [_, rerun] = useState(new class{});
+    const [load, setLoad] = useState(true);
 
     const requestDeleteGameForPatient = async (game_id) => {
         return await fetch("/tutor/patients/games/removing", {
@@ -44,14 +46,20 @@ export function CDelete() {
             let gamesResponse = info["jsonObject"]["games"];
             if (gamesResponse) setGames(gamesResponse);
             else setGames([]);
+
+            if (load === true) setLoad(false);
         }
     }, [context, _])
 
 
-    return <VDelete
-        context={context}
-        games={games}
-        deleteGame={requestDeleteGameForPatient}
-        refresh={() => rerun(new class{})}
-    />
+    return (
+        <LoadPage status={load}>
+            <VDelete
+                context={context}
+                games={games}
+                deleteGame={requestDeleteGameForPatient}
+                refresh={() => rerun(new class{})}
+            />
+        </LoadPage>
+    )
 }

@@ -1,11 +1,13 @@
 import React, {useContext, useEffect, useState} from "react";
 import {UserContext} from "../../../../../context/userContext";
 import {VHomeAdmin} from "./VHomeAdmin";
+import {LoadPage} from "../../../../../components/loadpage/LoadPage";
 
 export function CHomeAdmin() {
     const context = useContext(UserContext);
     const [users, setUsers] = useState([]);
     const [games, setGames] = useState([]);
+    const [load, setLoad] = useState(true);
 
     const requestUsers = async () => {
         return await fetch("/admins/users/all?" +
@@ -51,12 +53,18 @@ export function CHomeAdmin() {
                 responseGames = responseGames["jsonObject"]["results"];
                 if (responseGames !== undefined) setGames(responseGames);
             }
+
+            if (load === true) setLoad(false);
         }
     }, [context])
 
-    return <VHomeAdmin
-        context={context}
-        users={users}
-        games={games}
-    />
+    return (
+        <LoadPage status={load}>
+            <VHomeAdmin
+                context={context}
+                users={users}
+                games={games}
+            />
+        </LoadPage>
+    )
 }

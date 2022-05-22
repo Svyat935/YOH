@@ -201,6 +201,7 @@ public class TutorController {
                 patientInfo.put("organizationString", patient.getOrganizationString());
                 patientInfo.put("login", patient.getUser().getLogin());
                 patientInfo.put("email", patient.getUser().getEmail());
+                patientInfo.put("dateRegistration", patient.getUser().getDateRegistration().toString());
                 patientList.add(patientInfo);
             }
 //            }

@@ -1,8 +1,6 @@
 import json
-import psycopg2
-from prettytable import PrettyTable
 from datetime import datetime, date
-from flask import Blueprint, make_response, request, session, abort, render_template
+from flask import Blueprint, make_response, request, session, abort
 from werkzeug.exceptions import HTTPException
 from requests import post
 
@@ -33,128 +31,67 @@ def error_handler_route(error):
     return response
 
 
-@api_bp.route('/send_statistic', methods=['POST'])
-def send_statistic_route():
+@api_bp.route('/game_start', methods=['POST'])
+def send_game_start_route():
     data = json.loads(request.data)
     if not session.get('user') or not session.get('current_game'):
         abort(401)
 
-    event_type = {
-        'game_start': 1,
-        'game_end': 2,
-        'missclick': 3,
-        'correct_answer': 4,
-        'incorrect_answer': 5,
-        'clicks_info': 6
-    }
-    response_params = {
-        'records': []
-    }
-
-    # Обрабатываем миссклики
-    for event_date, event_params in data['missClicks']:
-        record = {
-            'DateAction': event_date,
-            'Type': event_type['missclick'],
-            'AnswerNumber': event_params['answer_number']
-        }
-        response_params['records'].append(record)
-
-    # Обрабатываем ответы
-    for event_date, event_params in data['answers']:
-        record = {
-            'DateAction': event_date,
-            'Type': event_type['correct_answer' if event_params['correct'] else 'incorrect_answer'],
-            'AnswerNumber': event_params['answer_number'],
-            'Details': {
-                'time_start': event_params.get('time_start')
-            }
-        }
-        response_params['records'].append(record)
-
-    start_rec = {
-        'DateAction': data['startTime'],
-        'Type': event_type['game_start']
-    }
-    response_params['records'].append(start_rec)
-
-    end_rec = {
-        'DateAction': data['endTime'],
-        'Type': event_type['game_end']
-    }
-    response_params['records'].append(end_rec)
-
-    if 'clicks' in data:
-        clicks_info_rec = {
-            'DateAction': data['endTime'],
-            'Type': event_type['clicks_info'],
-            'Details': {
-                'window_size': data['window_info'],
-                'clicks': data['clicks']
-            }
-        }
-        response_params['records'].append(clicks_info_rec)
-
     headers = {
         'Content-Type': 'application/json',
         'token': session['user'],
-        'game': '8e520e72-def0-4f05-8173-691e687e8931'  # session['current_game']
+        'game': session['current_game']
     }
-    send_url = 'http://yoh-backend:8080/patient/games/statistics/sending'
+    send_url = 'http://yoh-backend:8080/patient/games/statistics/game_start'
 
-    post(send_url, data=json.dumps(response_params, default=json_serial), headers=headers)
+    post(send_url, data=json.dumps(data, default=json_serial), headers=headers)
 
     return make_response(json.dumps({'message': 'Success'}))
 
 
-@api_bp.route('/statistics')
+@api_bp.route('/game_end', methods=['POST'])
+def send_game_end_route():
+    data = json.loads(request.data)
+    if not session.get('user') or not session.get('current_game'):
+        abort(401)
+
+    headers = {
+        'Content-Type': 'application/json',
+        'token': session['user'],
+        'game': session['current_game']
+    }
+    send_url = 'http://yoh-backend:8080/patient/games/statistics/game_end'
+
+    post(send_url, data=json.dumps(data, default=json_serial), headers=headers)
+
+    return make_response(json.dumps({'message': 'Success'}))
+
+
+@api_bp.route('/statistics', methods=['POST'])
 def statistics_route():
-    conn = psycopg2.connect(
-        host="yoh-db",
-        port="5432",
-        database="yoh",
-        user="postgres",
-        password="postgres")
-    cursor = conn.cursor()
-    cursor.execute('select * from game_statistics')
-    th = ['id', 'answer_number', 'date_action', 'details', 'type', 'game_id', 'patient_id']
-    td = cursor.fetchall()
-    columns = len(th)
+    data = json.loads(request.data)
+    if not session.get('user') or not session.get('current_game'):
+        abort(401)
 
-    table = PrettyTable(th)
+    # statistic_types = {
+    #     Решили вопрос полностью правильно: 1
+    #     Решили вопрос полностью неправильно: 2
+    #     Просто переключили уровень: 3
+    # }
 
-    for td_data in td:
-        table.add_row(td_data[:columns])
-    return make_response(table.get_html_string())
+    headers = {
+        'Content-Type': 'application/json',
+        'token': session['user'],
+        'game': session['current_game']
+    }
+    send_url = 'http://yoh-backend:8080/patient/games/statistics/send_statistic'
+
+    post(send_url, data=json.dumps(data, default=json_serial), headers=headers)
+
+    return make_response(json.dumps({'message': 'Success'}))
 
 
-@api_bp.route('/heatmap')
-def heatmap_route():
-    conn = psycopg2.connect(
-        host="yoh-db",
-        port="5432",
-        database="yoh",
-        user="postgres",
-        password="postgres")
-    cursor = conn.cursor()
-    cursor.execute('select "details" from game_statistics where "type" = 6 order by "id" desc limit 1')
-    data = cursor.fetchone()
-    if data:
-        data = data[0]
-        points_data = []
-        values = []
-        for point, value in data['clicks'].items():
-            values.append(value)
-            x, y = point.split('.')
-            points_data.append({"x": int(x), "y": int(y), "value": value})
-        params_to_render = {
-            'points': points_data,
-            'window': {
-                'height': data['window_size']['height'],
-                'width': data['window_size']['width']
-            },
-            'max_point': max(values)
-        }
-        return render_template(f'test_heatmap/index.html', **params_to_render)
-    else:
-        abort(404)
+@api_bp.route('/additional_fields', methods=['GET'])
+def additional_fields_route():
+    add_fields = session.get('additional_fields')
+    return make_response(add_fields)

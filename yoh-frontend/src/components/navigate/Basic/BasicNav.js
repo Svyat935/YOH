@@ -5,10 +5,10 @@ export function BasicNav() {
     return (
         <ul className={"nav"}>
             <li className={"nav-item"}>
-                <Link className={"nav-link"} to={"#"}>Новости платформы</Link>
+                <Link className={"nav-link"} to={"/"}>Домашняя страница</Link>
             </li>
             <li className={"nav-item"}>
-                <Link className={"nav-link"} to={"#"}>Контакты</Link>
+                <Link className={"nav-link"} to={"/contacts/"}>Контакты</Link>
             </li>
             <li className={"nav-item"}>
                 <Link className={"nav-link"} to={"/auth/"}>Авторизация</Link>

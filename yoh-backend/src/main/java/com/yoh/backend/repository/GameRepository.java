@@ -40,7 +40,7 @@ public class GameRepository {
         Session session = sessionFactory.openSession();
         try {
             session.beginTransaction();
-            session.delete(game);
+            session.delete(session.contains(game) ? game : session.merge(game));
             session.getTransaction().commit();
         }
         finally {
