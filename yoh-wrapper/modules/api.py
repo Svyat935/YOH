@@ -124,7 +124,7 @@ def statistic_pagination_route():
         );
     """
     cursor.execute(query, {'gp_id': parameters['gp_id']})
-    result = cursor.fetchone()
+    result = cursor.fetchall()
     return make_response(json.dumps(result, default=json_serial))
 
 
