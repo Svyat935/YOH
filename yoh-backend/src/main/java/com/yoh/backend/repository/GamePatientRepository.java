@@ -86,8 +86,10 @@ public class GamePatientRepository {
                     .add(Restrictions.eq("patient", patient));
             switch (order) {
                 case "1":
-                    criteria.createAlias("game.name", "gameName");
-                    criteria.addOrder(Order.asc("gameName"));
+                    Criteria criteria1 = criteria.createCriteria("game");
+                    criteria.addOrder(Order.asc("name"));
+//                    criteria.createAlias("game.name", "gameName");
+//                    criteria.addOrder(Order.asc("gameName"));
 //                    criteria.addOrder(Order.asc("game.name"));
                 case "-1":
                     criteria.createAlias("game.name", "gameName");
