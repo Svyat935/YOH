@@ -13,6 +13,15 @@ import java.util.UUID;
 public class Game {
     public Game() {}
 
+    public Game(UUID id, String name, String type, String description, String url, LocalDateTime dateAdding) {
+        this.id = id;
+        this.name = name;
+        this.type = type;
+        this.description = description;
+        this.url = url;
+        this.dateAdding = dateAdding;
+    }
+
     public Game(String name, String type, String description, String url, LocalDateTime dateAdding) {
         this.name = name;
         this.type = type;
@@ -22,7 +31,7 @@ public class Game {
     }
 
     @Id
-    @GeneratedValue
+//    @GeneratedValue
     private UUID id;
 
     public UUID getId() {
