@@ -5,6 +5,7 @@ import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.MatchMode;
+import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -33,7 +34,7 @@ public class UserRepository {
         }
     }
 
-    public List<User> getAllUsersByAdmin(Integer role) {
+    public List<User> getAllUsersByAdmin(Integer role, String order) {
         //TODO подогнать под общий вид
         Session session = sessionFactory.openSession();
         try {
@@ -41,6 +42,27 @@ public class UserRepository {
                     .add(Restrictions.ne("role", 0));
             if (role != -1)
                 criteria.add(Restrictions.eq("role", role));
+
+//            switch (order) {
+//                case "1":
+//                    criteria.addOrder(Order.asc());
+//                case "-1":
+//                    criteria.addOrder(Order.desc());
+//                case "2":
+//                    criteria.addOrder(Order.asc());
+//                case "-2":
+//                    criteria.addOrder(Order.desc());
+//            }
+            switch (order) {
+                case "1":
+                    criteria.addOrder(Order.asc("login"));
+                case "-1":
+                    criteria.addOrder(Order.desc("login"));
+                case "2":
+                    criteria.addOrder(Order.asc("dateRegistration"));
+                case "-2":
+                    criteria.addOrder(Order.desc("dateRegistration"));
+            }
             List<User> users = criteria.list();
             return users;
         }

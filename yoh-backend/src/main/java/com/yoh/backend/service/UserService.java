@@ -12,6 +12,7 @@ import com.yoh.backend.entity.User;
 import com.yoh.backend.repository.OrganizationRepository;
 import com.yoh.backend.repository.UserRepository;
 import com.yoh.backend.validators.UserValidator;
+import io.swagger.models.auth.In;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -49,12 +50,12 @@ public class UserService {
         return userRepository.getAllUsers();
     }
 
-    public List<User> getAllUsersByAdmin(Integer role, String regex) {
+    public List<User> getAllUsersByAdmin(Integer role, String regex, String order) {
 //        List<User> unfilteredList = userRepository.getAllUsersByAdmin(role);
 ////        if (!unfilteredList.isEmpty())
 //        return unfilteredList.stream().filter(i -> i.getLogin().toLowerCase().contains(regex.toLowerCase())).collect(Collectors.toList());
 ////        else return unfilteredList;
-        List<User> unfilteredList = userRepository.getAllUsersByAdmin(role);
+        List<User> unfilteredList = userRepository.getAllUsersByAdmin(role, order);
         if (!regex.equals("")) {
             return unfilteredList.stream().filter(i -> i.getLogin().toLowerCase().contains(regex.toLowerCase())).collect(Collectors.toList());
         }
