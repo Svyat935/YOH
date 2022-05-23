@@ -56,11 +56,12 @@ select
 from (
     select 
         "level_name",
-        sum(*) filter (where "Type" = 1) as "correct",
-        sum(*) filter (where "Type" = 2) as "incorrect"
+        sum(*) filter (where "type" = 1) as "correct",
+        sum(*) filter (where "type" = 2) as "incorrect"
     from "game_statistics" 
     where 
-        "started_game_id" = %(sg_id)s::uuid
+        "started_game_id" = %(sg_id)s::uuid and
+        "type" = any(array([1, 2])::int[])
     group by "level", "level_name"
     order by "level"
 ) a;
