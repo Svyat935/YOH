@@ -268,6 +268,7 @@ public class TutorController {
                 for (GamePatient gamePatient: patientGames){
                     JsonObject gamesInfo = new JsonObject();
                     GameStatus gameStatus = this.gameStatusService.getGameStatusByGamePatient(gamePatient);
+                    gamesInfo.put("gamePatientID", gamePatient.getId().toString());
                     gamesInfo.put("id", gamePatient.getGame().getId().toString());
                     gamesInfo.put("name", gamePatient.getGame().getName());
                     gamesInfo.put("type", gamePatient.getGame().getType());
