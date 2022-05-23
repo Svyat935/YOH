@@ -11,6 +11,7 @@ import {ProgressBar} from "../../../../../components/progressBar/ProgressBar";
 import gameStub from "../../../../../assets/gameStub.jpg";
 import {useNavigate} from "react-router-dom";
 import profileStub from "../../../../../assets/profileStub.jpg";
+import {InfoBlock} from "../../../../../components/infoBlock/InfoBlock";
 
 export function VDetailInfo(props) {
     const router = useNavigate();
@@ -22,11 +23,17 @@ export function VDetailInfo(props) {
         if (games !== null && games !== undefined && games.length > 0){
             games.forEach((game) => {
                 view.push(
-                    <InfoBlockStatic key={game["id"]} text={game["name"]}>
+                    <InfoBlock key={game["id"]} text={game["name"]} onClick={() => {
+                        let info = props.context.info ? props.context.info : {};
+                        info["gamePatientID"] = game["gamePatientID"];
+                        props.context.addInfo(info);
+
+                        router("/user/tutor/stat");
+                    }}>
                         <div>
                             <img style={{width: "100%"}} src={gameStub} alt={'game'}/>
                         </div>
-                    </InfoBlockStatic>
+                    </InfoBlock>
                 )
             })
             view = (
