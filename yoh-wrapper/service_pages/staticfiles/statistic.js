@@ -38,7 +38,8 @@ class StatRecord {
 				type: 3,
 				clicks: this.count_clicks,
 				missclicks: this.count_missclicks,
-				additional_fields: this.additional_fields
+				additional_fields: this.additional_fields,
+				details: null
 			};
 			fetch('/api/statistics', {method: 'POST', body: JSON.stringify(params_to_send)});
 		}
@@ -90,7 +91,8 @@ class StatRecord {
 			type: params['correct'] ? 1 : 2,
 			clicks: this.count_clicks,
 			missclicks: this.count_missclicks,
-			additional_fields: this.additional_fields
+			additional_fields: this.additional_fields,
+			details: null
 		};
 		fetch('/api/statistics', {method: 'POST', body: JSON.stringify(params_to_send)});
 		this.current_level = null;
