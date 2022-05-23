@@ -8,6 +8,7 @@ from werkzeug.exceptions import HTTPException
 from requests import post
 
 api_bp = Blueprint('API', __name__, url_prefix='/api')
+psycopg2.extras.register_uuid()
 
 
 def json_serial(obj):
@@ -122,7 +123,7 @@ def statistic_pagination_route():
                 "game_patient_id" = %(gp_id)s and 
                 "date_end" is not null 
             order by "date_end"
-        )::uuid[];
+        );
     """
     cursor.execute(query, {'gp_id': parameters['gp_id']})
     result = cursor.fetchone()
