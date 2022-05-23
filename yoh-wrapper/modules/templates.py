@@ -61,7 +61,7 @@ from (
     from "game_statistics" 
     where 
         "started_game_id" = %(sg_id)s::uuid and
-        "type" = any(array([1, 2])::int[])
+        "type" = any(array(1, 2)::int[])
     group by "level", "level_name"
     order by "level"
 ) a;
