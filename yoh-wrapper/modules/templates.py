@@ -30,32 +30,25 @@ from (
 ) a;
 """
 
-"""
--- Виджет времени прохождения уровня
--- $1 - id запущенной игры, $2 - uuid пациента
-with check_rights as (
-    select EXISTS(select null from "started_game" where "id" = $1 and "patient" = $2)
-)
+CLICKS_WIDGET = """
 select
-    null::text as "level_name",
-    EXTRACT(epoch FROM ("date_end" - "date_start")) as "spend_time"
-from "started_game"
-where
-    (TABLE check_rights)::boolean and
-    "id" = $1
+    array_agg("level_name") as "level_names",
+    array_agg("clicks") as "clicks",
+    array_agg("missclicks") as "missclicks"
+from (
+    select 
+        "level_name",
+        sum("clicks") as "clicks",
+        sum("missclicks") as "missclicks"
+    from "game_statistics" 
+    where 
+        "started_game_id" = %(sg_id)s::uuid
+    group by "level", "level_name"
+    order by "level"
+) a;
+"""
 
-UNION ALL 
-
-select 
-    "level_name",
-    sum(EXTRACT(epoch FROM ("date_end" - "date_start"))) as "spend_time"
-from "game_statistics" 
-where 
-    (TABLE check_rights)::boolean and
-    "sg_id" = $1
-group by "level", "level_name"
-order by "level";
-
+"""
 
 -- Виджет кликов
 -- $1 - id запущенной игры, $2 - uuid пациента
