@@ -6,7 +6,7 @@ from datetime import datetime, date
 from flask import Blueprint, make_response, request, session, abort
 from werkzeug.exceptions import HTTPException
 from requests import post
-from .templates import GET_ATTEMPT_PAGINATION, GET_ALL_TIME_WIDGET, CLICKS_WIDGET
+from .templates import GET_ATTEMPT_PAGINATION, GET_ALL_TIME_WIDGET, CLICKS_WIDGET, ANSWERS_WIDGET
 
 api_bp = Blueprint('API', __name__, url_prefix='/api')
 psycopg2.extras.register_uuid()
@@ -146,6 +146,19 @@ def clicks_widget_route():
     with psycopg2.connect(**CONNECT_PARAMS) as conn:
         with conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor) as cursor:
             cursor.execute(CLICKS_WIDGET, {'sg_id': parameters['sg_id']})
+            result = cursor.fetchone()
+
+    return make_response(json.dumps(result, default=json_serial))
+
+
+@api_bp.route('/answers_widget', methods=['GET'])
+def answers_widget_route():
+    # sg_id
+    parameters = request.args
+
+    with psycopg2.connect(**CONNECT_PARAMS) as conn:
+        with conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor) as cursor:
+            cursor.execute(ANSWERS_WIDGET, {'sg_id': parameters['sg_id']})
             result = cursor.fetchone()
 
     return make_response(json.dumps(result, default=json_serial))
