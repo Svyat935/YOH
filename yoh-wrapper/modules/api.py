@@ -126,7 +126,7 @@ def statistic_pagination_route():
 
 
 @api_bp.route('/all_time_widget', methods=['GET'])
-def statistic_pagination_route():
+def all_time_widget_route():
     # sg_id
     parameters = request.args
 
