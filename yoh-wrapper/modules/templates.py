@@ -39,7 +39,7 @@ from (
     select 
         "level_name",
         sum("clicks") as "clicks",
-        sum("missclicks") as "missclicks"
+        sum("miss_clicks") as "missclicks"
     from "game_statistics" 
     where 
         "started_game_id" = %(sg_id)s::uuid
