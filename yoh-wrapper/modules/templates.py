@@ -11,105 +11,69 @@ select array(
 """
 
 GET_ALL_TIME_WIDGET = """
-select
-    null::text[] as "level_names",
-    array_agg(EXTRACT(epoch FROM ("date_end" - "date_start")))::double precision[] as "spend_time"
-from "started_games"
-where
-    "id" = %(sg_id)s::uuid
-
-UNION ALL 
-
 select 
     array_agg("level_name") as "level_names",
-    array_agg("spend_time") as "spend_time"
+    array_agg("spend_time") as "spend_time",
+    (select 
+        EXTRACT(epoch FROM ("date_end" - "date_start")) as "spend_time" 
+    from "started_games" 
+    where "id" = %(sg_id)s::uuid)::int as "all_time_spent"
 from (
     select 
         "level_name",
-        sum(EXTRACT(epoch FROM ("date_end" - "date_start"))) as "spend_time"
+        sum(EXTRACT(epoch FROM ("date_end" - "date_start")))::int as "spend_time"
     from "game_statistics" 
     where 
         "started_game_id" = %(sg_id)s::uuid
     group by "level", "level_name"
     order by "level"
-) a
+) a;
 """
 
-"""
--- Виджет времени прохождения уровня
--- $1 - id запущенной игры, $2 - uuid пациента
-with check_rights as (
-    select EXISTS(select null from "started_game" where "id" = $1 and "patient" = $2)
-)
+CLICKS_WIDGET = """
 select
-    null::text as "level_name",
-    EXTRACT(epoch FROM ("date_end" - "date_start")) as "spend_time"
-from "started_game"
-where
-    (TABLE check_rights)::boolean and
-    "id" = $1
+    array_agg("level_name") as "level_names",
+    array_agg("clicks") as "clicks",
+    array_agg("missclicks") as "missclicks"
+from (
+    select 
+        "level_name",
+        sum("clicks") as "clicks",
+        sum("miss_clicks") as "missclicks"
+    from "game_statistics" 
+    where 
+        "started_game_id" = %(sg_id)s::uuid
+    group by "level", "level_name"
+    order by "level"
+) a;
+"""
 
-UNION ALL 
+ANSWERS_WIDGET = """
+select
+    array_agg("level_name") as "level_names",
+    array_agg("correct") as "correct",
+    array_agg("incorrect") as "incorrect"
+from (
+    select 
+        "level_name",
+        count(*) filter (where "type" = 1) as "correct",
+        count(*) filter (where "type" = 2) as "incorrect"
+    from "game_statistics" 
+    where 
+        "started_game_id" = %(sg_id)s::uuid and
+        "type" = any(array[1, 2]::int[])
+    group by "level", "level_name"
+    order by "level"
+) a;
+"""
 
+TIMELINE_WIDGET = """
 select 
     "level_name",
-    sum(EXTRACT(epoch FROM ("date_end" - "date_start"))) as "spend_time"
+    array["date_start", "date_end"] as "daterange"
 from "game_statistics" 
 where 
-    (TABLE check_rights)::boolean and
-    "sg_id" = $1
-group by "level", "level_name"
-order by "level";
-
-
--- Виджет кликов
--- $1 - id запущенной игры, $2 - uuid пациента
-with check_rights as (
-    select EXISTS(select null from "started_game" where "id" = $1 and "patient" = $2)
-)
-select 
-    "level_name",
-    sum("clicks") as "clicks",
-    sum("missclicks") as "missclicks"
-from "game_statistics" 
-where 
-    (TABLE check_rights)::boolean and
-    "sg_id" = $1
-group by "level", "level_name"
-order by "level";
-
-
--- Виджет правильных и неправильных ответов
--- $1 - id запущенной игры, $2 - uuid пациента
-with check_rights as (
-    select EXISTS(select null from "started_game" where "id" = $1 and "patient" = $2)
-)
-select 
-    "level_name",
-    sum(*) filter (where "Type" = 1) as "correct",
-    sum(*) filter (where "Type" = 2) as "incorrect"
-from "game_statistics" 
-where 
-    (TABLE check_rights)::boolean and
-    "sg_id" = $1
-group by "level", "level_name"
-order by "level";
-
-
--- Виджет игрового времени
--- $1 - id запущенной игры, $2 - uuid пациента
-with check_rights as (
-    select EXISTS(select null from "started_game" where "id" = $1 and "patient" = $2)
-)
-select 
-    "level_name",
-    "date_start",
-    "date_end"
-from "game_statistics" 
-where 
-    (TABLE check_rights)::boolean and
-    "sg_id" = $1
+    "started_game_id" = %(sg_id)s::uuid
 order by "level", "date_start";
-
 
 """
