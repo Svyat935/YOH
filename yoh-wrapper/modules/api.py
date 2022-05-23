@@ -123,7 +123,7 @@ def statistic_pagination_route():
                 "game_patient_id" = %(gp_id)s and 
                 "date_end" is not null 
             order by "date_end"
-        );
+        ) as "attemps";
     """
     cursor.execute(query, {'gp_id': parameters['gp_id']})
     result = cursor.fetchone()
