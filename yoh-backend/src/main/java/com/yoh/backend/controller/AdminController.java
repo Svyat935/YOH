@@ -217,7 +217,7 @@ public class AdminController {
             Admin admin = this.adminService.getAdminByUser(this.userService.getUserById(this.userService.verifyToken(token)));
             if(this.gameService.checkGameByName(name)){
 
-                Game game = new Game(name, type, description, null, LocalDateTime.now());
+                Game game = new Game(UUID.randomUUID() ,name, type, description, null, LocalDateTime.now());
 
                 String url = "/app/games/" + game.getId().toString();
 //                String sd = wrapper+ "/" +game.getId().toString()+"/";
