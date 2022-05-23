@@ -31,7 +31,7 @@ public class Game {
     }
 
     @Id
-    @GeneratedValue
+//    @GeneratedValue
     private UUID id;
 
     public UUID getId() {
