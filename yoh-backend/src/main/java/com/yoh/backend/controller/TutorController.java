@@ -21,10 +21,8 @@ import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
+import java.util.*;
 import java.util.List;
-import java.util.Objects;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 @RestController
@@ -71,7 +69,8 @@ public class TutorController {
     public JSONResponse getPatients(@RequestHeader("token") String token,
                                     @RequestParam(value = "limit", required = true) Integer limit,
                                     @RequestParam(value = "start", required = true) Integer start,
-                                    @RequestParam(value = "regex", required = false, defaultValue = "") String regex) {
+                                    @RequestParam(value = "regex", required = false, defaultValue = "") String regex,
+                                    @RequestParam(value = "order", required = false, defaultValue = "") String order) {
         try {
             Tutor tutor = this.tutorService.getTutorByUser(this.userService.getUserById(this.userService.verifyToken(token)));
             ArrayList<JsonObject> patientList = new ArrayList<JsonObject>();
@@ -85,6 +84,18 @@ public class TutorController {
                                 || (i.getName() != null && i.getName().toLowerCase().contains(regex.toLowerCase()))
                                 || (i.getSecondName() != null && i.getSecondName().toLowerCase().contains(regex.toLowerCase())))
                         .collect(Collectors.toList());
+
+            //Sort
+            switch (order) {
+                case "1":
+                    patients = patients.stream().sorted(Comparator.comparing(Patient::getSurname)).collect(Collectors.toList());
+                case "-1":
+                    patients = patients.stream().sorted(Comparator.comparing(Patient::getSurname).reversed()).collect(Collectors.toList());
+                case "2":
+                    patients = patients.stream().sorted(Comparator.comparing(Patient::getBirthDate)).collect(Collectors.toList());
+                case "-2":
+                    patients = patients.stream().sorted(Comparator.comparing(Patient::getBirthDate).reversed()).collect(Collectors.toList());
+            }
 
             if (patients.size() == 0) {
                 response.put("previous", false);
@@ -147,13 +158,14 @@ public class TutorController {
     public JSONResponse getAllPatients(@RequestHeader("token") String token,
                                        @RequestParam(value = "limit", required = true) Integer limit,
                                        @RequestParam(value = "start", required = true) Integer start,
-                                       @RequestParam(value = "regex", required = false, defaultValue = "") String regex) {
+                                       @RequestParam(value = "regex", required = false, defaultValue = "") String regex,
+                                       @RequestParam(value = "order", required = false, defaultValue = "") String order) {
         try {
             Tutor tutor = this.tutorService.getTutorByUser(this.userService.getUserById(this.userService.verifyToken(token)));
             Organization organization = this.tutorService.getTutorByUser(this.userService.getUserById(this.userService.verifyToken(token))).getOrganization();
             ArrayList<JsonObject> patientList = new ArrayList<JsonObject>();
             JsonObject response = new JsonObject();
-            List<Patient> patientsFilteredUnpaginatedList = patientService.getAllPatientsByOrganizationFiltered(organization, regex);
+            List<Patient> patientsFilteredUnpaginatedList = patientService.getAllPatientsByOrganizationFiltered(organization, regex, order);
 
             if (patientsFilteredUnpaginatedList.size() == 0) {
                 response.put("previous", false);

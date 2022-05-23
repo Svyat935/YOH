@@ -48,11 +48,11 @@ public class GameService {
     }
 
     public List<Game> getAllGames() {
-        return gameRepository.getAllGames();
+        return gameRepository.getAllGames("");
     }
 
-    public List<Game> getAllGamesFiltered(String typeRegex) {
-        List<Game> unfilteredList = gameRepository.getAllGames();
+    public List<Game> getAllGamesFiltered(String typeRegex, String order) {
+        List<Game> unfilteredList = gameRepository.getAllGames(order);
         if (!typeRegex.equals("")) {
         return unfilteredList.stream().filter(i -> i.getType().toLowerCase().contains(typeRegex.toLowerCase()))
                 .collect(Collectors.toList());

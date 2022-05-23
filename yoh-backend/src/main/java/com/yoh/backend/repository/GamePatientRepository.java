@@ -4,6 +4,7 @@ import com.yoh.backend.entity.*;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -78,11 +79,25 @@ public class GamePatientRepository {
         }
     }
 
-    public List<GamePatient> getAllGamesPatientByPatient(Patient patient) {
+    public List<GamePatient> getAllGamesPatientByPatient(Patient patient, String order) {
         Session session = sessionFactory.openSession();
         try {
             Criteria criteria = session.createCriteria(GamePatient.class)
                     .add(Restrictions.eq("patient", patient));
+            switch (order) {
+                case "1":
+                    criteria.addOrder(Order.asc("game.name"));
+                case "-1":
+                    criteria.addOrder(Order.desc("game.name"));
+                case "2":
+                    criteria.addOrder(Order.asc("game.type"));
+                case "-2":
+                    criteria.addOrder(Order.desc("game.type"));
+                case "3":
+                    criteria.addOrder(Order.asc("gamePatientStatus"));
+                case "-3":
+                    criteria.addOrder(Order.desc("gamePatientStatus"));
+            }
             List<GamePatient> gamePatientList = criteria.list();
             return gamePatientList.isEmpty() ? List.of() : gamePatientList;
         }
@@ -90,6 +105,7 @@ public class GamePatientRepository {
             session.close();
         }
     }
+
 
     public List<GamePatient> getAllPatientByGame(Game game) {
         Session session = sessionFactory.openSession();

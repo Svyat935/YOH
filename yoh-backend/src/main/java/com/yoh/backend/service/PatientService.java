@@ -51,8 +51,8 @@ public class PatientService {
         );
     }
 
-    public List<Patient> getAllPatientsByOrganizationFiltered(Organization organization, String regex){
-        List<Patient> patientListUnfiltered = patientRepository.getAllPatientsByOrganization(organization);
+    public List<Patient> getAllPatientsByOrganizationFiltered(Organization organization, String regex, String order){
+        List<Patient> patientListUnfiltered = patientRepository.getAllPatientsByOrganization(organization, order);
         if (!regex.equals("")){
             return patientListUnfiltered
                     .stream()
@@ -70,7 +70,7 @@ public class PatientService {
     }
 
     public List<Patient> getAllPatientsByOrganization(Organization organization){
-        return patientRepository.getAllPatientsByOrganization(organization);
+        return patientRepository.getAllPatientsByOrganization(organization, "");
     }
 
 }

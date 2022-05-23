@@ -4,9 +4,11 @@ import com.yoh.backend.entity.Game;
 import com.yoh.backend.entity.Organization;
 import com.yoh.backend.entity.Patient;
 import com.yoh.backend.entity.User;
+import org.aspectj.weaver.ast.Or;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -77,11 +79,30 @@ public class PatientRepository {
         }
     }
 
-    public List<Patient> getAllPatientsByOrganization(Organization organization) {
+    public List<Patient> getAllPatientsByOrganization(Organization organization, String order) {
         Session session = sessionFactory.openSession();
         try {
             Criteria criteria = session.createCriteria(Patient.class)
                     .add(Restrictions.eq("organization", organization));
+            switch (order) {
+                case "1":
+                    criteria.addOrder(Order.asc("surname"));
+                case "-1":
+                    criteria.addOrder(Order.desc("surname"));
+//              Фио
+                case "2":
+                    criteria.addOrder(Order.asc("surname"));
+                    criteria.addOrder(Order.asc("name"));
+                    criteria.addOrder(Order.asc("secondName"));
+                case "-2":
+                    criteria.addOrder(Order.desc("surname"));
+                    criteria.addOrder(Order.desc("name"));
+                    criteria.addOrder(Order.desc("secondName"));
+                case "3":
+                    criteria.addOrder(Order.asc("birthDate"));
+                case "-3":
+                    criteria.addOrder(Order.desc("birthDate"));
+            }
             List<Patient> patientsList = criteria.list();
             return patientsList;
         }

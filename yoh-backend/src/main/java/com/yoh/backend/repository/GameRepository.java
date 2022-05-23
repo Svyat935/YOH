@@ -4,6 +4,7 @@ import com.yoh.backend.entity.Game;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -75,10 +76,24 @@ public class GameRepository {
     }
 
 
-    public List<Game> getAllGames(){
+    public List<Game> getAllGames(String order){
         Session session = sessionFactory.openSession();
         try{
             Criteria criteria = session.createCriteria(Game.class);
+            switch (order) {
+                case "1":
+                    criteria.addOrder(Order.asc("name"));
+                case "-1":
+                    criteria.addOrder(Order.desc("name"));
+                case "2":
+                    criteria.addOrder(Order.asc("dateAdding"));
+                case "-2":
+                    criteria.addOrder(Order.desc("dateAdding"));
+                case "3":
+                    criteria.addOrder(Order.asc("type"));
+                case "-3":
+                    criteria.addOrder(Order.desc("type"));
+            }
             List<Game> games = criteria.list();
             return games;
 //            return games.isEmpty() ? null : games;

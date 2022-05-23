@@ -77,7 +77,7 @@ public class AdminController {
                                  @RequestParam(value = "start", required = true) Integer start,
                                  @RequestParam(value = "role", required = false, defaultValue = "-1") String role,
                                  @RequestParam(value = "regex", required = false, defaultValue = "") String regex,
-                                 @RequestParam(value = "order", required = false, defaultValue = "0") String order) {
+                                 @RequestParam(value = "order", required = false, defaultValue = "") String order) {
         try {
             //TODO прикрутить пагинацию
             Admin admin = this.adminService.getAdminByUser(this.userService.getUserById(this.userService.verifyToken(token)));
