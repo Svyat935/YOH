@@ -86,13 +86,21 @@ public class GamePatientRepository {
                     .add(Restrictions.eq("patient", patient));
             switch (order) {
                 case "1":
-                    criteria.addOrder(Order.asc("game.name"));
+                    criteria.createAlias("game.name", "gameName");
+                    criteria.addOrder(Order.asc("gameName"));
+//                    criteria.addOrder(Order.asc("game.name"));
                 case "-1":
-                    criteria.addOrder(Order.desc("game.name"));
+                    criteria.createAlias("game.name", "gameName");
+                    criteria.addOrder(Order.desc("gameName"));
+//                    criteria.addOrder(Order.desc("game.name"));
                 case "2":
-                    criteria.addOrder(Order.asc("game.type"));
+                    criteria.createAlias("game.type", "gameType");
+                    criteria.addOrder(Order.asc("gameType"));
+//                    criteria.addOrder(Order.asc("game.type"));
                 case "-2":
-                    criteria.addOrder(Order.desc("game.type"));
+                    criteria.createAlias("game.type", "gameType");
+                    criteria.addOrder(Order.desc("gameType"));
+//                    criteria.addOrder(Order.desc("game.type"));
                 case "3":
                     criteria.addOrder(Order.asc("gamePatientStatus"));
                 case "-3":
