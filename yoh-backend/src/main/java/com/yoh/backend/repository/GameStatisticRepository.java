@@ -47,7 +47,7 @@ public class GameStatisticRepository {
                     "        \"id\" as \"ids\" \n" +
                     "    from \"started_games\" \n" +
                     "    where \n" +
-                    "        \"game_patient_id\" = $1 and \n" +
+                    "        \"game_patient_id\" = '%s' and \n" +
                     "        \"date_end\" is not null \n" +
                     "    order by \"date_end\"\n" +
                     ");", gamePatient.getId());
