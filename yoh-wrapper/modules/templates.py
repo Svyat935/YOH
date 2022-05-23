@@ -67,38 +67,13 @@ from (
 ) a;
 """
 
-"""
--- Виджет правильных и неправильных ответов
--- $1 - id запущенной игры, $2 - uuid пациента
-with check_rights as (
-    select EXISTS(select null from "started_game" where "id" = $1 and "patient" = $2)
-)
+TIMELINE_WIDGET = """
 select 
     "level_name",
-    sum(*) filter (where "Type" = 1) as "correct",
-    sum(*) filter (where "Type" = 2) as "incorrect"
+    ["date_start", "date_end"] as "daterange"
 from "game_statistics" 
 where 
-    (TABLE check_rights)::boolean and
-    "sg_id" = $1
-group by "level", "level_name"
-order by "level";
-
-
--- Виджет игрового времени
--- $1 - id запущенной игры, $2 - uuid пациента
-with check_rights as (
-    select EXISTS(select null from "started_game" where "id" = $1 and "patient" = $2)
-)
-select 
-    "level_name",
-    "date_start",
-    "date_end"
-from "game_statistics" 
-where 
-    (TABLE check_rights)::boolean and
-    "sg_id" = $1
+    "started_game_id" = %(sg_id)s::uuid
 order by "level", "date_start";
-
 
 """
