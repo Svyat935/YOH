@@ -86,27 +86,33 @@ public class GamePatientRepository {
                     .add(Restrictions.eq("patient", patient));
             switch (order) {
                 case "1":
+                {
                     Criteria criteria1 = criteria.createCriteria("game");
                     criteria1.addOrder(Order.asc("name"));
-////                    criteria.createAlias("game.name", "gameName");
-////                    criteria.addOrder(Order.asc("gameName"));
-////                    criteria.addOrder(Order.asc("game.name"));
-//                case "-1":
-//                    criteria.createAlias("game.name", "gameName");
-//                    criteria.addOrder(Order.desc("gameName"));
-////                    criteria.addOrder(Order.desc("game.name"));
-//                case "2":
-//                    criteria.createAlias("game.type", "gameType");
-//                    criteria.addOrder(Order.asc("gameType"));
-////                    criteria.addOrder(Order.asc("game.type"));
-//                case "-2":
-//                    criteria.createAlias("game.type", "gameType");
-//                    criteria.addOrder(Order.desc("gameType"));
-////                    criteria.addOrder(Order.desc("game.type"));
-//                case "3":
-//                    criteria.addOrder(Order.asc("gamePatientStatus"));
-//                case "-3":
-//                    criteria.addOrder(Order.desc("gamePatientStatus"));
+                }
+                case "-1":
+                {
+                    Criteria criteria1 = criteria.createCriteria("game");
+                    criteria1.addOrder(Order.desc("name"));
+                }
+                case "2":
+                {
+                    Criteria criteria1 = criteria.createCriteria("game");
+                    criteria1.addOrder(Order.asc("type"));
+                }
+                case "-2":
+                {
+                    Criteria criteria1 = criteria.createCriteria("game");
+                    criteria1.addOrder(Order.desc("type"));
+                }
+                case "3":
+                {
+                    criteria.addOrder(Order.asc("gamePatientStatus"));
+                }
+                case "-3":
+                {
+                    criteria.addOrder(Order.desc("gamePatientStatus"));
+                }
             }
             List<GamePatient> gamePatientList = criteria.list();
             return gamePatientList.isEmpty() ? List.of() : gamePatientList;
