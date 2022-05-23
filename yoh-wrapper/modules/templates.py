@@ -13,10 +13,10 @@ select array(
 GET_ALL_TIME_WIDGET = """
 select
     null::text[] as "level_names",
-    EXTRACT(epoch FROM ("date_end" - "date_start")) as "spend_time"
+    ARRAY([EXTRACT(epoch FROM ("date_end" - "date_start"))])::double precision[] as "spend_time"
 from "started_games"
 where
-    "id" = %(sg_id)s
+    "id" = %(sg_id)s::uuid
 
 UNION ALL 
 
@@ -29,7 +29,7 @@ from (
         sum(EXTRACT(epoch FROM ("date_end" - "date_start"))) as "spend_time"
     from "game_statistics" 
     where 
-        "started_game_id" = %(sg_id)s
+        "started_game_id" = %(sg_id)s::uuid
     group by "level", "level_name"
     order by "level"
 ) a

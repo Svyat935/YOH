@@ -142,7 +142,7 @@ def all_time_widget_route():
     }
     for record in sql_result:
         if record['level_names'] is None:
-            result['all_spend_time'] = record['spend_time']
+            result['all_spend_time'] = record['spend_time'][0]
         else:
             result['levels_time'].append(record['spend_time'])
             result['levels_name'].append(record['levels_name'])
