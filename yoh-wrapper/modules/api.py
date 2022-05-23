@@ -133,18 +133,6 @@ def all_time_widget_route():
     with psycopg2.connect(**CONNECT_PARAMS) as conn:
         with conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor) as cursor:
             cursor.execute(GET_ALL_TIME_WIDGET, {'sg_id': parameters['sg_id']})
-            sql_result = cursor.fetchall()
-
-    result = {
-        'all_spend_time': None,
-        'levels_time': [],
-        'levels_name': []
-    }
-    for record in sql_result:
-        if record['level_names'] is None:
-            result['all_spend_time'] = record['spend_time'][0]
-        else:
-            result['levels_time'].append(record['spend_time'])
-            result['levels_name'].append(record['levels_name'])
+            result = cursor.fetchall()
 
     return make_response(json.dumps(result, default=json_serial))
