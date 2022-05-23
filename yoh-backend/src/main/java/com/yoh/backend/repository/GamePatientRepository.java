@@ -84,36 +84,59 @@ public class GamePatientRepository {
         try {
             Criteria criteria = session.createCriteria(GamePatient.class)
                     .add(Restrictions.eq("patient", patient));
-            switch (order) {
-                case "1":
-                {
-                    Criteria criteria1 = criteria.createCriteria("game");
-                    criteria1.addOrder(Order.asc("name"));
-                }
-                case "-1":
-                {
-                    Criteria criteria1 = criteria.createCriteria("game");
-                    criteria1.addOrder(Order.desc("name"));
-                }
-                case "2":
-                {
-                    Criteria criteria1 = criteria.createCriteria("game");
-                    criteria1.addOrder(Order.asc("type"));
-                }
-                case "-2":
-                {
-                    Criteria criteria1 = criteria.createCriteria("game");
-                    criteria1.addOrder(Order.desc("type"));
-                }
-                case "3":
-                {
-                    criteria.addOrder(Order.asc("gamePatientStatus"));
-                }
-                case "-3":
-                {
-                    criteria.addOrder(Order.desc("gamePatientStatus"));
-                }
+
+            if (order.equals("1")) {
+                Criteria criteria1 = criteria.createCriteria("game");
+                criteria1.addOrder(Order.asc("name"));
             }
+            if (order.equals("-1")) {
+                Criteria criteria1 = criteria.createCriteria("game");
+                criteria1.addOrder(Order.desc("name"));
+            }
+            if (order.equals("2")) {
+                Criteria criteria1 = criteria.createCriteria("game");
+                criteria1.addOrder(Order.asc("type"));
+            }
+            if (order.equals("-2")) {
+                Criteria criteria1 = criteria.createCriteria("game");
+                criteria1.addOrder(Order.desc("type"));
+            }
+            if (order.equals("3")) {
+                criteria.addOrder(Order.asc("gamePatientStatus"));
+            }
+            if (order.equals("-3")) {
+                criteria.addOrder(Order.desc("gamePatientStatus"));
+            }
+//            switch (order) {
+//                case "1":
+//                {
+//                    Criteria criteria1 = criteria.createCriteria("game");
+//                    criteria1.addOrder(Order.asc("name"));
+//                }
+//                case "-1":
+//                {
+//                    Criteria criteria1 = criteria.createCriteria("game");
+//                    criteria1.addOrder(Order.desc("name"));
+//                }
+//                case "2":
+//                {
+//                    Criteria criteria1 = criteria.createCriteria("game");
+//                    criteria1.addOrder(Order.asc("type"));
+//                }
+//                case "-2":
+//                {
+//                    Criteria criteria1 = criteria.createCriteria("game");
+//                    criteria1.addOrder(Order.desc("type"));
+//                }
+//                case "3":
+//                {
+//                    criteria.addOrder(Order.asc("gamePatientStatus"));
+//                }
+//                case "-3":
+//                {
+//                    criteria.addOrder(Order.desc("gamePatientStatus"));
+//                }
+//            }
             List<GamePatient> gamePatientList = criteria.list();
             return gamePatientList.isEmpty() ? List.of() : gamePatientList;
         }
