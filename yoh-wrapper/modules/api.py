@@ -1,5 +1,6 @@
 import json
 import psycopg2
+import psycopg2.extras
 import uuid
 from datetime import datetime, date
 from flask import Blueprint, make_response, request, session, abort
@@ -110,7 +111,7 @@ def statistic_pagination_route():
         database="yoh",
         user="postgres",
         password="postgres")
-    cursor = conn.cursor()
+    cursor = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
 
     query = """
         select array(
@@ -124,7 +125,7 @@ def statistic_pagination_route():
         );
     """
     cursor.execute(query, {'gp_id': parameters['gp_id']})
-    result = cursor.fetchall()
+    result = cursor.fetchone()
     return make_response(json.dumps(result, default=json_serial))
 
 
