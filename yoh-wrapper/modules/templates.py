@@ -70,7 +70,7 @@ from (
 TIMELINE_WIDGET = """
 select 
     "level_name",
-    ["date_start", "date_end"] as "daterange"
+    array["date_start", "date_end"] as "daterange"
 from "game_statistics" 
 where 
     "started_game_id" = %(sg_id)s::uuid
