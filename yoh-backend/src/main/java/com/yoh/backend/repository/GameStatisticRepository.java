@@ -47,10 +47,10 @@ public class GameStatisticRepository {
                     "        \"id\" as \"ids\" \n" +
                     "    from \"started_games\" \n" +
                     "    where \n" +
-                    "        \"game_patient_id\" = '%s'::uuid and \n" +
+                    "        \"game_patient_id\" = '%s'::::uuid and \n" +
                     "        \"date_end\" is not null \n" +
                     "    order by \"date_end\"\n" +
-                    ")::text[];", gamePatient.getId());
+                    ")::::text[];", gamePatient.getId());
 //            List<?> result = session.createSQLQuery(sql).list();
             return session.createSQLQuery(sql).list();
         }
