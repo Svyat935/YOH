@@ -56,8 +56,8 @@ select
 from (
     select 
         "level_name",
-        sum(*) filter (where "type" = 1) as "correct",
-        sum(*) filter (where "type" = 2) as "incorrect"
+        count(*) filter (where "type" = 1) as "correct",
+        count(*) filter (where "type" = 2) as "incorrect"
     from "game_statistics" 
     where 
         "started_game_id" = %(sg_id)s::uuid and
