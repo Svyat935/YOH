@@ -58,10 +58,11 @@ public class GameController {
                                  @RequestParam(value = "regex", required = false, defaultValue = "") String regex,
                                  @RequestParam(value = "typeRegex", required = false, defaultValue = "") String typeRegex,
                                  @RequestParam(value = "limit", required = true) Integer limit,
-                                 @RequestParam(value = "start", required = true) Integer start) {
+                                 @RequestParam(value = "start", required = true) Integer start,
+                                 @RequestParam(value = "order", required = false, defaultValue = "") String order) {
         try{
             User user = this.userService.getUserById(this.userService.verifyToken(token));
-            List<Game> gameList = this.gameService.getAllGamesFiltered(typeRegex);
+            List<Game> gameList = this.gameService.getAllGamesFiltered(typeRegex, order);
             JsonObject response = new JsonObject();
             if (!regex.equals("")){
                 gameList = gameList.stream().filter(i -> i.getName().toLowerCase().contains(regex.toLowerCase()))

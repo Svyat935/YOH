@@ -50,7 +50,7 @@ public class GamePatientService {
     }
 
     public List<Game> getAllGamesByPatient(Patient patient) throws IllegalArgumentException{
-        List<GamePatient> gamePatientList = gamePatientRepository.getAllGamesPatientByPatient(patient);
+        List<GamePatient> gamePatientList = gamePatientRepository.getAllGamesPatientByPatient(patient, "");
         return gamePatientList
                 .stream()
                 .filter(i -> i.getGamePatientStatus().equals(GamePatientStatus.ACTIVE))
@@ -58,8 +58,8 @@ public class GamePatientService {
                 .collect(Collectors.toList());
     }
 
-    public List<GamePatient> getActiveGamePatientByPatient(Patient patient) throws IllegalArgumentException{
-        return gamePatientRepository.getAllGamesPatientByPatient(patient)
+    public List<GamePatient> getActiveGamePatientByPatient(Patient patient, String order) throws IllegalArgumentException{
+        return gamePatientRepository.getAllGamesPatientByPatient(patient, order)
                 .stream()
                 .filter(i -> i.getGamePatientStatus().equals(GamePatientStatus.ACTIVE))
                 .collect(Collectors.toList());
@@ -71,7 +71,7 @@ public class GamePatientService {
     }
 
     public List<GamePatient> getAllGamePatientsByPatient(Patient patient) throws IllegalArgumentException{
-        return gamePatientRepository.getAllGamesPatientByPatient(patient);
+        return gamePatientRepository.getAllGamesPatientByPatient(patient, "1");
     }
 
     public List<GamePatient> getAllGamePatientsByGame(Game game) throws IllegalArgumentException{

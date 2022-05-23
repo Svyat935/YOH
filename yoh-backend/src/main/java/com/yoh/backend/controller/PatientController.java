@@ -83,14 +83,15 @@ public class PatientController {
                                     @RequestParam(value = "limit", required = true) Integer limit,
                                     @RequestParam(value = "start", required = true) Integer start,
                                     @RequestParam(value = "regex", required = false, defaultValue = "") String regex,
-                                    @RequestParam(value = "typeRegex", required = false, defaultValue = "") String typeRegex) {
+                                    @RequestParam(value = "typeRegex", required = false, defaultValue = "") String typeRegex,
+                                    @RequestParam(value = "order", required = false, defaultValue = "") String order) {
         try {
             Patient patient = this.patientService.getPatientByUser(this.userService.getUserById(this.userService.verifyToken(token)));
             ArrayList<JsonObject> gamesArray = new ArrayList<>();
             JsonObject response = new JsonObject();
 //            List<Game> gameList = patient.getGames().stream().filter(i -> i.getName().toLowerCase().contains(regex.toLowerCase())
 //                            && i.getType().toLowerCase().contains(typeRegex.toLowerCase())).collect(Collectors.toList());
-            List<GamePatient> gamePatientList = this.gamePatientService.getActiveGamePatientByPatient(patient);
+            List<GamePatient> gamePatientList = this.gamePatientService.getActiveGamePatientByPatient(patient, order);
             if (!typeRegex.equals("")){
                 gamePatientList = gamePatientList.stream().filter(i -> i.getGame().getType().toLowerCase().contains(typeRegex.toLowerCase())).collect(Collectors.toList());
             }
