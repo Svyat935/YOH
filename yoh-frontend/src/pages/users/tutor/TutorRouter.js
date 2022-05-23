@@ -9,6 +9,8 @@ import {CDetailInfo} from "./pages/detailInfo/СDetailInfo";
 import {CVector} from "./pages/vector/CVector";
 import {VGame} from "./pages/game/VGame";
 import {CDelete} from "./pages/delete/CDelete";
+import {CDash} from "./pages/dashboard/CDash";
+import {CStat} from "./pages/stat/CStat";
 
 
 export function TutorRouter() {
@@ -23,6 +25,8 @@ export function TutorRouter() {
             <Route path={'/vector'} element={<CVector/>}/>
             <Route path={'/game'} element={<VGame/>}/>
             <Route path={'/delete'} element={<CDelete/>}/>
+            <Route path={'/dash'} element={<CDash/>}/>
+            <Route path={'/stat'} element={<CStat/>}/>
         </Routes>
     )
 }
