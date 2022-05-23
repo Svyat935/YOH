@@ -19,6 +19,7 @@ CONNECT_PARAMS = {
     "password": "postgres"
 }
 
+
 def json_serial(obj):
     """JSON serializer for objects not serializable by default json code"""
 
@@ -27,9 +28,6 @@ def json_serial(obj):
     if isinstance(obj, uuid.UUID):
         return obj.hex
     raise TypeError("Type %s not serializable" % type(obj))
-
-
-def get_cursor_handler()
 
 
 @api_bp.errorhandler(HTTPException)
