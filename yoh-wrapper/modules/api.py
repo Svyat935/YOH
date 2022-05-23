@@ -133,6 +133,6 @@ def all_time_widget_route():
     with psycopg2.connect(**CONNECT_PARAMS) as conn:
         with conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor) as cursor:
             cursor.execute(GET_ALL_TIME_WIDGET, {'sg_id': parameters['sg_id']})
-            result = cursor.fetchall()
+            result = cursor.fetchone()
 
     return make_response(json.dumps(result, default=json_serial))

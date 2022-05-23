@@ -17,11 +17,11 @@ select
     (select 
         EXTRACT(epoch FROM ("date_end" - "date_start")) as "spend_time" 
     from "started_games" 
-    where "id" = %(sg_id)s::uuid) as "all_time_spent"
+    where "id" = %(sg_id)s::uuid)::int as "all_time_spent"
 from (
     select 
         "level_name",
-        sum(EXTRACT(epoch FROM ("date_end" - "date_start"))) as "spend_time"
+        sum(EXTRACT(epoch FROM ("date_end" - "date_start")))::int as "spend_time"
     from "game_statistics" 
     where 
         "started_game_id" = %(sg_id)s::uuid
