@@ -513,11 +513,33 @@ public class TutorController {
             Patient patient = this.patientService.getPatientById(UUID.fromString(gamesToPatient.getPatient_id()));
             for (String id : gamesToPatient.getGames_id()) {
                 Game game = this.gameService.getGameById(UUID.fromString(id));
-                GamePatient gamePatient = new GamePatient(game, patient, GamePatientStatus.ACTIVE);
-                this.gamePatientService.createGamePatient(gamePatient);
-                GameStatus gameStatus = new GameStatus(gamePatient, tutor, LocalDateTime.now(), Status.ASSIGNED);
-                this.gameStatusService.createGameStatus(gameStatus);
-                this.patientService.updatePatient(patient);
+                GamePatient gamePatient;
+                try {
+                    gamePatient = this.gamePatientService.getGamePatientByGameAndPatient(game, patient);
+                    gamePatient.setGamePatientStatus(GamePatientStatus.ACTIVE);
+                    this.gamePatientService.saveGamePatient(gamePatient);
+                }
+                catch (IllegalArgumentException ds){
+                    gamePatient = new GamePatient(game, patient, GamePatientStatus.ACTIVE);
+                    this.gamePatientService.createGamePatient(gamePatient);
+                }
+                GameStatus gameStatus;
+                try {
+                    //Если игра уже была когдато назначена
+                    gameStatus = this.gameStatusService.getGameStatusByGamePatient(gamePatient);
+                    gameStatus.setTutor(tutor);
+                    gameStatus.setAssignmentDate(LocalDateTime.now());
+                    gameStatus.setStatus(Status.ASSIGNED);
+                }
+                catch (IllegalArgumentException ex){
+                    gameStatus = new GameStatus(gamePatient, tutor, LocalDateTime.now(), Status.ASSIGNED);
+                }
+//                GamePatient gamePatient = new GamePatient(game, patient, GamePatientStatus.ACTIVE);
+//                this.gamePatientService.createGamePatient(gamePatient);
+//                //TODO проверка на то, что игры уже были добавлены
+//                GameStatus gameStatus = new GameStatus(gamePatient, tutor, LocalDateTime.now(), Status.ASSIGNED);
+//                this.gameStatusService.createGameStatus(gameStatus);
+//                this.patientService.updatePatient(patient);
             }
             JsonObject response = new JsonObject();
             response.put("message", "List of games was changed");
