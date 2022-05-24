@@ -63,7 +63,7 @@ public class GameController {
                                  @RequestParam(value = "typeRegex", required = false, defaultValue = "") String typeRegex,
                                  @RequestParam(value = "limit", required = true) Integer limit,
                                  @RequestParam(value = "start", required = true) Integer start,
-                                 @RequestParam(value = "order", required = false, defaultValue = "") String order,
+                                 @RequestParam(value = "order", required = false, defaultValue = "1") String order,
                                  @RequestParam(value = "patientID", required = false) String patientID) {
         try{
             User user = this.userService.getUserById(this.userService.verifyToken(token));
