@@ -11,7 +11,11 @@ class StatRecord {
 		this.stat_func = function (stat_class) {
 			stat_class.count_clicks++;
 		};
-		this.additional_fields = await fetch('/api/additional_fields').then((response) => {
+		this.additional_fields = await this.getAddFields();
+	}
+
+	async function getAddFields() {
+		return fetch('/api/additional_fields').then((response) => {
 			return response.json();
 		});
 	}
