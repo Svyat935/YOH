@@ -164,6 +164,9 @@ public class TutorController {
             JsonObject response = new JsonObject();
             List<Patient> patientsFilteredUnpaginatedList = patientService.getAllPatientsByOrganizationFiltered(organization, regex, order, tutor);
 
+            patientsFilteredUnpaginatedList = patientsFilteredUnpaginatedList.stream()
+                    .filter(i -> (i.getTutor() == null) || (!i.getTutor().getId().equals(tutor.getId()))).collect(Collectors.toList());
+
             if (patientsFilteredUnpaginatedList.size() == 0) {
                 response.put("previous", false);
                 response.put("next", false);
