@@ -700,7 +700,7 @@ public class TutorController {
                                                     @RequestParam String patientID) {
         try {
             Tutor tutor = this.tutorService.getTutorByUser(this.userService.getUserById(this.userService.verifyToken(token)));
-            Patient patient = this.patientService.getPatientByUser(this.userService.getUserById(UUID.fromString(patientID)));
+            Patient patient = this.patientService.getPatientById(UUID.fromString(patientID));
             if (tutor.getOrganization().getId().equals(patient.getOrganization().getId())) {
                 JsonObject response = new JsonObject();
                 int done = 0;
