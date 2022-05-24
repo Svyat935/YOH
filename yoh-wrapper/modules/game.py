@@ -22,18 +22,19 @@ def game_route(game):
 
     session['user'] = request.args.get('token')
 
-    headers = {
-        'Content-Type': 'application/json',
-        'token': session['user'],
-        'game': session['current_game']
-    }
-    send_url = 'http://yoh-backend:8080/patient/games/statistics/additional_fields'
-    result = get(send_url, headers=headers).json()
-    session['additional_fields'] = json.dumps(json.loads(result).get('details', {}))
-
     try:
         resp = make_response(render_template(f'{game}/index.html'))
         session['current_game'] = game
+
+        headers = {
+            'Content-Type': 'application/json',
+            'token': session['user'],
+            'game': session['current_game']
+        }
+        send_url = 'http://yoh-backend:8080/patient/games/statistics/additional_fields'
+        result = get(send_url, headers=headers).json()
+        session['additional_fields'] = json.dumps(json.loads(result).get('details', {}))
+
     except TemplateNotFound:
         abort(404)
 
