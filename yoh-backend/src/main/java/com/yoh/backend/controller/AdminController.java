@@ -235,7 +235,7 @@ public class AdminController {
 
                 if (image != null) {
 //                    String orgName = game.getName() + "." + FilenameUtils.getExtension(file.getOriginalFilename());
-                    String orgName = game.getId() + "." + FilenameUtils.getExtension(file.getOriginalFilename());
+                    String orgName = UUID.randomUUID() + "." + FilenameUtils.getExtension(file.getOriginalFilename());
                     Path filepath = Paths.get("/app/images", orgName);
                     if(new  File(filepath.toString()).exists()){
                         System.out.println("File exists");
