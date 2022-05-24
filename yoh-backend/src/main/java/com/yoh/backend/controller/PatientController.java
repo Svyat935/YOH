@@ -437,7 +437,7 @@ public class PatientController {
                     (short) statisticToSend.getInt("type"),
                     statisticToSend.getInt("clicks"),
                     statisticToSend.getInt("missclicks"),
-                    statisticToSend.getJSONObject("details").toString()
+                    statisticToSend.getString("details")
             );
             this.startedGameService.saveStartedGame(startedGame);
             this.gameStatisticService.saveGameStatistic(gameStatistic);
