@@ -69,8 +69,8 @@ public class StartedGameRepository {
         Session session = sessionFactory.openSession();
         try {
             Criteria criteria = session.createCriteria(StartedGame.class)
-                    .add(Restrictions.eq("gamePatient", gamePatient))
-                    .add(Restrictions.eq("dateEnd", null));
+                    .add(Restrictions.eq("gamePatient", gamePatient));
+//                    .add(Restrictions.eq("dateEnd", null));
             List<StartedGame> startedGames = criteria.list();
             return startedGames.isEmpty() ? null : startedGames.get(0);
         }
