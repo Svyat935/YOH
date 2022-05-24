@@ -15,7 +15,7 @@ export function CStat() {
     const [load, setLoad] = useState(true);
 
     const requestGetAttemptsGames = async (game_id) => {
-        return await fetch("http://localhost:5050/api/statistic_pagination?" +
+        return await fetch("http://mobile.itkostroma.ru/api/statistic_pagination?" +
             "gp_id=" + encodeURIComponent(game_id), {
             method: 'GET',
             headers: {
@@ -29,7 +29,7 @@ export function CStat() {
     }
 
     const requestGetAllTime = async (sg_id) => {
-        return await fetch("http://localhost:5050/api/all_time_widget?" +
+        return await fetch("http://mobile.itkostroma.ru/api/all_time_widget?" +
             "sg_id=" + encodeURIComponent(sg_id), {
             method: 'GET',
             headers: {
@@ -43,7 +43,7 @@ export function CStat() {
     }
 
     const requestGetClicks = async (sg_id) => {
-        return await fetch("http://localhost:5050/api/clicks_widget?" +
+        return await fetch("http://mobile.itkostroma.ru/api/clicks_widget?" +
             "sg_id=" + encodeURIComponent(sg_id), {
             method: 'GET',
             headers: {
@@ -57,7 +57,7 @@ export function CStat() {
     }
 
     const requestGetAnswers = async (sg_id) => {
-        return await fetch("http://localhost:5050/api/answers_widget?" +
+        return await fetch("http://mobile.itkostroma.ru/api/answers_widget?" +
             "sg_id=" + encodeURIComponent(sg_id), {
             method: 'GET',
             headers: {
@@ -71,7 +71,7 @@ export function CStat() {
     }
 
     const requestGetTimeLine = async (sg_id) => {
-        return await fetch("http://localhost:5050/api/timeline_widget?" +
+        return await fetch("http://mobile.itkostroma.ru/api/timeline_widget?" +
             "sg_id=" + encodeURIComponent(sg_id), {
             method: 'GET',
             headers: {
