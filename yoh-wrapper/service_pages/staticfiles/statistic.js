@@ -11,13 +11,13 @@ class StatRecord {
 		this.stat_func = function (stat_class) {
 			stat_class.count_clicks++;
 		};
-		this.additional_fields = await this.getAddFields();
+		this.additional_fields = this.getAddFields();
 	}
 
-	async function getAddFields() {
-		return fetch('/api/additional_fields').then((response) => {
-			return response.json();
-		});
+	getAddFields() {
+		let response = await fetch('/api/additional_fields');
+		let data = await response.json();
+		return data;
 	}
 
 	getTime() {
