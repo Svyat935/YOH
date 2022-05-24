@@ -397,12 +397,15 @@ export function VUsersAdmin(props) {
                         setButtonStatus(4);
                     }
                 }/>
-                <ButtonB width={"70%"} text={"Изменить данные"} onClick={
-                    () => {
-                        setRole(userForChanging["role"]);
-                        setButtonStatus(5);
-                    }
-                }/>
+                {
+                    userForChanging["role"] !== 4 ?
+                    <ButtonB width={"70%"} text={"Изменить данные"} onClick={
+                        () => {
+                            setRole(userForChanging["role"]);
+                            setButtonStatus(5);
+                        }
+                    }/> : null
+                }
                 <ButtonB width={"70%"} text={"Изменить пароль"} onClick={() => {
                     setButtonStatus(1);
                 }}/>
@@ -611,7 +614,7 @@ export function VUsersAdmin(props) {
         props.setRegex(searchValue);
         props.refresh();
     }
-
+    console.log(buttonStatus);
     return (
         <Back navPanel={<AdminNav context={props.context}/>}>
             <Modal
