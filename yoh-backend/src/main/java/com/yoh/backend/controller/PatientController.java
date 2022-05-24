@@ -461,19 +461,19 @@ public class PatientController {
             System.out.println();
             System.out.println();
 
-//            GameStatistic gameStatistic = new GameStatistic(
-//                    startedGame,
-//                    data.get("level"),
-//                    data.get("level_name").toString(),
-//                    dateStart,
-//                    dateEnd,
-//                    (short) Integer.parseInt(data.get("type").toString()),
-//                    Integer.getInteger(data.get("clicks").toString()),
-//                    Integer.getInteger(data.get("missclicks").toString()),
-//                    data.get("details").toString()
-//            );
-//            this.startedGameService.saveStartedGame(startedGame);
-//            this.gameStatisticService.saveGameStatistic(gameStatistic);
+            GameStatistic gameStatistic = new GameStatistic(
+                    startedGame,
+                    (Integer) data.get("level"),
+                    data.get("level_name").toString(),
+                    dateStart,
+                    dateEnd,
+                    (Short) data.get("type"),
+                    (Integer) data.get("clicks"),
+                    (Integer) data.get("missclicks"),
+                    data.get("details").toString()
+            );
+            this.startedGameService.saveStartedGame(startedGame);
+            this.gameStatisticService.saveGameStatistic(gameStatistic);
 
             JsonObject response = new JsonObject();
             response.put("result", "OK");
