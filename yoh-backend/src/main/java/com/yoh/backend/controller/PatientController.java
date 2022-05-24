@@ -412,7 +412,7 @@ public class PatientController {
             GamePatient gamePatient = this.gamePatientService.getGamePatientByGameAndPatient(game, patient);
             StartedGame startedGame = this.startedGameService.getUnfinishedStartedGameByGamePatient(gamePatient);
             if (startedGame == null) throw new IllegalArgumentException("Sorry, but StartedGame was not found.");
-            startedGame.setDetails(statisticToSend.get("details").getAsString());
+            startedGame.setDetails(statisticToSend.get("details").getAsJsonObject().toString());
 
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("M/d/yyyy, h:m:s a");
             LocalDateTime dateStart = LocalDateTime.parse(statisticToSend.get("date_start").getAsString(), formatter);
@@ -439,7 +439,7 @@ public class PatientController {
                     statisticToSend.get("type").getAsShort(),
                     statisticToSend.get("clicks").getAsInt(),
                     statisticToSend.get("missclicks").getAsInt(),
-                    statisticToSend.get("details").getAsString()
+                    statisticToSend.get("details").getAsJsonObject().toString()
             );
             this.startedGameService.saveStartedGame(startedGame);
             this.gameStatisticService.saveGameStatistic(gameStatistic);
