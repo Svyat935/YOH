@@ -431,6 +431,34 @@ public class PatientController {
 //                    statisticToSend.getDetails()
 //            );
             System.out.println(data.get("level_name").toString());
+            System.out.println("");
+
+            System.out.println();
+            System.out.println();
+            System.out.println();
+            System.out.println();
+            System.out.println();
+            System.out.println();
+            System.out.println();
+            System.out.println();
+
+            System.out.println(Integer.getInteger(data.get("level").toString()).toString());
+            System.out.println(data.get("level_name").toString());
+            System.out.println(dateStart);
+            System.out.println(dateEnd);
+            System.out.println((short) Integer.parseInt(data.get("type").toString()));
+            System.out.println(Integer.getInteger(data.get("clicks").toString()));
+            System.out.println(Integer.getInteger(data.get("missclicks").toString()));
+            System.out.println(data.get("details").toString());
+
+
+            System.out.println();
+            System.out.println();
+            System.out.println();
+            System.out.println();
+            System.out.println();
+            System.out.println();
+            System.out.println();
             System.out.println();
 
             GameStatistic gameStatistic = new GameStatistic(
