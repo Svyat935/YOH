@@ -301,17 +301,49 @@ public class PatientController {
     }
 
 
+//    @PostMapping(path = "/games/statistics/game_start")
+//    public JSONResponse addGameStart(@RequestHeader("token") String token,
+//                                     @RequestHeader("game") String gameID,
+//                                     @Valid @RequestBody GameStartRequest data) {
+//        try {
+//            Patient patient = this.patientService.getPatientByUser(this.userService.getUserById(this.userService.verifyToken(token)));
+//            Game game = this.gameService.getGameById(UUID.fromString(gameID));
+//            GamePatient gamePatient = this.gamePatientService.getGamePatientByGameAndPatient(game, patient);
+//            if (gamePatient == null) throw new IllegalArgumentException("Sorry, but GamePatient was not found.");
+//
+//            LocalDateTime dateStart = LocalDateTime.parse(data.getDate_start());
+//
+////            String detailsString;
+////            if (data.getDetails() != null) {
+////                detailsString = data.getDetails().toString();
+////            }
+////            else detailsString = null;
+//
+//            StartedGame startedGame = new StartedGame(gamePatient, dateStart, null, data.getDetails());
+//            this.startedGameService.saveStartedGame(startedGame);
+//
+//            JsonObject response = new JsonObject();
+//            response.put("result", "OK");
+//            return new JSONResponse(200, response);
+//        }
+//        catch (IllegalArgumentException e){
+//            JsonObject exceptionResponse = new JsonObject();
+//            exceptionResponse.put("message", e.getMessage());
+//            return new JSONResponse(401, exceptionResponse);
+//        }
+//    }
+
     @PostMapping(path = "/games/statistics/game_start")
     public JSONResponse addGameStart(@RequestHeader("token") String token,
                                      @RequestHeader("game") String gameID,
-                                     @Valid @RequestBody GameStartRequest data) {
+                                     @Valid @RequestBody JsonObject data) {
         try {
             Patient patient = this.patientService.getPatientByUser(this.userService.getUserById(this.userService.verifyToken(token)));
             Game game = this.gameService.getGameById(UUID.fromString(gameID));
             GamePatient gamePatient = this.gamePatientService.getGamePatientByGameAndPatient(game, patient);
             if (gamePatient == null) throw new IllegalArgumentException("Sorry, but GamePatient was not found.");
 
-            LocalDateTime dateStart = LocalDateTime.parse(data.getDate_start());
+            LocalDateTime dateStart = LocalDateTime.parse(data.get("date_start").toString());
 
 //            String detailsString;
 //            if (data.getDetails() != null) {
@@ -319,14 +351,15 @@ public class PatientController {
 //            }
 //            else detailsString = null;
 
-            StartedGame startedGame = new StartedGame(gamePatient, dateStart, null, data.getDetails());
+            StartedGame startedGame = new StartedGame(gamePatient, dateStart, null, data.get("details").toString());
             this.startedGameService.saveStartedGame(startedGame);
 
             JsonObject response = new JsonObject();
             response.put("result", "OK");
             return new JSONResponse(200, response);
         }
-        catch (IllegalArgumentException e){
+        catch (Exception e){
+            e.printStackTrace();
             JsonObject exceptionResponse = new JsonObject();
             exceptionResponse.put("message", e.getMessage());
             return new JSONResponse(401, exceptionResponse);

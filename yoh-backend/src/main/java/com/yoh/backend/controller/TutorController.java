@@ -85,17 +85,14 @@ public class TutorController {
                                 || (i.getSecondName() != null && i.getSecondName().toLowerCase().contains(regex.toLowerCase())))
                         .collect(Collectors.toList());
 
-            //Sort
-            switch (order) {
-                case "1":
-                    patients = patients.stream().sorted(Comparator.comparing(Patient::getSurname)).collect(Collectors.toList());
-                case "-1":
-                    patients = patients.stream().sorted(Comparator.comparing(Patient::getSurname).reversed()).collect(Collectors.toList());
-                case "2":
-                    patients = patients.stream().sorted(Comparator.comparing(Patient::getBirthDate)).collect(Collectors.toList());
-                case "-2":
-                    patients = patients.stream().sorted(Comparator.comparing(Patient::getBirthDate).reversed()).collect(Collectors.toList());
-            }
+            if (order.equals("1"))
+                patients = patients.stream().sorted(Comparator.comparing(Patient::getSurname)).collect(Collectors.toList());
+            if (order.equals("-1"))
+                patients = patients.stream().sorted(Comparator.comparing(Patient::getSurname).reversed()).collect(Collectors.toList());
+//            if (order.equals("2"))
+//                patients = patients.stream().sorted(Comparator.comparing(Patient::getBirthDate)).collect(Collectors.toList());
+//            if (order.equals("-2"))
+//                patients = patients.stream().sorted(Comparator.comparing(Patient::getBirthDate).reversed()).collect(Collectors.toList());
 
             if (patients.size() == 0) {
                 response.put("previous", false);
@@ -166,6 +163,9 @@ public class TutorController {
             ArrayList<JsonObject> patientList = new ArrayList<JsonObject>();
             JsonObject response = new JsonObject();
             List<Patient> patientsFilteredUnpaginatedList = patientService.getAllPatientsByOrganizationFiltered(organization, regex, order, tutor);
+
+            patientsFilteredUnpaginatedList = patientsFilteredUnpaginatedList.stream()
+                    .filter(i -> (i.getTutor() == null) || (!i.getTutor().getId().equals(tutor.getId()))).collect(Collectors.toList());
 
             if (patientsFilteredUnpaginatedList.size() == 0) {
                 response.put("previous", false);

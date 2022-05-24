@@ -56,7 +56,6 @@ public class PatientService {
         if (!regex.equals("")){
             return patientListUnfiltered
                     .stream()
-                    .filter(i -> (i.getTutor() == null) || (!i.getTutor().getId().equals(tutor.getId())))
                     .filter(i -> (i.getSurname() != null && i.getSurname().toLowerCase().contains(regex.toLowerCase()))
                             || (i.getName() != null && i.getName().toLowerCase().contains(regex.toLowerCase()))
                             || (i.getSecondName() != null && i.getSecondName().toLowerCase().contains(regex.toLowerCase())))
