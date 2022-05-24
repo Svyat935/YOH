@@ -17,7 +17,7 @@ export function VDetailInfo(props) {
     const router = useNavigate();
 
     const createGamesView = () => {
-        let games = props.user.games,
+        let games = props.games,
             view = [];
 
         if (games !== null && games !== undefined && games.length > 0){
