@@ -25,7 +25,7 @@ export function VDetailInfo(props) {
                 view.push(
                     <InfoBlock key={game["id"]} text={game["name"]} onClick={() => {
                         let info = props.context.info ? props.context.info : {};
-                        info["gamePatientID"] = game["gamePatientID"];
+                        info["gamePatientId"] = game["gamePatientId"];
                         props.context.addInfo(info);
 
                         router("/user/tutor/stat");
