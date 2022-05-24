@@ -707,7 +707,7 @@ public class TutorController {
                 int assigned = 0;
                 int failed = 0;
                 int started = 0;
-                for (GamePatient gamePatient: this.gamePatientService.getAllGamePatientsByPatient(patient)){
+                for (GamePatient gamePatient: this.gamePatientService.getAllActiveGamePatientsByPatient(patient)){
                     GameStatus gameStatus = this.gameStatusService.getGameStatusByGamePatient(gamePatient);
                     switch (gameStatus.getStatus()){
                         case DONE -> done++;

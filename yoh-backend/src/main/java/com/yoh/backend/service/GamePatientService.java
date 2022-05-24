@@ -78,6 +78,13 @@ public class GamePatientService {
         return gamePatientRepository.getAllGamesPatientByPatient(patient);
     }
 
+    public List<GamePatient> getAllActiveGamePatientsByPatient(Patient patient) throws IllegalArgumentException{
+        return gamePatientRepository.getAllGamesPatientByPatient(patient)
+                .stream()
+                .filter(i -> i.getGamePatientStatus().equals(GamePatientStatus.ACTIVE))
+                .collect(Collectors.toList());
+    }
+
     public List<GamePatient> getAllGamePatientsByGame(Game game) throws IllegalArgumentException{
         return gamePatientRepository.getAllPatientByGame(game);
     }

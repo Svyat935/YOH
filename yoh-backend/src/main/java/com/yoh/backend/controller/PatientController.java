@@ -543,7 +543,7 @@ public class PatientController {
 //                    case STARTED -> started++;
 //                }
 //            }
-            for (GamePatient gamePatient: this.gamePatientService.getAllGamePatientsByPatient(patient)){
+            for (GamePatient gamePatient: this.gamePatientService.getAllActiveGamePatientsByPatient(patient)){
                 GameStatus gameStatus = this.gameStatusService.getGameStatusByGamePatient(gamePatient);
                 switch (gameStatus.getStatus()){
                     case DONE -> done++;
