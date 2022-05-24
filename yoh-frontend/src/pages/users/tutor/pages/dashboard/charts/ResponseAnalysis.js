@@ -17,6 +17,7 @@ export class ResponseAnalysis extends Component {
                         columnWidth: '45%',
                     }
                 },
+                labels: props.labels,
                 xaxis: {
                     labels: {
                         show: false
@@ -42,11 +43,11 @@ export class ResponseAnalysis extends Component {
             series: [
                 {
                     name: "Правильные ответы",
-                    data: [1, 2, 1, 1, 1],
+                    data: props.correct,
                 },
                 {
                     name: "Неправильные ответы",
-                    data: [2, 0, 0, 1, 0],
+                    data: props.incorrect,
                 }
             ],
         };

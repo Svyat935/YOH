@@ -4,6 +4,18 @@ import Chart from "react-apexcharts";
 export class GameTime extends Component {
     constructor(props) {
         super(props);
+        let date_range = [];
+        props.dateRange.forEach((datePart) => {
+            let start_date = new Date(datePart['daterange'][0]).getTime(),
+                end_date = new Date(datePart['daterange'][1]).getTime();
+
+            date_range.push(
+                {
+                    x: datePart['level_name'],
+                    y: [start_date, end_date]
+                }
+            )
+        })
 
         this.state = {
             options: {
@@ -36,51 +48,7 @@ export class GameTime extends Component {
             },
             series: [
                 {
-                    data: [
-                        {
-                            x: '1 уровень',
-                            y: [
-                                new Date('2019-03-01 11:39:51.136659').getTime(),
-                                new Date('2019-03-01 12:39:51.136659').getTime()
-                            ]
-                        },
-                        {
-                            x: '2 уровень',
-                            y: [
-                                new Date('2019-03-01 12:39:51.136659').getTime(),
-                                new Date('2019-03-01 13:39:51.136659').getTime()
-                            ]
-                        },
-                        {
-                            x: '2 уровень',
-                            y: [
-                                new Date('2019-03-01 15:39:51.136659').getTime(),
-                                new Date('2019-03-01 16:39:51.136659').getTime()
-                            ]
-                        },
-                        {
-                            x: '3 уровень',
-                            y: [
-                                new Date('2019-03-01 13:39:51.136659').getTime(),
-                                new Date('2019-03-01 14:39:51.136659').getTime()
-                            ]
-                        },
-                        {
-                            x: '4 уровень',
-                            y: [
-                                new Date('2019-03-01 14:39:51.136659').getTime(),
-                                new Date('2019-03-01 15:39:51.136659').getTime()
-                            ]
-                        },
-                        {
-                            x: '5 уровень',
-                            y: [
-                                new Date('2019-03-01 16:39:51.136659').getTime(),
-                                new Date('2019-03-01 17:39:51.136659').getTime()
-                            ]
-                        },
-
-                    ]
+                    data: date_range
                 }
             ],
         };

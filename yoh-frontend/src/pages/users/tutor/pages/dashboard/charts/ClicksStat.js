@@ -17,7 +17,7 @@ export class ClickStat extends Component {
                     }
                 },
                 colors: ['#00D8B6','#008FFB',  '#FEB019', '#FF4560', '#775DD0'],
-                labels: ['1 уровень', '2 уровень', '3 уровень', '4 уровень', '5 уровень'],
+                labels: props.labels,
                 xaxis: {
                     labels: {show: false},
                     axisBorder: {show: false},
@@ -42,10 +42,10 @@ export class ClickStat extends Component {
             },
             series: [{
                 name: "Клики",
-                data: [13, 12, 17, 10, 5],
+                data: props.clicks,
             }, {
                 name: "Миссклики",
-                data: [6, 5, 1, 2, 0],
+                data: props.missclicks,
             }],
         };
     }

@@ -4,6 +4,8 @@ import Chart from "react-apexcharts";
 export class TransitTime extends Component {
     constructor(props) {
         super(props);
+        let date = new Date(props.title);
+        let title = date.getHours() + "ч. " + date.getMinutes() + "мин. " + date.getSeconds() + "сек.";
 
         this.state = {
             options: {
@@ -16,7 +18,7 @@ export class TransitTime extends Component {
                     },
                 },
                 xaxis: {
-                    categories: ['1 уровень', '2 уровень', '3 уровень', '4 уровень', '5 уровень']
+                    categories: props.labels
                 },
                 yaxis: {
                     min: 0,
@@ -41,7 +43,7 @@ export class TransitTime extends Component {
                 },
                 colors: ['#DCE6EC'],
                 title: {
-                    text: '1 ч. 15 мин. 35 сек.',
+                    text: title,
                     offsetX: 30,
                     margin: 2,
                     style: {
@@ -60,7 +62,7 @@ export class TransitTime extends Component {
             },
             series: [{
                 name: 'Время прохождения',
-                data: [15, 35, 120, 25, 73]
+                data: props.data
             }],
         };
     }
