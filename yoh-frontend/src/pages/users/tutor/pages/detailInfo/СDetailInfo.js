@@ -6,8 +6,25 @@ import {LoadPage} from "../../../../../components/loadpage/LoadPage";
 export function CDetailInfo() {
     const context = useContext(UserContext);
     const [user, setUser] = useState({});
+    const [games, setGames] = useState([]);
     const [_, rerun] = useState(new class{});
     const [load, setLoad] = useState(true);
+
+    const requestGetGamesForUser = async (patientId) => {
+        return await fetch("/tutor/patients/getting/one/games?" +
+            "patientID=" + encodeURIComponent(patientId) + "&" +
+            "limit=100" + "&" +
+            "start=0", {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'token': context.token
+            },
+        }).then((response) => {
+            if (response.status === 200) return response.json();
+            else return null;
+        });
+    }
 
     const requestGetInfoForUser = async (patientId) => {
         return await fetch("/tutor/patients/getting/one?" +
@@ -32,6 +49,13 @@ export function CDetailInfo() {
                 setUser(responseUser);
             }
 
+            let responseGames = await requestGetGamesForUser(context.info.patient["id"]);
+
+            if (responseGames !== null){
+                responseGames = responseGames["jsonObject"]["results"];
+                setGames(responseGames);
+            }
+
             if (load === true) setLoad(false);
         }
     }, [context, _])
@@ -41,6 +65,7 @@ export function CDetailInfo() {
             <VDetailInfo
                 context={context}
                 user={user}
+                games={games}
                 refresh={() => rerun(new class{})}
             />
         </LoadPage>
