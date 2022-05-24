@@ -12,9 +12,14 @@ class StatRecord {
 			stat_class.count_clicks++;
 		};
 		this.additional_fields = null;
-		fetch('/api/additional_fields').then((response) => {
-			this.additional_fields = response.json();
+		this.getAddFields();
+	}
+
+	async function getAddFields() {
+		let response = await fetch('/api/additional_fields').then((response) => {
+			return response.json();
 		});
+		this.additional_fields = response;
 	}
 
 	getTime() {
