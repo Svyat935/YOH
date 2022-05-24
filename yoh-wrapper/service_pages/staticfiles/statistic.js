@@ -15,7 +15,7 @@ class StatRecord {
 		this.getAddFields();
 	}
 
-	async function getAddFields() {
+	async getAddFields() {
 		let response = await fetch('/api/additional_fields').then((response) => {
 			return response.json();
 		});
