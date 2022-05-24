@@ -47,7 +47,7 @@ class StatRecord {
 				clicks: this.count_clicks,
 				missclicks: this.count_missclicks,
 				additional_fields: this.additional_fields,
-				details: null
+				details: {}
 			};
 			fetch('/api/statistics', {method: 'POST', body: JSON.stringify(params_to_send)});
 		}
@@ -69,7 +69,7 @@ class StatRecord {
 		params['date_start'] = this.getTime();
 		params['details'] = this.additional_fields;
 		fetch('/api/game_start', {method: 'POST', body: JSON.stringify(params)});
-		document.addEventListener('click', this.stat_func(this));
+		window.addEventListener('click', this.stat_func(this));
 	}
 
 	gameEnd(params) {
@@ -100,7 +100,7 @@ class StatRecord {
 			clicks: this.count_clicks,
 			missclicks: this.count_missclicks,
 			additional_fields: this.additional_fields,
-			details: null
+			details: {}
 		};
 		fetch('/api/statistics', {method: 'POST', body: JSON.stringify(params_to_send)});
 		this.current_level = null;
