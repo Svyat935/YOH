@@ -11,9 +11,7 @@ import com.yoh.backend.request.EditGameRequest;
 import com.yoh.backend.request.EditPatientInfoRequest;
 import com.yoh.backend.request.GameToRemove;
 import com.yoh.backend.response.JSONResponse;
-import com.yoh.backend.service.AdminService;
-import com.yoh.backend.service.GameService;
-import com.yoh.backend.service.UserService;
+import com.yoh.backend.service.*;
 import com.yoh.backend.util.ImageUtility;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -37,6 +35,12 @@ public class GameController {
     @Autowired
     private GameService gameService;
 
+    @Autowired
+    private GamePatientService gamePatientService;
+
+    @Autowired
+    private PatientService patientService;
+
 //    @PostMapping(path = "/adding")
 //    public JSONResponse addGame(@RequestHeader("token") String token, @Valid @RequestBody AddGamesRequest addGamesRequest) {
 //        try{
@@ -59,7 +63,8 @@ public class GameController {
                                  @RequestParam(value = "typeRegex", required = false, defaultValue = "") String typeRegex,
                                  @RequestParam(value = "limit", required = true) Integer limit,
                                  @RequestParam(value = "start", required = true) Integer start,
-                                 @RequestParam(value = "order", required = false, defaultValue = "") String order) {
+                                 @RequestParam(value = "order", required = false, defaultValue = "") String order,
+                                 @RequestParam(value = "patientID", required = false) String patientID) {
         try{
             User user = this.userService.getUserById(this.userService.verifyToken(token));
             List<Game> gameList = this.gameService.getAllGamesFiltered(typeRegex, order);
@@ -67,6 +72,10 @@ public class GameController {
             if (!regex.equals("")){
                 gameList = gameList.stream().filter(i -> i.getName().toLowerCase().contains(regex.toLowerCase()))
                         .collect(Collectors.toList());
+            }
+            if (patientID != null) {
+                List<Game> patientGames = this.gamePatientService.getAllGamesByPatient(this.patientService.getPatientById(UUID.fromString(patientID)));
+                gameList = gameList.stream().filter(i -> !patientGames.contains(i)).collect(Collectors.toList());
             }
             if (gameList.size() == 0) {
 //                JsonObject response = new JsonObject();

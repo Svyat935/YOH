@@ -51,11 +51,12 @@ public class PatientService {
         );
     }
 
-    public List<Patient> getAllPatientsByOrganizationFiltered(Organization organization, String regex, String order){
+    public List<Patient> getAllPatientsByOrganizationFiltered(Organization organization, String regex, String order, Tutor tutor){
         List<Patient> patientListUnfiltered = patientRepository.getAllPatientsByOrganization(organization, order);
         if (!regex.equals("")){
             return patientListUnfiltered
                     .stream()
+                    .filter(i -> (i.getTutor() == null) || (!i.getTutor().getId().equals(tutor.getId())))
                     .filter(i -> (i.getSurname() != null && i.getSurname().toLowerCase().contains(regex.toLowerCase()))
                             || (i.getName() != null && i.getName().toLowerCase().contains(regex.toLowerCase()))
                             || (i.getSecondName() != null && i.getSecondName().toLowerCase().contains(regex.toLowerCase())))
