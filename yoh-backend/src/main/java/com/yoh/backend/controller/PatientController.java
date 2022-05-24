@@ -472,8 +472,8 @@ public class PatientController {
 //                    Integer.getInteger(data.get("missclicks").toString()),
 //                    data.get("details").toString()
 //            );
-            this.startedGameService.saveStartedGame(startedGame);
-            this.gameStatisticService.saveGameStatistic(gameStatistic);
+//            this.startedGameService.saveStartedGame(startedGame);
+//            this.gameStatisticService.saveGameStatistic(gameStatistic);
 
             JsonObject response = new JsonObject();
             response.put("result", "OK");
