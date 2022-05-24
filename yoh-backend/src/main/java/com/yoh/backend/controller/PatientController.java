@@ -342,8 +342,9 @@ public class PatientController {
             Game game = this.gameService.getGameById(UUID.fromString(gameID));
             GamePatient gamePatient = this.gamePatientService.getGamePatientByGameAndPatient(game, patient);
             if (gamePatient == null) throw new IllegalArgumentException("Sorry, but GamePatient was not found.");
-
-            LocalDateTime dateStart = LocalDateTime.parse(data.get("date_start").toString());
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("M/d/yyyy, h:m:s a");
+            LocalDateTime dateStart = LocalDateTime.parse(data.get("date_start").toString(), formatter);
+//            LocalDateTime dateStart = LocalDateTime.parse(data.get("date_start").toString());
 
 //            String detailsString;
 //            if (data.getDetails() != null) {
@@ -378,7 +379,10 @@ public class PatientController {
             StartedGame startedGame = this.startedGameService.getUnfinishedStartedGameByGamePatient(gamePatient);
             if (startedGame == null) throw new IllegalArgumentException("Sorry, but StartedGame was not found.");
 
-            LocalDateTime dateEnd = LocalDateTime.parse(data.getDate_end());
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("M/d/yyyy, h:m:s a");
+            LocalDateTime dateEnd = LocalDateTime.parse(data.getDate_end(), formatter);
+
+//            LocalDateTime dateEnd = LocalDateTime.parse(data.getDate_end());
 
             startedGame.setDateEnd(dateEnd);
             startedGame.setDetails(data.getDetails());
@@ -407,12 +411,17 @@ public class PatientController {
             StartedGame startedGame = this.startedGameService.getUnfinishedStartedGameByGamePatient(gamePatient);
             if (startedGame == null) throw new IllegalArgumentException("Sorry, but StartedGame was not found.");
             startedGame.setDetails(statisticToSend.getDetails());
+
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("M/d/yyyy, h:m:s a");
+            LocalDateTime dateStart = LocalDateTime.parse(statisticToSend.getDate_start(), formatter);
+            LocalDateTime dateEnd = LocalDateTime.parse(statisticToSend.getDate_end(), formatter);
+
             GameStatistic gameStatistic = new GameStatistic(
                     startedGame,
                     statisticToSend.getLevel(),
                     statisticToSend.getLevel_name(),
-                    LocalDateTime.parse(statisticToSend.getDate_start()),
-                    LocalDateTime.parse(statisticToSend.getDate_end()),
+                    dateStart,
+                    dateEnd,
                     statisticToSend.getType(),
                     statisticToSend.getClicks(),
                     statisticToSend.getMissclicks(),
