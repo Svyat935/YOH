@@ -29,7 +29,7 @@ public class GameStatistic {
                          String levelName,
                          LocalDateTime dateStart,
                          LocalDateTime dateEnd,
-                         Short type,
+                         Integer type,
                          Integer clicks,
                          Integer missClicks,
                          String details) {
@@ -118,13 +118,13 @@ public class GameStatistic {
 
 
     @Column(name = "type", nullable = false)
-    private Short type;
+    private Integer type;
 
-    public Short getType(){
+    public Integer getType(){
         return this.type;
     }
 
-    public void setType(Short type){
+    public void setType(Integer type){
         this.type = type;
     }
 

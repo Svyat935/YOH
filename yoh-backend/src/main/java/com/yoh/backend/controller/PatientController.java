@@ -467,7 +467,7 @@ public class PatientController {
                     data.get("level_name").toString(),
                     dateStart,
                     dateEnd,
-                    Short.parseShort(data.get("type").toString()),
+                    (Integer) data.get("type"),
                     (Integer) data.get("clicks"),
                     (Integer) data.get("missclicks"),
                     data.get("details").toString()
