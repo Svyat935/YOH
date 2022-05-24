@@ -39,11 +39,27 @@ export function CDelete() {
         });
     }
 
+    const requestGetGamesForUser = async (patientId) => {
+        return await fetch("/tutor/patients/getting/one/games?" +
+            "patientID=" + encodeURIComponent(patientId) + "&" +
+            "limit=100" + "&" +
+            "start=0", {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'token': context.token
+            },
+        }).then((response) => {
+            if (response.status === 200) return response.json();
+            else return null;
+        });
+    }
+
     useEffect(async () => {
         if (context.token){
             setUserId(context.info.patient["id"]);
-            let info = await requestAllInfo(userId);
-            let gamesResponse = info["jsonObject"]["games"];
+            let gamesResponse = await requestGetGamesForUser(context.info.patient["id"]);
+            gamesResponse = gamesResponse["jsonObject"]["results"];
             if (gamesResponse) setGames(gamesResponse);
             else setGames([]);
 

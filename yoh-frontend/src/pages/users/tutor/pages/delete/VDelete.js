@@ -31,6 +31,8 @@ export function VDelete(props) {
     const createBasicViewGames = () => {
         let games = props.games,
             view = [];
+        games = games.filter((game) => game["active"] !== "DELETED");
+
         if (games.length > 0) {
             games.forEach((game) => {
                 view.push(

@@ -15,35 +15,55 @@ import {InfoBlock} from "../../../../../components/infoBlock/InfoBlock";
 
 export function VDetailInfo(props) {
     const router = useNavigate();
+    const allGames = props.status !== null ? props.status["Done"] + props.status["Assigned"] + props.status["Failed"] : 0,
+        statDone = allGames !== 0 ? Math.round(props.status["Done"] / allGames * 100) : 0,
+        statAssigned = allGames !== 0 ? Math.round(props.status["Assigned"] / allGames * 100) : 0,
+        statFailed = allGames !== 0 ? Math.round(props.status["Failed"] / allGames * 100) : 0;
 
     const createGamesView = () => {
         let games = props.games,
             view = [];
 
-        if (games !== null && games !== undefined && games.length > 0){
-            games.forEach((game) => {
-                view.push(
-                    <InfoBlock key={game["id"]} text={game["name"]} onClick={() => {
-                        let info = props.context.info ? props.context.info : {};
-                        info["gamePatientId"] = game["gamePatientId"];
-                        props.context.addInfo(info);
+        if (games !== null && games !== undefined && games.length > 0) {
+            games = games.filter((game) => game["active"] !== "DELETED");
+            if (games !== null && games !== undefined && games.length > 0){
+                games.forEach((game) => {
+                    view.push(
+                        <InfoBlock key={game["id"]} text={game["name"]} onClick={() => {
+                            let info = props.context.info ? props.context.info : {};
+                            info["gamePatientId"] = game["gamePatientId"];
+                            props.context.addInfo(info);
 
-                        router("/user/tutor/stat");
-                    }}>
-                        <div>
-                            <img style={{width: "100%"}} src={gameStub} alt={'game'}/>
-                        </div>
-                    </InfoBlock>
+                            router("/user/tutor/stat");
+                        }}>
+                            <div>
+                                <img style={{width: "100%"}} src={gameStub} alt={'game'}/>
+                            </div>
+                        </InfoBlock>
+                    )
+                })
+                view = (
+                    <div style={{
+                        display: "flex",
+                        justifyContent: "space-around",
+                        flexWrap: "wrap"
+                    }}>{view}</div>
                 )
-            })
-            view = (
-                <div style={{
-                    display: "flex",
-                    justifyContent: "space-around",
-                    flexWrap: "wrap"
-                }}>{view}</div>
-            )
-        }else{
+            }else{
+                view.push(
+                    <div style={
+                        {
+                            height: 200,
+                            display: "flex",
+                            justifyContent: "center",
+                            alignItems: "center"
+                        }
+                    }>
+                        <h2>Игры ещё не назначены.</h2>
+                    </div>
+                )
+            }
+        } else {
             view.push(
                 <div style={
                     {
@@ -76,7 +96,7 @@ export function VDetailInfo(props) {
                             props.user["name"] && props.user["surname"] ?
                                 props.user["surname"] + " " + props.user["name"] :
                                 "Отсутствуют данные"
-                            }
+                        }
                         >
                             <div>
                                 <img style={{width: "100%"}} src={
@@ -105,15 +125,12 @@ export function VDetailInfo(props) {
                                     marginBottom: 20
                                 }
                             }>
-                                <label>Готово: </label>
-                                <ProgressBar percent={60}/>
-                                <label>Не готово: </label>
-                                <ProgressBar percent={70}/>
-                                <label>Не успешно: </label>
-                                <ProgressBar percent={85}/>
-                                <div style={{marginTop: 10}}>
-                                    <ButtonA text={"Расширенная статистика"} onClick={() => {alert("Move to Nikita!")}}/>
-                                </div>
+                                <label>В ожидании: </label>
+                                <ProgressBar percent={statAssigned}/>
+                                <label>Завершенных: </label>
+                                <ProgressBar percent={statDone}/>
+                                <label>Неудачных: </label>
+                                <ProgressBar percent={statFailed}/>
                             </div>
                         </div>
                         <h2>Назначенные игры: </h2>

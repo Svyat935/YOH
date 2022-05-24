@@ -6,6 +6,7 @@ import {LoadPage} from "../../../../../components/loadpage/LoadPage";
 export function CHomeTutor() {
     const context = useContext(UserContext);
     const [users, setUsers] = useState([]);
+    const [status, setStatus] = useState([]);
     const [load, setLoad] = useState(true);
 
     const requestAttachingUser = async () => {
@@ -23,13 +24,35 @@ export function CHomeTutor() {
         });
     }
 
+    const requestGetStatisticsForUser = async (patientId) => {
+        return await fetch("/tutor/patients/getStatusStatistic?" +
+            "patientID=" + encodeURIComponent(patientId), {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'token': context.token
+            },
+        }).then((response) => {
+            if (response.status === 200) return response.json();
+            else return null;
+        });
+    }
+
     useEffect(async () => {
         if (context.token !== null){
             let response = await requestAttachingUser();
 
+            let usersFirst;
             if (response !== null){
-                let users = response["jsonObject"]["results"];
-                setUsers(users);
+                usersFirst = response["jsonObject"]["results"];
+
+                let stat = [];
+                for (let user of usersFirst){
+                    let statistics = await requestGetStatisticsForUser(user["id"]);
+                    stat.push({statistics: statistics["jsonObject"], user: user});
+                }
+                setStatus(stat);
+                setUsers(usersFirst);
             }
 
             if (load === true) setLoad(false);
@@ -38,7 +61,12 @@ export function CHomeTutor() {
 
     return (
         <LoadPage status={load}>
-            <VHomeTutor context={context} users={users}/>
+            <VHomeTutor
+                context={context}
+                users={users}
+                status={status}
+                getStatus={requestGetStatisticsForUser}
+            />
         </LoadPage>
     )
 }
