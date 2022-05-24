@@ -9,11 +9,12 @@ export function CStat() {
     const [load, setLoad] = useState(true);
 
     const requestGetAttemptsGames = async (game_id) => {
-        return await fetch("http://localhost:5050/api/statistic_pagination?" +
+        return await fetch("https://mobile.itkostroma.ru/api/statistic_pagination?" +
             "gp_id=" + encodeURIComponent(game_id), {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
+                "Access-Control-Allow-Origin": "*",
                 'token': context.token
             }
         }).then((response) => {
