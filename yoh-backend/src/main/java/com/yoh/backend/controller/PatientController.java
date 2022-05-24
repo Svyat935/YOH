@@ -404,19 +404,20 @@ public class PatientController {
     @PostMapping(path = "/games/statistics/send_statistic")
     public JSONResponse sendStatistic(@RequestHeader("token") String token,
                                       @RequestHeader("game") String gameID,
-                                      @Valid @RequestBody com.google.gson.JsonObject statisticToSend) {
+                                      @Valid @RequestBody JsonObject data) {
         try {
-            System.out.println(statisticToSend);
+            System.out.println("1231232131231231232");
+            System.out.println(data);
             Patient patient = this.patientService.getPatientByUser(this.userService.getUserById(this.userService.verifyToken(token)));
             Game game = this.gameService.getGameById(UUID.fromString(gameID));
             GamePatient gamePatient = this.gamePatientService.getGamePatientByGameAndPatient(game, patient);
             StartedGame startedGame = this.startedGameService.getUnfinishedStartedGameByGamePatient(gamePatient);
             if (startedGame == null) throw new IllegalArgumentException("Sorry, but StartedGame was not found.");
-            startedGame.setDetails(statisticToSend.get("details").getAsJsonObject().toString());
+            startedGame.setDetails(data.get("details").toString());
 
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("M/d/yyyy, h:m:s a");
-            LocalDateTime dateStart = LocalDateTime.parse(statisticToSend.get("date_start").getAsString(), formatter);
-            LocalDateTime dateEnd = LocalDateTime.parse(statisticToSend.get("date_end").getAsString(), formatter);
+            LocalDateTime dateStart = LocalDateTime.parse(data.get("date_start").toString(), formatter);
+            LocalDateTime dateEnd = LocalDateTime.parse(data.get("date_end").toString(), formatter);
 
 //            GameStatistic gameStatistic = new GameStatistic(
 //                    startedGame,
@@ -429,17 +430,19 @@ public class PatientController {
 //                    statisticToSend.getMissclicks(),
 //                    statisticToSend.getDetails()
 //            );
+            System.out.println(data.get("level_name").toString());
+            System.out.println();
 
             GameStatistic gameStatistic = new GameStatistic(
                     startedGame,
-                    statisticToSend.get("level").getAsInt(),
-                    statisticToSend.get("level_name").toString(),
+                    Integer.getInteger(data.get("level").toString()),
+                    data.get("level_name").toString(),
                     dateStart,
                     dateEnd,
-                    statisticToSend.get("type").getAsShort(),
-                    statisticToSend.get("clicks").getAsInt(),
-                    statisticToSend.get("missclicks").getAsInt(),
-                    statisticToSend.get("details").getAsJsonObject().toString()
+                    (short) Integer.parseInt(data.get("type").toString()),
+                    Integer.getInteger(data.get("clicks").toString()),
+                    Integer.getInteger(data.get("missclicks").toString()),
+                    data.get("details").toString()
             );
             this.startedGameService.saveStartedGame(startedGame);
             this.gameStatisticService.saveGameStatistic(gameStatistic);
