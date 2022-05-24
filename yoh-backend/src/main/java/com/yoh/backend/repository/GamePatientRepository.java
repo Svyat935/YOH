@@ -79,7 +79,7 @@ public class GamePatientRepository {
         }
     }
 
-    public List<GamePatient> getAllGamesPatientByPatient(Patient patient, String order) {
+    public List<GamePatient> getAllGamesPatientByPatientOrdered(Patient patient, String order) {
         Session session = sessionFactory.openSession();
         try {
             Criteria criteria = session.createCriteria(GamePatient.class)
@@ -107,36 +107,19 @@ public class GamePatientRepository {
             if (order.equals("-3")) {
                 criteria.addOrder(Order.desc("gamePatientStatus"));
             }
-//            switch (order) {
-//                case "1":
-//                {
-//                    Criteria criteria1 = criteria.createCriteria("game");
-//                    criteria1.addOrder(Order.asc("name"));
-//                }
-//                case "-1":
-//                {
-//                    Criteria criteria1 = criteria.createCriteria("game");
-//                    criteria1.addOrder(Order.desc("name"));
-//                }
-//                case "2":
-//                {
-//                    Criteria criteria1 = criteria.createCriteria("game");
-//                    criteria1.addOrder(Order.asc("type"));
-//                }
-//                case "-2":
-//                {
-//                    Criteria criteria1 = criteria.createCriteria("game");
-//                    criteria1.addOrder(Order.desc("type"));
-//                }
-//                case "3":
-//                {
-//                    criteria.addOrder(Order.asc("gamePatientStatus"));
-//                }
-//                case "-3":
-//                {
-//                    criteria.addOrder(Order.desc("gamePatientStatus"));
-//                }
-//            }
+            List<GamePatient> gamePatientList = criteria.list();
+            return gamePatientList.isEmpty() ? List.of() : gamePatientList;
+        }
+        finally {
+            session.close();
+        }
+    }
+
+    public List<GamePatient> getAllGamesPatientByPatient(Patient patient) {
+        Session session = sessionFactory.openSession();
+        try {
+            Criteria criteria = session.createCriteria(GamePatient.class)
+                    .add(Restrictions.eq("patient", patient));
             List<GamePatient> gamePatientList = criteria.list();
             return gamePatientList.isEmpty() ? List.of() : gamePatientList;
         }

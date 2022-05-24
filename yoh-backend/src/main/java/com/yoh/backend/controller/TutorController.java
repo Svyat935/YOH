@@ -70,7 +70,7 @@ public class TutorController {
                                     @RequestParam(value = "limit", required = true) Integer limit,
                                     @RequestParam(value = "start", required = true) Integer start,
                                     @RequestParam(value = "regex", required = false, defaultValue = "") String regex,
-                                    @RequestParam(value = "order", required = false, defaultValue = "") String order) {
+                                    @RequestParam(value = "order", required = false, defaultValue = "1") String order) {
         try {
             Tutor tutor = this.tutorService.getTutorByUser(this.userService.getUserById(this.userService.verifyToken(token)));
             ArrayList<JsonObject> patientList = new ArrayList<JsonObject>();
@@ -159,13 +159,13 @@ public class TutorController {
                                        @RequestParam(value = "limit", required = true) Integer limit,
                                        @RequestParam(value = "start", required = true) Integer start,
                                        @RequestParam(value = "regex", required = false, defaultValue = "") String regex,
-                                       @RequestParam(value = "order", required = false, defaultValue = "") String order) {
+                                       @RequestParam(value = "order", required = false, defaultValue = "1") String order) {
         try {
             Tutor tutor = this.tutorService.getTutorByUser(this.userService.getUserById(this.userService.verifyToken(token)));
             Organization organization = this.tutorService.getTutorByUser(this.userService.getUserById(this.userService.verifyToken(token))).getOrganization();
             ArrayList<JsonObject> patientList = new ArrayList<JsonObject>();
             JsonObject response = new JsonObject();
-            List<Patient> patientsFilteredUnpaginatedList = patientService.getAllPatientsByOrganizationFiltered(organization, regex, order);
+            List<Patient> patientsFilteredUnpaginatedList = patientService.getAllPatientsByOrganizationFiltered(organization, regex, order, tutor);
 
             if (patientsFilteredUnpaginatedList.size() == 0) {
                 response.put("previous", false);
@@ -273,29 +273,29 @@ public class TutorController {
             response.put("login", patient.getUser().getLogin());
             response.put("email", patient.getUser().getEmail());
 //            if (patient.getGames() != null){
-            List<GamePatient> patientGames = this.gamePatientService.getAllGamePatientsByPatient(patient);
-            if (patientGames.size() != 0){
-                ArrayList<JsonObject> gamesArray = new ArrayList<>();
-//                for (Game game: patient.getGames()){
-                for (GamePatient gamePatient: patientGames){
-                    JsonObject gamesInfo = new JsonObject();
-                    GameStatus gameStatus = this.gameStatusService.getGameStatusByGamePatient(gamePatient);
-                    gamesInfo.put("gamePatientID", gamePatient.getId().toString());
-                    gamesInfo.put("id", gamePatient.getGame().getId().toString());
-                    gamesInfo.put("name", gamePatient.getGame().getName());
-                    gamesInfo.put("type", gamePatient.getGame().getType());
-                    gamesInfo.put("description", gamePatient.getGame().getDescription());
-                    gamesInfo.put("url", gamePatient.getGame().getUrl());
-                    gamesInfo.put("image", gamePatient.getGame().getImage());
-                    gamesInfo.put("assignmentDate", gameStatus.getAssignmentDate());
-                    gamesInfo.put("assignedBy", gameStatus.getTutor().getId().toString());
-                    gamesInfo.put("status", gameStatus.getStatus().toString());
-                    gamesInfo.put("active", gamePatient.getGamePatientStatus().toString());
-                    gamesArray.add(gamesInfo);
-                }
-                response.put("games", gamesArray);
-            }
-            else response.put("games", null);
+//            List<GamePatient> patientGames = this.gamePatientService.getAllGamePatientsByPatientOrdered(patient, "1");
+//            if (patientGames.size() != 0){
+//                ArrayList<JsonObject> gamesArray = new ArrayList<>();
+////                for (Game game: patient.getGames()){
+//                for (GamePatient gamePatient: patientGames){
+//                    JsonObject gamesInfo = new JsonObject();
+//                    GameStatus gameStatus = this.gameStatusService.getGameStatusByGamePatient(gamePatient);
+//                    gamesInfo.put("gamePatientID", gamePatient.getId().toString());
+//                    gamesInfo.put("id", gamePatient.getGame().getId().toString());
+//                    gamesInfo.put("name", gamePatient.getGame().getName());
+//                    gamesInfo.put("type", gamePatient.getGame().getType());
+//                    gamesInfo.put("description", gamePatient.getGame().getDescription());
+//                    gamesInfo.put("url", gamePatient.getGame().getUrl());
+//                    gamesInfo.put("image", gamePatient.getGame().getImage());
+//                    gamesInfo.put("assignmentDate", gameStatus.getAssignmentDate());
+//                    gamesInfo.put("assignedBy", gameStatus.getTutor().getId().toString());
+//                    gamesInfo.put("status", gameStatus.getStatus().toString());
+//                    gamesInfo.put("active", gamePatient.getGamePatientStatus().toString());
+//                    gamesArray.add(gamesInfo);
+//                }
+//                response.put("games", gamesArray);
+//            }
+//            else response.put("games", null);
             Tutor tutor = patient.getTutor();
             if (tutor != null) {
                 JsonObject tutorInfo = new JsonObject();
@@ -317,6 +317,85 @@ public class TutorController {
             else response.put("tutor", null);
 
             return new JSONResponse(200, response);
+        }
+        catch (IllegalArgumentException e){
+            JsonObject exceptionResponse = new JsonObject();
+            exceptionResponse.put("message", e.getMessage());
+            return new JSONResponse(401, exceptionResponse);
+        }
+    }
+
+
+    @GetMapping(path = "/patients/getting/one/games")
+    public JSONResponse getOnePatientGames(@RequestHeader("token") String token,
+                                           @RequestParam String patientID,
+                                           @RequestParam(value = "limit", required = true) Integer limit,
+                                           @RequestParam(value = "start", required = true) Integer start,
+                                           @RequestParam(value = "regex", required = false, defaultValue = "") String regex,
+                                           @RequestParam(value = "typeRegex", required = false, defaultValue = "") String typeRegex,
+                                           @RequestParam(value = "order", required = false, defaultValue = "1") String order) {
+        try {
+            Tutor tutorValidation = this.tutorService.getTutorByUser(this.userService.getUserById(this.userService.verifyToken(token)));
+            Patient patient = this.patientService.getPatientById(UUID.fromString(patientID));
+            ArrayList<JsonObject> gamesArray = new ArrayList<>();
+            JsonObject response = new JsonObject();
+//            List<Game> gameList = patient.getGames().stream().filter(i -> i.getName().toLowerCase().contains(regex.toLowerCase())
+//                            && i.getType().toLowerCase().contains(typeRegex.toLowerCase())).collect(Collectors.toList());
+            List<GamePatient> gamePatientList = this.gamePatientService.getAllGamePatientsByPatientOrdered(patient, order);
+            if (!typeRegex.equals("")){
+                gamePatientList = gamePatientList.stream().filter(i -> i.getGame().getType().toLowerCase().contains(typeRegex.toLowerCase())).collect(Collectors.toList());
+            }
+            if (!regex.equals(""))
+                gamePatientList = gamePatientList.stream().filter(i -> i.getGame().getName().toLowerCase().contains(regex.toLowerCase())).collect(Collectors.toList());
+            if (gamePatientList.size() == 0) {
+//                JsonObject response = new JsonObject();
+                response.put("previous", false);
+                response.put("next", false);
+                response.put("count", 0);
+                response.put("results", new ArrayList<>());
+                return new JSONResponse(200, response);
+            }
+
+            //Pagination
+            if (start >= gamePatientList.size())
+                throw new IllegalArgumentException(
+                        String.format("No element at that index (%s)", start)
+                );
+            int lastIndex;
+            if (start + limit > gamePatientList.size()){
+                lastIndex = gamePatientList.size();
+                response.put("next", false);
+            }
+            else {
+                lastIndex = start + limit;
+                response.put("next", true);
+            }
+            if (start == 0) response.put("previous", false);
+            else response.put("previous", true);
+            List<GamePatient> paginatedGamesList = new ArrayList<>();
+            for (int i = start; i < lastIndex; i++){
+                paginatedGamesList.add(gamePatientList.get(i));
+            }
+            response.put("count", paginatedGamesList.size());
+
+            for (GamePatient gamePatient: paginatedGamesList) {
+                JsonObject gamesInfo = new JsonObject();
+                GameStatus gameStatus = this.gameStatusService.getGameStatusByGamePatient(gamePatient);
+                gamesInfo.put("id", gamePatient.getGame().getId().toString());
+                gamesInfo.put("name", gamePatient.getGame().getName());
+                gamesInfo.put("type", gamePatient.getGame().getType());
+                gamesInfo.put("description", gamePatient.getGame().getDescription());
+                gamesInfo.put("image", gamePatient.getGame().getImage());
+                gamesInfo.put("url", gamePatient.getGame().getUrl());
+                gamesInfo.put("assignmentDate", gameStatus.getAssignmentDate());
+                gamesInfo.put("assignedBy", gameStatus.getTutor().getId().toString());
+                gamesInfo.put("status", gameStatus.getStatus().toString());
+                gamesInfo.put("active", gamePatient.getGamePatientStatus().toString());
+                gamesArray.add(gamesInfo);
+            }
+            response.put("results", gamesArray);
+            return new JSONResponse(200, response);
+
         }
         catch (IllegalArgumentException e){
             JsonObject exceptionResponse = new JsonObject();
