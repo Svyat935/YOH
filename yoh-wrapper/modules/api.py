@@ -61,7 +61,7 @@ def send_game_start_route():
     }
     send_url = 'http://yoh-backend:8080/patient/games/statistics/game_start'
 
-    post(send_url, data=json.dumps(data, default=json_serial), headers=headers)
+    post(send_url, data=data, headers=headers)
 
     return make_response(json.dumps({'message': 'Success'}))
 
