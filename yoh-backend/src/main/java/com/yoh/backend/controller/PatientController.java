@@ -1,5 +1,6 @@
 package com.yoh.backend.controller;
 
+import com.github.cliftonlabs.json_simple.JsonKey;
 import com.github.cliftonlabs.json_simple.JsonObject;
 import com.google.gson.JsonParser;
 import com.yoh.backend.entity.*;
@@ -403,7 +404,7 @@ public class PatientController {
     @PostMapping(path = "/games/statistics/send_statistic")
     public JSONResponse sendStatistic(@RequestHeader("token") String token,
                                       @RequestHeader("game") String gameID,
-                                      @Valid @RequestBody JSONObject statisticToSend) {
+                                      @Valid @RequestBody com.google.gson.JsonObject statisticToSend) {
         try {
             System.out.println(statisticToSend);
             Patient patient = this.patientService.getPatientByUser(this.userService.getUserById(this.userService.verifyToken(token)));
@@ -411,11 +412,11 @@ public class PatientController {
             GamePatient gamePatient = this.gamePatientService.getGamePatientByGameAndPatient(game, patient);
             StartedGame startedGame = this.startedGameService.getUnfinishedStartedGameByGamePatient(gamePatient);
             if (startedGame == null) throw new IllegalArgumentException("Sorry, but StartedGame was not found.");
-            startedGame.setDetails(statisticToSend.getString("details"));
+            startedGame.setDetails(statisticToSend.get("details").getAsString());
 
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("M/d/yyyy, h:m:s a");
-            LocalDateTime dateStart = LocalDateTime.parse(statisticToSend.get("date_start").toString(), formatter);
-            LocalDateTime dateEnd = LocalDateTime.parse(statisticToSend.get("date_end").toString(), formatter);
+            LocalDateTime dateStart = LocalDateTime.parse(statisticToSend.get("date_start").getAsString(), formatter);
+            LocalDateTime dateEnd = LocalDateTime.parse(statisticToSend.get("date_end").getAsString(), formatter);
 
 //            GameStatistic gameStatistic = new GameStatistic(
 //                    startedGame,
@@ -431,14 +432,14 @@ public class PatientController {
 
             GameStatistic gameStatistic = new GameStatistic(
                     startedGame,
-                    statisticToSend.getInt("level"),
+                    statisticToSend.get("level").getAsInt(),
                     statisticToSend.get("level_name").toString(),
                     dateStart,
                     dateEnd,
-                    (short) statisticToSend.getInt("type"),
-                    statisticToSend.getInt("clicks"),
-                    statisticToSend.getInt("missclicks"),
-                    statisticToSend.getString("details")
+                    statisticToSend.get("type").getAsShort(),
+                    statisticToSend.get("clicks").getAsInt(),
+                    statisticToSend.get("missclicks").getAsInt(),
+                    statisticToSend.get("details").getAsString()
             );
             this.startedGameService.saveStartedGame(startedGame);
             this.gameStatisticService.saveGameStatistic(gameStatistic);
