@@ -4,11 +4,13 @@ import psycopg2.extras
 import uuid
 from datetime import datetime, date
 from flask import Blueprint, make_response, request, session, abort
+from flask_cors import CORS, cross_origin
 from werkzeug.exceptions import HTTPException
 from requests import post
 from .templates import GET_ATTEMPT_PAGINATION, GET_ALL_TIME_WIDGET, CLICKS_WIDGET, ANSWERS_WIDGET, TIMELINE_WIDGET
 
 api_bp = Blueprint('API', __name__, url_prefix='/api')
+CORS(api_bp, resources={r"/api/*": {"origins": "*"}})
 psycopg2.extras.register_uuid()
 
 CONNECT_PARAMS = {
