@@ -88,8 +88,8 @@ export function CStat() {
         if (context.token){
             let attempt;
             if (attempts.length === 0){
-                console.log(context.info.gamePatientID);
-                let responseAttempts = await requestGetAttemptsGames(context.info.gamePatientID);
+                console.log(context.info.gamePatientId);
+                let responseAttempts = await requestGetAttemptsGames(context.info.gamePatientId);
                 let attempts = responseAttempts["attempts"];
                 setAttempts(attempts);
                 attempt = attempts[0];
