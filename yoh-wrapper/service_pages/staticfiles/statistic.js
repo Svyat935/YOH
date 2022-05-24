@@ -9,7 +9,9 @@ class StatRecord {
 		this.count_clicks = 0;
 		this.count_missclicks = 0;
 		this.stat_func = function (stat_class) {
-			stat_class.count_clicks++;
+			if (stat_class.current_level) {
+				stat_class.count_clicks++;
+			}
 		};
 		this.additional_fields = null;
 		this.getAddFields();
@@ -61,7 +63,7 @@ class StatRecord {
 	}
 
 	gameStart(params) {
-		if (params === null) {
+		if (!params) {
 			params = {};
 		}
 		params['date_start'] = this.getTime();
@@ -71,7 +73,7 @@ class StatRecord {
 	}
 
 	gameEnd(params) {
-		if (params === null) {
+		if (!params) {
 			params = {};
 		}
 		params['date_end'] = this.getTime();
