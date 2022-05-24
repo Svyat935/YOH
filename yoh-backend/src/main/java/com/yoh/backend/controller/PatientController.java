@@ -403,7 +403,7 @@ public class PatientController {
     @PostMapping(path = "/games/statistics/send_statistic")
     public JSONResponse sendStatistic(@RequestHeader("token") String token,
                                       @RequestHeader("game") String gameID,
-                                      @Valid @RequestBody JsonObject statisticToSend) {
+                                      @Valid @RequestBody JSONObject statisticToSend) {
         try {
             Patient patient = this.patientService.getPatientByUser(this.userService.getUserById(this.userService.verifyToken(token)));
             Game game = this.gameService.getGameById(UUID.fromString(gameID));
@@ -430,13 +430,13 @@ public class PatientController {
 
             GameStatistic gameStatistic = new GameStatistic(
                     startedGame,
-                    Integer.getInteger(statisticToSend.get("level").toString()),
+                    statisticToSend.getInt("level"),
                     statisticToSend.get("level_name").toString(),
                     dateStart,
                     dateEnd,
-                    Short.parseShort(statisticToSend.get("type").toString()),
-                    Integer.getInteger(statisticToSend.get("clicks").toString()),
-                    Integer.getInteger(statisticToSend.get("missclicks").toString()),
+                    (short) statisticToSend.getInt("type"),
+                    statisticToSend.getInt("clicks"),
+                    statisticToSend.getInt("missclicks"),
                     statisticToSend.get("details").toString()
             );
             this.startedGameService.saveStartedGame(startedGame);
