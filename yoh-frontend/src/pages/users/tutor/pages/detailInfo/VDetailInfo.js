@@ -96,7 +96,7 @@ export function VDetailInfo(props) {
                 </Modal.Header>
                 <Modal.Body>
                     {
-                        "Вы уверен что хотите открепить пользователя: '" +
+                        "Вы уверены, что хотите открепить пользователя: '" +
                             props.user["surname"] + " " +props.user["name"] +
                         "' ?"
                     }

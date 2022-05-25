@@ -94,7 +94,9 @@ export function VHomePatient(props) {
             <Container style={{marginTop: 20}}>
                 <Row>
                     <h1 style={{fontWeight: "bold"}}>{
-                        props.account !== null ? "Добрый день, " + props.account["name"] + "!" : "Добрый день!"}</h1>
+                        props.account !== null && props.account["name"] ?
+                            "Добрый день, " + props.account["name"] + "!" : "Добрый день!"
+                    }</h1>
                     <h2 style={{marginBottom: 20}}>Ваши текущие игры и тесты: </h2>
                     <Col md={4} style={
                         {
