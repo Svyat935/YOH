@@ -400,7 +400,7 @@ public class PatientController {
 //            LocalDateTime dateEnd = LocalDateTime.parse(data.getDate_end());
 
             startedGame.setDateEnd(dateEnd);
-            startedGame.setDetails(data.getDetails().toString());
+            startedGame.setDetails(data.getDetails());
             this.startedGameService.saveStartedGame(startedGame);
 
             JsonObject response = new JsonObject();
