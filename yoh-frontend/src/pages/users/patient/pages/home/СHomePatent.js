@@ -10,8 +10,25 @@ export function CHomePatient() {
     const [regex, setRegex] = useState("");
     const [start, setStart] = useState(0);
     const [limit, setLimit] = useState(10);
+    const [account, setAccount] = useState(null);
     const [_, rerun] = useState(new class{});
     const [load, setLoad] = useState(true);
+
+    const requestAccountInfo = async () => {
+        return await fetch("/patient/account", {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                "token": context.token
+            },
+        }).then((response) => {
+            if (response.status === 200) {
+                return response.json();
+            } else {
+                return null;
+            }
+        });
+    }
 
     const requestGames = async () => {
         return await fetch("/patient/games/getting?" +
@@ -38,6 +55,10 @@ export function CHomePatient() {
                 setGames(responseGames);
             }
 
+            let responseAccount = await requestAccountInfo();
+            responseAccount = responseAccount['jsonObject'];
+            setAccount(responseAccount);
+
             if (load === true) setLoad(false);
         }
     }, [context, _])
@@ -50,6 +71,7 @@ export function CHomePatient() {
                 setRegex={setRegex}
                 setStart={setStart}
                 start={start}
+                account={account}
                 refresh={() => rerun(new class{})}
             />
         </LoadPage>

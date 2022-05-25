@@ -65,7 +65,7 @@ export function VAllPatients(props) {
                             setCurrentPatient(patient);
                             setShow(true);
                         }
-                    } key={patient["id"]} text={fio} addText={attachStatus ? "Под наблюдением" : "Не под наблюдением"}>
+                    } key={patient["id"]} text={fio}>
                         <div>
                             <img style={{width: "100%"}} src={imageSrc} alt={'profile'}/>
                         </div>
@@ -119,11 +119,11 @@ export function VAllPatients(props) {
                             props.refresh();
                             setShow(false);
                         }}/>
-                        <ButtonB text={"Убрать из под наблюдения"} onClick={async () => {
-                            await props.detach(currentPatient["id"]);
-                            props.refresh();
-                            setShow(false);
-                        }}/>
+                        {/*<ButtonB text={"Убрать из под наблюдения"} onClick={async () => {*/}
+                        {/*    await props.detach(currentPatient["id"]);*/}
+                        {/*    props.refresh();*/}
+                        {/*    setShow(false);*/}
+                        {/*}}/>*/}
                     </div>
                 </Modal.Body>
                 <Modal.Footer>
