@@ -383,6 +383,7 @@ public class TutorController {
                 GameStatus gameStatus = this.gameStatusService.getGameStatusByGamePatient(gamePatient);
                 gamesInfo.put("id", gamePatient.getGame().getId().toString());
                 gamesInfo.put("gamePatientId", gamePatient.getId().toString());
+                gamesInfo.put("activeStatus", gamePatient.getGamePatientStatus().toString());
                 gamesInfo.put("name", gamePatient.getGame().getName());
                 gamesInfo.put("type", gamePatient.getGame().getType());
                 gamesInfo.put("description", gamePatient.getGame().getDescription());
