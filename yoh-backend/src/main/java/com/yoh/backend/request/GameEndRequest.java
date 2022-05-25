@@ -18,13 +18,13 @@ public class GameEndRequest {
     }
 
     @Nullable
-    private JsonObject details;
+    private String details;
 
-    public JsonObject getDetails() {
+    public String getDetails() {
         return details;
     }
 
-    public void setDetails(JsonObject details) {
+    public void setDetails(String details) {
         this.details = details;
     }
 }
