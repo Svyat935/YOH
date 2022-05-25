@@ -77,7 +77,7 @@ class StatRecord {
 			params = {};
 		}
 		params['date_end'] = this.getTime();
-		params['details'] = this.additional_fields;
+		params['details'] = JSON.stringify(this.additional_fields).toString();
 		fetch('/api/game_end', {method: 'POST', body: JSON.stringify(params)});
 		this.#sendEndGameForMobile();
 	}
