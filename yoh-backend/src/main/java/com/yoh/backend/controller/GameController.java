@@ -77,7 +77,10 @@ public class GameController {
                 List<Game> patientGames = this.gamePatientService.getAllGamesByPatient(this.patientService.getPatientById(UUID.fromString(patientID)));
 //                gameList = gameList.stream().filter(i -> !patientGames.contains(i)).collect(Collectors.toList());
                 for (Game gamepat : patientGames){
-                    gameList.remove(gamepat);
+                    if (gameList.remove(gamepat)) {
+                        System.out.println("Game was cleared");
+                    }
+                    else System.out.println("ssdsd");
                 }
             }
             if (gameList.size() == 0) {
