@@ -104,7 +104,7 @@ export function VDetailInfo(props) {
                                 } alt={'game'}/>
                             </div>
                         </InfoBlockStatic>
-                        <p>Телефон: {props.user["phone"] ? props.user["phone"] : "Отсутствует"}</p>
+                        <p>Телефон: {props.user["numberPhone"] ? props.user["numberPhone"] : "Отсутствует"}</p>
                         <p>Эл.почта: {props.user["email"] ? props.user["email"] : "Отсутствует"}</p>
                         <ButtonA width={300} text={"Добавить траекторию"} onClick={() => {
                             router("/user/tutor/vector/");

@@ -28,11 +28,12 @@ export function CVector() {
         });
     }
 
-    const requestGetGames = async () => {
+    const requestGetGames = async (patient_id) => {
         return await fetch("/games/all?" +
             "regex=" + encodeURIComponent(regex) + "&" +
             "start=" + encodeURIComponent(start) + "&" +
-            "limit=" + encodeURIComponent(limit), {
+            "limit=" + encodeURIComponent(limit) + "&" +
+            "patientID" + encodeURIComponent(patient_id), {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
