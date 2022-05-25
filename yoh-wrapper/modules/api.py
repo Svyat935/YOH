@@ -68,7 +68,7 @@ def send_game_start_route():
 
 @api_bp.route('/game_end', methods=['POST'])
 def send_game_end_route():
-    data = json.loads(request.data)
+    data = request.data
     if not session.get('user') or not session.get('current_game'):
         abort(401)
 
@@ -78,10 +78,6 @@ def send_game_end_route():
         'game': session['current_game']
     }
     send_url = 'http://yoh-backend:8080/patient/games/statistics/game_end'
-
-    # temp_data = json.loads(data)
-    data['details'] = json.dumps(data.get('details')) if data.get('details') else '{}'
-    data = json.dumps(data)
 
     post(send_url, json=data, headers=headers)
 
