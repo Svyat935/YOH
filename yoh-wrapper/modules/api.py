@@ -79,6 +79,10 @@ def send_game_end_route():
     }
     send_url = 'http://yoh-backend:8080/patient/games/statistics/game_end'
 
+    temp_data = json.loads(data)
+    temp_data['details'] = str(temp_data.get('details')) if temp_data.get('details') else '{}'
+    data = json.dumps(temp_data)
+
     post(send_url, json=data, headers=headers)
 
     return make_response(json.dumps({'message': 'Success'}))
