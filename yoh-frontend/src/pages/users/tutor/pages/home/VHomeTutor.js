@@ -90,7 +90,9 @@ export function VHomeTutor(props) {
             <Container style={{marginTop: 20}}>
                 <Row>
                     <h1 style={{fontWeight: "bold"}}>{
-                        props.account !== null ? "Добрый день, " + props.account["name"] + "!" : "Добрый день!"}
+                        props.account !== null && props.account["name"] ?
+                            "Добрый день, " + props.account["name"] + "!" : "Добрый день!"
+                    }
                     </h1>
                     {createViewUsers()}
                 </Row>

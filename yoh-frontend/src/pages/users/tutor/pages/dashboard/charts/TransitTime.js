@@ -4,8 +4,23 @@ import Chart from "react-apexcharts";
 export class TransitTime extends Component {
     constructor(props) {
         super(props);
-        let date = new Date(props.title);
-        let title = date.getHours() + "ч. " + date.getMinutes() + "мин. " + date.getSeconds() + "сек.";
+        let toDate = (val) => {
+            var hours = Math.floor(val / 60 / 60);
+            var minutes = Math.floor(val / 60) - (hours * 60);
+            var seconds = val % 60;
+            var result = '';
+            if (hours) {
+                result += hours.toString() + ' ч. ';
+            }
+            if (minutes) {
+                result += minutes.toString() + ' мин. ';
+            }
+            if (seconds) {
+                result += seconds.toString() + ' сек.';
+            }
+            return result;
+        }
+        let title = toDate(props.title);
 
         this.state = {
             options: {
