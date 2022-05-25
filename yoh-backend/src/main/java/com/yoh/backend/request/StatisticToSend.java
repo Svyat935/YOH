@@ -52,13 +52,13 @@ public class StatisticToSend {
 
 
     @NotNull
-    private Short type;
+    private Integer type;
 
-    public Short getType() {
+    public Integer getType() {
         return type;
     }
 
-    public void setType(Short type) {
+    public void setType(Integer type) {
         this.type = type;
     }
 
@@ -96,5 +96,16 @@ public class StatisticToSend {
 
     public void setDetails(String details) {
         this.details = details;
+    }
+
+    @NotNull
+    private String additional_fields;
+
+    public String getAdditional_fields() {
+        return additional_fields;
+    }
+
+    public void setAdditional_fields(String additional_fields) {
+        this.additional_fields = additional_fields;
     }
 }
