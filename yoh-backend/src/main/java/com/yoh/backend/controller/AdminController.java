@@ -206,6 +206,50 @@ public class AdminController {
         }
     }
 
+    @GetMapping(path = "/users/tutor/image")
+    public JSONResponse getTutorImage(@RequestHeader("token") String token,
+                                      @RequestParam String userID) {
+        try {
+            Admin admin = this.adminService.getAdminByUser(this.userService.getUserById(this.userService.verifyToken(token)));
+            Tutor tutor = this.tutorService.getTutorByUser(this.userService.getUserById(UUID.fromString(userID)));
+            if (tutor.getImage() != null) {
+                JsonObject response = new JsonObject();
+                response.put("image", tutor.getImage());
+                return new JSONResponse(200, response);
+            }
+            JsonObject response = new JsonObject();
+            response.put("message", "Tutor does not have an image");
+            return new JSONResponse(200, response);
+        }
+        catch (IllegalArgumentException e){
+            JsonObject exceptionResponse = new JsonObject();
+            exceptionResponse.put("message", e.getMessage());
+            return new JSONResponse(401, exceptionResponse);
+        }
+    }
+
+    @GetMapping(path = "/users/patient/image")
+    public JSONResponse getPatientImage(@RequestHeader("token") String token,
+                                      @RequestParam String userID) {
+        try {
+            Admin admin = this.adminService.getAdminByUser(this.userService.getUserById(this.userService.verifyToken(token)));
+            Patient patient = this.patientService.getPatientByUser(this.userService.getUserById(UUID.fromString(userID)));
+            if (patient.getImage() != null) {
+                JsonObject response = new JsonObject();
+                response.put("image", patient.getImage());
+                return new JSONResponse(200, response);
+            }
+            JsonObject response = new JsonObject();
+            response.put("message", "Patient does not have an image");
+            return new JSONResponse(200, response);
+        }
+        catch (IllegalArgumentException e){
+            JsonObject exceptionResponse = new JsonObject();
+            exceptionResponse.put("message", e.getMessage());
+            return new JSONResponse(401, exceptionResponse);
+        }
+    }
+
     @PostMapping(path = "/upload/games")
     public JSONResponse uploadGames(@RequestHeader("token") String token,
                                     @RequestParam MultipartFile file,
