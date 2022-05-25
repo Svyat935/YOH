@@ -73,6 +73,7 @@ public class GameController {
                 gameList = gameList.stream().filter(i -> i.getName().toLowerCase().contains(regex.toLowerCase()))
                         .collect(Collectors.toList());
             }
+            gameList.forEach(i -> System.out.println(i.getId().toString()));
             if (patientID != null) {
                 List<Game> patientGames = this.gamePatientService.getAllGamesByPatient(this.patientService.getPatientById(UUID.fromString(patientID)));
 //                gameList = gameList.stream().filter(i -> !patientGames.contains(i)).collect(Collectors.toList());
@@ -81,6 +82,7 @@ public class GameController {
                         System.out.println("Game was cleared");
                     }
                     else System.out.println("ssdsd");
+                    System.out.println(gamepat.getId().toString());
                 }
             }
             if (gameList.size() == 0) {
