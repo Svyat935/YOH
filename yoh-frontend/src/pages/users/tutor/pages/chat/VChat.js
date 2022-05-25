@@ -20,12 +20,12 @@ export function VChat() {
                         <ChatContainerReceive text={"Привет"} date={"11:01"} image={ImageStub}/>
                         <ChatContainerSend text={"Это просто для теста"} date={"11:00"} image={ImageStub}/>
                         <ChatContainerSend
-                            text={"Главное чтобы и дальше все работало как надо, а не как получится."}
+                            text={"Большой нерабочий тест получился."}
                             date={"11:00"}
                             image={ImageStub}
                         />
                         <ChatContainerReceive
-                            text={"Похоже реально может не получится и пойти все по пизде."}
+                            text={"Очень нерабочий тест получился."}
                             date={"11:01"}
                             image={ImageStub}
                         />

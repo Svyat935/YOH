@@ -11,6 +11,7 @@ import {ProgressBar} from "../../../../../components/progressBar/ProgressBar";
 
 export function VHomeTutor(props) {
     const router = useNavigate();
+    const status = [];
 
     const createViewUsers = () => {
         let users = props.users.slice(-5),
@@ -18,16 +19,19 @@ export function VHomeTutor(props) {
 
         if (users.length > 0){
             users.forEach((user) => {
+                let imageSrc = user["image"] ? "https://mobile.itkostroma.ru/images/" + user["image"] : profileStub;
+
                 view.push(
                     <InfoBlock key={user["id"]} text={
                         user["surname"] && user["name"] ?
-                            user["surname"] + user["name"] : "Отсутствует ФИО"
+                            user["surname"] + " " + user["name"] : "Отсутствует ФИО"
                     } onClick={() => router("/user/tutor/patients/")}>
                         <div>
-                            <img style={{width: "100%"}} src={profileStub} alt={'profile'}/>
+                            <img style={{width: "100%"}} src={imageSrc} alt={'profile'}/>
                         </div>
                     </InfoBlock>
                 )
+
             })
         }else{
             view.push(
@@ -40,7 +44,7 @@ export function VHomeTutor(props) {
                         alignItems: "center"
                     }
                 }>
-                    <h3>Пользователи в системе отсутствует.</h3>
+                    <h3>Наблюдаемые пользователи в системе отсутствуют.</h3>
                 </div>
             )
         }
@@ -54,6 +58,31 @@ export function VHomeTutor(props) {
                 </div>
             </div>
         )
+    }
+
+    const createStatusUsers = () => {
+        let status = props.status.slice(-5),
+            view = [];
+
+        if (status.length > 0) {
+            status.forEach((stat) => {
+                const allGames = stat.statistics["Done"] + stat.statistics["Assigned"] + stat.statistics["Failed"];
+
+                let fio = stat.user["surname"] && stat.user["name"] ? stat.user["surname"] + " " + stat.user["name"] :
+                            "Отсутствует ФИО",
+                    value = allGames !== 0 ? Math.round(stat.statistics["Done"] / allGames * 100) : 0
+                view.push(<label>{fio}: </label>)
+                view.push(<ProgressBar percent={value}/>)
+            })
+        }else{
+            view.push(
+                <div>
+                    <h3>Отсутвуют назначенные пользователи.</h3>
+                </div>
+            )
+        }
+
+        return view;
     }
 
     return (
@@ -81,12 +110,9 @@ export function VHomeTutor(props) {
                                 padding: "10px 20px 30px 20px"
                             }
                         }>
-                            <label>Пользователь 1: </label>
-                            <ProgressBar percent={60}/>
-                            <label>Пользователь 2: </label>
-                            <ProgressBar percent={70}/>
-                            <label>Пользователь 3: </label>
-                            <ProgressBar percent={85}/>
+                            {
+                                createStatusUsers()
+                            }
                         </div>
                     </div>
                 </Row>

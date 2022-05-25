@@ -14,6 +14,7 @@ export function CUsersAdmin() {
     const [_, rerun] = useState(new class{});
     const [load, setLoad] = useState(true);
 
+
     const requestUsers = async () => {
         return await fetch("/admins/users/all?" +
             "regex=" + encodeURIComponent(regex) + "&" +
