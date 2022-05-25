@@ -78,6 +78,8 @@ public class GameController {
                 List<Game> patientGames = this.gamePatientService.getAllGamesByPatient(this.patientService.getPatientById(UUID.fromString(patientID)));
 //                gameList = gameList.stream().filter(i -> !patientGames.contains(i)).collect(Collectors.toList());
                 for (Game gamepat : patientGames){
+                    System.out.println("LOGING:");
+                    System.out.println(gameList.contains(gamepat));
                     if (gameList.remove(gamepat)) {
                         System.out.println("Game was cleared");
                     }
