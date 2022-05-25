@@ -69,21 +69,15 @@ public class GameController {
             User user = this.userService.getUserById(this.userService.verifyToken(token));
             List<Game> gameList = this.gameService.getAllGamesFiltered(typeRegex, order);
             JsonObject response = new JsonObject();
+            ArrayList<UUID> sdasds = new ArrayList<>();
             if (!regex.equals("")){
                 gameList = gameList.stream().filter(i -> i.getName().toLowerCase().contains(regex.toLowerCase()))
                         .collect(Collectors.toList());
             }
-            gameList.forEach(i -> System.out.println(i.getId().toString()));
             if (patientID != null) {
-                List<Game> patientGames = this.gamePatientService.getAllGamesByPatient(this.patientService.getPatientById(UUID.fromString(patientID)));
+                this.gamePatientService.getAllGamesByPatient(this.patientService.getPatientById(UUID.fromString(patientID))).forEach(i -> sdasds.add(i.getId()));
 //                gameList = gameList.stream().filter(i -> !patientGames.contains(i)).collect(Collectors.toList());
-                for (Game gamepat : patientGames){
-                    if (gameList.remove(gamepat)) {
-                        System.out.println("Game was cleared");
-                    }
-                    else System.out.println("ssdsd");
-                    System.out.println(gamepat.getId().toString());
-                }
+                gameList = gameList.stream().filter(i -> !sdasds.contains(i.getId())).collect(Collectors.toList());
             }
             if (gameList.size() == 0) {
 //                JsonObject response = new JsonObject();
