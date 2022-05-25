@@ -19,6 +19,7 @@ export function VHomeTutor(props) {
 
         if (users.length > 0){
             users.forEach((user) => {
+                console.log(user);
                 let imageSrc = user["image"] ? "https://mobile.itkostroma.ru/images/" + user["image"] : profileStub;
 
                 view.push(
