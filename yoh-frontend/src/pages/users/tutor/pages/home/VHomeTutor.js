@@ -19,13 +19,15 @@ export function VHomeTutor(props) {
 
         if (users.length > 0){
             users.forEach((user) => {
+                let imageSrc = user["image"] ? "https://mobile.itkostroma.ru/images/" + user["image"] : profileStub;
+
                 view.push(
                     <InfoBlock key={user["id"]} text={
                         user["surname"] && user["name"] ?
-                            user["surname"] + user["name"] : "Отсутствует ФИО"
+                            user["surname"] + " " + user["name"] : "Отсутствует ФИО"
                     } onClick={() => router("/user/tutor/patients/")}>
                         <div>
-                            <img style={{width: "100%"}} src={profileStub} alt={'profile'}/>
+                            <img style={{width: "100%"}} src={imageSrc} alt={'profile'}/>
                         </div>
                     </InfoBlock>
                 )
@@ -66,7 +68,7 @@ export function VHomeTutor(props) {
             status.forEach((stat) => {
                 const allGames = stat.statistics["Done"] + stat.statistics["Assigned"] + stat.statistics["Failed"];
 
-                let fio = stat.user["surname"] && stat.user["name"] ? stat.user["surname"] + stat.user["name"] :
+                let fio = stat.user["surname"] && stat.user["name"] ? stat.user["surname"] + " " + stat.user["name"] :
                             "Отсутствует ФИО",
                     value = allGames !== 0 ? Math.round(stat.statistics["Done"] / allGames * 100) : 0
                 view.push(<label>{fio}: </label>)

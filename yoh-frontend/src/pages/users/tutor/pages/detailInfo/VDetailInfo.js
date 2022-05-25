@@ -100,7 +100,8 @@ export function VDetailInfo(props) {
                         >
                             <div>
                                 <img style={{width: "100%"}} src={
-                                    props.user["image"] ? props.user["image"] : profileStub
+                                    props.user["image"] ? "https://mobile.itkostroma.ru/images/" + props.user["image"] :
+                                        profileStub
                                 } alt={'game'}/>
                             </div>
                         </InfoBlockStatic>

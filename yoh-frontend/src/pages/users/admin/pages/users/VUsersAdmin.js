@@ -547,7 +547,7 @@ export function VUsersAdmin(props) {
                 <label>Телефон: </label>
                 <InputPhone id={"phone"}/>
                 <p id={"inputPhone-before"} style={{margin: "5px 0", textDecoration: "underline"}}>
-                    Телефон: {userInfo["phone"]}
+                    Телефон: {userInfo["numberPhone"]}
                 </p>
                 <label>Адрес: </label>
                 <input id={"address"} type={"text"} style={

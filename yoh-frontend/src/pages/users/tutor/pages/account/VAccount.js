@@ -122,7 +122,7 @@ export function VAccount(props) {
         let imageClass = new Image();
         if (props.accountInfo !== null && props.accountInfo["image"] !== null){
             //TODO: Add site url.
-            imageClass.src = "https://mobile.itkostroma.ru/images/"+props.accountInfo["image"];
+            imageClass.src = "https://mobile.itkostroma.ru/images/" + props.accountInfo["image"];
         }
 
         return (
