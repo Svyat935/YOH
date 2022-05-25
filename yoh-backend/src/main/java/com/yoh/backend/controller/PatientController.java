@@ -371,9 +371,22 @@ public class PatientController {
     @PostMapping(path = "/games/statistics/game_end")
     public JSONResponse addGameEnd(@RequestHeader("token") String token,
                                    @RequestHeader("game") String gameID,
-                                   @Valid @RequestBody JsonObject data) {
+                                   @Valid @RequestBody JSONObject data) {
         try {
+            System.out.println();
+            System.out.println();
+            System.out.println();
+            System.out.println();
+            System.out.println();
             System.out.println(data);
+            System.out.println(data.get("date_end"));
+            System.out.println(data.get("details"));
+            System.out.println();
+            System.out.println();
+            System.out.println();
+            System.out.println();
+            System.out.println();
+
             Patient patient = this.patientService.getPatientByUser(this.userService.getUserById(this.userService.verifyToken(token)));
             Game game = this.gameService.getGameById(UUID.fromString(gameID));
             GamePatient gamePatient = this.gamePatientService.getGamePatientByGameAndPatient(game, patient);
