@@ -89,7 +89,9 @@ export function VHomeTutor(props) {
         <Back navPanel={<TutorNav context={props.context}/>}>
             <Container style={{marginTop: 20}}>
                 <Row>
-                    <h1 style={{fontWeight: "bold"}}>Добрый день!</h1>
+                    <h1 style={{fontWeight: "bold"}}>{
+                        props.account !== null ? "Добрый день, " + props.account["name"] + "!" : "Добрый день!"}
+                    </h1>
                     {createViewUsers()}
                 </Row>
             </Container>

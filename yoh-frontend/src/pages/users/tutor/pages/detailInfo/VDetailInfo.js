@@ -15,6 +15,7 @@ import {InfoBlock} from "../../../../../components/infoBlock/InfoBlock";
 
 export function VDetailInfo(props) {
     const router = useNavigate();
+    const [show, setShow] = useState(false);
     const allGames = props.status !== null ? props.status["Done"] + props.status["Assigned"] + props.status["Failed"] : 0,
         statDone = allGames !== 0 ? Math.round(props.status["Done"] / allGames * 100) : 0,
         statAssigned = allGames !== 0 ? Math.round(props.status["Assigned"] / allGames * 100) : 0,
@@ -82,6 +83,41 @@ export function VDetailInfo(props) {
 
     return (
         <Back navPanel={<TutorNav context={props.context}/>}>
+            <Modal
+                show={show}
+                backdrop={true}
+                keyboard={true}
+                onHide={() => setShow(false)}
+            >
+                <Modal.Header closeButton>
+                    <Modal.Title>{
+                        "Открепить Пользователя"
+                    }</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    {
+                        "Вы уверен что хотите открепить пользователя: '" +
+                            props.user["surname"] + " " +props.user["name"] +
+                        "' ?"
+                    }
+                </Modal.Body>
+                <Modal.Footer>
+                    <div style={
+                        {
+                            height: "25%",
+                            width: "100%",
+                            display: "flex",
+                            justifyContent: "space-between"
+                        }
+                    }>
+                        <ButtonB text={"Отмена"} onClick={() => setShow(false)}/>
+                        <ButtonB text={"Открепить"} onClick={() => {
+                            props.detach(props.user["id"]);
+                            router("/user/tutor/patients/");
+                        }}/>
+                    </div>
+                </Modal.Footer>
+            </Modal>
             <Container>
                 <Row>
                     <Col md={4} style={
@@ -112,6 +148,9 @@ export function VDetailInfo(props) {
                         }}/>
                         <ButtonA width={300} text={"Удалить траекторию"} onClick={() => {
                             router("/user/tutor/delete/");
+                        }}/>
+                        <ButtonA width={300} text={"Открепить"} onClick={() => {
+                            setShow(true);
                         }}/>
                     </Col>
                     <Col md={8}>

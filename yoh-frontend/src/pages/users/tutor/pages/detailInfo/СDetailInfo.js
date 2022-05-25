@@ -55,6 +55,20 @@ export function CDetailInfo() {
         });
     }
 
+    const requestDetachPatient = async (id) => {
+        return await fetch("/tutor/patients/detaching", {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+                'token': context.token
+            },
+            body: JSON.stringify({patient: id})
+        }).then((response) => {
+            if (response.status === 200) return response.json();
+            else return null;
+        });
+    }
+
     useEffect(async () => {
         if (context.token){
             let responseUser = await requestGetInfoForUser(context.info.patient["id"]);
@@ -89,6 +103,7 @@ export function CDetailInfo() {
                 user={user}
                 games={games}
                 status={status}
+                detach={requestDetachPatient}
                 refresh={() => rerun(new class{})}
             />
         </LoadPage>

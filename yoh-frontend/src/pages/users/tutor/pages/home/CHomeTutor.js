@@ -7,7 +7,24 @@ export function CHomeTutor() {
     const context = useContext(UserContext);
     const [users, setUsers] = useState([]);
     const [status, setStatus] = useState([]);
+    const [account, setAccount] = useState(null);
     const [load, setLoad] = useState(true);
+
+    const requestAccountInfo = async () => {
+        return await fetch("/tutor/account", {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                "token": context.token
+            },
+        }).then((response) => {
+            if (response.status === 200) {
+                return response.json();
+            } else {
+                return null;
+            }
+        });
+    }
 
     const requestAttachingUser = async () => {
         return await fetch("/tutor/patients/getting?" +
@@ -55,6 +72,10 @@ export function CHomeTutor() {
                 setUsers(usersFirst);
             }
 
+            let responseAccount = await requestAccountInfo();
+            responseAccount = responseAccount['jsonObject'];
+            setAccount(responseAccount);
+
             if (load === true) setLoad(false);
         }
     }, [context])
@@ -65,6 +86,7 @@ export function CHomeTutor() {
                 context={context}
                 users={users}
                 status={status}
+                account={account}
                 getStatus={requestGetStatisticsForUser}
             />
         </LoadPage>

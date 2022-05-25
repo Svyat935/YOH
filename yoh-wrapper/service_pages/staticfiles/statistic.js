@@ -21,7 +21,7 @@ class StatRecord {
 		let response = await fetch('/api/additional_fields').then((response) => {
 			return response.json();
 		});
-		this.additional_fields = response;
+		this.additional_fields = JSON.parse(response);
 	}
 
 	getTime() {

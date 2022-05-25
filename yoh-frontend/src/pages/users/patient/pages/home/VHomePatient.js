@@ -93,7 +93,8 @@ export function VHomePatient(props) {
         <Back navPanel={<PatientNav context={props.context}/>}>
             <Container style={{marginTop: 20}}>
                 <Row>
-                    <h1 style={{fontWeight: "bold"}}>Добрый день!</h1>
+                    <h1 style={{fontWeight: "bold"}}>{
+                        props.account !== null ? "Добрый день, " + props.account["name"] + "!" : "Добрый день!"}</h1>
                     <h2 style={{marginBottom: 20}}>Ваши текущие игры и тесты: </h2>
                     <Col md={4} style={
                         {
