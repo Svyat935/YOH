@@ -36,7 +36,6 @@ def game_route(game):
     }
     send_url = 'http://yoh-backend:8080/patient/games/statistics/additional_fields'
     result = get(send_url, headers=headers).json()
-    print(result)
-    session['additional_fields'] = json.dumps(result.get('details', {}))
+    session['additional_fields'] = json.dumps(result.get('jsonObject', {}).get('result'))
 
     return resp

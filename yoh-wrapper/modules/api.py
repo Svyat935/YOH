@@ -111,7 +111,6 @@ def statistics_route():
 @api_bp.route('/additional_fields', methods=['GET'])
 def additional_fields_route():
     add_fields = session.get('additional_fields')
-    print(add_fields)
     return make_response(add_fields)
 
 
