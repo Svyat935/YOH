@@ -373,6 +373,7 @@ public class PatientController {
                                    @RequestHeader("game") String gameID,
                                    @Valid @RequestBody JsonObject data) {
         try {
+            System.out.println(data);
             Patient patient = this.patientService.getPatientByUser(this.userService.getUserById(this.userService.verifyToken(token)));
             Game game = this.gameService.getGameById(UUID.fromString(gameID));
             GamePatient gamePatient = this.gamePatientService.getGamePatientByGameAndPatient(game, patient);
