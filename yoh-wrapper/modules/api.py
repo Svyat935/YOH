@@ -80,7 +80,7 @@ def send_game_end_route():
     send_url = 'http://yoh-backend:8080/patient/games/statistics/game_end'
 
     # temp_data = json.loads(data)
-    data['details'] = str(data.get('details')) if data.get('details') else '{}'
+    data['details'] = json.dumps(data.get('details')) if data.get('details') else '{}'
     data = json.dumps(data)
 
     post(send_url, json=data, headers=headers)
