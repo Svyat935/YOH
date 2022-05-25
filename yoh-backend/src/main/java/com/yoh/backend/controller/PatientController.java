@@ -513,46 +513,35 @@ public class PatientController {
             LocalDateTime dateStart = LocalDateTime.parse(data.getDate_start(), formatter);
             LocalDateTime dateEnd = LocalDateTime.parse(data.getDate_end(), formatter);
 
-//            GameStatistic gameStatistic = new GameStatistic(
-//                    startedGame,
-//                    statisticToSend.getLevel(),
-//                    statisticToSend.getLevel_name(),
-//                    dateStart,
-//                    dateEnd,
-//                    statisticToSend.getType(),
-//                    statisticToSend.getClicks(),
-//                    statisticToSend.getMissclicks(),
-//                    statisticToSend.getDetails()
-//            );
-            System.out.println("");
-
-            System.out.println();
-            System.out.println();
-            System.out.println();
-            System.out.println();
-            System.out.println();
-            System.out.println();
-            System.out.println();
-            System.out.println();
-
-            System.out.println(data.getLevel());
-            System.out.println(data.getLevel());
-            System.out.println(dateStart);
-            System.out.println(dateEnd);
-            System.out.println(data.getType());
-            System.out.println(data.getClicks());
-            System.out.println(data.getMissclicks());
-            System.out.println(data.getDetails());
-
-
-            System.out.println();
-            System.out.println();
-            System.out.println();
-            System.out.println();
-            System.out.println();
-            System.out.println();
-            System.out.println();
-            System.out.println();
+//            System.out.println("");
+//
+//            System.out.println();
+//            System.out.println();
+//            System.out.println();
+//            System.out.println();
+//            System.out.println();
+//            System.out.println();
+//            System.out.println();
+//            System.out.println();
+//
+//            System.out.println(data.getLevel());
+//            System.out.println(data.getLevel());
+//            System.out.println(dateStart);
+//            System.out.println(dateEnd);
+//            System.out.println(data.getType());
+//            System.out.println(data.getClicks());
+//            System.out.println(data.getMissclicks());
+//            System.out.println(data.getDetails());
+//
+//
+//            System.out.println();
+//            System.out.println();
+//            System.out.println();
+//            System.out.println();
+//            System.out.println();
+//            System.out.println();
+//            System.out.println();
+//            System.out.println();
 
             GameStatistic gameStatistic = new GameStatistic(
                     startedGame,

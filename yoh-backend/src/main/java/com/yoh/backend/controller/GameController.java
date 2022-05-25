@@ -75,7 +75,10 @@ public class GameController {
             }
             if (patientID != null) {
                 List<Game> patientGames = this.gamePatientService.getAllGamesByPatient(this.patientService.getPatientById(UUID.fromString(patientID)));
-                gameList = gameList.stream().filter(i -> !patientGames.contains(i)).collect(Collectors.toList());
+//                gameList = gameList.stream().filter(i -> !patientGames.contains(i)).collect(Collectors.toList());
+                for (Game gamepat : patientGames){
+                    gameList.remove(gamepat);
+                }
             }
             if (gameList.size() == 0) {
 //                JsonObject response = new JsonObject();
