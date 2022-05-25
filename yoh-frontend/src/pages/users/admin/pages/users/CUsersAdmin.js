@@ -14,6 +14,33 @@ export function CUsersAdmin() {
     const [_, rerun] = useState(new class{});
     const [load, setLoad] = useState(true);
 
+    const requestGetImageTutor = async (user_id) => {
+        return await fetch("/admins/users/tutor/image?"+
+            "userID=" + encodeURIComponent(user_id), {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'token': context.token
+            },
+        }).then((response) => {
+            if (response.status === 200) return response.json();
+            else return null;
+        });
+    }
+
+    const requestGetImagePatient = async (user_id) => {
+        return await fetch("/admins/users/patient/image?"+
+            "userID=" + encodeURIComponent(user_id), {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'token': context.token
+            },
+        }).then((response) => {
+            if (response.status === 200) return response.json();
+            else return null;
+        });
+    }
 
     const requestUsers = async () => {
         return await fetch("/admins/users/all?" +
@@ -142,6 +169,17 @@ export function CUsersAdmin() {
 
             if (responseUsers !== null){
                 responseUsers = responseUsers["jsonObject"]["results"];
+                for (let user of responseUsers){
+                    if (user["role"] === 1){
+                        let image = await requestGetImagePatient(user["id"]);
+                        if (image["jsonObject"]["image"]) user["image"] = image["jsonObject"]["image"];
+                        else user["image"] = null;
+                    } else if (user["role"] === 3){
+                        let image = await requestGetImageTutor(user["id"]);
+                        if (image["jsonObject"]["image"]) user["image"] = image["jsonObject"]["image"];
+                        else user["image"] = null;
+                    }
+                }
                 if (responseUsers !== undefined) setUsers(responseUsers);
             }
 
@@ -160,6 +198,8 @@ export function CUsersAdmin() {
                 context={context}
                 users={users}
                 organizations={organizations}
+                getImagePatient={requestGetImagePatient}
+                getImageTutor={requestGetImageTutor}
                 createUser={requestCreateUser}
                 assignRole={requestAssignRole}
                 editPatientInfo={requestEditPatientInfo}

@@ -106,6 +106,8 @@ export function VUsersAdmin(props) {
                     user["role"] === 1 ? "Наблюдаемый" :
                         user["role"] === 2 ? "Исследователь" :
                             user["role"] === 3 ? "Тьютор" : "Без Роли"
+                let image = user["image"] ? "https://mobile.itkostroma.ru/images/" + user["image"] :
+                    profileStub;
                 view.push(
                     <InfoBlock onClick={
                         async () => {
@@ -121,7 +123,7 @@ export function VUsersAdmin(props) {
                         }
                     } ikey={user["id"]} text={user["login"]} addText={role}>
                         <div>
-                            <img style={{width: "100%"}} src={profileStub} alt={'profile'}/>
+                            <img style={{width: "100%"}} src={image} alt={'profile'}/>
                         </div>
                     </InfoBlock>
                 )
