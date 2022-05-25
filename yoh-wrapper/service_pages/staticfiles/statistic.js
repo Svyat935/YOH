@@ -9,7 +9,7 @@ class StatRecord {
 		this.count_clicks = 0;
 		this.count_missclicks = 0;
 		this.stat_func = function (stat_class) {
-			if (stat_class.current_level) {
+			if (stat_class.current_level !== null) {
 				stat_class.count_clicks++;
 			}
 		};

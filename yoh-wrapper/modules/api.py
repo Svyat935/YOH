@@ -106,6 +106,7 @@ def statistics_route():
     send_url = 'http://yoh-backend:8080/patient/games/statistics/send_statistic'
 
     data['details'] = json.dumps(data.get('details')) if data.get('details') else '{}'
+    data['additional_fields'] = json.dumps(data.get('additional_fields')) if data.get('additional_fields') else '{}'
     post(send_url, json=data, headers=headers)
 
     return make_response(json.dumps({'message': 'Success'}))
