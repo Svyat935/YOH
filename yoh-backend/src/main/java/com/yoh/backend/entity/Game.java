@@ -114,6 +114,10 @@ public class Game {
         this.image = image;
     }
 
+    public boolean equals(Game game)
+    {
+        return this.id == game.id;
+    }
 
 //    @OneToMany(mappedBy = "game")
 //    private List<GamePatient> gamePatientList;

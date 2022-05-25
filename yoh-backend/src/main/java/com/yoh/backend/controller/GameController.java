@@ -68,19 +68,23 @@ public class GameController {
         try{
             User user = this.userService.getUserById(this.userService.verifyToken(token));
             List<Game> gameList = this.gameService.getAllGamesFiltered(typeRegex, order);
-            ArrayList<UUID> ssdsd = new ArrayList<>();
-            if (patientID != null) {
-                this.gamePatientService.getAllGamesByPatient(this.patientService.getPatientById(UUID.fromString(patientID))).forEach(i -> ssdsd.add(i.getId()));
-//                gameList = gameList.stream().filter(i -> !patientGames.contains(i)).collect(Collectors.toList());
-            }
             JsonObject response = new JsonObject();
             if (!regex.equals("")){
-                gameList = gameList.stream().filter(i -> i.getName().toLowerCase().contains(regex.toLowerCase())
-                        && (!ssdsd.contains(i.getId())))
+                gameList = gameList.stream().filter(i -> i.getName().toLowerCase().contains(regex.toLowerCase()))
                         .collect(Collectors.toList());
             }
             gameList.forEach(i -> System.out.println(i.getId().toString()));
-
+            if (patientID != null) {
+                List<Game> patientGames = this.gamePatientService.getAllGamesByPatient(this.patientService.getPatientById(UUID.fromString(patientID)));
+//                gameList = gameList.stream().filter(i -> !patientGames.contains(i)).collect(Collectors.toList());
+                for (Game gamepat : patientGames){
+                    if (gameList.remove(gamepat)) {
+                        System.out.println("Game was cleared");
+                    }
+                    else System.out.println("ssdsd");
+                    System.out.println(gamepat.getId().toString());
+                }
+            }
             if (gameList.size() == 0) {
 //                JsonObject response = new JsonObject();
                 response.put("previous", false);
