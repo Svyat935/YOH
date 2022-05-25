@@ -337,14 +337,14 @@ public class PatientController {
     @PostMapping(path = "/games/statistics/game_start")
     public JSONResponse addGameStart(@RequestHeader("token") String token,
                                      @RequestHeader("game") String gameID,
-                                     @Valid @RequestBody JsonObject data) {
+                                     @Valid @RequestBody GameStartRequest data) {
         try {
             Patient patient = this.patientService.getPatientByUser(this.userService.getUserById(this.userService.verifyToken(token)));
             Game game = this.gameService.getGameById(UUID.fromString(gameID));
             GamePatient gamePatient = this.gamePatientService.getGamePatientByGameAndPatient(game, patient);
             if (gamePatient == null) throw new IllegalArgumentException("Sorry, but GamePatient was not found.");
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("M/d/yyyy, h:m:s a");
-            LocalDateTime dateStart = LocalDateTime.parse(data.get("date_start").toString(), formatter);
+            LocalDateTime dateStart = LocalDateTime.parse(data.getDate_start(), formatter);
 //            LocalDateTime dateStart = LocalDateTime.parse(data.get("date_start").toString());
 
 //            String detailsString;
@@ -353,7 +353,7 @@ public class PatientController {
 //            }
 //            else detailsString = null;
 
-            StartedGame startedGame = new StartedGame(gamePatient, dateStart, null, data.get("details").toString());
+            StartedGame startedGame = new StartedGame(gamePatient, dateStart, null, data.getDetails());
             this.startedGameService.saveStartedGame(startedGame);
 
             JsonObject response = new JsonObject();
@@ -367,6 +367,40 @@ public class PatientController {
             return new JSONResponse(401, exceptionResponse);
         }
     }
+
+//    @PostMapping(path = "/games/statistics/game_start")
+//    public JSONResponse addGameStart(@RequestHeader("token") String token,
+//                                     @RequestHeader("game") String gameID,
+//                                     @Valid @RequestBody JsonObject data) {
+//        try {
+//            Patient patient = this.patientService.getPatientByUser(this.userService.getUserById(this.userService.verifyToken(token)));
+//            Game game = this.gameService.getGameById(UUID.fromString(gameID));
+//            GamePatient gamePatient = this.gamePatientService.getGamePatientByGameAndPatient(game, patient);
+//            if (gamePatient == null) throw new IllegalArgumentException("Sorry, but GamePatient was not found.");
+//            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("M/d/yyyy, h:m:s a");
+//            LocalDateTime dateStart = LocalDateTime.parse(data.get("date_start").toString(), formatter);
+////            LocalDateTime dateStart = LocalDateTime.parse(data.get("date_start").toString());
+//
+////            String detailsString;
+////            if (data.getDetails() != null) {
+////                detailsString = data.getDetails().toString();
+////            }
+////            else detailsString = null;
+//
+//            StartedGame startedGame = new StartedGame(gamePatient, dateStart, null, data.get("details").toString());
+//            this.startedGameService.saveStartedGame(startedGame);
+//
+//            JsonObject response = new JsonObject();
+//            response.put("result", "OK");
+//            return new JSONResponse(200, response);
+//        }
+//        catch (Exception e){
+//            e.printStackTrace();
+//            JsonObject exceptionResponse = new JsonObject();
+//            exceptionResponse.put("message", e.getMessage());
+//            return new JSONResponse(401, exceptionResponse);
+//        }
+//    }
 
     @PostMapping(path = "/games/statistics/game_end")
     public JSONResponse addGameEnd(@RequestHeader("token") String token,
@@ -473,7 +507,7 @@ public class PatientController {
             GamePatient gamePatient = this.gamePatientService.getGamePatientByGameAndPatient(game, patient);
             StartedGame startedGame = this.startedGameService.getUnfinishedStartedGameByGamePatient(gamePatient);
             if (startedGame == null) throw new IllegalArgumentException("Sorry, but StartedGame was not found.");
-            startedGame.setDetails(data.get("details").toString());
+            startedGame.setDetails(data.get("additional_fields").toString());
 
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("M/d/yyyy, h:m:s a");
             LocalDateTime dateStart = LocalDateTime.parse(data.get("date_start").toString(), formatter);
