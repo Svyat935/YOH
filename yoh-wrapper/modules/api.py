@@ -61,6 +61,7 @@ def send_game_start_route():
     }
     send_url = 'http://yoh-backend:8080/patient/games/statistics/game_start'
 
+    data['details'] = json.dumps(data.get('details')) if data.get('details') else '{}'
     post(send_url, json=data, headers=headers)
 
     return make_response(json.dumps({'message': 'Success'}))
@@ -79,6 +80,7 @@ def send_game_end_route():
     }
     send_url = 'http://yoh-backend:8080/patient/games/statistics/game_end'
 
+    data['details'] = json.dumps(data.get('details')) if data.get('details') else '{}'
     post(send_url, json=data, headers=headers)
 
     return make_response(json.dumps({'message': 'Success'}))
@@ -103,6 +105,7 @@ def statistics_route():
     }
     send_url = 'http://yoh-backend:8080/patient/games/statistics/send_statistic'
 
+    data['details'] = json.dumps(data.get('details')) if data.get('details') else '{}'
     post(send_url, json=data, headers=headers)
 
     return make_response(json.dumps({'message': 'Success'}))
