@@ -1,5 +1,5 @@
 import React from "react";
-import {TutorNav} from "../../../../../components/navigate/Tutor/TutorNav";
+import {TutorNav} from "../../../../../components/navigate/NavPanel/Tutor/TutorNav";
 import {Back} from "../../../../../components/back/Back";
 import {VDash} from "../dashboard/VDash";
 import {Container, Col, Row} from "react-bootstrap";

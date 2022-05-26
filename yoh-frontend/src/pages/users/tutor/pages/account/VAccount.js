@@ -8,7 +8,7 @@ import {InfoBlockStatic} from "../../../../../components/infoBlockStatic/InfoBlo
 import "./AccountInfo.css";
 import Modal from "react-bootstrap/Modal";
 import {ButtonB} from "../../../../../components/buttons/ButtonB/ButtonB";
-import {TutorNav} from "../../../../../components/navigate/Tutor/TutorNav";
+import {TutorNav} from "../../../../../components/navigate/NavPanel/Tutor/TutorNav";
 
 export function VAccount(props) {
     // ChangePhoto - 0, ChangeInfo - 1;

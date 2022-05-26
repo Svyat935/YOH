@@ -1,5 +1,5 @@
 import React from "react";
-import {TutorNav} from "../../../../../components/navigate/Tutor/TutorNav";
+import {TutorNav} from "../../../../../components/navigate/NavPanel/Tutor/TutorNav";
 import {Container} from "react-bootstrap";
 import Row from "react-bootstrap/Row";
 import {Back} from "../../../../../components/back/Back";

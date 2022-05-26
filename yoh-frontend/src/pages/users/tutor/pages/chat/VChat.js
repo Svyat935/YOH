@@ -5,7 +5,7 @@ import {Back} from "../../../../../components/back/Back";
 import ImageStub from "../../../../../assets/news1.png";
 import {ChatContainerReceive} from "../../../../../components/chatContainer/chatContainerReceive/ChatContainerReceive";
 import {ButtonB} from "../../../../../components/buttons/ButtonB/ButtonB";
-import {TutorNav} from "../../../../../components/navigate/Tutor/TutorNav";
+import {TutorNav} from "../../../../../components/navigate/NavPanel/Tutor/TutorNav";
 import {UserContext} from "../../../../../context/userContext";
 
 export function VChat() {

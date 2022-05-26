@@ -1,4 +1,4 @@
-import {TutorNav} from "../../../../../components/navigate/Tutor/TutorNav";
+import {TutorNav} from "../../../../../components/navigate/NavPanel/Tutor/TutorNav";
 import Modal from "react-bootstrap/Modal";
 import {ButtonB} from "../../../../../components/buttons/ButtonB/ButtonB";
 import {Col, Container} from "react-bootstrap";

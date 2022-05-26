@@ -3,7 +3,7 @@ import {InfoBlock} from "../../../../../components/infoBlock/InfoBlock";
 import profileStub from "../../../../../assets/profileStub.jpg";
 import {ButtonB} from "../../../../../components/buttons/ButtonB/ButtonB";
 import {Back} from "../../../../../components/back/Back";
-import {AdminNav} from "../../../../../components/navigate/Admin/AdminNav";
+import {AdminNav} from "../../../../../components/navigate/NavPanel/Admin/AdminNav";
 import Modal from "react-bootstrap/Modal";
 import {Container} from "react-bootstrap";
 import Row from "react-bootstrap/Row";

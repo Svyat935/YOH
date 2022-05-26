@@ -7,7 +7,7 @@ import {ButtonA} from "../../../../../components/buttons/ButtonA/ButtonA";
 import {InfoBlockStatic} from "../../../../../components/infoBlockStatic/InfoBlockStatic";
 import "./AccountInfo.css";
 import {ProgressBar} from "../../../../../components/progressBar/ProgressBar";
-import {PatientNav} from "../../../../../components/navigate/Patient/PatientNav";
+import {PatientNav} from "../../../../../components/navigate/NavPanel/Patient/PatientNav";
 import Modal from "react-bootstrap/Modal";
 import {ButtonB} from "../../../../../components/buttons/ButtonB/ButtonB";
 import {InputPhone} from "../../../../../components/inputPhone/InputPhone";

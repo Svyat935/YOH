@@ -1,5 +1,5 @@
 import {Back} from "../../../../../components/back/Back";
-import {AdminNav} from "../../../../../components/navigate/Admin/AdminNav";
+import {AdminNav} from "../../../../../components/navigate/NavPanel/Admin/AdminNav";
 import {Container} from "react-bootstrap";
 import Col from "react-bootstrap/Col";
 import Row from "react-bootstrap/Row";

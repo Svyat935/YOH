@@ -2,7 +2,7 @@ import React, {useContext, useEffect, useState} from "react";
 import {Back} from "../../../../../components/back/Back";
 import {Container} from "react-bootstrap";
 import {UserContext} from "../../../../../context/userContext";
-import {TutorNav} from "../../../../../components/navigate/Tutor/TutorNav";
+import {TutorNav} from "../../../../../components/navigate/NavPanel/Tutor/TutorNav";
 
 export function VGame() {
     let context = useContext(UserContext);

@@ -3,7 +3,7 @@ import React from "react";
 import {Container} from "react-bootstrap";
 import Col from "react-bootstrap/Col";
 import Row from "react-bootstrap/Row";
-import {AdminNav} from "../../../../../components/navigate/Admin/AdminNav";
+import {AdminNav} from "../../../../../components/navigate/NavPanel/Admin/AdminNav";
 import {InfoBlock} from "../../../../../components/infoBlock/InfoBlock";
 import profileStub from "../../../../../assets/profileStub.jpg";
 import gameStub from "../../../../../assets/gameStub.jpg";

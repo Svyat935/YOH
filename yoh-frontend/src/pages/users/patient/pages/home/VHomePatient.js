@@ -8,7 +8,7 @@ import gameStub from "../../../../../assets/gameStub.jpg";
 import {FilterBlock} from "../../../../../components/filterBlock/FilterBlock";
 import {ButtonA} from "../../../../../components/buttons/ButtonA/ButtonA";
 import {SearchInput} from "../../../../../components/searchInput/SearchInput";
-import {PatientNav} from "../../../../../components/navigate/Patient/PatientNav";
+import {PatientNav} from "../../../../../components/navigate/NavPanel/Patient/PatientNav";
 import {useNavigate} from "react-router-dom";
 
 export function VHomePatient(props) {

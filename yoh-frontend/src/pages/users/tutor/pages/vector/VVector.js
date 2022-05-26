@@ -12,7 +12,7 @@ import {FilterBlock} from "../../../../../components/filterBlock/FilterBlock";
 import {ButtonA} from "../../../../../components/buttons/ButtonA/ButtonA";
 import {SearchInput} from "../../../../../components/searchInput/SearchInput";
 import {UserContext} from "../../../../../context/userContext";
-import {TutorNav} from "../../../../../components/navigate/Tutor/TutorNav";
+import {TutorNav} from "../../../../../components/navigate/NavPanel/Tutor/TutorNav";
 
 export function VVector(props) {
     const filterList = [
