@@ -22,6 +22,7 @@ import javax.servlet.MultipartConfigElement;
 import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 
@@ -60,7 +61,7 @@ public class BackendApplication {
                     null,
                     null,
                     null,
-                    null
+                    LocalDateTime.now()
             );
             try {
                 userService.createUser(user);
