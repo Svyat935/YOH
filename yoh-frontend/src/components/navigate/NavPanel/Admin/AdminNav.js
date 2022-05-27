@@ -6,6 +6,7 @@ export function AdminNav(props) {
         {"to": "/user/admin/", 'text': 'Домашняя страница'},
         {"to": "/user/admin/users", 'text': 'Пользователи'},
         {"to": "/user/admin/components", 'text': 'Компоненты'},
+        {"to": "/user/admin/organizations", 'text': 'Организации'},
         {"to": "/", 'text': 'Выйти', 'onClick': props.context ? props.context.logout : null},
     ];
     return <NavPanel links={links}/>
