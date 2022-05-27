@@ -1,4 +1,3 @@
-let Apex;
 Apex.grid = {
     padding: {
         right: 0,
@@ -137,8 +136,10 @@ var optionsBar = {
     }
 
 }
+
 var chartBar = new ApexCharts(document.querySelector('#bar'), optionsBar);
 chartBar.render();
+
 
 
 var answersBarParam = {
