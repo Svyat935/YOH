@@ -85,23 +85,22 @@ public class PatientRepository {
             Criteria criteria = session.createCriteria(Patient.class)
                     .add(Restrictions.eq("organization", organization));
             switch (order) {
-                case "1":
-                    criteria.addOrder(Order.asc("surname"));
-                case "-1":
-                    criteria.addOrder(Order.desc("surname"));
+                case "1" -> criteria.addOrder(Order.asc("surname"));
+                case "-1" -> criteria.addOrder(Order.desc("surname"));
+
 //              Фио
-                case "2":
+                case "2" -> {
                     criteria.addOrder(Order.asc("surname"));
                     criteria.addOrder(Order.asc("name"));
                     criteria.addOrder(Order.asc("secondName"));
-                case "-2":
+                }
+                case "-2" -> {
                     criteria.addOrder(Order.desc("surname"));
                     criteria.addOrder(Order.desc("name"));
                     criteria.addOrder(Order.desc("secondName"));
-                case "3":
-                    criteria.addOrder(Order.asc("birthDate"));
-                case "-3":
-                    criteria.addOrder(Order.desc("birthDate"));
+                }
+                case "3" -> criteria.addOrder(Order.asc("birthDate"));
+                case "-3" -> criteria.addOrder(Order.desc("birthDate"));
             }
             List<Patient> patientsList = criteria.list();
             return patientsList;

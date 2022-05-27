@@ -81,18 +81,12 @@ public class GameRepository {
         try{
             Criteria criteria = session.createCriteria(Game.class);
             switch (order) {
-                case "1":
-                    criteria.addOrder(Order.asc("name"));
-                case "-1":
-                    criteria.addOrder(Order.desc("name"));
-                case "2":
-                    criteria.addOrder(Order.asc("dateAdding"));
-                case "-2":
-                    criteria.addOrder(Order.desc("dateAdding"));
-                case "3":
-                    criteria.addOrder(Order.asc("type"));
-                case "-3":
-                    criteria.addOrder(Order.desc("type"));
+                case "1" -> criteria.addOrder(Order.asc("name"));
+                case "-1" -> criteria.addOrder(Order.desc("name"));
+                case "2" -> criteria.addOrder(Order.asc("dateAdding"));
+                case "-2" -> criteria.addOrder(Order.desc("dateAdding"));
+                case "3" -> criteria.addOrder(Order.asc("type"));
+                case "-3" -> criteria.addOrder(Order.desc("type"));
             }
             List<Game> games = criteria.list();
             return games;

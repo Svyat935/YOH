@@ -403,11 +403,41 @@ public class AdminController {
     }
 
     @GetMapping(path = "/organizations/all")
-    public JSONResponse getOrganizations(@RequestHeader("token") String token) {
+    public JSONResponse getOrganizations(@RequestHeader("token") String token,
+                                         @RequestParam(value = "limit", required = true) Integer limit,
+                                         @RequestParam(value = "start", required = true) Integer start,
+                                         @RequestParam(value = "regex", required = false, defaultValue = "") String regex,
+                                         @RequestParam(value = "order", required = false, defaultValue = "1") String order) {
         try {
             Admin admin = this.adminService.getAdminByUser(this.userService.getUserById(this.userService.verifyToken(token)));
+            List<Organization> organizationList = this.organizationService.getAllOrganizationsFilteredOrdered(regex, order);
             JsonObject response = new JsonObject();
-            response.put("organizationList", this.organizationService.getAllOrganizations());
+
+            //Pagination
+            List<Organization> paginatedOrganizationList = new ArrayList<>();
+            if (start >= organizationList.size())
+                throw new IllegalArgumentException(
+                        String.format("No element at that index (%s)", start)
+                );
+            int lastIndex;
+            if (start + limit > organizationList.size()){
+                lastIndex = organizationList.size();
+                response.put("next", false);
+            }
+            else {
+                lastIndex = start + limit;
+                response.put("next", true);
+            }
+            if (start == 0) response.put("previous", false);
+            else response.put("previous", true);
+
+            for (int i = start; i < lastIndex; i++){
+                paginatedOrganizationList.add(organizationList.get(i));
+            }
+            response.put("count", paginatedOrganizationList.size());
+
+//            response.put("userList", this.userService.getAllUsers());
+            response.put("results", paginatedOrganizationList);
             return new JSONResponse(200, response);
         }
         catch (IllegalArgumentException e){
@@ -423,7 +453,7 @@ public class AdminController {
         try {
             Admin admin = this.adminService.getAdminByUser(this.userService.getUserById(this.userService.verifyToken(token)));
             Organization organization = new Organization(organizationForAdding.getName(), organizationForAdding.getAddress(), organizationForAdding.getPhone(),
-                    organizationForAdding.getEmail(), organizationForAdding.getWebsite());
+                    organizationForAdding.getEmail(), organizationForAdding.getWebsite(), LocalDateTime.now());
             this.organizationService.createOrganization(organization);
             JsonObject response = new JsonObject();
             response.put("message", "Organization was created");
