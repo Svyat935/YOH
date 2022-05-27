@@ -109,7 +109,9 @@ export function CUsersAdmin() {
     }
 
     const requestGetAllOrganizations = async () => {
-        return await fetch("/admins/organizations/all", {
+        return await fetch("/admins/organizations/all?" +
+            "start=" + encodeURIComponent(0) + "&" +
+            "limit=" + encodeURIComponent(100), {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -184,7 +186,7 @@ export function CUsersAdmin() {
             }
 
             if (responseOrganizations !== null){
-                responseOrganizations = responseOrganizations["jsonObject"]["organizationList"];
+                responseOrganizations = responseOrganizations["jsonObject"]["results"];
                 if (responseUsers !== undefined) setOrganizations(responseOrganizations);
             }
 
