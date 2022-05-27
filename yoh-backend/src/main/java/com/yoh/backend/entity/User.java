@@ -77,7 +77,7 @@ public class User {
         this.role = role;
     }
     
-    @Column(name = "dateRegistration", nullable = false)
+    @Column(name = "dateRegistration", nullable = true)
     private LocalDateTime dateRegistration;
 
     public LocalDateTime getDateRegistration() {
