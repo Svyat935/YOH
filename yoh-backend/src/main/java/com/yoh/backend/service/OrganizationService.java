@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 public class OrganizationService {
@@ -25,6 +26,15 @@ public class OrganizationService {
 
     public List<Organization> getAllOrganizations() {
         return organizationRepository.getAllOrganizations();
+    }
+
+    public List<Organization> getAllOrganizationsFilteredOrdered(String regex, String order) {
+        if (!regex.equals(""))
+            return organizationRepository.getAllOrganizationsOrdered(order)
+                    .stream()
+                    .filter(i -> i.getName().contains(regex))
+                    .collect(Collectors.toList());
+        return organizationRepository.getAllOrganizationsOrdered(order);
     }
 
     public void updateOrganization(Organization organization) throws IllegalArgumentException{

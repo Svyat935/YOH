@@ -1,6 +1,7 @@
 package com.yoh.backend.entity;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
@@ -8,12 +9,13 @@ import java.util.UUID;
 public class Organization {
     public Organization() {}
 
-    public Organization(String name, String address, String phone, String email, String website) {
+    public Organization(String name, String address, String phone, String email, String website, LocalDateTime dateRegistration) {
         this.name = name;
         this.address = address;
         this.phone = phone;
         this.email = email;
         this.website = website;
+        this.dateRegistration = dateRegistration;
     }
 
     @Id
@@ -86,6 +88,17 @@ public class Organization {
 
     public void setWebsite(String website){
         this.website = website;
+    }
+
+    @Column(name = "dateRegistration", nullable = false)
+    private LocalDateTime dateRegistration;
+
+    public LocalDateTime getDateRegistration() {
+        return this.dateRegistration;
+    }
+
+    public void setDateRegistration(LocalDateTime dateRegistration) {
+        this.dateRegistration = dateRegistration;
     }
 
 }

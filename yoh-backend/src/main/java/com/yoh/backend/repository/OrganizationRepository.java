@@ -6,6 +6,7 @@ import com.yoh.backend.entity.User;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -77,11 +78,28 @@ public class OrganizationRepository {
     }
 
     public List<Organization> getAllOrganizations() {
-        //TODO подогнать под общий вид
         Session session = sessionFactory.openSession();
         try {
             Criteria criteria = session.createCriteria(Organization.class);
             List<Organization> organizations = criteria.list();
+            return organizations;
+        }
+        finally {
+            session.close();
+        }
+    }
+
+    public List<Organization> getAllOrganizationsOrdered(String order) {
+        Session session = sessionFactory.openSession();
+        try {
+            Criteria criteria = session.createCriteria(Organization.class);
+            List<Organization> organizations = criteria.list();
+            switch (order) {
+                case "1" -> criteria.addOrder(Order.asc("name"));
+                case "-1" -> criteria.addOrder(Order.desc("name"));
+                case "2" -> criteria.addOrder(Order.asc("dateRegistration"));
+                case "-2" -> criteria.addOrder(Order.desc("dateRegistration"));
+            }
             return organizations;
         }
         finally {

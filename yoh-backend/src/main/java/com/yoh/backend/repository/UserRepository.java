@@ -43,25 +43,11 @@ public class UserRepository {
             if (role != -1)
                 criteria.add(Restrictions.eq("role", role));
 
-//            switch (order) {
-//                case "1":
-//                    criteria.addOrder(Order.asc());
-//                case "-1":
-//                    criteria.addOrder(Order.desc());
-//                case "2":
-//                    criteria.addOrder(Order.asc());
-//                case "-2":
-//                    criteria.addOrder(Order.desc());
-//            }
             switch (order) {
-                case "1":
-                    criteria.addOrder(Order.asc("login"));
-                case "-1":
-                    criteria.addOrder(Order.desc("login"));
-                case "2":
-                    criteria.addOrder(Order.asc("dateRegistration"));
-                case "-2":
-                    criteria.addOrder(Order.desc("dateRegistration"));
+                case "1" -> criteria.addOrder(Order.asc("login"));
+                case "-1" -> criteria.addOrder(Order.desc("login"));
+                case "2" -> criteria.addOrder(Order.asc("dateRegistration"));
+                case "-2" -> criteria.addOrder(Order.desc("dateRegistration"));
             }
             List<User> users = criteria.list();
             return users;
