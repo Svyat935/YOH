@@ -90,7 +90,7 @@ public class Organization {
         this.website = website;
     }
 
-    @Column(name = "dateRegistration", nullable = false)
+    @Column(name = "dateRegistration", nullable = true)
     private LocalDateTime dateRegistration;
 
     public LocalDateTime getDateRegistration() {
