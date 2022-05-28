@@ -1,8 +1,8 @@
 import json
-
 from flask import Blueprint, make_response, render_template, request, session, abort, send_from_directory
 from jinja2.exceptions import TemplateNotFound
 from requests import get
+from .service_page import render_template_wo_statistics
 
 game_bp = Blueprint('Game', __name__, template_folder='../games', static_folder='../games', url_prefix='/games')
 
@@ -21,13 +21,20 @@ def game_route(game):
         abort(401)
 
     session['user'] = request.args.get('token')
+    template = None
 
     try:
-        resp = make_response(render_template(f'{game}/index.html'))
-        session['current_game'] = game
-
+        template = render_template(f'{game}/index.html')
     except TemplateNotFound:
         abort(404)
+
+    session['current_game'] = game
+
+    use_statistics = request.args.get('use_statistics')
+    if str(use_statistics).lower() == 'false':
+        template = render_template_wo_statistics(template)
+
+    resp = make_response(template)
 
     headers = {
         'Content-Type': 'application/json',

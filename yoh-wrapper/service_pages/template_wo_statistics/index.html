@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        html {
+            overflow: auto;
+        }
+
+        html,
+        body,
+        div,
+        iframe {
+            margin: 0px;
+            padding: 0px;
+            height: 100%;
+            border: none;
+        }
+
+        iframe {
+            display: block;
+            width: 100%;
+            border: none;
+            overflow-y: auto;
+            overflow-x: hidden;
+        }
+    </style>
+</head>
+<body>
+    <iframe srcdoc="{{ document }}"
+            width="100%"
+            height="100%"></iframe>
+</body>
+<script>
+    var eventSource = new EventSource('/event/stream?channel=endgame');
+    eventSource.addEventListener('message', event => {
+        if ('endGame' in window) {
+			endGame.postMessage('it is end game');
+		}
+        console.log('Отправили сообщение мобильному приложению');
+    });
+</script>
+</html>

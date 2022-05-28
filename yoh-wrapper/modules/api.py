@@ -4,11 +4,12 @@ import psycopg2.extras
 import uuid
 from datetime import datetime, date
 from flask import Blueprint, make_response, request, session, abort
-from flask_cors import CORS, cross_origin
+from flask_cors import CORS
 from werkzeug.exceptions import HTTPException
 from requests import post
-from itertools import zip_longest
+from .event import event_post
 from .templates import GET_ATTEMPT_PAGINATION, GET_ALL_TIME_WIDGET, CLICKS_WIDGET, ANSWERS_WIDGET, TIMELINE_WIDGET
+
 
 api_bp = Blueprint('API', __name__, url_prefix='/api')
 CORS(api_bp, resources={r"/api/*": {"origins": "*"}})
@@ -83,6 +84,8 @@ def send_game_end_route():
 
     data['details'] = json.dumps(data.get('details')) if data.get('details') else '{}'
     post(send_url, json=data, headers=headers)
+
+    event_post('endgame', session['user'], 'It is end game!')
 
     return make_response(json.dumps({'message': 'Success'}))
 
@@ -202,3 +205,9 @@ def timeline_widget_route():
             result = cursor.fetchall()
 
     return make_response(json.dumps(result, default=json_serial))
+
+
+@api_bp.route('test_post')
+def post_route():
+    event_post('endgame', session['user'], 'It is end game!')
+    return make_response('', 200)
