@@ -153,7 +153,8 @@ def all_time_widget_route():
             cursor.execute(GET_ALL_TIME_WIDGET, {'sg_id': parameters['sg_id']})
             result = cursor.fetchone()
 
-    result = format_response_json(result, parameters.get('source'), )
+    iterated_result_fields = ['level_names', 'spend_time']
+    result = format_response_json(result, parameters.get('source'), iterated_result_fields)
 
     return make_response(json.dumps(result, default=json_serial))
 
@@ -168,7 +169,8 @@ def clicks_widget_route():
             cursor.execute(CLICKS_WIDGET, {'sg_id': parameters['sg_id']})
             result = cursor.fetchone()
 
-    result = format_response_json(result, parameters.get('source'))
+    iterated_result_fields = ['level_names', 'clicks', 'missclicks']
+    result = format_response_json(result, parameters.get('source'), iterated_result_fields)
 
     return make_response(json.dumps(result, default=json_serial))
 
@@ -183,7 +185,8 @@ def answers_widget_route():
             cursor.execute(ANSWERS_WIDGET, {'sg_id': parameters['sg_id']})
             result = cursor.fetchone()
 
-    result = format_response_json(result, parameters.get('source'))
+    iterated_result_fields = ['level_names', 'correct', 'incorrect']
+    result = format_response_json(result, parameters.get('source'), iterated_result_fields)
 
     return make_response(json.dumps(result, default=json_serial))
 
