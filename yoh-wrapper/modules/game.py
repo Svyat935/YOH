@@ -23,6 +23,11 @@ def game_route(game):
     session['user'] = request.args.get('token')
     template = None
 
+    use_statistics = request.args.get('use_statistics')
+    if str(use_statistics).lower() == 'false':
+        url = f'/games/{game}/?token={request.args["token"]}'
+        return make_response(render_template_wo_statistics(url))
+
     try:
         template = render_template(f'{game}/index.html')
     except TemplateNotFound:
@@ -30,19 +35,15 @@ def game_route(game):
 
     session['current_game'] = game
 
-    use_statistics = request.args.get('use_statistics')
-    if str(use_statistics).lower() == 'false':
-        template = render_template_wo_statistics(template)
-
     resp = make_response(template)
 
-    headers = {
-        'Content-Type': 'application/json',
-        'token': session['user'],
-        'game': session['current_game']
-    }
-    send_url = 'http://yoh-backend:8080/patient/games/statistics/additional_fields'
-    result = get(send_url, headers=headers).json()
-    session['additional_fields'] = json.dumps(result.get('jsonObject', {}).get('result'))
+    # headers = {
+    #     'Content-Type': 'application/json',
+    #     'token': session['user'],
+    #     'game': session['current_game']
+    # }
+    # send_url = 'http://yoh-backend:8080/patient/games/statistics/additional_fields'
+    # result = get(send_url, headers=headers).json()
+    # session['additional_fields'] = json.dumps(result.get('jsonObject', {}).get('result'))
 
     return resp
