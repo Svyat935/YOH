@@ -136,7 +136,7 @@ def format_response_json(result, source, fields):
     if source == 'mobile':
         result = {
             'format': fields,
-            'values': list(zip_longest(*[result[field] for field in fields])),
+            'values': [{key: result[key][i] for key in fields} for i in range(len(result[fields[0]]))],
             'other': {key: result[key] for key in (set(result.keys()) - set(fields))}
         }
 
