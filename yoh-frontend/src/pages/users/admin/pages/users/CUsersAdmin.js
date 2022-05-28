@@ -59,6 +59,22 @@ export function CUsersAdmin() {
         });
     }
 
+    const requestUser = async (specRegex) => {
+        return await fetch("/admins/users/all?" +
+            "regex=" + encodeURIComponent(specRegex) + "&" +
+            "start=" + encodeURIComponent(0) + "&" +
+            "limit=" + encodeURIComponent(10), {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'token': context.token
+            },
+        }).then((response) => {
+            if (response.status === 200) return response.json();
+            else return null;
+        });
+    }
+
     const requestCreateUser = async (login, email, password) => {
         return await fetch("/users/registration", {
             method: 'POST',
@@ -75,7 +91,7 @@ export function CUsersAdmin() {
     }
 
     const requestChangePassword = async (user_id, password) => {
-        return await fetch("/admins/", {
+        return await fetch("/admins/user/changePassword", {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -83,7 +99,7 @@ export function CUsersAdmin() {
             },
             body: JSON.stringify({
                 password: password,
-                user: user_id
+                user_id: user_id
             })
         }).then((response) => {
             if (response.status === 200) return response.json();
@@ -207,6 +223,8 @@ export function CUsersAdmin() {
                 editPatientInfo={requestEditPatientInfo}
                 editTutorInfo={requestEditTutorInfo}
                 getInfoUser={requestDetailUserInfo}
+                getUser={requestUser}
+                changePassword={requestChangePassword}
                 setRegex={setRegex}
                 setRole={setRole}
                 setStart={setStart}

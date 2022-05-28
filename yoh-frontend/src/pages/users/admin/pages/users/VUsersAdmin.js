@@ -15,6 +15,7 @@ import {InputGender} from "../../../../../components/inputGender/InputGender";
 import {InputPhone} from "../../../../../components/inputPhone/InputPhone";
 import {InputBirthday} from "../../../../../components/inputBirthday/InputBirthday";
 import {InputOrganization} from "../../../../../components/InputOrganization/InputOrganization";
+import {SearchFrame} from "../../../../../frame/SearchFrame/SearchFrame";
 
 export function VUsersAdmin(props) {
     const filterList = [
@@ -63,9 +64,8 @@ export function VUsersAdmin(props) {
     const [buttonStatus, setButtonStatus] = useState(0);
     //Note: FilterStatus is FilterList value.
     const [filterStatus, setFilterStatus] = useState(0);
-
-    const [userForRemoving, setRemovingUser] = useState(null);
-    const [userForChanging, setChangingUser] = useState(null);
+    const [password, setPassword] = useState(null);
+    const [userForChanging, setChangingUser] = useState({});
     const [userInfo, setUserInfo] = useState({});
     const [currentUserLogin, setCurrentUserLogin] = useState(null);
     const [role, setRole] = useState(null);
@@ -77,9 +77,8 @@ export function VUsersAdmin(props) {
         setRole(null);
         setCurrentUserLogin(null);
         setUserInfo({});
-        setChangingUser(null);
-        setRemovingUser(null);
-        setButtonStatus(0);
+        setChangingUser({});
+        setPassword(null);
     }
 
     const createBasicViewUsers = () => {
@@ -87,20 +86,6 @@ export function VUsersAdmin(props) {
             view = [];
 
         if (users.length > 0) {
-            if (filterStatus === 1) {
-                users = users.sort((a, b) => {
-                    if (a["login"] > b["login"]) return 1;
-                    else if (a["login"] < b["login"]) return -1;
-                    else return 0;
-                });
-            } else if (filterStatus === 2) {
-                users = users.sort((a, b) => {
-                    if (a["dateRegistration"] > b["dateRegistration"]) return 1;
-                    else if (a["dateRegistration"] < b["dateRegistration"]) return -1;
-                    else return 0;
-                })
-            }
-
             users.forEach((user) => {
                 let role = user["role"] === 0 ? "Администратор" :
                     user["role"] === 1 ? "Наблюдаемый" :
@@ -145,28 +130,26 @@ export function VUsersAdmin(props) {
         return view;
     }
 
-    const createUserPasswordView = () => {
-        return (
-            <div style={
-                {
-                    display: "flex",
-                    flexDirection: "column",
-                    padding: "0 10px"
-                }
-            }>
-                <label>Пароль: </label>
-                <input id={"password"} type={"password"} style={
-                    {borderRadius: 40, border: "none", padding: "5px 15px", marginBottom: 15}
-                } required/>
-                <p id={"password-validate"} style={{height: "5px", marginBottom: 0, color: "#800000"}}/>
-                <label>Подтвердить пароль: </label>
-                <input id={"confirmPassword"} type={"password"} style={
-                    {borderRadius: 40, border: "none", padding: "5px 15px", marginBottom: 15}
-                } required/>
-                <p id={"confirmPassword-validate"} style={{height: "5px", marginBottom: 0, color: "#800000"}}/>
-            </div>
-        )
-    }
+    const createUserPasswordView = (
+        <div style={
+            {
+                display: "flex",
+                flexDirection: "column",
+                padding: "0 10px"
+            }
+        }>
+            <label>Пароль: </label>
+            <input id={"password"} type={"password"} style={
+                {borderRadius: 40, border: "none", padding: "5px 15px", marginBottom: 15}
+            } required/>
+            <p id={"password-validate"} style={{height: "5px", marginBottom: 0, color: "#800000"}}/>
+            <label>Подтвердить пароль: </label>
+            <input id={"confirmPassword"} type={"password"} style={
+                {borderRadius: 40, border: "none", padding: "5px 15px", marginBottom: 15}
+            } required/>
+            <p id={"confirmPassword-validate"} style={{height: "5px", marginBottom: 0, color: "#800000"}}/>
+        </div>
+    )
 
     const changeUserPassword = () => {
         let fPassword = document.getElementById("password"),
@@ -191,8 +174,9 @@ export function VUsersAdmin(props) {
             validStatus = false;
         }
 
-        if (validStatus){
-            //TODO Add route
+        if (validStatus) {
+            setPassword(fPassword.value);
+            setButtonStatus(2);
         }
     }
 
@@ -384,231 +368,209 @@ export function VUsersAdmin(props) {
         }
     }
 
-    const chooseChangeAction = () => {
-        return (
-            <div style={
-                {
-                    display: "flex",
-                    flexDirection: "column",
-                    alignItems: "center"
+    const chooseChangeAction = (
+        <div style={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center"
+        }}>
+            <h3>Выберите действие: </h3>
+            {
+                userForChanging["role"] === 4 ? <ButtonB width={"70%"} text={"Изменить роль"} onClick={
+                    () => {setButtonStatus(4)}
                 }
-            }>
-                <h3>Выберите действие: </h3>
-                <ButtonB width={"70%"} text={"Изменить роль"} onClick={
+                /> : null
+            }
+            {
+                userForChanging["role"] !== 4 ? <ButtonB width={"70%"} text={"Изменить данные"} onClick={
                     () => {
-                        setButtonStatus(4);
-                    }
-                }/>
-                {
-                    userForChanging["role"] !== 4 ?
-                    <ButtonB width={"70%"} text={"Изменить данные"} onClick={
-                        () => {
-                            setRole(userForChanging["role"]);
-                            setButtonStatus(5);
-                        }
-                    }/> : null
-                }
-                <ButtonB width={"70%"} text={"Изменить пароль"} onClick={() => {
-                    setButtonStatus(1);
-                }}/>
-            </div>
-        )
-    }
-
-    const changingRoleView = () => {
-        return (
-            <div style={
-                {
-                    display: "flex",
-                    flexDirection: "column",
-                    alignItems: "center"
-                }
-            }>
-                <h3>Выберите роль: </h3>
-                <ButtonB text={"Пациент"} onClick={
-                    async () => {
-                        let id = null;
-                        if (currentUserLogin !== null) {
-                            let user = props.users.filter(
-                                (user_) => user_.login === currentUserLogin
-                            )[0];
-                            id = user["id"];
-                        } else {
-                            id = userForChanging["id"];
-                        }
-
-                        await props.assignRole(1, id);
-                        props.refresh();
-                        setRole(1);
+                        setRole(userForChanging["role"]);
                         setButtonStatus(5);
                     }
-                }/>
-                <ButtonB text={"Тьютор"} onClick={
-                    async () => {
-                        let id = null;
-                        if (currentUserLogin !== null) {
-                            let user = props.users.filter(
-                                (user_) => user_.login === currentUserLogin
-                            )[0];
-                            id = user["id"];
-                        } else {
-                            id = userForChanging["id"];
-                        }
+                }/> : null
+            }
+            <ButtonB width={"70%"} text={"Изменить пароль"} onClick={() => {setButtonStatus(1);}}/>
+        </div>
+    )
 
-                        await props.assignRole(3, id);
-                        props.refresh();
-                        setRole(3);
-                        setButtonStatus(5);
+    const changingRoleView = (
+        <div style={
+            {
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center"
+            }
+        }>
+            <h3>Выберите роль: </h3>
+            <ButtonB text={"Пациент"} onClick={
+                async () => {
+                    let id = null;
+                    if (currentUserLogin !== null) {
+                        let users = await props.getUser(currentUserLogin);
+                        users = users['jsonObject']['results'];
+                        id = users[0]["id"];
+                    } else {
+                        id = userForChanging["id"];
                     }
-                }/>
-                {/*<ButtonB text={"Исследователь"} onClick={*/}
-                {/*    async () => {*/}
-                {/*        await props.assignRole(2, userForChanging["id"]);*/}
-                {/*        setRole(2);*/}
-                {/*        setButtonStatus(5);*/}
-                {/*    }*/}
-                {/*}/>*/}
-            </div>
-        )
-    }
 
-    const createUserView = () => {
-        return (
-            <div style={
-                {
-                    display: "flex",
-                    flexDirection: "column",
-                    padding: "0 10px"
+                    await props.assignRole(1, id);
+                    props.refresh();
+                    setRole(1);
+                    setButtonStatus(5);
                 }
-            }>
-                <label>Логин: </label>
-                <input id={"login"} type={"text"} style={
-                    {borderRadius: 40, border: "none", padding: "5px 15px", marginBottom: 10}
-                } required/>
-                <p id={"login-validate"} style={{height: "5px", marginBottom: 0, color: "#800000"}}/>
-                <label>Электронная почта: </label>
-                <input id={"email"} type={"email"} style={
-                    {borderRadius: 40, border: "none", padding: "5px 15px", marginBottom: 10}
-                } required/>
-                <p id={"email-validate"} style={{height: "5px", marginBottom: 0, color: "#800000"}}/>
-                <label>Пароль: </label>
-                <input id={"password"} type={"password"} style={
-                    {borderRadius: 40, border: "none", padding: "5px 15px", marginBottom: 15}
-                } required/>
-                <p id={"password-validate"} style={{height: "5px", marginBottom: 0, color: "#800000"}}/>
-                <label>Подтвердить пароль: </label>
-                <input id={"confirmPassword"} type={"password"} style={
-                    {borderRadius: 40, border: "none", padding: "5px 15px", marginBottom: 15}
-                } required/>
-                <p id={"confirmPassword-validate"}
-                   style={{height: "5px", marginBottom: 0, color: "#800000"}}/>
-            </div>
-        )
-    }
+            }/>
+            <ButtonB text={"Тьютор"} onClick={
+                async () => {
+                    let id = null;
+                    if (currentUserLogin !== null) {
+                        let users = await props.getUser(currentUserLogin);
+                        users = users['jsonObject']['results'];
+                        id = users[0]["id"];
+                    } else {
+                        id = userForChanging["id"];
+                    }
 
-    const fillPatientInfoView = () => {
-        return (
-            <div style={
-                {
-                    display: "flex",
-                    flexDirection: "column",
-                    padding: "0 10px"
+                    await props.assignRole(3, id);
+                    props.refresh();
+                    setRole(3);
+                    setButtonStatus(5);
                 }
-            }>
-                <label>Имя: </label>
-                <input id={"name"} type={"text"} style={
-                    {borderRadius: 40, border: "none", padding: "5px 15px", marginBottom: 10}
-                } required/>
-                <p id={"name-before"} style={{margin: "5px 0", textDecoration: "underline"}}>
-                    Имя: {userInfo["name"]}
-                </p>
-                <label>Фамилия: </label>
-                <input id={"surname"} type={"text"} style={
-                    {borderRadius: 40, border: "none", padding: "5px 15px", marginBottom: 10}
-                } required/>
-                <p id={"surname-before"} style={{margin: "5px 0", textDecoration: "underline"}}>
-                    Фамилия: {userInfo["surname"]}
-                </p>
-                <label>Отчество: </label>
-                <input id={"secondName"} type={"text"} style={
-                    {borderRadius: 40, border: "none", padding: "5px 15px", marginBottom: 10}
-                } required/>
-                <p id={"secondName-before"} style={{margin: "5px 0", textDecoration: "underline"}}>
-                    Отчество: {userInfo["secondName"]}
-                </p>
-                <label>День рождения: </label>
-                <InputBirthday/>
-                <p id={"birthday-before"} style={{margin: "5px 0", textDecoration: "underline"}}>
-                    День рождения: {userInfo["birthDate"] ? userInfo["birthDate"].slice(0, 10) : null}
-                </p>
-                <label>Пол: </label>
-                <InputGender/>
-                <p id={"inputGender-before"} style={{margin: "5px 0", textDecoration: "underline"}}>
-                    Пол: {userInfo["gender"]}
-                </p>
-                <label>Телефон: </label>
-                <InputPhone id={"phone"}/>
-                <p id={"inputPhone-before"} style={{margin: "5px 0", textDecoration: "underline"}}>
-                    Телефон: {userInfo["numberPhone"]}
-                </p>
-                <label>Адрес: </label>
-                <input id={"address"} type={"text"} style={
-                    {borderRadius: 40, border: "none", padding: "5px 15px", marginBottom: 10}
-                }/>
-                <p id={"address-before"} style={{margin: "5px 0", textDecoration: "underline"}}>
-                    Адрес: {userInfo["address"]}
-                </p>
-                <label>Организация: </label>
-                <InputOrganization organizations={props.organizations}/>
-                <p id={"inputOrganization-before"} style={{margin: "5px 0", textDecoration: "underline"}}>
-                    Организация: {userInfo["organizationString"]}
-                </p>
-            </div>
-        )
-    }
+            }/>
+        </div>
+    )
 
-    const fillTutorInfoView = () => {
-        return (
-            <div style={
-                {
-                    display: "flex",
-                    flexDirection: "column",
-                    padding: "0 10px"
-                }
-            }>
-                <label>Имя: </label>
-                <input id={"name"} type={"text"} style={
-                    {borderRadius: 40, border: "none", padding: "5px 15px", marginBottom: 10}
-                } required/>
-                <p id={"name-before"} style={{margin: "5px 0", textDecoration: "underline"}}>
-                    Имя: {userInfo["name"]}
-                </p>
-                <label>Фамилия: </label>
-                <input id={"surname"} type={"text"} style={
-                    {borderRadius: 40, border: "none", padding: "5px 15px", marginBottom: 10}
-                } required/>
-                <p id={"surname-before"} style={{margin: "5px 0", textDecoration: "underline"}}>
-                    Фамилия: {userInfo["surname"]}
-                </p>
-                <label>Отчество: </label>
-                <input id={"secondName"} type={"text"} style={
-                    {borderRadius: 40, border: "none", padding: "5px 15px", marginBottom: 10}
-                } required/>
-                <p id={"secondName-before"} style={{margin: "5px 0", textDecoration: "underline"}}>
-                    Отчество: {userInfo["secondName"]}
-                </p>
-                <label>Организация: </label>
-                <InputOrganization organizations={props.organizations}/>
-                <p id={"inputOrganization-before"} style={{margin: "5px 0", textDecoration: "underline"}}>
-                    Организация: {userInfo["organizationString"]}
-                </p>
-            </div>
-        )
-    }
+
+    const createUserView = (
+        <div style={
+            {
+                display: "flex",
+                flexDirection: "column",
+                padding: "0 10px"
+            }
+        }>
+            <label>Логин: </label>
+            <input id={"login"} type={"text"} style={
+                {borderRadius: 40, border: "none", padding: "5px 15px", marginBottom: 10}
+            } required/>
+            <p id={"login-validate"} style={{height: "5px", marginBottom: 0, color: "#800000"}}/>
+            <label>Электронная почта: </label>
+            <input id={"email"} type={"email"} style={
+                {borderRadius: 40, border: "none", padding: "5px 15px", marginBottom: 10}
+            } required/>
+            <p id={"email-validate"} style={{height: "5px", marginBottom: 0, color: "#800000"}}/>
+            <label>Пароль: </label>
+            <input id={"password"} type={"password"} style={
+                {borderRadius: 40, border: "none", padding: "5px 15px", marginBottom: 15}
+            } required/>
+            <p id={"password-validate"} style={{height: "5px", marginBottom: 0, color: "#800000"}}/>
+            <label>Подтвердить пароль: </label>
+            <input id={"confirmPassword"} type={"password"} style={
+                {borderRadius: 40, border: "none", padding: "5px 15px", marginBottom: 15}
+            } required/>
+            <p id={"confirmPassword-validate"}
+               style={{height: "5px", marginBottom: 0, color: "#800000"}}/>
+        </div>
+    )
+
+    const fillPatientInfoView = (
+        <div style={
+            {
+                display: "flex",
+                flexDirection: "column",
+                padding: "0 10px"
+            }
+        }>
+            <label>Имя: </label>
+            <input id={"name"} type={"text"} style={
+                {borderRadius: 40, border: "none", padding: "5px 15px", marginBottom: 10}
+            } required/>
+            <p id={"name-before"} style={{margin: "5px 0", textDecoration: "underline"}}>
+                Имя: {userInfo["name"]}
+            </p>
+            <label>Фамилия: </label>
+            <input id={"surname"} type={"text"} style={
+                {borderRadius: 40, border: "none", padding: "5px 15px", marginBottom: 10}
+            } required/>
+            <p id={"surname-before"} style={{margin: "5px 0", textDecoration: "underline"}}>
+                Фамилия: {userInfo["surname"]}
+            </p>
+            <label>Отчество: </label>
+            <input id={"secondName"} type={"text"} style={
+                {borderRadius: 40, border: "none", padding: "5px 15px", marginBottom: 10}
+            } required/>
+            <p id={"secondName-before"} style={{margin: "5px 0", textDecoration: "underline"}}>
+                Отчество: {userInfo["secondName"]}
+            </p>
+            <label>День рождения: </label>
+            <InputBirthday/>
+            <p id={"birthday-before"} style={{margin: "5px 0", textDecoration: "underline"}}>
+                День рождения: {userInfo["birthDate"] ? userInfo["birthDate"].slice(0, 10) : null}
+            </p>
+            <label>Пол: </label>
+            <InputGender/>
+            <p id={"inputGender-before"} style={{margin: "5px 0", textDecoration: "underline"}}>
+                Пол: {userInfo["gender"]}
+            </p>
+            <label>Телефон: </label>
+            <InputPhone id={"phone"}/>
+            <p id={"inputPhone-before"} style={{margin: "5px 0", textDecoration: "underline"}}>
+                Телефон: {userInfo["numberPhone"]}
+            </p>
+            <label>Адрес: </label>
+            <input id={"address"} type={"text"} style={
+                {borderRadius: 40, border: "none", padding: "5px 15px", marginBottom: 10}
+            }/>
+            <p id={"address-before"} style={{margin: "5px 0", textDecoration: "underline"}}>
+                Адрес: {userInfo["address"]}
+            </p>
+            <label>Организация: </label>
+            <InputOrganization organizations={props.organizations}/>
+            <p id={"inputOrganization-before"} style={{margin: "5px 0", textDecoration: "underline"}}>
+                Организация: {userInfo["organizationString"]}
+            </p>
+        </div>
+    )
+
+    const fillTutorInfoView = (
+        <div style={
+            {
+                display: "flex",
+                flexDirection: "column",
+                padding: "0 10px"
+            }
+        }>
+            <label>Имя: </label>
+            <input id={"name"} type={"text"} style={
+                {borderRadius: 40, border: "none", padding: "5px 15px", marginBottom: 10}
+            } required/>
+            <p id={"name-before"} style={{margin: "5px 0", textDecoration: "underline"}}>
+                Имя: {userInfo["name"]}
+            </p>
+            <label>Фамилия: </label>
+            <input id={"surname"} type={"text"} style={
+                {borderRadius: 40, border: "none", padding: "5px 15px", marginBottom: 10}
+            } required/>
+            <p id={"surname-before"} style={{margin: "5px 0", textDecoration: "underline"}}>
+                Фамилия: {userInfo["surname"]}
+            </p>
+            <label>Отчество: </label>
+            <input id={"secondName"} type={"text"} style={
+                {borderRadius: 40, border: "none", padding: "5px 15px", marginBottom: 10}
+            } required/>
+            <p id={"secondName-before"} style={{margin: "5px 0", textDecoration: "underline"}}>
+                Отчество: {userInfo["secondName"]}
+            </p>
+            <label>Организация: </label>
+            <InputOrganization organizations={props.organizations}/>
+            <p id={"inputOrganization-before"} style={{margin: "5px 0", textDecoration: "underline"}}>
+                Организация: {userInfo["organizationString"]}
+            </p>
+        </div>
+    )
 
     const fillUser = () => {
-        return role === 1 ? fillPatientInfoView() :
-            role === 3 ? fillTutorInfoView() : null;
+        return role === 1 ? fillPatientInfoView :
+            role === 3 ? fillTutorInfoView : null;
     }
 
     const searchUser = () => {
@@ -617,119 +579,214 @@ export function VUsersAdmin(props) {
         props.refresh();
     }
 
-    return (
-        <Back navPanel={<AdminNav context={props.context}/>}>
-            <Modal
-                show={show}
-                backdrop={true}
-                keyboard={true}
-                onHide={clearAll}
-            >
-                <Modal.Header closeButton>
-                    <Modal.Title>{
-                        buttonStatus === 0 || buttonStatus === 4 ? "Добавление пользователя" :
-                            buttonStatus === 1 || buttonStatus === 2 ? "Изменить пароль" :
-                                buttonStatus === 3 || buttonStatus === 5 ? "Изменение пользователя" : "???"
-                    }</Modal.Title>
-                </Modal.Header>
-                <Modal.Body>
-                    {
-                        buttonStatus === 0 ?
-                            createUserView() : buttonStatus === 1 ?
-                            createUserPasswordView() : buttonStatus === 2 ?
-                                "Вы уверен что хотите изменить пароль у пользователя c Логиным:" + userForRemoving["login"] + "?" :
-                                buttonStatus === 3 ? chooseChangeAction() :
-                                    buttonStatus === 4 ? changingRoleView() :
-                                        buttonStatus === 5 ? fillUser() : null
-                    }
-                </Modal.Body>
-                <Modal.Footer>
-                    <div style={
-                        {
-                            height: "25%",
-                            width: "100%",
-                            display: "flex",
-                            justifyContent: "space-between"
-                        }
-                    }>
-                        <ButtonB text={"Отмена"} onClick={clearAll}/>
-                        {
-                            buttonStatus === 0 ?
-                                <ButtonB text={"Добавить"} onClick={addUser}/> :
-                                buttonStatus === 2 ?
-                                    <ButtonB text={"Изменить"} onClick={changeUserPassword}/> :
-                                    buttonStatus === 5 ?
-                                        <ButtonB text={"Добавить информацию"}
-                                                 onClick={
-                                                     () => role === 1 ?
-                                                         addInfoForPatient() : addInfoForTutor()}
-                                        /> : null
-                        }
-                    </div>
-                </Modal.Footer>
-            </Modal>
-            <Container style={{marginTop: 20}}>
-                <Row>
-                    <h1 style={{marginBottom: 20}}>Список пользователей</h1>
-                    <Col md={4} style={
-                        {
-                            display: "flex",
-                            justifyContent: "flex-start",
-                            alignItems: "center",
-                            flexDirection: "column"
-                        }
-                    }>
-                        <FilterBlock filters={filterList}/>
-                        <ButtonA width={300} text={"Добавить +"} onClick={() => {
-                            setButtonStatus(0);
-                            setShow(true);
-                        }}/>
-                    </Col>
-                    <Col md={8}>
-                        <SearchInput
-                            id={"searchInput"}
-                            onKeyDown={(e) => {
-                                if (e.key === "Enter") {
-                                    searchUser()
-                                }
-                            }}
-                            onBlur={searchUser}
-                            onClick={searchUser}
-                        />
-                        <Container>
-                            <Row>
-                                <Col style={
-                                    {
-                                        display: "flex",
-                                        flexDirection: "row",
-                                        flexWrap: "wrap",
-                                        justifyContent: "space-evenly"
-                                    }
-                                }>
-                                    {createBasicViewUsers()}
-                                </Col>
-                            </Row>
-                            <Row style={
-                                {
-                                    display: "flex",
-                                    flexDirection: "row",
-                                    justifyContent: "space-around",
-                                    marginTop: 20
-                                }
-                            }>
-                                {props.start ? <ButtonA width={300} text={"Предыдущая страница"} onClick={() => {
-                                    props.setStart(props.start - 9);
-                                    props.refresh();
-                                }}/> : null}
-                                {props.users.length === 10 ? <ButtonA width={300} text={"Следующая страница"} onClick={() => {
-                                    props.setStart(props.start + 9);
-                                    props.refresh();
-                                }}/>: null}
-                            </Row>
-                        </Container>
-                    </Col>
-                </Row>
-            </Container>
-        </Back>
+    const buttons = (
+        <ButtonA width={300} text={"Добавить +"} onClick={() => {
+            setButtonStatus(0);
+            setShow(true);
+        }}/>
     )
+
+    const paginationButtons = () => {
+        let view = [];
+        if (props.start)
+            view.push(
+                <ButtonA width={300} text={"Предыдущая страница"} onClick={() => {
+                    props.setStart(props.start - 9);
+                    props.refresh();
+                }}/>
+            )
+        if (props.users.length === 10) {
+            view.push(
+                <ButtonA width={300} text={"Следующая страница"} onClick={() => {
+                    props.setStart(props.start + 9);
+                    props.refresh();
+                }}/>
+            )
+        }
+        return view;
+    }
+
+    const modalBody = () => {
+        if (buttonStatus === 0){
+            return createUserView;
+        }else if (buttonStatus === 1){
+            return createUserPasswordView;
+        }else if (buttonStatus === 2){
+            return <p>
+                {
+                    "Вы уверен что хотите изменить пароль " +
+                    "у пользователя c Логиным: " + userForChanging["login"] + "?"
+                }
+            </p>
+        }else if (buttonStatus === 3){
+            return chooseChangeAction;
+        }else if (buttonStatus === 4){
+            return changingRoleView;
+        }else if (buttonStatus === 5){
+            return fillUser();
+        }
+    }
+
+    const modalTitle = () => {
+        if (buttonStatus === 0){
+            return "Добавление пользователя";
+        }else if (buttonStatus === 1 || buttonStatus === 2){
+            return "Изменить пароль";
+        }else if (buttonStatus === 3){
+            return "Изменение пользователя";
+        }else if (buttonStatus === 4){
+            return "Изменение роли";
+        }else if (buttonStatus === 5){
+            return "Изменение данных";
+        }
+        return null;
+    }
+
+    const modalFooter = () => {
+        let view = [<ButtonB text={"Отмена"} onClick={clearAll}/>];
+        if (buttonStatus === 0) {
+            view.push(<ButtonB text={"Добавить"} onClick={addUser}/>);
+        } else if (buttonStatus === 1){
+            view.push(<ButtonB text={"Изменить"} onClick={changeUserPassword}/>)
+        } else if (buttonStatus === 2) {
+            view.push(<ButtonB text={"Изменить"} onClick={() => props.changePassword(userForChanging["id"], password)}/>);
+        } else if (buttonStatus === 5){
+            view.push(<ButtonB text={"Изменить информацию"}
+                         onClick={() => role === 1 ? addInfoForPatient() : addInfoForTutor()}/>)
+        }
+
+        return (
+            <div style={{
+                height: "25%",
+                width: "100%",
+                display: "flex",
+                justifyContent: "space-between"
+            }}>
+                {view}
+            </div>
+        )
+    }
+
+    return <SearchFrame
+        navPanel={<AdminNav context={props.context}/>}
+        filterList={filterList}
+        modalShow={show}
+        modalOnHide={clearAll}
+        modalTitle={modalTitle()}
+        modalBody={modalBody()}
+        modalFooter={modalFooter()}
+        title={"Список пользователей"}
+        buttons={buttons}
+        searchInputOnKeyDown={searchUser}
+        searchInputOnBlur={searchUser}
+        searchInputOnClick={searchUser}
+        content={createBasicViewUsers()}
+        contentFooter={paginationButtons()}
+    />
+    // <Back navPanel={<AdminNav context={props.context}/>}>
+    //     <Modal
+    //         show={show}
+    //         backdrop={true}
+    //         keyboard={true}
+    //         onHide={clearAll}
+    //     >
+    //         <Modal.Header closeButton>
+    //             <Modal.Title>{
+    //                 buttonStatus === 0 || buttonStatus === 4 ? "Добавление пользователя" :
+    //                     buttonStatus === 1 || buttonStatus === 2 ? "Изменить пароль" :
+    //                         buttonStatus === 3 || buttonStatus === 5 ? "Изменение пользователя" : "???"
+    //             }</Modal.Title>
+    //         </Modal.Header>
+    //         <Modal.Body>
+    //             {
+    //                 buttonStatus === 0 ?
+    //                     createUserView() : buttonStatus === 1 ?
+    //                     createUserPasswordView() : buttonStatus === 2 ?
+    //                         "Вы уверен что хотите изменить пароль у пользователя c Логиным:" + userForRemoving["login"] + "?" :
+    //                         buttonStatus === 3 ? chooseChangeAction() :
+    //                             buttonStatus === 4 ? changingRoleView() :
+    //                                 buttonStatus === 5 ? fillUser() : null
+    //             }
+    //         </Modal.Body>
+    //         <Modal.Footer>
+    //             <div style={
+    //                 {
+    //                     height: "25%",
+    //                     width: "100%",
+    //                     display: "flex",
+    //                     justifyContent: "space-between"
+    //                 }
+    //             }>
+    //                 <ButtonB text={"Отмена"} onClick={clearAll}/>
+    //                 {
+    //                     buttonStatus === 0 ?
+    //                         <ButtonB text={"Добавить"} onClick={addUser}/> :
+    //                         buttonStatus === 2 ?
+    //                             <ButtonB text={"Изменить"} onClick={changeUserPassword}/> :
+    //                             buttonStatus === 5 ?
+    //                                 <ButtonB text={"Добавить информацию"}
+    //                                          onClick={
+    //                                              () => role === 1 ?
+    //                                                  addInfoForPatient() : addInfoForTutor()}
+    //                                 /> : null
+    //                 }
+    //             </div>
+    //         </Modal.Footer>
+    //     </Modal>
+    //     <Container style={{marginTop: 20}}>
+    //         <Row>
+    //             <h1 style={{marginBottom: 20}}>Список пользователей</h1>
+    //             <Col md={4} style={
+    //                 {
+    //                     display: "flex",
+    //                     justifyContent: "flex-start",
+    //                     alignItems: "center",
+    //                     flexDirection: "column"
+    //                 }
+    //             }>
+    //                 <FilterBlock filters={filterList}/>
+    //                 <ButtonA width={300} text={"Добавить +"} onClick={() => {
+    //                     setButtonStatus(0);
+    //                     setShow(true);
+    //                 }}/>
+    //             </Col>
+    //             <Col md={8}>
+    //                 <SearchInput
+    //                     id={"searchInput"}
+    //                     onKeyDown={(e) => {
+    //                         if (e.key === "Enter") {
+    //                             searchUser()
+    //                         }
+    //                     }}
+    //                     onBlur={searchUser}
+    //                     onClick={searchUser}
+    //                 />
+    //                 <Container>
+    //                     <Row>
+    //                         <Col style={
+    //                             {
+    //                                 display: "flex",
+    //                                 flexDirection: "row",
+    //                                 flexWrap: "wrap",
+    //                                 justifyContent: "space-evenly"
+    //                             }
+    //                         }>
+    //                             {createBasicViewUsers()}
+    //                         </Col>
+    //                     </Row>
+    //                     <Row style={
+    //                         {
+    //                             display: "flex",
+    //                             flexDirection: "row",
+    //                             justifyContent: "space-around",
+    //                             marginTop: 20
+    //                         }
+    //                     }>
+    //
+    //                     </Row>
+    //                 </Container>
+    //             </Col>
+    //         </Row>
+    //     </Container>
+    // </Back>
 }

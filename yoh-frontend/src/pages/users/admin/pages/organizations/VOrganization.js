@@ -148,7 +148,7 @@ export function VOrganization(props) {
         modalTitle={"Добавить организацию"}
         modalBody={modalBody}
         modalFooter={modalFooter}
-        title={"Список организаций: "}
+        title={"Список организаций"}
         buttons={buttons}
         searchInputOnKeyDown={searchOrganizations}
         searchInputOnBlur={searchOrganizations}
