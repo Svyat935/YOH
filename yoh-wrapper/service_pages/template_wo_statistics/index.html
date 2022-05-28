@@ -35,9 +35,10 @@
 <script>
     var eventSource = new EventSource('/event/stream?channel=endgame');
     eventSource.addEventListener('message', event => {
+        eventSource.close();
         if ('endGame' in window) {
-			endGame.postMessage('it is end game');
-		}
+            endGame.postMessage('it is end game');
+        }
         console.log('Отправили сообщение мобильному приложению');
     });
 </script>
