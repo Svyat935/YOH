@@ -256,13 +256,14 @@ public class AdminController {
                                     @RequestParam String type,
                                     @RequestParam String name,
                                     @RequestParam String description,
+                                    @RequestParam boolean useStatistic,
                                     @RequestParam(value = "image", required = false) MultipartFile image
     ) {
         try {
             Admin admin = this.adminService.getAdminByUser(this.userService.getUserById(this.userService.verifyToken(token)));
             if(this.gameService.checkGameByName(name)){
 
-                Game game = new Game(UUID.randomUUID() ,name, type, description, null, LocalDateTime.now());
+                Game game = new Game(UUID.randomUUID() ,name, type, description, null, LocalDateTime.now(), useStatistic);
 
                 String url = "/app/games/" + game.getId().toString();
 //                String sd = wrapper+ "/" +game.getId().toString()+"/";

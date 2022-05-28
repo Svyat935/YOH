@@ -13,22 +13,16 @@ import java.util.UUID;
 public class Game {
     public Game() {}
 
-    public Game(UUID id, String name, String type, String description, String url, LocalDateTime dateAdding) {
+    public Game(UUID id, String name, String type, String description, String url, LocalDateTime dateAdding, boolean useStatistic) {
         this.id = id;
         this.name = name;
         this.type = type;
         this.description = description;
         this.url = url;
         this.dateAdding = dateAdding;
+        this.useStatistic = useStatistic;
     }
 
-    public Game(String name, String type, String description, String url, LocalDateTime dateAdding) {
-        this.name = name;
-        this.type = type;
-        this.description = description;
-        this.url = url;
-        this.dateAdding = dateAdding;
-    }
 
     @Id
 //    @GeneratedValue
@@ -119,7 +113,19 @@ public class Game {
         return this.id == game.id;
     }
 
-//    @OneToMany(mappedBy = "game")
+
+    @Column(name = "useStatistics", nullable = false)
+    private boolean useStatistic;
+
+    public boolean getUseStatistic() {
+        return useStatistic;
+    }
+
+    public void setUseStatistic(boolean useStatistic) {
+        this.useStatistic = useStatistic;
+    }
+
+    //    @OneToMany(mappedBy = "game")
 //    private List<GamePatient> gamePatientList;
 //
 //    public List<GamePatient> getGamePatientList() {

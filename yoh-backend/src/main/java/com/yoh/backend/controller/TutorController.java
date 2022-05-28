@@ -388,6 +388,7 @@ public class TutorController {
                 gamesInfo.put("description", gamePatient.getGame().getDescription());
                 gamesInfo.put("image", gamePatient.getGame().getImage());
                 gamesInfo.put("url", gamePatient.getGame().getUrl());
+                gamesInfo.put("useStatistics", gamePatient.getGame().getUseStatistic());
                 gamesInfo.put("assignmentDate", gameStatus.getAssignmentDate());
                 gamesInfo.put("assignedBy", gameStatus.getTutor().getId().toString());
                 gamesInfo.put("status", gameStatus.getStatus().toString());
