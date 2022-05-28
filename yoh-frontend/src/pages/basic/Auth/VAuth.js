@@ -80,6 +80,11 @@ export function VAuth(props) {
                                     type={"text"}
                                     placeholder={"Электронная почта / Логин"}
                                     required={true}
+                                    onKeyDown={(e) => {
+                                        if (e.key === "Enter"){
+                                            authorize();
+                                        }
+                                    }}
                                 />
                                 <input
                                     id={"password"}
@@ -87,6 +92,11 @@ export function VAuth(props) {
                                     type={"password"}
                                     placeholder={"Пароль"}
                                     required={true}
+                                    onKeyDown={(e) => {
+                                        if (e.key === "Enter"){
+                                            authorize();
+                                        }
+                                    }}
                                 />
                             </div>
                             <button className={"authButton"} onClick={authorize}>Войти</button>

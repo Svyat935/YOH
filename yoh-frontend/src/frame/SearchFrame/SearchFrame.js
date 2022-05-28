@@ -14,7 +14,7 @@ export function SearchFrame(props) {
     return (
         <Back navPanel={props.navPanel}>
             <Modal
-                show={props.show}
+                show={props.modalShow}
                 backdrop={true}
                 keyboard={true}
                 onHide={props.modalOnHide}

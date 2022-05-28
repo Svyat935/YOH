@@ -1,9 +1,11 @@
 import React from "react";
+import "./InfoLine.css";
 
 export function InfoLine(props) {
     return (
-        <div>
-            <p>{props.info}</p>
+        <div className={"info-line"}>
+            <span>{props.infoLeft}</span>
+            <span>{props.infoRight}</span>
         </div>
     )
 

@@ -257,7 +257,7 @@ export function VUsersAdmin(props) {
             validStatus = false;
         }
 
-        if (validStatus === true) {
+        if (validStatus) {
             let response = await props.createUser(fLogin.value, fEmail.value, fPassword.value);
             if (response.code === 401) {
                 let message = response['jsonObject']["message"];
@@ -277,7 +277,7 @@ export function VUsersAdmin(props) {
             }
         }
 
-        if (validStatus === true) {
+        if (validStatus) {
             props.refresh();
             setCurrentUserLogin(fLogin.value);
             setButtonStatus(4);
@@ -616,7 +616,7 @@ export function VUsersAdmin(props) {
         props.setRegex(searchValue);
         props.refresh();
     }
-    console.log(buttonStatus);
+
     return (
         <Back navPanel={<AdminNav context={props.context}/>}>
             <Modal

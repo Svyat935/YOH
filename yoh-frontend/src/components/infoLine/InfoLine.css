@@ -1,0 +1,10 @@
+.info-line{
+    display: flex;
+    justify-content: space-between;
+    background: #F5F5F5;
+    box-shadow: -10px 10px 30px rgba(0, 0, 0, 0.32);
+    border-radius: 40px;
+    width: 100%;
+    padding: 20px 30px 20px 30px;
+    margin: 20px;
+}
