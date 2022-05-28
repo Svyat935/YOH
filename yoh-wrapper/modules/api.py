@@ -135,8 +135,8 @@ def statistic_pagination_route():
 def format_response_json(result, source, fields):
     if source == 'mobile':
         result = {
-            'format': list(result.keys()),
-            'values': list(zip_longest([result[field] for field in fields])),
+            'format': fields,
+            'values': zip_longest(*[result[field] for field in fields]),
             'other': {key: result[key] for key in (set(result.keys()) - set(fields))}
         }
 
