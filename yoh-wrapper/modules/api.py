@@ -131,9 +131,19 @@ def statistic_pagination_route():
     return make_response(json.dumps(result, default=json_serial))
 
 
+def format_response_json(result, source):
+    if source == 'mobile':
+        result = {
+            'format': list(result.keys()),
+            'values': list(zip(*result.values()))
+        }
+
+    return result
+
+
 @api_bp.route('/all_time_widget', methods=['GET'])
 def all_time_widget_route():
-    # sg_id
+    # sg_id, [source]
     parameters = request.args
 
     with psycopg2.connect(**CONNECT_PARAMS) as conn:
@@ -141,12 +151,14 @@ def all_time_widget_route():
             cursor.execute(GET_ALL_TIME_WIDGET, {'sg_id': parameters['sg_id']})
             result = cursor.fetchone()
 
+    result = format_response_json(result, parameters.get('source'))
+
     return make_response(json.dumps(result, default=json_serial))
 
 
 @api_bp.route('/clicks_widget', methods=['GET'])
 def clicks_widget_route():
-    # sg_id
+    # sg_id, [source]
     parameters = request.args
 
     with psycopg2.connect(**CONNECT_PARAMS) as conn:
@@ -154,12 +166,14 @@ def clicks_widget_route():
             cursor.execute(CLICKS_WIDGET, {'sg_id': parameters['sg_id']})
             result = cursor.fetchone()
 
+    result = format_response_json(result, parameters.get('source'))
+
     return make_response(json.dumps(result, default=json_serial))
 
 
 @api_bp.route('/answers_widget', methods=['GET'])
 def answers_widget_route():
-    # sg_id
+    # sg_id, [source]
     parameters = request.args
 
     with psycopg2.connect(**CONNECT_PARAMS) as conn:
@@ -167,12 +181,14 @@ def answers_widget_route():
             cursor.execute(ANSWERS_WIDGET, {'sg_id': parameters['sg_id']})
             result = cursor.fetchone()
 
+    result = format_response_json(result, parameters.get('source'))
+
     return make_response(json.dumps(result, default=json_serial))
 
 
 @api_bp.route('/timeline_widget', methods=['GET'])
 def timeline_widget_route():
-    # sg_id
+    # sg_id, [source]
     parameters = request.args
 
     with psycopg2.connect(**CONNECT_PARAMS) as conn:
