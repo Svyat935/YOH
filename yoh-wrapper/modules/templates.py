@@ -12,8 +12,8 @@ select array(
 
 GET_ALL_TIME_WIDGET = """
 select 
-    array_agg("level_name") as "level_names",
-    array_agg("spend_time") as "spend_time",
+    COALESCE(array_agg("level_name"), ARRAY[]::text[]) as "level_names",
+    COALESCE(array_agg("spend_time"), ARRAY[]::int[]) as "spend_time",
     (select 
         EXTRACT(epoch FROM ("date_end" - "date_start")) as "spend_time" 
     from "started_games" 
@@ -32,9 +32,9 @@ from (
 
 CLICKS_WIDGET = """
 select
-    array_agg("level_name") as "level_names",
-    array_agg("clicks") as "clicks",
-    array_agg("missclicks") as "missclicks"
+    COALESCE(array_agg("level_name"), ARRAY[]::text[]) as "level_names",
+    COALESCE(array_agg("clicks"), ARRAY[]::int[]) as "clicks",
+    COALESCE(array_agg("missclicks"), ARRAY[]::int[]) as "missclicks"
 from (
     select 
         "level_name",
@@ -50,9 +50,9 @@ from (
 
 ANSWERS_WIDGET = """
 select
-    array_agg("level_name") as "level_names",
-    array_agg("correct") as "correct",
-    array_agg("incorrect") as "incorrect"
+    COALESCE(array_agg("level_name"), ARRAY[]::text[]) as "level_names",
+    COALESCE(array_agg("correct"), ARRAY[]::int[]) as "correct",
+    COALESCE(array_agg("incorrect"), ARRAY[]::int[]) as "incorrect"
 from (
     select 
         "level_name",

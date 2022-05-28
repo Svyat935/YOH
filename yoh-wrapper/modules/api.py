@@ -7,6 +7,7 @@ from flask import Blueprint, make_response, request, session, abort
 from flask_cors import CORS, cross_origin
 from werkzeug.exceptions import HTTPException
 from requests import post
+from itertools import zip_longest
 from .templates import GET_ATTEMPT_PAGINATION, GET_ALL_TIME_WIDGET, CLICKS_WIDGET, ANSWERS_WIDGET, TIMELINE_WIDGET
 
 api_bp = Blueprint('API', __name__, url_prefix='/api')
@@ -131,11 +132,12 @@ def statistic_pagination_route():
     return make_response(json.dumps(result, default=json_serial))
 
 
-def format_response_json(result, source):
+def format_response_json(result, source, fields):
     if source == 'mobile':
         result = {
             'format': list(result.keys()),
-            'values': list(zip(*result.values()))
+            'values': list(zip_longest([result[field] for field in fields])),
+            'other': {key: result[key] for key in (set(result.keys()) - set(fields))}
         }
 
     return result
@@ -151,7 +153,7 @@ def all_time_widget_route():
             cursor.execute(GET_ALL_TIME_WIDGET, {'sg_id': parameters['sg_id']})
             result = cursor.fetchone()
 
-    result = format_response_json(result, parameters.get('source'))
+    result = format_response_json(result, parameters.get('source'), )
 
     return make_response(json.dumps(result, default=json_serial))
 
