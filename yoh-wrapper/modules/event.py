@@ -17,6 +17,7 @@ class EventAnnouncer:
         return q
 
     def announce(self, msg, user):
+        print(f'Попали - {user in self.listeners}')
         if user in self.listeners:
             self.listeners[user].put_nowait(msg)
 
@@ -47,7 +48,7 @@ def event_stream(channel, user, kill_after=None):
 def event_post(channel, user, message):
     if channel not in EVENT_CHANNELS:
         return False
-
+    print('Отправили сообщение')
     EVENT_CHANNELS[channel].announce(message, user)
     return True
 
