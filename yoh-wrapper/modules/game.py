@@ -37,13 +37,13 @@ def game_route(game):
 
     resp = make_response(template)
 
-    headers = {
-        'Content-Type': 'application/json',
-        'token': session['user'],
-        'game': session['current_game']
-    }
-    send_url = 'http://yoh-backend:8080/patient/games/statistics/additional_fields'
-    result = get(send_url, headers=headers).json()
-    session['additional_fields'] = json.dumps(result.get('jsonObject', {}).get('result'))
+    # headers = {
+    #     'Content-Type': 'application/json',
+    #     'token': session['user'],
+    #     'game': session['current_game']
+    # }
+    # send_url = 'http://yoh-backend:8080/patient/games/statistics/additional_fields'
+    # result = get(send_url, headers=headers).json()
+    # session['additional_fields'] = json.dumps(result.get('jsonObject', {}).get('result'))
 
     return resp
