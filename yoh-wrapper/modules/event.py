@@ -57,8 +57,7 @@ def stream_route():
     channel = request.args['channel']
     response = make_response('', 404)
     if channel == 'endgame':
-        response = Response(
-            event_stream(channel, session['user'], None),
-            mimetype="text/event-stream",
-            headers={'X-Accel-Buffering': 'no'})
+        response = Response(event_stream(channel, session['user'], None), mimetype="text/event-stream")
+        response.headers['X-Accel-Buffering'] = 'no'
+        response.headers['Cache-Control'] = 'no-cache'
     return response
