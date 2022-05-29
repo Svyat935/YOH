@@ -33,16 +33,17 @@
             height="100%"></iframe>
 </body>
 <script>
-    const parseCookie = str =>
-          str
-          .split(';')
-          .map(v => v.split('='))
-          .reduce((acc, v) => {
-            acc[decodeURIComponent(v[0].trim())] = decodeURIComponent(v[1].trim());
-            return acc;
-          }, {});
+    function read_cookies() {
+        let cookies = {}
+        for (let item of document.cookie.split(";")) {
+            let match = item.match(/^\s*([^]*?)="?([^]*?)"?\s*$/)
+            if (match)
+                cookies[match[1]] = decodeURIComponent(match[2])
+        }
+        return cookies
+    }
     function waitCookie () {
-        if (parseCookie(document.cookie)['EndGame'] == 'true') {
+        if (read_cookies(document.cookie)['EndGame'] == 'true') {
             if ('endGame' in window) {
                 endGame.postMessage('it is end game');
             }
