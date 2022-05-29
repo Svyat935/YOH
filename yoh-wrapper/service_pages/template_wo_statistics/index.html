@@ -35,7 +35,8 @@
 <script>
     var eventSource = new EventSource('/event/stream?channel=endgame');
     eventSource.addEventListener('message', event => {
-        eventSource.close();
+        // Для теста отключу
+        //eventSource.close();
         if ('endGame' in window) {
             endGame.postMessage('it is end game');
         }
