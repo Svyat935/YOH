@@ -7,7 +7,6 @@ from flask import Blueprint, make_response, request, session, abort
 from flask_cors import CORS
 from werkzeug.exceptions import HTTPException
 from requests import post
-from .event import event_post
 from .templates import GET_ATTEMPT_PAGINATION, GET_ALL_TIME_WIDGET, CLICKS_WIDGET, ANSWERS_WIDGET, TIMELINE_WIDGET
 
 
@@ -85,9 +84,10 @@ def send_game_end_route():
     data['details'] = json.dumps(data.get('details')) if data.get('details') else '{}'
     post(send_url, json=data, headers=headers)
 
-    event_post('endgame', session['user'], 'It is end game!')
+    resp = make_response(json.dumps({'message': 'Success'}))
+    resp.set_cookie('EndGame', 'true', expires=datetime.now() + timedelta(seconds=10))
 
-    return make_response(json.dumps({'message': 'Success'}))
+    return resp
 
 
 @api_bp.route('/statistics', methods=['POST'])
