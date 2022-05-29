@@ -2,7 +2,7 @@ import json
 import psycopg2
 import psycopg2.extras
 import uuid
-from datetime import datetime, date
+from datetime import datetime, date, timedelta
 from flask import Blueprint, make_response, request, session, abort
 from flask_cors import CORS
 from werkzeug.exceptions import HTTPException
@@ -209,5 +209,6 @@ def timeline_widget_route():
 
 @api_bp.route('test_post')
 def post_route():
-    event_post('endgame', session['user'], 'It is end game!')
-    return make_response('', 200)
+    resp = make_response('', 200)
+    resp.set_cookie('EndGame', 'true', expires=datetime.now() + timedelta(seconds=10))
+    return resp
