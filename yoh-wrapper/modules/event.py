@@ -60,4 +60,5 @@ def stream_route():
         response = Response(event_stream(channel, session['user'], None), mimetype="text/event-stream")
         response.headers['X-Accel-Buffering'] = 'no'
         response.headers['Cache-Control'] = 'no-cache'
+        response.headers['Connection'] = 'keep-alive'
     return response
