@@ -10,7 +10,7 @@ import org.hibernate.annotations.LazyCollectionOption;
 
 @Entity
 @Table(name = "patients")
-public class Patient {
+public class Patient implements Comparable<Patient>{
     public Patient() {}
 
     public Patient(User user){
@@ -277,4 +277,14 @@ public class Patient {
     }
 
 
+    @Override
+    public int compareTo(Patient o) {
+        if (this.getName() == null && o.getName() == null)
+            return 0;
+        if (this.getName() == null)
+            return -1;
+        if (o.getName() == null)
+            return 1;
+        return this.getName().compareTo(o.getName());
+    }
 }

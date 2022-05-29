@@ -86,9 +86,10 @@ public class TutorController {
                         .collect(Collectors.toList());
 
             if (order.equals("1"))
-                patients = patients.stream().sorted(Comparator.comparing(Patient::getSurname)).collect(Collectors.toList());
+                patients = patients.stream().sorted(Patient::compareTo).collect(Collectors.toList());
             if (order.equals("-1"))
-                patients = patients.stream().sorted(Comparator.comparing(Patient::getSurname).reversed()).collect(Collectors.toList());
+                patients = patients.stream().sorted(Collections.reverseOrder()).collect(Collectors.toList());
+//                patients = patients.stream().sorted(Comparator.comparing(Patient::getSurname).reversed()).collect(Collectors.toList());
 //            if (order.equals("2"))
 //                patients = patients.stream().sorted(Comparator.comparing(Patient::getBirthDate)).collect(Collectors.toList());
 //            if (order.equals("-2"))
@@ -129,11 +130,37 @@ public class TutorController {
                 patientInfo.put("name", patient.getName());
                 patientInfo.put("surname", patient.getSurname());
                 if (patient.getOrganization() != null){
-                    patientInfo.put("organization", patient.getOrganization().getId().toString());
+                    patientInfo.put("oganizationr", patient.getOrganization().getId().toString());
                 }
                 else {
                     patientInfo.put("organization", null);
                 }
+
+
+                JsonObject statusInfo = new JsonObject();
+                int done = 0;
+                int assigned = 0;
+                int failed = 0;
+                int started = 0;
+                for (GamePatient gamePatient: this.gamePatientService.getAllActiveGamePatientsByPatient(patient)){
+                    //TODO оптимизация
+                    GameStatus gameStatus = this.gameStatusService.getGameStatusByGamePatient(gamePatient);
+                    switch (gameStatus.getStatus()){
+                        case DONE -> done++;
+                        case ASSIGNED -> assigned++;
+                        case FAILED -> failed++;
+                        case STARTED -> started++;
+                    }
+
+                }
+                statusInfo.put("Done", done);
+                statusInfo.put("Assigned", assigned);
+                statusInfo.put("Failed", failed);
+                statusInfo.put("Started", started);
+                patientInfo.put("statusInfo", statusInfo);
+
+
+
                 patientInfo.put("organizationString", patient.getOrganizationString());
                 patientInfo.put("image", patient.getImage());
                 patientInfo.put("login", patient.getUser().getLogin());
