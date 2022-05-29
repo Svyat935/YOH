@@ -9,9 +9,11 @@ import Col from "react-bootstrap/Col";
 import {FilterBlock} from "../../../../../components/filterBlock/FilterBlock";
 import {ButtonA} from "../../../../../components/buttons/ButtonA/ButtonA";
 import {SearchInput} from "../../../../../components/searchInput/SearchInput";
-import {InfoBlock} from "../../../../../components/infoBlock/InfoBlock";
 import profileStub from "../../../../../assets/profileStub.jpg";
 import {useNavigate} from "react-router-dom";
+import {ProgressBarCircular} from "../../../../../components/progressBarCircular/progressBarCircular";
+import {InfoBlockStatic} from "../../../../../components/infoBlockStatic/InfoBlockStatic";
+import {InfoBlockStat} from "../../../../../components/InfoBlockStat/InfoBlockStat";
 
 export function VPatients(props) {
     const filterList = [
@@ -58,18 +60,28 @@ export function VPatients(props) {
             patients.forEach((patient) => {
                 let fio = patient["surname"] + " " + patient["name"];
                 let imageSrc = patient["image"] ? "https://mobile.itkostroma.ru/images/" + patient["image"] : profileStub;
+                let status = patient["statusInfo"],
+                    all = status["Done"] + status["Failed"] + status["Assigned"] + status["Started"],
+                    done = all !== 0 ? status["Done"] / all * 100 : 0,
+                    failed = all !== 0 ? status["Failed"] / all * 100 : 0,
+                    assigned = all !== 0 ? status["Assigned"] / all * 100 : 0;
 
                 view.push(
-                    <InfoBlock onClick={
+                    <InfoBlockStat onClick={
                         async () => {
                             props.saveUser({patient: patient});
                             router("/user/tutor/detail");
                         }
-                    } key={patient["id"]} text={fio}>
-                        <div>
-                            <img style={{width: "100%"}} src={imageSrc} alt={'profile'}/>
-                        </div>
-                    </InfoBlock>
+                    }>
+                        <InfoBlockStatic key={patient["id"]} text={fio}>
+                            <div>
+                                <img style={{width: "100%"}} src={imageSrc} alt={'profile'}/>
+                            </div>
+                        </InfoBlockStatic>
+                        <ProgressBarCircular length={done} content={"Завершенные"}/>
+                        <ProgressBarCircular length={failed} content={"В ожидании"}/>
+                        <ProgressBarCircular length={assigned} content={"Неудачные"}/>
+                    </InfoBlockStat>
                 )
             })
         } else {
@@ -82,7 +94,7 @@ export function VPatients(props) {
                         alignItems: "center"
                     }
                 }>
-                    <h3>Пациенты в организации отсутствуют.</h3>
+                    <h3>Наблюдаемые пациенты отсутствуют.</h3>
                 </div>
             )
         }

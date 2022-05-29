@@ -53,8 +53,12 @@ export function VAllPatients(props) {
             }
 
             patients.forEach((patient) => {
-                let fio = patient["surname"] + " " + patient["name"];
-                let imageSrc = patient["image"] ? "https://mobile.itkostroma.ru/images/" + patient["image"] : profileStub;
+                let fio = patient["surname"] && patient["name"] ?
+                    patient["surname"] + " " + patient["name"] :
+                    "ФИО отсутствует";
+                let imageSrc = patient["image"] ?
+                    "https://mobile.itkostroma.ru/images/" + patient["image"] :
+                    profileStub;
                 let attachStatus = props.attachedPatients.some((attachedPatient) => {
                     if (attachedPatient["login"] === patient["login"]) return true;
                 });
@@ -82,7 +86,7 @@ export function VAllPatients(props) {
                         alignItems: "center"
                     }
                 }>
-                    <h3>Пациенты в организации отсутствуют.</h3>
+                    <h3>Доступные пациенты в организации отсутствуют.</h3>
                 </div>
             )
         }
@@ -141,7 +145,7 @@ export function VAllPatients(props) {
             </Modal>
             <Container style={{marginTop: 20}}>
                 <Row>
-                    <h1 style={{marginBottom: 20}}>Список всех доступных пациентов</h1>
+                    <h1 style={{marginBottom: 20}}>Список пациентов организации</h1>
                     <Col md={4} style={
                         {
                             display: "flex",

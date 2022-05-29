@@ -17,7 +17,8 @@ export function CPatients() {
         return await fetch("/tutor/patients/getting?" +
             "regex=" + encodeURIComponent(regex) + "&" +
             "start=" + encodeURIComponent(start) + "&" +
-            "limit=" + encodeURIComponent(limit), {
+            "limit=" + encodeURIComponent(limit) + "&" +
+            "order=" + encodeURIComponent(-1), {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
