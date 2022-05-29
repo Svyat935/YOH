@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        html {
+            overflow: auto;
+        }
+
+        html,
+        body,
+        div,
+        iframe {
+            margin: 0px;
+            padding: 0px;
+            height: 100%;
+            border: none;
+        }
+
+        iframe {
+            display: block;
+            width: 100%;
+            border: none;
+            overflow-y: auto;
+            overflow-x: hidden;
+        }
+    </style>
+</head>
+<body>
+    <iframe src="{{ url }}"
+            width="100%"
+            height="100%"></iframe>
+</body>
+<script>
+    function read_cookies() {
+        let cookies = {}
+        for (let item of document.cookie.split(";")) {
+            let match = item.match(/^\s*([^]*?)="?([^]*?)"?\s*$/)
+            if (match)
+                cookies[match[1]] = decodeURIComponent(match[2])
+        }
+        return cookies
+    }
+    function waitCookie () {
+        if (read_cookies(document.cookie)['EndGame'] == 'true') {
+            if ('endGame' in window) {
+                endGame.postMessage('it is end game');
+            }
+            console.log('Отправлено сообщение мобильному приложению!');
+        }
+        else {
+            setTimeout(waitCookie, 1000);
+        }
+    }
+
+    waitCookie();
+</script>
+</html>

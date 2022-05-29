@@ -26,3 +26,7 @@ def static_service_route(path):
 @service_bp.route('/statistics')
 def statistics_route():
     return make_response(render_template('dashboard/index.html'))
+
+
+def render_template_wo_statistics(url):
+    return render_template('template_wo_statistics/index.html', url=url)

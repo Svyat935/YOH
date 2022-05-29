@@ -125,6 +125,7 @@ public class GameController {
                 gameInfo.put("url", game.getUrl());
                 gameInfo.put("image", game.getImage());
                 gameInfo.put("addAdding", game.getDateAdding());
+                gameInfo.put("useStatistics", game.getUseStatistic());
                 gamesList.add(gameInfo);
             }
 //            }
@@ -151,6 +152,7 @@ public class GameController {
             response.put("description", game.getDescription());
             response.put("url", game.getUrl());
             response.put("image", game.getImage());
+            response.put("useStatistics", game.getUseStatistic());
             JsonObject jsonObject = new JsonObject();
             jsonObject.put("gameInfo", response);
             return new JSONResponse(200, jsonObject);
