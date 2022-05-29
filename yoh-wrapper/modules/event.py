@@ -12,11 +12,13 @@ class EventAnnouncer:
         self.queue_maxsize = queue_maxsize
 
     def listen(self, user):
+        print(f'user записался - {user}')
         q = Queue(maxsize=self.queue_maxsize)
         self.listeners[user] = q
         return q
 
     def announce(self, msg, user):
+        print(f'Пришел user - {user}')
         print(f'Попали - {user in self.listeners}')
         if user in self.listeners:
             self.listeners[user].put_nowait(msg)
