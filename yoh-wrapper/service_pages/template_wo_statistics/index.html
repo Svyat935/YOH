@@ -33,13 +33,27 @@
             height="100%"></iframe>
 </body>
 <script>
-    var eventSource = new EventSource('/event/stream?channel=endgame');
-    eventSource.addEventListener('message', event => {
-        eventSource.close();
-        if ('endGame' in window) {
-            endGame.postMessage('it is end game');
+    function read_cookies() {
+        let cookies = {}
+        for (let item of document.cookie.split(";")) {
+            let match = item.match(/^\s*([^]*?)="?([^]*?)"?\s*$/)
+            if (match)
+                cookies[match[1]] = decodeURIComponent(match[2])
         }
-        console.log('Отправили сообщение мобильному приложению');
-    });
+        return cookies
+    }
+    function waitCookie () {
+        if (read_cookies(document.cookie)['EndGame'] == 'true') {
+            if ('endGame' in window) {
+                endGame.postMessage('it is end game');
+            }
+            console.log('Отправлено сообщение мобильному приложению!');
+        }
+        else {
+            setTimeout(waitCookie, 1000);
+        }
+    }
+
+    waitCookie();
 </script>
 </html>

@@ -47,7 +47,6 @@ def event_stream(channel, user, kill_after=None):
 def event_post(channel, user, message):
     if channel not in EVENT_CHANNELS:
         return False
-
     EVENT_CHANNELS[channel].announce(message, user)
     return True
 
@@ -57,5 +56,8 @@ def stream_route():
     channel = request.args['channel']
     response = make_response('', 404)
     if channel == 'endgame':
-        response = Response(event_stream(channel, session['user'], 1), mimetype="text/event-stream")
+        response = Response(event_stream(channel, session['user'], None), mimetype="text/event-stream")
+        response.headers['X-Accel-Buffering'] = 'no'
+        response.headers['Cache-Control'] = 'no-cache'
+        response.headers['Connection'] = 'keep-alive'
     return response
