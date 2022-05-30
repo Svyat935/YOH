@@ -13,6 +13,7 @@ import {ButtonA} from "../../../../../components/buttons/ButtonA/ButtonA";
 import {SearchInput} from "../../../../../components/searchInput/SearchInput";
 import gameStub from "../../../../../assets/gameStub.jpg";
 import {useNavigate} from "react-router-dom";
+import {CheckBox} from "../../../../../components/checkbox/CheckBox";
 
 export function VComponents(props) {
     const filterList = [
@@ -208,15 +209,18 @@ export function VComponents(props) {
     const addGame = async () => {
         let fName = document.getElementById("name"),
             fDescription = document.getElementById("description"),
-            fFile = document.getElementById("file");
+            fFile = document.getElementById("file"),
+            FType = document.getElementById("type"),
+            FStatistics = document.getElementById("useStatistics");
 
         let formData = new FormData();
         formData.append("name", fName.value);
         formData.append("description", fDescription.value);
-        formData.append("type", "stub");
+        formData.append("type", FType.value);
         formData.append("file", fFile.files[0]);
+        formData.append("useStatistic", FStatistics.value);
         let response = await props.sendGames(formData);
-        //TODO: Validate.
+        // //TODO: Validate.
         props.refresh();
         setShow(false);
     }
@@ -279,19 +283,29 @@ export function VComponents(props) {
                 {
                     display: "flex",
                     flexDirection: "column",
-                    padding: "0 10px"
+                    padding: "0 10px",
+                    alignItems: "flex-start"
                 }
             }>
                 <label>Название: </label>
                 <input id={"name"} type={"text"} style={
-                    {borderRadius: 40, border: "none", padding: "5px 15px", marginBottom: 10}
+                    {borderRadius: 40, border: "none", padding: "5px 15px", marginBottom: 10, width: "100%"}
                 } required/>
                 <p id={"name-validate"} style={{height: "5px", marginBottom: 0, color: "#800000"}}/>
                 <label>Описание: </label>
-                <input id={"description"} type={"email"} style={
-                    {borderRadius: 40, border: "none", padding: "5px 15px", marginBottom: 10}
+                <input id={"description"} type={"text"} style={
+                    {borderRadius: 40, border: "none", padding: "5px 15px", marginBottom: 10, width: "100%"}
                 } required/>
                 <p id={"description-validate"} style={{height: "5px", marginBottom: 0, color: "#800000"}}/>
+                <label>Тип: </label>
+                <input id={"type"} type={"text"} style={
+                    {borderRadius: 40, border: "none", padding: "5px 15px", marginBottom: 10, width: "100%"}
+                } required/>
+                <p id={"type-validate"} style={{height: "5px", marginBottom: 0, color: "#800000"}}/>
+                <label>Использована Статистика: </label>
+                <CheckBox id={"useStatistics"} style={
+                    {borderRadius: 40, marginBottom: 10, width: 20, height: 20}
+                }/>
                 <label>Файл: </label>
                 <input id={"file"} type={"file"} style={
                     {borderRadius: 40, border: "none", padding: "5px 15px", marginBottom: 15}
