@@ -17,7 +17,7 @@ export function VGame() {
                         justifyContent: "center"
                     }
                 }>
-                    <iframe src={context.info} style={{width: "95vw", height: "82vh"}}/>
+                    <iframe src={context.info.url} style={{width: "95vw", height: "82vh"}}/>
                 </div>
             )
         }
