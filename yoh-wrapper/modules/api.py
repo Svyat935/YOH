@@ -3,6 +3,7 @@ import psycopg2
 import psycopg2.extras
 import uuid
 from datetime import datetime, date, timedelta
+from urllib import parse
 from flask import Blueprint, make_response, request, session, abort
 from flask_cors import CORS
 from werkzeug.exceptions import HTTPException
@@ -49,17 +50,28 @@ def error_handler_route(error):
     return response
 
 
+def url_parse(url):
+    parsed_url = parse.urlsplit(url)
+    game = parsed_url.path.split('/')[-2]
+    token = parse.parse_qs(parsed_url.query)['token'][0]
+    return game, token
+
+
 @api_bp.route('/game_start', methods=['POST'])
 def send_game_start_route():
-    print(request.referrer)
     data = json.loads(request.data)
-    if not session.get('user') or not session.get('current_game'):
-        abort(401)
+
+    token = session.get('user')
+    game = session.get('current_game')
+    if not token or not game:
+        game, token = url_parse(request.referrer)
+        if not token or not game:
+            abort(401)
 
     headers = {
         'Content-Type': 'application/json',
-        'token': session['user'],
-        'game': session['current_game']
+        'token': token,
+        'game': game
     }
     send_url = 'http://yoh-backend:8080/patient/games/statistics/game_start'
 
@@ -72,13 +84,18 @@ def send_game_start_route():
 @api_bp.route('/game_end', methods=['POST'])
 def send_game_end_route():
     data = json.loads(request.data)
-    if not session.get('user') or not session.get('current_game'):
-        abort(401)
+
+    token = session.get('user')
+    game = session.get('current_game')
+    if not token or not game:
+        game, token = url_parse(request.referrer)
+        if not token or not game:
+            abort(401)
 
     headers = {
         'Content-Type': 'application/json',
-        'token': session['user'],
-        'game': session['current_game']
+        'token': token,
+        'game': game
     }
     send_url = 'http://yoh-backend:8080/patient/games/statistics/game_end'
 
@@ -94,8 +111,13 @@ def send_game_end_route():
 @api_bp.route('/statistics', methods=['POST'])
 def statistics_route():
     data = json.loads(request.data)
-    if not session.get('user') or not session.get('current_game'):
-        abort(401)
+
+    token = session.get('user')
+    game = session.get('current_game')
+    if not token or not game:
+        game, token = url_parse(request.referrer)
+        if not token or not game:
+            abort(401)
 
     # statistic_types = {
     #     Решили вопрос полностью правильно: 1
@@ -105,8 +127,8 @@ def statistics_route():
 
     headers = {
         'Content-Type': 'application/json',
-        'token': session['user'],
-        'game': session['current_game']
+        'token': token,
+        'game': game
     }
     send_url = 'http://yoh-backend:8080/patient/games/statistics/send_statistic'
 
