@@ -2,26 +2,28 @@ import React, {Component} from "react";
 import Chart from "react-apexcharts";
 
 export class TransitTime extends Component {
+    toDate(val) {
+        var hours = Math.floor(val / 60 / 60);
+        var minutes = Math.floor(val / 60) - (hours * 60);
+        var seconds = val % 60;
+        var result = '';
+        if (hours) {
+            result += hours.toString() + ' ч. ';
+        }
+        if (minutes) {
+            result += minutes.toString() + ' мин. ';
+        }
+        if (seconds) {
+            result += seconds.toString() + ' сек.';
+        }
+        return result;
+    }
+
     constructor(props) {
         super(props);
-        let toDate = (val) => {
-            var hours = Math.floor(val / 60 / 60);
-            var minutes = Math.floor(val / 60) - (hours * 60);
-            var seconds = val % 60;
-            var result = '';
-            if (hours) {
-                result += hours.toString() + ' ч. ';
-            }
-            if (minutes) {
-                result += minutes.toString() + ' мин. ';
-            }
-            if (seconds) {
-                result += seconds.toString() + ' сек.';
-            }
-            return result;
-        }
-        let title = props.title !== null ? toDate(props.title) : "Игра в процессе";
+        let title = props.title !== null ? this.toDate(props.title) : "Игра в процессе";
 
+        this.current = props.data;
         this.state = {
             options: {
                 chart: {
@@ -83,7 +85,29 @@ export class TransitTime extends Component {
     }
 
     componentDidUpdate(prevProps, prevState, snapshot){
-        console.log(prevProps, prevState, snapshot);
+        let title = prevProps.title !== null ? this.toDate(prevProps.title) : "Игра в процессе";
+
+        if (this.data !== prevProps.data){
+            this.setState(prevProps.data);
+            this.setState(
+                {
+                    options:{
+                        ...prevState.options,
+                        xaxis: {
+                            categories: prevProps.labels
+                        },
+                        title: {
+                            ...prevState.title,
+                            text: title,
+                        }
+                    },
+                    series: [{
+                        name: 'Время прохождения',
+                        data: prevProps.data
+                    }],
+                }
+            )
+        }
     }
 
     render() {
