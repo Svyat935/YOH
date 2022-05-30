@@ -87,8 +87,8 @@ export class TransitTime extends Component {
     componentDidUpdate(prevProps, prevState, snapshot){
         let title = prevProps.title !== null ? this.toDate(prevProps.title) : "Игра в процессе";
 
-        console.log(this.data, prevProps.data);
-        if (this.data !== prevProps.data){
+        console.log(this.current, prevProps.data);
+        if (this.current !== prevProps.data){
             this.setState(prevProps.data);
             this.setState(
                 {
