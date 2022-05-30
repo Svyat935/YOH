@@ -17,7 +17,7 @@ import {InfoBlockStat} from "../../../../../components/InfoBlockStat/InfoBlockSt
 
 export function VPatients(props) {
     const filterList = [
-        {"text": "По алфавиту (возрастание)", "value": 1, "onClick": () => {
+        {"text": "По алфавиту (возрастание)", "value": 1, "defaultChecked": true, "onClick": () => {
                 props.setOrder(1);
                 props.refresh();
             }

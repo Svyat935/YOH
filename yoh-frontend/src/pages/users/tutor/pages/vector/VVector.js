@@ -17,28 +17,41 @@ import {TutorNav} from "../../../../../components/navigate/NavPanel/Tutor/TutorN
 export function VVector(props) {
     const filterList = [
         {
-            "text": "По алфавиту", "value": 1, "onClick": () => {
-                setFilterStatus(1);
+            "text": "По алфавиту (возрастание)", "defaultChecked": true, "value": 1, "onClick": () => {
+                props.setOrder(1)
                 props.refresh();
             }
         },
         {
-            "text": "По дате", "value": 2, "onClick": () => {
-                setFilterStatus(2);
+            "text": "По алфавиту (убывание)", "value": -1, "onClick": () => {
+                props.setOrder(-1)
                 props.refresh();
             }
         },
         {
-            "text": "По описанию", "value": 3, "onClick": () => {
-                setFilterStatus(3);
+            "text": "По дате (возрастание)", "value": 2, "onClick": () => {
+                props.setOrder(2)
                 props.refresh();
             }
         },
-        // {"text": "По типу", "value": 4, "onClick": () => {
-        //         setFilterStatus(4);
-        //         props.refresh();
-        //     }
-        // },
+        {
+            "text": "По дате (убывание)", "value": -2, "onClick": () => {
+                props.setOrder(-2)
+                props.refresh();
+            }
+        },
+        {
+            "text": "По типу (возрастание)", "value": 3, "onClick": () => {
+                props.setOrder(3)
+                props.refresh();
+            }
+        },
+        {
+            "text": "По типу (убывание)", "value": -3, "onClick": () => {
+                props.setOrder(-3)
+                props.refresh();
+            }
+        },
     ]
     const router = useNavigate();
     const [show, setShow] = useState(false);
@@ -121,7 +134,7 @@ export function VVector(props) {
                     window.open("/user/tutor/game/", "_blank");
                     setShow(false);
                 }}/>
-                <ButtonB text={"Добавить в вектор"} onClick={() => {
+                <ButtonB text={"Добавить игру"} onClick={() => {
                     setButtonStatus(1);
                 }}/>
             </div>
@@ -150,7 +163,7 @@ export function VVector(props) {
                 <Modal.Body>
                     {
                         buttonStatus === 0 ? chooseActionView() :
-                            <p>Вы точно хотите добавить игру '{game["name"]}' в вектор пользователя ?</p>
+                            <p>Вы точно хотите добавить игру '{game["name"]}' для пользователя ?</p>
                     }
                 </Modal.Body>
                 <Modal.Footer>

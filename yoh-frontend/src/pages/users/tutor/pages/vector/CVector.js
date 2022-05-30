@@ -11,6 +11,7 @@ export function CVector() {
     const [regex, setRegex] = useState("");
     const [start, setStart] = useState(0);
     const [limit, setLimit] = useState(10);
+    const [order, setOrder] = useState(1);
     const [_, rerun] = useState(new class{});
     const [load, setLoad] = useState(true);
 
@@ -30,6 +31,7 @@ export function CVector() {
 
     const requestGetGames = async (patient_id) => {
         return await fetch("/games/all?" +
+            "order=" + encodeURIComponent(order) + "&" +
             "regex=" + encodeURIComponent(regex) + "&" +
             "start=" + encodeURIComponent(start) + "&" +
             "limit=" + encodeURIComponent(limit) + "&" +
@@ -67,6 +69,7 @@ export function CVector() {
                 games={games}
                 setRegex={setRegex}
                 setStart={setStart}
+                setOrder={setOrder}
                 start={start}
                 addGame={requestAddingGameForPatient}
                 refresh={() => rerun(new class{})}

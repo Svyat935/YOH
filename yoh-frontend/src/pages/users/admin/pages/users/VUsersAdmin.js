@@ -20,7 +20,7 @@ import {SearchFrame} from "../../../../../frame/SearchFrame/SearchFrame";
 export function VUsersAdmin(props) {
     const filterList = [
         {
-            "text": "По алфавиту (возрастание)", "value": 1, "onClick": () => {
+            "text": "По алфавиту (возрастание)", "defaultChecked": true, "value": 1, "onClick": () => {
                 props.setRole(-1);
                 props.setOrder(1);
                 props.refresh();

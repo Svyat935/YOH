@@ -8,14 +8,7 @@ import {ButtonB} from "../../../../../components/buttons/ButtonB/ButtonB";
 
 export function VOrganization(props) {
     let filterList = [
-        {
-            "text": "По алфавиту", "value": 1, "onClick": () => {
-            }
-        },
-        {
-            "text": "По дате", "value": 2, "onClick": () => {
-            }
-        },
+        
     ]
     const [show, setShow] = useState(false);
 

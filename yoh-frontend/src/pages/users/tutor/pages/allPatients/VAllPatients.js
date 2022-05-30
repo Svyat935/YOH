@@ -14,7 +14,7 @@ import profileStub from "../../../../../assets/profileStub.jpg";
 
 export function VAllPatients(props) {
     const filterList = [
-        {"text": "По алфавиту (возрастание)", "value": 1, "onClick": () => {
+        {"text": "По алфавиту (возрастание)", "defaultChecked": true, "value": 1, "onClick": () => {
                 props.setOrder(1);
                 props.refresh();
             }

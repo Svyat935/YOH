@@ -13,7 +13,7 @@ import {useNavigate} from "react-router-dom";
 
 export function VHomePatient(props) {
     let filterList =[
-        {"text": "По названию (возрастание)", "value": 1, "onClick": () => {
+        {"text": "По названию (возрастание)", "defaultChecked": true, "value": 1, "onClick": () => {
                 setFilterStatus(1);
                 props.refresh();
             }
