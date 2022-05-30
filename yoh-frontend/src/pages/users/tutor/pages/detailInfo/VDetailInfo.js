@@ -151,10 +151,10 @@ export function VDetailInfo(props) {
                         </InfoBlockStatic>
                         <p>Телефон: {props.user["numberPhone"] ? props.user["numberPhone"] : "Отсутствует"}</p>
                         <p>Эл.почта: {props.user["email"] ? props.user["email"] : "Отсутствует"}</p>
-                        <ButtonA width={300} text={"Добавить траекторию"} onClick={() => {
+                        <ButtonA width={300} text={"Добавить игру"} onClick={() => {
                             router("/user/tutor/vector/");
                         }}/>
-                        <ButtonA width={300} text={"Удалить траекторию"} onClick={() => {
+                        <ButtonA width={300} text={"Удалить игру"} onClick={() => {
                             router("/user/tutor/delete/");
                         }}/>
                         <ButtonA width={300} text={"Открепить"} onClick={() => {
