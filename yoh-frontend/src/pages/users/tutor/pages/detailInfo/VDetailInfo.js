@@ -16,10 +16,10 @@ import {InfoBlock} from "../../../../../components/infoBlock/InfoBlock";
 export function VDetailInfo(props) {
     const router = useNavigate();
     const [show, setShow] = useState(false);
-    const allGames = props.status !== null ? props.status["Done"] + props.status["Assigned"] + props.status["Failed"] : 0,
+    const allGames = props.status !== null ? props.status["Done"] + props.status["Assigned"] + props.status["Started"] : 0,
         statDone = allGames !== 0 ? Math.round(props.status["Done"] / allGames * 100) : 0,
         statAssigned = allGames !== 0 ? Math.round(props.status["Assigned"] / allGames * 100) : 0,
-        statFailed = allGames !== 0 ? Math.round(props.status["Failed"] / allGames * 100) : 0;
+        statStarted = allGames !== 0 ? Math.round(props.status["Started"] / allGames * 100) : 0;
 
     const createGamesView = () => {
         let games = props.games,
@@ -169,8 +169,8 @@ export function VDetailInfo(props) {
                                 <ProgressBar percent={statAssigned}/>
                                 <label>Завершенных: </label>
                                 <ProgressBar percent={statDone}/>
-                                <label>Неудачных: </label>
-                                <ProgressBar percent={statFailed}/>
+                                <label>Начатые: </label>
+                                <ProgressBar percent={statStarted}/>
                             </div>
                         </div>
                         <h2>Назначенные игры: </h2>

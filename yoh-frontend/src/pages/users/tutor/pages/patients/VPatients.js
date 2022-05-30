@@ -17,13 +17,13 @@ import {InfoBlockStat} from "../../../../../components/InfoBlockStat/InfoBlockSt
 
 export function VPatients(props) {
     const filterList = [
-        {"text": "По алфавиту", "value": 1, "onClick": () => {
-                setFilterStatus(1);
+        {"text": "По алфавиту (возрастание)", "value": 1, "onClick": () => {
+                props.setOrder(1);
                 props.refresh();
             }
         },
-        {"text": "По дате", "value": 2, "onClick": () => {
-                setFilterStatus(2);
+        {"text": "По алфавиту (убывание)", "value": -1, "onClick": () => {
+                props.setOrder(-1);
                 props.refresh();
             }
         },
@@ -31,7 +31,6 @@ export function VPatients(props) {
     const router = useNavigate();
     const [show, setShow] = useState(false);
     const [currentPatient, setCurrentPatient] = useState(null);
-    const [filterStatus, setFilterStatus] = useState(0);
 
     const clearAll = () => {
         setCurrentPatient(null);
@@ -42,29 +41,16 @@ export function VPatients(props) {
         let patients = props.attachedPatients.slice(0, 9),
             view = [];
 
-        if (filterStatus === 1) {
-            patients = patients.sort((a, b) => {
-                if (a["login"] > b["login"]) return 1;
-                else if (a["login"] < b["login"]) return -1;
-                else return 0;
-            });
-        } else if (filterStatus === 2) {
-            patients = patients.sort((a, b) => {
-                if (a["dateRegistration"] > b["dateRegistration"]) return 1;
-                else if (a["dateRegistration"] < b["dateRegistration"]) return -1;
-                else return 0;
-            })
-        }
-
         if (patients.length > 0) {
             patients.forEach((patient) => {
-                let fio = patient["surname"] + " " + patient["name"];
+                let fio = patient["surname"] && patient["name"] ?
+                    patient["surname"] + " " + patient["name"] : "Отсутствует ФИО";
                 let imageSrc = patient["image"] ? "https://mobile.itkostroma.ru/images/" + patient["image"] : profileStub;
                 let status = patient["statusInfo"],
                     all = status["Done"] + status["Failed"] + status["Assigned"] + status["Started"],
-                    done = all !== 0 ? status["Done"] / all * 100 : 0,
-                    failed = all !== 0 ? status["Failed"] / all * 100 : 0,
-                    assigned = all !== 0 ? status["Assigned"] / all * 100 : 0;
+                    done = all !== 0 ? Math.round(status["Done"] / all * 100) : 0,
+                    started = all !== 0 ? Math.round(status["Started"] / all * 100) : 0,
+                    assigned = all !== 0 ? Math.round(status["Assigned"] / all * 100) : 0;
 
                 view.push(
                     <InfoBlockStat onClick={
@@ -78,9 +64,19 @@ export function VPatients(props) {
                                 <img style={{width: "100%"}} src={imageSrc} alt={'profile'}/>
                             </div>
                         </InfoBlockStatic>
-                        <ProgressBarCircular length={done} content={"Завершенные"}/>
-                        <ProgressBarCircular length={failed} content={"В ожидании"}/>
-                        <ProgressBarCircular length={assigned} content={"Неудачные"}/>
+                        <div>
+                            <h3 style={{marginBottom: 30, padding: 10}}>Всего игр: {all ? all: 0}</h3>
+                            <div style={
+                                {
+                                    display: "flex",
+                                    flexDirection: "row"
+                                }
+                            }>
+                                <ProgressBarCircular length={done} content={"Завершенные"}/>
+                                <ProgressBarCircular length={assigned} content={"В ожидании"}/>
+                                <ProgressBarCircular length={started} content={"Начатые"}/>
+                            </div>
+                        </div>
                     </InfoBlockStat>
                 )
             })

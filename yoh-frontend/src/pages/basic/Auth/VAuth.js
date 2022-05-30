@@ -42,7 +42,7 @@ export function VAuth(props) {
             popUpMessage("Пользователь с указанным логиным и паролем отсутствует.");
         }else if (role === undefined){
             popUpMessage("Извините. Произошла ошибка на сервере.");
-        } else if (role === -1){
+        } else if (role === 4){
             popUpMessage("Ваш пользователь не имеет роли. Пожалуйста обратитесь к администратору.");
         } else {
             switch (role) {

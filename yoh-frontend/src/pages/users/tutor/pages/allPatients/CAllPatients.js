@@ -11,6 +11,7 @@ export function CAllPatients() {
     const [regex, setRegex] = useState("");
     const [start, setStart] = useState(0);
     const [limit, setLimit] = useState(10);
+    const [order, setOrder] = useState(1);
     const [_, rerun] = useState(new class {});
     const [load, setLoad] = useState(true);
 
@@ -18,7 +19,8 @@ export function CAllPatients() {
         return await fetch("/tutor/patients/getting/all?" +
             "regex=" + encodeURIComponent(regex) + "&" +
             "start=" + encodeURIComponent(start) + "&" +
-            "limit=" + encodeURIComponent(limit), {
+            "limit=" + encodeURIComponent(limit) + "&" +
+            "order=" + encodeURIComponent(order), {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -101,6 +103,7 @@ export function CAllPatients() {
                 attachedPatients={attachedPatients}
                 setRegex={setRegex}
                 setStart={setStart}
+                setOrder={setOrder}
                 start={start}
                 attach={requestAttachPatient}
                 detach={requestDetachPatient}

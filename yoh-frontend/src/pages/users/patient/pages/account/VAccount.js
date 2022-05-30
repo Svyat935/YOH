@@ -21,7 +21,7 @@ export function VAccount(props) {
     const allGames = props.statistics["Done"] + props.statistics["Assigned"] + props.statistics["Failed"];
     const statDone = allGames !== 0 ? Math.round(props.statistics["Done"] / allGames * 100) : 0;
     const statAssigned = allGames !== 0 ? Math.round(props.statistics["Assigned"] / allGames * 100) : 0;
-    const statFailed = allGames !== 0 ? Math.round(props.statistics["Failed"] / allGames * 100) : 0;
+    const statStarted = allGames !== 0 ? Math.round(props.statistics["Started"] / allGames * 100) : 0;
 
     const changeImage = async () => {
         let fImage = document.getElementById("fileImage");
@@ -274,8 +274,8 @@ export function VAccount(props) {
                                 <ProgressBar percent={statAssigned}/>
                                 <label>Завершенных: </label>
                                 <ProgressBar percent={statDone}/>
-                                <label>Неудачных: </label>
-                                <ProgressBar percent={statFailed}/>
+                                <label>Начатые: </label>
+                                <ProgressBar percent={statStarted}/>
                             </div>
                         </div>
                     </Col>

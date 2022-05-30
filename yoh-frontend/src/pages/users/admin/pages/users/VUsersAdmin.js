@@ -20,37 +20,48 @@ import {SearchFrame} from "../../../../../frame/SearchFrame/SearchFrame";
 export function VUsersAdmin(props) {
     const filterList = [
         {
-            "text": "По алфавиту", "value": 1, "onClick": () => {
+            "text": "По алфавиту (возрастание)", "value": 1, "onClick": () => {
                 props.setRole(-1);
-                setFilterStatus(1);
+                props.setOrder(1);
                 props.refresh();
             }
         },
         {
-            "text": "По дате", "value": 2, "onClick": () => {
+            "text": "По алфавиту (убывание)", "value": -1, "onClick": () => {
                 props.setRole(-1);
-                setFilterStatus(2);
+                props.setOrder(-1);
+                props.refresh();
+            }
+        },
+        {
+            "text": "По дате (возрастание)", "value": 2, "onClick": () => {
+                props.setRole(-1);
+                props.setOrder(2);
+                props.refresh();
+            }
+        },
+        {
+            "text": "По дате (убывание)", "value": -2, "onClick": () => {
+                props.setRole(-1);
+                props.setOrder(-2);
                 props.refresh();
             }
         },
         {
             "text": "Пилигрим", "value": 3, "onClick": () => {
                 props.setRole(4);
-                setFilterStatus(3);
                 props.refresh();
             }
         },
         {
             "text": "Тьютор", "value": 4, "onClick": () => {
                 props.setRole(3);
-                setFilterStatus(4);
                 props.refresh();
             }
         },
         {
             "text": "Пациент", "value": 5, "onClick": () => {
                 props.setRole(1);
-                setFilterStatus(5);
                 props.refresh();
             }
         },
@@ -62,8 +73,6 @@ export function VUsersAdmin(props) {
     //Choose role - 4, Add Info - 5
     //TODO: And I think we can remove some the states.
     const [buttonStatus, setButtonStatus] = useState(0);
-    //Note: FilterStatus is FilterList value.
-    const [filterStatus, setFilterStatus] = useState(0);
     const [password, setPassword] = useState(null);
     const [userForChanging, setChangingUser] = useState({});
     const [userInfo, setUserInfo] = useState({});
@@ -649,7 +658,9 @@ export function VUsersAdmin(props) {
         } else if (buttonStatus === 1){
             view.push(<ButtonB text={"Изменить"} onClick={changeUserPassword}/>)
         } else if (buttonStatus === 2) {
-            view.push(<ButtonB text={"Изменить"} onClick={() => props.changePassword(userForChanging["id"], password)}/>);
+            view.push(<ButtonB text={"Изменить"} onClick={() => {
+                props.changePassword(userForChanging["id"], password); setShow(false);
+            }}/>);
         } else if (buttonStatus === 5){
             view.push(<ButtonB text={"Изменить информацию"}
                          onClick={() => role === 1 ? addInfoForPatient() : addInfoForTutor()}/>)

@@ -18,33 +18,43 @@ import {CheckBox} from "../../../../../components/checkbox/CheckBox";
 export function VComponents(props) {
     const filterList = [
         {
-            "text": "По алфавиту", "value": 1, "onClick": () => {
-                setFilterStatus(1);
+            "text": "По алфавиту (возрастание)", "value": 1, "onClick": () => {
+                props.setOrder(1);
                 props.refresh();
             }
         },
-        {"text": "По дате", "value": 2, "onClick": () => {
-                setFilterStatus(2);
+        {
+            "text": "По алфавиту (убывание)", "value": -1, "onClick": () => {
+                props.setOrder(-1);
                 props.refresh();
             }
         },
-        {"text": "По описанию", "value": 3, "onClick": () => {
-                setFilterStatus(3);
+        {"text": "По дате (возрастание)", "value": 2, "onClick": () => {
+                props.setOrder(2);
                 props.refresh();
             }
         },
-        // {"text": "По типу", "value": 4, "onClick": () => {
-        //         setFilterStatus(4);
-        //         props.refresh();
-        //     }
-        // },
+        {"text": "По дате (убывание)", "value": -2, "onClick": () => {
+                props.setOrder(-2);
+                props.refresh();
+            }
+        },
+        {"text": "По типу (возрастание)", "value": 3, "onClick": () => {
+                props.setOrder(3);
+                props.refresh();
+            }
+        },
+        {"text": "По типу (убывание)", "value": -3, "onClick": () => {
+                props.setOrder(-3);
+                props.refresh();
+            }
+        },
     ]
     const router = useNavigate();
     const [show, setShow] = useState(false);
     //TODO: replace the int type with something better.
     //Note: Adding Game - 0, Removing Game - 1, Confirm Removing - 2, Changing Game - 3, Look At Game - 4.
     const [buttonStatus, setButtonStatus] = useState(0);
-    const [filterStatus, setFilterStatus] = useState(0);
 
     const [gameForRemoving, setRemovingGame] = useState(null);
     const [gameForChanging, setChangingGame] = useState(null);
@@ -54,26 +64,6 @@ export function VComponents(props) {
             view = [];
 
         if (games.length > 0) {
-            if (filterStatus === 1) {
-                games = games.sort((a, b) => {
-                    if (a["name"] > b["name"]) return 1;
-                    else if (a["name"] < b["name"]) return -1;
-                    else return 0;
-                });
-            } else if (filterStatus === 2) {
-                games = games.sort((a, b) => {
-                    if (a["dateAdding"] > b["dateAdding"]) return 1;
-                    else if (a["dateAdding"] < b["dateAdding"]) return -1;
-                    else return 0;
-                })
-            } else if (filterStatus === 3){
-                games = games.sort((a, b) => {
-                    if (a["description"] > b["description"]) return 1;
-                    else if (a["description"] < b["description"]) return -1;
-                    else return 0;
-                })
-            }
-
             games.forEach((game) => {
                 view.push(
                     <InfoBlock ikey={game["id"]} text={game["name"]} onClick={

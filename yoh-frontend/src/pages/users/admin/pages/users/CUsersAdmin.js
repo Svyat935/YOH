@@ -7,6 +7,7 @@ export function CUsersAdmin() {
     const context = useContext(UserContext);
     const [users, setUsers] = useState([]);
     const [organizations, setOrganizations] = useState([]);
+    const [order, setOrder] = useState(1);
     const [regex, setRegex] = useState("");
     const [start, setStart] = useState(0);
     const [limit, setLimit] = useState(10);
@@ -47,7 +48,8 @@ export function CUsersAdmin() {
             "regex=" + encodeURIComponent(regex) + "&" +
             "role=" + encodeURIComponent(role) + "&" +
             "start=" + encodeURIComponent(start) + "&" +
-            "limit=" + encodeURIComponent(limit), {
+            "limit=" + encodeURIComponent(limit) + "&" +
+            "order=" + encodeURIComponent(order), {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -91,7 +93,7 @@ export function CUsersAdmin() {
     }
 
     const requestChangePassword = async (user_id, password) => {
-        return await fetch("/admins/user/changePassword", {
+        return await fetch("/admins/user/password/edit", {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -225,6 +227,7 @@ export function CUsersAdmin() {
                 getInfoUser={requestDetailUserInfo}
                 getUser={requestUser}
                 changePassword={requestChangePassword}
+                setOrder={setOrder}
                 setRegex={setRegex}
                 setRole={setRole}
                 setStart={setStart}

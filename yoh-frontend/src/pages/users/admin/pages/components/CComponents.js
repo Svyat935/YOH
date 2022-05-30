@@ -7,6 +7,7 @@ import {LoadPage} from "../../../../../components/loadpage/LoadPage";
 export function CComponents() {
     const context = useContext(UserContext);
     const [games, setGames] = useState([]);
+    const [order, setOrder] = useState(1);
     const [regex, setRegex] = useState("");
     const [start, setStart] = useState(0);
     const [limit, setLimit] = useState(10);
@@ -17,7 +18,8 @@ export function CComponents() {
         return await fetch("/games/all?" +
             "regex=" + encodeURIComponent(regex) + "&" +
             "start=" + encodeURIComponent(start) + "&" +
-            "limit=" + encodeURIComponent(limit), {
+            "limit=" + encodeURIComponent(limit) + "&" +
+            "order=" + encodeURIComponent(order), {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -96,6 +98,7 @@ export function CComponents() {
             changeGame={requestChangeGame}
             setRegex={setRegex}
             setStart={setStart}
+            setOrder={setOrder}
             start={start}
             context={context}
         />

@@ -14,20 +14,29 @@ import profileStub from "../../../../../assets/profileStub.jpg";
 
 export function VAllPatients(props) {
     const filterList = [
-        {"text": "По алфавиту", "value": 1, "onClick": () => {
-                setFilterStatus(1);
+        {"text": "По алфавиту (возрастание)", "value": 1, "onClick": () => {
+                props.setOrder(1);
                 props.refresh();
             }
         },
-        {"text": "По дате", "value": 2, "onClick": () => {
-                setFilterStatus(2);
+        {"text": "По алфавиту (убывание)", "value": -1, "onClick": () => {
+                props.setOrder(-1);
+                props.refresh();
+            }
+        },
+        {"text": "По дате (возрастание)", "value": 2, "onClick": () => {
+                props.setOrder(2);
+                props.refresh();
+            }
+        },
+        {"text": "По дате (убывание)", "value": -2, "onClick": () => {
+                props.setOrder(-2);
                 props.refresh();
             }
         },
     ]
     const [show, setShow] = useState(false);
     const [currentPatient, setCurrentPatient] = useState(null);
-    const [filterStatus, setFilterStatus] = useState(0);
 
     const clearAll = () => {
         setCurrentPatient(null);
@@ -38,19 +47,6 @@ export function VAllPatients(props) {
         let patients = props.patients.slice(0, 9),
             view = [];
         if (patients.length > 0) {
-            if (filterStatus === 1) {
-                patients = patients.sort((a, b) => {
-                    if (a["surname"] > b["surname"]) return 1;
-                    else if (a["surname"] < b["surname"]) return -1;
-                    else return 0;
-                });
-            } else if (filterStatus === 2) {
-                patients = patients.sort((a, b) => {
-                    if (a["dateRegistration"] > b["dateRegistration"]) return 1;
-                    else if (a["dateRegistration"] < b["dateRegistration"]) return -1;
-                    else return 0;
-                })
-            }
 
             patients.forEach((patient) => {
                 let fio = patient["surname"] && patient["name"] ?

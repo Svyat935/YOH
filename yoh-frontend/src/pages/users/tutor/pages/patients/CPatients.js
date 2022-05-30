@@ -10,6 +10,7 @@ export function CPatients() {
     const [regex, setRegex] = useState("");
     const [start, setStart] = useState(0);
     const [limit, setLimit] = useState(10);
+    const [order, setOrder] = useState(1);
     const [_, rerun] = useState(new class {});
     const [load, setLoad] = useState(true);
 
@@ -18,7 +19,7 @@ export function CPatients() {
             "regex=" + encodeURIComponent(regex) + "&" +
             "start=" + encodeURIComponent(start) + "&" +
             "limit=" + encodeURIComponent(limit) + "&" +
-            "order=" + encodeURIComponent(-1), {
+            "order=" + encodeURIComponent(order), {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -51,6 +52,7 @@ export function CPatients() {
                 setRegex={setRegex}
                 setStart={setStart}
                 start={start}
+                setOrder={setOrder}
                 saveUser={(info) => context.addInfo(info)}
                 attachedPatients={attachedPatients}
                 refresh={() => rerun(new class{})}

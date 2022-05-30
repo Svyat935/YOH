@@ -20,7 +20,7 @@ export class TransitTime extends Component {
             }
             return result;
         }
-        let title = toDate(props.title);
+        let title = props.title !== null ? toDate(props.title) : "Игра в процессе";
 
         this.state = {
             options: {

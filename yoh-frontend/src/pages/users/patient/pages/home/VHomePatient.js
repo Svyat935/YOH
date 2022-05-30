@@ -13,18 +13,33 @@ import {useNavigate} from "react-router-dom";
 
 export function VHomePatient(props) {
     let filterList =[
-        {"text": "По названию", "value": 1, "onClick": () => {
+        {"text": "По названию (возрастание)", "value": 1, "onClick": () => {
                 setFilterStatus(1);
                 props.refresh();
             }
         },
-        {"text": "По описанию", "value": 2, "onClick": () => {
+        {"text": "По названию (убывание)", "value": -1, "onClick": () => {
+                setFilterStatus(-1);
+                props.refresh();
+            }
+        },
+        {"text": "По типу (возрастание)", "value": 2, "onClick": () => {
                 setFilterStatus(2);
                 props.refresh();
             }
         },
-        {"text": "По статусу", "value": 3, "onClick": () => {
+        {"text": "По типу (убывание)", "value": -2, "onClick": () => {
+                setFilterStatus(-2);
+                props.refresh();
+            }
+        },
+        {"text": "По статусу (возрастание)", "value": 3, "onClick": () => {
                 setFilterStatus(3);
+                props.refresh();
+            }
+        },
+        {"text": "По статусу (убывание)", "value": -3, "onClick": () => {
+                setFilterStatus(-3);
                 props.refresh();
             }
         },
@@ -36,19 +51,6 @@ export function VHomePatient(props) {
         let games = props.games.slice(0, 9),
             view = [];
         if (games.length > 0) {
-            if (filterStatus === 1) {
-                games = games.sort((a, b) => {
-                    if (a["name"] > b["name"]) return 1;
-                    else if (a["name"] < b["name"]) return -1;
-                    else return 0;
-                });
-            } else if (filterStatus === 2){
-                games = games.sort((a, b) => {
-                    if (a["description"] > b["description"]) return 1;
-                    else if (a["description"] < b["description"]) return -1;
-                    else return 0;
-                })
-            }
 
             games.forEach((game) => {
                 view.push(
