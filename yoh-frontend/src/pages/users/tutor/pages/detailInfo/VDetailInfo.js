@@ -29,13 +29,21 @@ export function VDetailInfo(props) {
             games = games.filter((game) => game["active"] !== "DELETED");
             if (games !== null && games !== undefined && games.length > 0){
                 games.forEach((game) => {
-                    view.push(
-                        <InfoBlock key={game["id"]} text={game["name"]} onClick={() => {
-                            let info = props.context.info ? props.context.info : {};
-                            info["gamePatientId"] = game["gamePatientId"];
-                            props.context.addInfo(info);
+                    let status = game["status"] === "ASSIGNED" ? "Назначена" :
+                        game["status"] === "DONE" ? "Выполнено" :
+                            game["status"] === "STARTED" ? "Начата" : "Неудачная";
 
-                            router("/user/tutor/stat");
+                    view.push(
+                        <InfoBlock
+                            key={game["id"]}
+                            text={"Название: " + game["name"]}
+                            addText={"Cтатус: " + status}
+                            onClick={() => {
+                                let info = props.context.info ? props.context.info : {};
+                                info["gamePatientId"] = game["gamePatientId"];
+                                props.context.addInfo(info);
+
+                                router("/user/tutor/stat");
                         }}>
                             <div>
                                 <img style={{width: "100%"}} src={gameStub} alt={'game'}/>

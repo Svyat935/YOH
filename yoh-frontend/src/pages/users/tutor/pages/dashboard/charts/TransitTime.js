@@ -82,6 +82,10 @@ export class TransitTime extends Component {
         };
     }
 
+    componentDidUpdate(prevProps, prevState, snapshot){
+        console.log(prevProps, prevState, snapshot);
+    }
+
     render() {
         return (
             <Chart

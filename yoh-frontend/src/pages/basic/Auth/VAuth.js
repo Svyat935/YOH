@@ -20,11 +20,13 @@ export function VAuth(props) {
 
     const throwPopUp = () => {
         let element = document.querySelector(".popup");
+        element.style.visibility = "none";
         element.style.right = 0;
     }
 
     const takeAwayPopUp = () => {
         let element = document.querySelector(".popup");
+        element.style.visibility = "hidden";
         element.style.right = "-25%";
     }
 

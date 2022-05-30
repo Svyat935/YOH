@@ -1,11 +1,12 @@
-import React, {useContext} from "react";
+import React, {useContext, useEffect, useState} from "react";
 import {AdminNav} from "../../../../../components/navigate/NavPanel/Admin/AdminNav";
 import {Back} from "../../../../../components/back/Back";
-import {Container} from "react-bootstrap";
 import {UserContext} from "../../../../../context/userContext";
+import {LoadPage} from "../../../../../components/loadpage/LoadPage";
 
 export function VGame() {
     let context = useContext(UserContext);
+    const [load, setLoad] = useState(true);
 
     return (
         <Back navPanel={<AdminNav context={context}/>}>
@@ -15,7 +16,16 @@ export function VGame() {
                     justifyContent: "center"
                 }
             }>
-                <iframe src={context.info} style={{width: "95vw", height: "82vh"}}/>
+                <LoadPage
+                    status={load}
+                >
+                    <iframe
+                        id={"game-iframe"}
+                        src={context.info}
+                        style={{width: "95vw", height: "82vh"}}
+                        onLoad={() => setLoad(false)}
+                    />
+                </LoadPage>
             </div>
         </Back>
     )
