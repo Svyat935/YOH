@@ -55,7 +55,9 @@ export function VHomePatient(props) {
                     <InfoBlock key={game["id"]} text={game["name"]} onClick={() => {
                         props.context.addInfo(
                             {
-                                "url": "http://" + game["url"] + "?token=" + props.context.token
+                                "url": "https://" + game["url"] + "?" +
+                                    "token=" + props.context.token + "&" +
+                                    "use_statistics=" + game["useStatistics"]
                             }
                         );
                         router("/user/patient/game");
