@@ -176,7 +176,7 @@ export function VComponents(props) {
                         <p><b>Name:</b> {game["name"]}; <b>Description:</b> {game["description"]}</p>
                         <ButtonB text={"Посмотреть"} fontSize={"medium"} onClick={
                             () => {
-                                let url = "http://" + game["url"] + "?" +
+                                let url = "https://" + game["url"] + "?" +
                                     "token=" + props.context.token + "&" +
                                     "use_statistics=" + game["useStatistics"];
                                 props.context.addInfo(url);
