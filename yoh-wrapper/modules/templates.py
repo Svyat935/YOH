@@ -4,8 +4,8 @@ select array(
         "id" as "ids" 
     from "started_games" 
     where 
-        "game_patient_id" = %(gp_id)s and 
-        "date_end" is not null 
+        "game_patient_id" = %(gp_id)s 
+        --and "date_end" is not null 
     order by "date_end"
 ) as "attempts";
 """
