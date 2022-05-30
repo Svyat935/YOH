@@ -51,6 +51,7 @@ def error_handler_route(error):
 
 @api_bp.route('/game_start', methods=['POST'])
 def send_game_start_route():
+    print(request.referrer)
     data = json.loads(request.data)
     if not session.get('user') or not session.get('current_game'):
         abort(401)
