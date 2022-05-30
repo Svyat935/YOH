@@ -11,9 +11,14 @@ export function VGame() {
     useEffect(() => {
         if (context.token){
             setView(
-                <Container>
-                    <iframe src={context.info.url} style={{width: "90vw", height: "100vh"}}/>
-                </Container>
+                <div style={
+                    {
+                        display: "flex",
+                        justifyContent: "center"
+                    }
+                }>
+                    <iframe src={context.info.url} style={{width: "95vw", height: "82vh"}}/>
+                </div>
             )
         }
     }, [context])

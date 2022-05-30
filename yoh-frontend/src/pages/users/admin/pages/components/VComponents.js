@@ -304,7 +304,7 @@ export function VComponents(props) {
                     {borderRadius: 40, border: "none", padding: "5px 15px", marginBottom: 10, width: "100%"}
                 } required/>
                 <p id={"type-validate"} style={{height: "5px", marginBottom: 0, color: "#800000"}}/>
-                <label>Использована Статистика: </label>
+                <label>Используется рекомендуемый класс для отправки статистики: </label>
                 <CheckBox id={"useStatistics"} style={
                     {borderRadius: 40, marginBottom: 10, width: 20, height: 20}
                 }/>
