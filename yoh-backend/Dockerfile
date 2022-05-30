@@ -5,7 +5,8 @@ WORKDIR /app
 COPY pom.xml .
 RUN mkdir src
 COPY ./src ./src
-RUN --mount=type=cache,target=/root/.mv2 mvn clean package -DskipTests
+# RUN --mount=type=cache,target=/root/.mv2 mvn clean package -DskipTests
+RUN mvn clean package -DskipTests
 
 # Run service
 FROM openjdk:17.0.2-jdk
