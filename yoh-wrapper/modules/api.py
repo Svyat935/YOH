@@ -215,6 +215,6 @@ def post_route():
 
 
 @api_bp.route('test_cookies')
-def post_route():
+def test_cookies_route():
     resp = make_response(json.dumps(session), 200)
     return resp
