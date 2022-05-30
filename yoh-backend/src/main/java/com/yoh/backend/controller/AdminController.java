@@ -364,7 +364,7 @@ public class AdminController {
     }
 
     @PostMapping(path = "/user/password/edit")
-    public JSONResponse changePassword(@RequestParam("token") String token,
+    public JSONResponse changePassword(@RequestHeader("token") String token,
                                        @Valid @RequestBody ChangePasswordRequest changePasswordRequest){
         try {
             Admin admin = this.adminService.getAdminByUser(this.userService.getUserById(this.userService.verifyToken(token)));
@@ -385,7 +385,7 @@ public class AdminController {
     }
 
     @PostMapping(path = "/user/email/edit")
-    public JSONResponse changePassword(@RequestParam("token") String token,
+    public JSONResponse changePassword(@RequestHeader("token") String token,
                                        @Valid @RequestBody ChangeEmailRequest changeEmailRequest){
         try {
             Admin admin = this.adminService.getAdminByUser(this.userService.getUserById(this.userService.verifyToken(token)));
