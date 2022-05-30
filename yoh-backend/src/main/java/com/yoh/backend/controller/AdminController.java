@@ -363,7 +363,7 @@ public class AdminController {
         return destFile;
     }
 
-    @PostMapping(path = "/user/changePassword")
+    @PostMapping(path = "/user/editPassword")
     public JSONResponse changePassword(@RequestParam("token") String token,
                                        @Valid @RequestBody ChangePasswordRequest changePasswordRequest){
         try {
