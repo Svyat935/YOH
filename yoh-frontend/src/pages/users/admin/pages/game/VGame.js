@@ -9,9 +9,14 @@ export function VGame() {
 
     return (
         <Back navPanel={<AdminNav context={context}/>}>
-            <Container>
-                <iframe src={context.info} style={{width: "90vw", height: "100vh"}}/>
-            </Container>
+            <div style={
+                {
+                    display: "flex",
+                    justifyContent: "center"
+                }
+            }>
+                <iframe src={context.info} style={{width: "95vw", height: "82vh"}}/>
+            </div>
         </Back>
     )
 }
