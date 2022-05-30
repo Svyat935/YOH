@@ -212,3 +212,9 @@ def post_route():
     resp = make_response('', 200)
     resp.set_cookie('EndGame', 'true', expires=datetime.now() + timedelta(seconds=10))
     return resp
+
+
+@api_bp.route('test_cookies')
+def post_route():
+    resp = make_response(json.dumps(session), 200)
+    return resp
