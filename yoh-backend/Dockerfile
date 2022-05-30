@@ -11,5 +11,4 @@ RUN --mount=type=cache,target=/root/.mv2 mvn clean package -DskipTests
 FROM openjdk:17.0.2-jdk
 WORKDIR /app
 COPY --from=maven /app .
-# COPY ./target/backend-0.0.1-SNAPSHOT.jar .
 CMD ["java", "-jar", "target/backend-0.0.1-SNAPSHOT.jar"]
