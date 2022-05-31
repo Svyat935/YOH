@@ -85,7 +85,7 @@ public class AdminController {
             JsonObject response = new JsonObject();
             List<UserInfoResponse> responseList = new ArrayList<>();
             int listCount = this.userService.getAllUsersByAdminCount(Integer.parseInt(role), regex);
-            if (listCount != 0) {
+            if (listCount == 0) {
                 response.put("previous", false);
                 response.put("next", false);
                 response.put("count", 0);
