@@ -7,15 +7,16 @@ import {AdminNav} from "../../../../../components/navigate/NavPanel/Admin/AdminN
 import {InfoBlock} from "../../../../../components/infoBlock/InfoBlock";
 import profileStub from "../../../../../assets/profileStub.jpg";
 import gameStub from "../../../../../assets/gameStub.jpg";
-import {RightArrow} from "../../../../../components/arrows/RightArrow";
+import {RightArrow} from "../../../../../components/arrows/RightArrow/RightArrow";
 import {useNavigate} from "react-router-dom";
+import {Slider} from "../../../../../components/slider/Slider";
 
 
 export function VHomeAdmin(props) {
     const router = useNavigate();
 
     const createViewUsers = () => {
-        let users = props.users.slice(-5),
+        let users = props.users.slice(-10),
             view = [];
 
         if (users.length > 0){
@@ -28,35 +29,13 @@ export function VHomeAdmin(props) {
                     </InfoBlock>
                 )
             })
-        }else{
-            view.push(
-                <div style={
-                    {
-                        height: 387,
-                        width: 936,
-                        display: "flex",
-                        justifyContent: "center",
-                        alignItems: "center"
-                    }
-                }>
-                    <h3>Пользователи в системе отсутствуют.</h3>
-                </div>
-            )
         }
 
-        return (
-            <div>
-                <h3 style={{marginTop: 20}}>Последние зарегистрированные пользователи:</h3>
-                <div style={{display: "flex", justifyContent: "space-evenly", flexWrap: "wrap"}}>
-                    {view}
-                    {view.length === 5 ? <RightArrow onClick={() => router("/user/admin/users/")}/> : null}
-                </div>
-            </div>
-        )
+        return view;
     }
 
     const createViewGames = () => {
-        let games = props.games.slice(-5),
+        let games = props.games.slice(-10),
             view = [];
 
         if (games.length > 0){
@@ -69,31 +48,9 @@ export function VHomeAdmin(props) {
                     </InfoBlock>
                 )
             })
-        }else{
-            view.push(
-                <div style={
-                    {
-                        height: 387,
-                        width: 936,
-                        display: "flex",
-                        justifyContent: "center",
-                        alignItems: "center"
-                    }
-                }>
-                    <h3>Игры в системе отсутствуют.</h3>
-                </div>
-            )
         }
 
-        return (
-            <div>
-                <h3 style={{marginTop: 20}}>Последние игры в системе:</h3>
-                <div style={{display: "flex", justifyContent: "space-evenly", flexWrap: "wrap"}}>
-                    {view}
-                    {view.length === 5 ? <RightArrow onClick={() => router("/user/admin/components/")}/> : null}
-                </div>
-            </div>
-        )
+        return view;
     }
 
     return (
@@ -102,8 +59,46 @@ export function VHomeAdmin(props) {
                 <Col>
                     <Row>
                         <h2 style={{fontWeight: "bold"}}>Добрый день, Администратор!</h2>
-                        {createViewUsers()}
-                        {createViewGames()}
+                        <div>
+                            <h3 style={{marginTop: 20}}>Последние зарегистрированные пользователи:</h3>
+                            {
+                                props.users.length !== 0 ?
+                                    <Slider max={4}>
+                                        {createViewUsers()}
+                                    </Slider> :
+                                    <div style={
+                                        {
+                                            height: 387,
+                                            width: "100%",
+                                            display: "flex",
+                                            justifyContent: "center",
+                                            alignItems: "center"
+                                        }
+                                    }>
+                                        <h3>Пользователи в системе отсутствуют.</h3>
+                                    </div>
+                            }
+                        </div>
+                        <div>
+                            <h3 style={{marginTop: 20}}>Последние игры в системе:</h3>
+                            {
+                                props.games.length !== 0 ?
+                                    <Slider max={4}>
+                                        {createViewGames()}
+                                    </Slider> :
+                                    <div style={
+                                        {
+                                            height: 387,
+                                            width: 936,
+                                            display: "flex",
+                                            justifyContent: "center",
+                                            alignItems: "center"
+                                        }
+                                    }>
+                                        <h3>Игры в системе отсутствуют.</h3>
+                                    </div>
+                            }
+                        </div>
                     </Row>
                 </Col>
             </Container>

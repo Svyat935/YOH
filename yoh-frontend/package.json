@@ -41,6 +41,7 @@
     ]
   },
   "devDependencies": {
+    "react-flip-move": "^3.0.4",
     "react-router-dom": "^6.2.1"
   },
   "proxy": "http://localhost:5000"

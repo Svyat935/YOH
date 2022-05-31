@@ -348,8 +348,8 @@ export function VUsersAdmin(props) {
             fSecondName.style.border = validStyle;
             validStatus = false;
         }
-        if (fPhone.value && fPhone.value.includes("_")){
-            fSecondName.style.border = validStyle;
+        if (fPhone.value !== "+7(___)___-__-__" && fPhone.value.includes("_")){
+            fPhone.style.border = validStyle;
             validStatus = false;
         }
 

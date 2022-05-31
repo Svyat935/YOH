@@ -5,7 +5,7 @@ import Row from "react-bootstrap/Row";
 import {Back} from "../../../../../components/back/Back";
 import {InfoBlock} from "../../../../../components/infoBlock/InfoBlock";
 import profileStub from "../../../../../assets/profileStub.jpg";
-import {RightArrow} from "../../../../../components/arrows/RightArrow";
+import {RightArrow} from "../../../../../components/arrows/RightArrow/RightArrow";
 import {useNavigate} from "react-router-dom";
 import {ProgressBar} from "../../../../../components/progressBar/ProgressBar";
 

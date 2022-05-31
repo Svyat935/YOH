@@ -10,7 +10,7 @@ export function VHome() {
             <Container>
                 <Row style={{height: "78vh"}} className={"align-items-center"}>
                     <Col>
-                        <h2>Добро пожаловать в Систему Дистанционой Социальной Адаптации</h2>
+                        <h2>Добро пожаловать в Систему "Виртуальный Тьютор"</h2>
                     </Col>
                     <Col className={"column"}>
                         <div style={{width: "100%"}}>
