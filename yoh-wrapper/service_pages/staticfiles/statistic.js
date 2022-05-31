@@ -9,8 +9,10 @@ class StatRecord {
 		this.count_clicks = 0;
 		this.count_missclicks = 0;
 		this.stat_func = function (stat_class) {
-			if (stat_class.current_level !== null) {
-				stat_class.count_clicks++;
+			return function (event) {
+				if (Number.isInteger(stat_class.current_level)) {
+					stat_class.count_clicks++;
+				}
 			}
 		};
 		this.additional_fields = null;
