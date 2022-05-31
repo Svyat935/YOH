@@ -7,7 +7,14 @@ import {LoadPage} from "../../../../../components/loadpage/LoadPage";
 
 export function VGame() {
     let context = useContext(UserContext);
+    const [src, setSrc] = useState(null);
     const [load, setLoad] = useState(true);
+
+    useEffect(() => {
+        if (context.token) {
+            setSrc(context.info.url);
+        }
+    }, [context])
 
     return (
         <Back navPanel={<TutorNav context={context}/>}>
@@ -21,7 +28,7 @@ export function VGame() {
                     status={load}
                 >
                     <iframe
-                        src={context.info.url}
+                        src={src}
                         style={{width: "95vw", height: "82vh"}}
                         onLoad={() => setLoad(false)}
                     />
