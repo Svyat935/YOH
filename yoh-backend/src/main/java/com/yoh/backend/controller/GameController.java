@@ -2,10 +2,8 @@ package com.yoh.backend.controller;
 
 import com.github.cliftonlabs.json_simple.JsonArray;
 import com.github.cliftonlabs.json_simple.JsonObject;
-import com.yoh.backend.entity.Admin;
-import com.yoh.backend.entity.Game;
-import com.yoh.backend.entity.Patient;
-import com.yoh.backend.entity.User;
+import com.yoh.backend.entity.*;
+import com.yoh.backend.enums.GamePatientStatus;
 import com.yoh.backend.enums.GameStatus;
 import com.yoh.backend.request.AddGamesRequest;
 import com.yoh.backend.request.EditGameRequest;
@@ -181,10 +179,20 @@ public class GameController {
                 System.out.println("game files were deleted");
             else System.out.println("game not found");
 
+            List<GamePatient> gamePatientList = this.gamePatientService.getAllGamePatientsByGame(game);
+
+            //TODO цикл сохранения
+            for (GamePatient gamePatient: gamePatientList){
+                gamePatient.setGamePatientStatus(GamePatientStatus.DELETED);
+                this.gamePatientService.saveGamePatient(gamePatient);
+            }
+
             game.setGameStatus(GameStatus.DELETED);
             game.setUrl(null);
+            this.gameService.updateGame(game);
             //Удаление из папки
-            this.gamePatientService.deactivateGame(game);
+//            this.gamePatientService.deactivateGame(game);
+
 
             return "Game was deleted";
         }
@@ -199,8 +207,17 @@ public class GameController {
         try {
             Admin admin = this.adminService.getAdminByUser(this.userService.getUserById(this.userService.verifyToken(token)));
             Game game = this.gameService.getGameById(UUID.fromString(gameToRemove.getGame_id()));
+
+            //TODO перенести в сервис
+            List<GamePatient> gamePatientList = this.gamePatientService.getAllGamePatientsByGame(game);
+            for (GamePatient gamePatient: gamePatientList){
+                gamePatient.setGamePatientStatus(GamePatientStatus.DELETED);
+                this.gamePatientService.saveGamePatient(gamePatient);
+            }
+
             game.setGameStatus(GameStatus.DISABLED);
-            this.gamePatientService.deactivateGame(game);
+            this.gameService.updateGame(game);
+//            this.gamePatientService.deactivateGame(game);
             return "Game was deactivated";
         }
         catch (IllegalArgumentException e) {

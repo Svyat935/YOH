@@ -53,24 +53,24 @@ public class GamePatientRepository {
         }
     }
 
-    public void deactivateGame(Game game) {
-        Session session = sessionFactory.openSession();
-        try {
-            Criteria criteria = session.createCriteria(GamePatient.class)
-                    .add(Restrictions.eq("game", game));
-            List<GamePatient> gamePatientList = criteria.list();
-            session.beginTransaction();
-            for (GamePatient gamePatient: gamePatientList){
-                gamePatient.setGamePatientStatus(GamePatientStatus.DELETED);
-                session.update(gamePatient);
-            }
-            session.update(game);
-            session.getTransaction().commit();
-        }
-        finally {
-            session.close();
-        }
-    }
+//    public void deactivateGame(Game game) {
+//        Session session = sessionFactory.openSession();
+//        try {
+//            Criteria criteria = session.createCriteria(GamePatient.class)
+//                    .add(Restrictions.eq("game", game));
+//            List<GamePatient> gamePatientList = criteria.list();
+//            session.beginTransaction();
+//            for (GamePatient gamePatient: gamePatientList){
+//                gamePatient.setGamePatientStatus(GamePatientStatus.DELETED);
+//                session.update(gamePatient);
+//            }
+//            session.update(game);
+//            session.getTransaction().commit();
+//        }
+//        finally {
+//            session.close();
+//        }
+//    }
 
     public GamePatient getGamePatientByUUID(UUID id) {
         Session session = sessionFactory.openSession();
