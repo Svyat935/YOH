@@ -9,7 +9,10 @@ game_bp = Blueprint('Game', __name__, template_folder='../games', static_folder=
 
 @game_bp.route('/<game>/<path:path>')
 def static_route(game, path):
-    return game_bp.send_static_file(f'{game}/{path}')
+    response = make_response(game_bp.send_static_file(f'{game}/{path}'))
+    if path.split('.')[-1] == 'gz':
+        response.headers['Content-Encoding'] = 'gzip'
+    return response
 
 
 @game_bp.route('/<game>/')
