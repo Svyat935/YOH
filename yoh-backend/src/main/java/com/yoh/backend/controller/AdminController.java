@@ -91,6 +91,7 @@ public class AdminController {
                 response.put("previous", false);
                 response.put("next", false);
                 response.put("count", 0);
+                response.put("size", 0);
                 response.put("results", new ArrayList<>());
                 return new JSONResponse(200, response);
             }
@@ -110,13 +111,14 @@ public class AdminController {
             }
             if (start == 0) response.put("previous", false);
             else response.put("previous", true);
-            List<User> paginatedGamesList = new ArrayList<>();
+            List<User> paginatedUserList = new ArrayList<>();
             for (int i = start; i < lastIndex; i++){
-                paginatedGamesList.add(userList.get(i));
+                paginatedUserList.add(userList.get(i));
             }
-            response.put("count", paginatedGamesList.size());
+            response.put("count", paginatedUserList.size());
+            response.put("size", paginatedUserList.size());
 
-            for (User user: paginatedGamesList) {
+            for (User user: paginatedUserList) {
                 responseList.add(new UserInfoResponse(user));
             }
 //            response.put("userList", this.userService.getAllUsers());
@@ -266,6 +268,7 @@ public class AdminController {
             Game game;
             if (this.gameService.checkGameByName(name)){
                 game = this.gameService.getGameByName(name);
+                game.setGameStatus(GameStatus.ACTIVE);
             }
             else {
                 game = new Game(UUID.randomUUID() ,name, type, description, null, LocalDateTime.now(), useStatistic, GameStatus.ACTIVE);
@@ -414,6 +417,15 @@ public class AdminController {
             List<Organization> organizationList = this.organizationService.getAllOrganizationsFilteredOrdered(regex, order);
             JsonObject response = new JsonObject();
 
+            if (organizationList.size() == 0) {
+//                JsonObject response = new JsonObject();
+                response.put("previous", false);
+                response.put("next", false);
+                response.put("count", 0);
+                response.put("size", 0);
+                response.put("results", new ArrayList<>());
+                return new JSONResponse(200, response);
+            }
             //Pagination
             List<Organization> paginatedOrganizationList = new ArrayList<>();
             if (start >= organizationList.size())
@@ -436,6 +448,7 @@ public class AdminController {
                 paginatedOrganizationList.add(organizationList.get(i));
             }
             response.put("count", paginatedOrganizationList.size());
+            response.put("size", organizationList.size());
 
 //            response.put("userList", this.userService.getAllUsers());
             response.put("results", paginatedOrganizationList);

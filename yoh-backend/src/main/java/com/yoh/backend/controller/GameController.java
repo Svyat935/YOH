@@ -86,6 +86,7 @@ public class GameController {
                 response.put("previous", false);
                 response.put("next", false);
                 response.put("count", 0);
+                response.put("size", 0);
                 response.put("results", new ArrayList<>());
                 return new JSONResponse(200, response);
             }
@@ -115,6 +116,7 @@ public class GameController {
                 paginatedGameList.add(gameList.get(i));
             }
             response.put("count", paginatedGameList.size());
+            response.put("size", paginatedGameList.size());
 
 
 //            if (games.size() != 0){
@@ -199,6 +201,21 @@ public class GameController {
             Game game = this.gameService.getGameById(UUID.fromString(gameToRemove.getGame_id()));
             game.setGameStatus(GameStatus.DISABLED);
             this.gamePatientService.deactivateGame(game);
+            return "Game was deactivated";
+        }
+        catch (IllegalArgumentException e) {
+            return e.getMessage();
+        }
+    }
+
+    @PutMapping(path = "/activate")
+    public String activateGame(@RequestHeader("token") String token,
+                                 @Valid @RequestBody GameToRemove gameToRemove) {
+        try {
+            Admin admin = this.adminService.getAdminByUser(this.userService.getUserById(this.userService.verifyToken(token)));
+            Game game = this.gameService.getGameById(UUID.fromString(gameToRemove.getGame_id()));
+            game.setGameStatus(GameStatus.ACTIVE);
+            this.gameService.updateGame(game);
             return "Game was deactivated";
         }
         catch (IllegalArgumentException e) {

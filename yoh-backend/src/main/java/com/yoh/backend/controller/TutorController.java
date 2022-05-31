@@ -99,6 +99,7 @@ public class TutorController {
                 response.put("previous", false);
                 response.put("next", false);
                 response.put("count", 0);
+                response.put("size", 0);
                 response.put("results", new ArrayList<>());
                 return new JSONResponse(200, response);
             }
@@ -123,6 +124,7 @@ public class TutorController {
                 patientsFilteredList.add(patients.get(i));
             }
             response.put("count", patientsFilteredList.size());
+            response.put("size", patients.size());
 
             for (Patient patient : patientsFilteredList){
                 JsonObject patientInfo = new JsonObject();
@@ -198,6 +200,7 @@ public class TutorController {
                 response.put("previous", false);
                 response.put("next", false);
                 response.put("count", 0);
+                response.put("size", 0);
                 response.put("results", new ArrayList<>());
                 return new JSONResponse(200, response);
             }
@@ -223,6 +226,7 @@ public class TutorController {
                 patientsFilteredList.add(patientsFilteredUnpaginatedList.get(i));
             }
             response.put("count", patientsFilteredList.size());
+            response.put("size", patientsFilteredUnpaginatedList.size());
 
 //            if (!patientsFilteredList.isEmpty()) {
             for (Patient patient : patientsFilteredList){
@@ -379,6 +383,7 @@ public class TutorController {
                 response.put("previous", false);
                 response.put("next", false);
                 response.put("count", 0);
+                response.put("size", 0);
                 response.put("results", new ArrayList<>());
                 return new JSONResponse(200, response);
             }
@@ -404,6 +409,7 @@ public class TutorController {
                 paginatedGamesList.add(gamePatientList.get(i));
             }
             response.put("count", paginatedGamesList.size());
+            response.put("size", 0);
 
             for (GamePatient gamePatient: paginatedGamesList) {
                 JsonObject gamesInfo = new JsonObject();
