@@ -28,7 +28,7 @@ export function FilterBlock(props) {
 
     return (
         <div className={"filter-block"}>
-            <h3>Фильтры</h3>
+            <h3>Сортировка</h3>
             <div className={"filter-list"}>
                 {createFilterList()}
             </div>
