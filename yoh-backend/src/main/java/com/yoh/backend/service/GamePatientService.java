@@ -62,11 +62,11 @@ public class GamePatientService {
                 .collect(Collectors.toList());
     }
 
-    public List<GamePatient> getActiveGamePatientByPatient(Patient patient, String order) throws IllegalArgumentException{
-        return gamePatientRepository.getAllGamesPatientByPatientOrdered(patient, order)
-                .stream()
-                .filter(i -> i.getGamePatientStatus().equals(GamePatientStatus.ACTIVE))
-                .collect(Collectors.toList());
+    public List<GamePatient> getActiveGamePatientByPatient(Patient patient, String order, String typeRegex, String regex) throws IllegalArgumentException{
+        return gamePatientRepository.getAllActiveGamesPatientByPatientOrdered(patient, order, typeRegex, regex);
+//                .stream()
+//                .filter(i -> i.getGamePatientStatus().equals(GamePatientStatus.ACTIVE))
+//                .collect(Collectors.toList());
     }
 
     public List<Patient> getAllPatientsByGame(Game game) throws IllegalArgumentException{
@@ -74,8 +74,8 @@ public class GamePatientService {
         return gamePatientList.stream().map(GamePatient::getPatient).collect(Collectors.toList());
     }
 
-    public List<GamePatient> getAllGamePatientsByPatientOrdered(Patient patient, String order) throws IllegalArgumentException{
-        return gamePatientRepository.getAllGamesPatientByPatientOrdered(patient, order);
+    public List<GamePatient> getAllGamePatientsByPatientOrdered(Patient patient, String order, String typeRegex, String regex) throws IllegalArgumentException{
+        return gamePatientRepository.getAllGamesPatientByPatientOrdered(patient, order, typeRegex, regex);
     }
 
     public List<GamePatient> getAllGamePatientsByPatient(Patient patient) throws IllegalArgumentException{

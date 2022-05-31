@@ -80,7 +80,7 @@ public class GameRepository {
 
     public List<Game> getAllActiveGames(String order, String regex, String typeRegex){
         Session session = sessionFactory.openSession();
-        try{
+        try {
             Criteria criteria = session.createCriteria(Game.class)
                     .add(Restrictions.eq("gameStatus", GameStatus.ACTIVE));
             if (!regex.equals(""))

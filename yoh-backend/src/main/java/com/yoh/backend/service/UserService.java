@@ -55,12 +55,12 @@ public class UserService {
 ////        if (!unfilteredList.isEmpty())
 //        return unfilteredList.stream().filter(i -> i.getLogin().toLowerCase().contains(regex.toLowerCase())).collect(Collectors.toList());
 ////        else return unfilteredList;
-        List<User> unfilteredList = userRepository.getAllUsersByAdmin(role, order);
-        if (!regex.equals("")) {
-            return unfilteredList.stream().filter(i -> i.getLogin().toLowerCase().contains(regex.toLowerCase())).collect(Collectors.toList());
-        }
-        else
-            return unfilteredList;
+        return userRepository.getAllUsersByAdmin(role, order, regex);
+//        if (!regex.equals("")) {
+//            return unfilteredList.stream().filter(i -> i.getLogin().toLowerCase().contains(regex.toLowerCase())).collect(Collectors.toList());
+//        }
+//        else
+//            return unfilteredList;
     }
 
     public void updateUser(User user) throws IllegalArgumentException{

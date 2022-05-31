@@ -22,7 +22,6 @@ public class UserRepository {
     private SessionFactory sessionFactory;
 
     public List<User> getAllUsers() {
-        //TODO подогнать под общий вид
         Session session = sessionFactory.openSession();
         try {
             Criteria criteria = session.createCriteria(User.class);
@@ -34,14 +33,16 @@ public class UserRepository {
         }
     }
 
-    public List<User> getAllUsersByAdmin(Integer role, String order) {
-        //TODO подогнать под общий вид
+    public List<User> getAllUsersByAdmin(Integer role, String order, String regex) {
         Session session = sessionFactory.openSession();
         try {
             Criteria criteria = session.createCriteria(User.class)
                     .add(Restrictions.ne("role", 0));
             if (role != -1)
                 criteria.add(Restrictions.eq("role", role));
+
+            if (!regex.equals(""))
+                criteria.add(Restrictions.like("login", regex, MatchMode.ANYWHERE).ignoreCase());
 
             switch (order) {
                 case "1" -> criteria.addOrder(Order.asc("login"));

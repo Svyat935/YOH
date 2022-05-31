@@ -6,6 +6,7 @@ import com.yoh.backend.entity.User;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.criterion.MatchMode;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -89,18 +90,21 @@ public class OrganizationRepository {
         }
     }
 
-    public List<Organization> getAllOrganizationsOrdered(String order) {
+    public List<Organization> getAllOrganizationsOrdered(String order, String regex) {
         Session session = sessionFactory.openSession();
         try {
             Criteria criteria = session.createCriteria(Organization.class);
-            List<Organization> organizations = criteria.list();
+            if (!regex.equals(""))
+                criteria.add(Restrictions.like("name", regex, MatchMode.ANYWHERE).ignoreCase());
+
             switch (order) {
                 case "1" -> criteria.addOrder(Order.asc("name"));
                 case "-1" -> criteria.addOrder(Order.desc("name"));
                 case "2" -> criteria.addOrder(Order.asc("dateRegistration"));
                 case "-2" -> criteria.addOrder(Order.desc("dateRegistration"));
             }
-            return organizations;
+            return criteria.list();
+//            return organizations;
         }
         finally {
             session.close();

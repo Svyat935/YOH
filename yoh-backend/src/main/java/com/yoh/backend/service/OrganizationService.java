@@ -29,12 +29,12 @@ public class OrganizationService {
     }
 
     public List<Organization> getAllOrganizationsFilteredOrdered(String regex, String order) {
-        if (!regex.equals(""))
-            return organizationRepository.getAllOrganizationsOrdered(order)
-                    .stream()
-                    .filter(i -> i.getName().contains(regex))
-                    .collect(Collectors.toList());
-        return organizationRepository.getAllOrganizationsOrdered(order);
+//        if (!regex.equals(""))
+//            return organizationRepository.getAllOrganizationsOrdered(order)
+//                    .stream()
+//                    .filter(i -> i.getName().contains(regex))
+//                    .collect(Collectors.toList());
+        return organizationRepository.getAllOrganizationsOrdered(order, regex);
     }
 
     public void updateOrganization(Organization organization) throws IllegalArgumentException{

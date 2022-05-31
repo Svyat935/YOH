@@ -51,17 +51,18 @@ public class PatientService {
         );
     }
 
-    public List<Patient> getAllPatientsByOrganizationFiltered(Organization organization, String regex, String order, Tutor tutor){
-        List<Patient> patientListUnfiltered = patientRepository.getAllPatientsByOrganization(organization, order);
-        if (!regex.equals("")){
-            return patientListUnfiltered
-                    .stream()
-                    .filter(i -> (i.getSurname() != null && i.getSurname().toLowerCase().contains(regex.toLowerCase()))
-                            || (i.getName() != null && i.getName().toLowerCase().contains(regex.toLowerCase()))
-                            || (i.getSecondName() != null && i.getSecondName().toLowerCase().contains(regex.toLowerCase())))
-                    .collect(Collectors.toList());
-        }
-        else return patientListUnfiltered;
+    public List<Patient> getAllPatientsByOrganizationFiltered(Organization organization, String regex, String order) {
+        return patientRepository.getAllPatientsByOrganization(organization, order, regex);
+//        List<Patient> patientListUnfiltered = patientRepository.getAllPatientsByOrganization(organization, order, regex);
+//        if (!regex.equals("")){
+//            return patientListUnfiltered
+//                    .stream()
+//                    .filter(i -> (i.getSurname() != null && i.getSurname().toLowerCase().contains(regex.toLowerCase()))
+//                            || (i.getName() != null && i.getName().toLowerCase().contains(regex.toLowerCase()))
+//                            || (i.getSecondName() != null && i.getSecondName().toLowerCase().contains(regex.toLowerCase())))
+//                    .collect(Collectors.toList());
+//        }
+//        else return patientListUnfiltered;
 
 //        Patient[] patientsArray = patientListUnfiltered.toArray(new Patient[0]);
 //        List<Patient> sdsd = Stream.iterate(0, )
@@ -70,7 +71,7 @@ public class PatientService {
     }
 
     public List<Patient> getAllPatientsByOrganization(Organization organization){
-        return patientRepository.getAllPatientsByOrganization(organization, "");
+        return patientRepository.getAllPatientsByOrganization(organization, "", "");
     }
 
 }

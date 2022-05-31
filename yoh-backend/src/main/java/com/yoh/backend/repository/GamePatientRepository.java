@@ -5,6 +5,7 @@ import com.yoh.backend.enums.GamePatientStatus;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.criterion.MatchMode;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -99,34 +100,20 @@ public class GamePatientRepository {
         }
     }
 
-    public List<GamePatient> getAllGamesPatientByPatientOrdered(Patient patient, String order) {
+    public List<GamePatient> getAllGamesPatientByPatientOrdered(Patient patient, String order, String typeRegex, String regex) {
         Session session = sessionFactory.openSession();
         try {
             Criteria criteria = session.createCriteria(GamePatient.class)
                     .add(Restrictions.eq("patient", patient));
+            if (!typeRegex.equals("")){
+                Criteria criteriaTypeRegex = criteria.createCriteria("game");
+                criteriaTypeRegex.add(Restrictions.like("type", typeRegex, MatchMode.ANYWHERE).ignoreCase());
+            }
+            if (!regex.equals("")){
+                Criteria criteriaRegex = criteria.createCriteria("game");
+                criteriaRegex.add(Restrictions.like("name", regex, MatchMode.ANYWHERE).ignoreCase());
+            }
 
-//            if (order.equals("1")) {
-//                Criteria criteria1 = criteria.createCriteria("game");
-//                criteria1.addOrder(Order.asc("name"));
-//            }
-//            if (order.equals("-1")) {
-//                Criteria criteria1 = criteria.createCriteria("game");
-//                criteria1.addOrder(Order.desc("name"));
-//            }
-//            if (order.equals("2")) {
-//                Criteria criteria1 = criteria.createCriteria("game");
-//                criteria1.addOrder(Order.asc("type"));
-//            }
-//            if (order.equals("-2")) {
-//                Criteria criteria1 = criteria.createCriteria("game");
-//                criteria1.addOrder(Order.desc("type"));
-//            }
-//            if (order.equals("3")) {
-//                criteria.addOrder(Order.asc("gamePatientStatus"));
-//            }
-//            if (order.equals("-3")) {
-//                criteria.addOrder(Order.desc("gamePatientStatus"));
-//            }
             switch (order) {
                 case "1" -> {
                     Criteria criteria1 = criteria.createCriteria("game");
@@ -143,6 +130,48 @@ public class GamePatientRepository {
                 case "-2" -> {
                 Criteria criteria1 = criteria.createCriteria("game");
                 criteria1.addOrder(Order.desc("type"));
+                }
+                case "3" -> criteria.addOrder(Order.asc("gamePatientStatus"));
+                case "-3" -> criteria.addOrder(Order.desc("gamePatientStatus"));
+            }
+            List<GamePatient> gamePatientList = criteria.list();
+            return gamePatientList.isEmpty() ? List.of() : gamePatientList;
+        }
+        finally {
+            session.close();
+        }
+    }
+
+    public List<GamePatient> getAllActiveGamesPatientByPatientOrdered(Patient patient, String order, String typeRegex, String regex) {
+        Session session = sessionFactory.openSession();
+        try {
+            Criteria criteria = session.createCriteria(GamePatient.class)
+                    .add(Restrictions.eq("patient", patient))
+                    .add(Restrictions.eq("gamePatientStatus", GamePatientStatus.ACTIVE));
+            if (!typeRegex.equals("")){
+                Criteria criteriaTypeRegex = criteria.createCriteria("game");
+                criteriaTypeRegex.add(Restrictions.like("type", typeRegex, MatchMode.ANYWHERE).ignoreCase());
+            }
+            if (!regex.equals("")){
+                Criteria criteriaRegex = criteria.createCriteria("game");
+                criteriaRegex.add(Restrictions.like("name", regex, MatchMode.ANYWHERE).ignoreCase());
+            }
+            switch (order) {
+                case "1" -> {
+                    Criteria criteria1 = criteria.createCriteria("game");
+                    criteria1.addOrder(Order.asc("name"));
+                }
+                case "-1" -> {
+                    Criteria criteria1 = criteria.createCriteria("game");
+                    criteria1.addOrder(Order.desc("name"));
+                }
+                case "2" -> {
+                    Criteria criteria1 = criteria.createCriteria("game");
+                    criteria1.addOrder(Order.asc("type"));
+                }
+                case "-2" -> {
+                    Criteria criteria1 = criteria.createCriteria("game");
+                    criteria1.addOrder(Order.desc("type"));
                 }
                 case "3" -> criteria.addOrder(Order.asc("gamePatientStatus"));
                 case "-3" -> criteria.addOrder(Order.desc("gamePatientStatus"));

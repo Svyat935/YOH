@@ -191,7 +191,7 @@ public class TutorController {
             Organization organization = this.tutorService.getTutorByUser(this.userService.getUserById(this.userService.verifyToken(token))).getOrganization();
             ArrayList<JsonObject> patientList = new ArrayList<JsonObject>();
             JsonObject response = new JsonObject();
-            List<Patient> patientsFilteredUnpaginatedList = patientService.getAllPatientsByOrganizationFiltered(organization, regex, order, tutor);
+            List<Patient> patientsFilteredUnpaginatedList = patientService.getAllPatientsByOrganizationFiltered(organization, regex, order);
 
             patientsFilteredUnpaginatedList = patientsFilteredUnpaginatedList.stream()
                     .filter(i -> (i.getTutor() == null) || (!i.getTutor().getId().equals(tutor.getId()))).collect(Collectors.toList());
@@ -372,12 +372,12 @@ public class TutorController {
             JsonObject response = new JsonObject();
 //            List<Game> gameList = patient.getGames().stream().filter(i -> i.getName().toLowerCase().contains(regex.toLowerCase())
 //                            && i.getType().toLowerCase().contains(typeRegex.toLowerCase())).collect(Collectors.toList());
-            List<GamePatient> gamePatientList = this.gamePatientService.getAllGamePatientsByPatientOrdered(patient, order);
-            if (!typeRegex.equals("")){
-                gamePatientList = gamePatientList.stream().filter(i -> i.getGame().getType().toLowerCase().contains(typeRegex.toLowerCase())).collect(Collectors.toList());
-            }
-            if (!regex.equals(""))
-                gamePatientList = gamePatientList.stream().filter(i -> i.getGame().getName().toLowerCase().contains(regex.toLowerCase())).collect(Collectors.toList());
+            List<GamePatient> gamePatientList = this.gamePatientService.getAllGamePatientsByPatientOrdered(patient, order, typeRegex, regex);
+//            if (!typeRegex.equals("")){
+//                gamePatientList = gamePatientList.stream().filter(i -> i.getGame().getType().toLowerCase().contains(typeRegex.toLowerCase())).collect(Collectors.toList());
+//            }
+//            if (!regex.equals(""))
+//                gamePatientList = gamePatientList.stream().filter(i -> i.getGame().getName().toLowerCase().contains(regex.toLowerCase())).collect(Collectors.toList());
             if (gamePatientList.size() == 0) {
 //                JsonObject response = new JsonObject();
                 response.put("previous", false);
