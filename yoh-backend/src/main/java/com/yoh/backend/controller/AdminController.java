@@ -4,6 +4,7 @@ import antlr.StringUtils;
 import at.favre.lib.crypto.bcrypt.BCrypt;
 import com.github.cliftonlabs.json_simple.JsonObject;
 import com.yoh.backend.entity.*;
+import com.yoh.backend.enums.GameStatus;
 import com.yoh.backend.enums.Gender;
 import com.yoh.backend.request.*;
 import com.yoh.backend.response.JSONResponse;
@@ -261,48 +262,47 @@ public class AdminController {
     ) {
         try {
             Admin admin = this.adminService.getAdminByUser(this.userService.getUserById(this.userService.verifyToken(token)));
-            if(this.gameService.checkGameByName(name)){
 
-                Game game = new Game(UUID.randomUUID() ,name, type, description, null, LocalDateTime.now(), useStatistic);
-
-                String url = "/app/games/" + game.getId().toString();
-//                String sd = wrapper+ "/" +game.getId().toString()+"/";
-                //Unzip
-                File tempFile = File.createTempFile("prefix-", "-suffix");
-//            tempFile.deleteOnExit();
-                file.transferTo(tempFile);
-                ZipFile zipFile = new ZipFile(tempFile);
-                zipFile.extractAll(url);
-                tempFile.delete();
-
-                game.setUrl(wrapper+ "/" +game.getId().toString()+"/");
-
-
-                if (image != null) {
-//                    String orgName = game.getName() + "." + FilenameUtils.getExtension(file.getOriginalFilename());
-                    String orgName = UUID.randomUUID() + "." + FilenameUtils.getExtension(file.getOriginalFilename());
-                    Path filepath = Paths.get("/app/images", orgName);
-                    if(new  File(filepath.toString()).exists()){
-                        System.out.println("File exists");
-                        new File(filepath.toString()).delete();
-                    }
-                    File filesd = new File("/app/images", orgName);
-                    FileUtils.writeByteArrayToFile(filesd, file.getBytes());
-                    game.setImage(site_url + "images/" + orgName);
-                }
-                System.out.println(8);
-                this.gameService.createGame(game);
-                System.out.println(9);
-
-                JsonObject response = new JsonObject();
-                response.put("message", "games successfully uploaded");
-                return new JSONResponse(200, response);
+            Game game;
+            if (this.gameService.checkGameByName(name)){
+                game = this.gameService.getGameByName(name);
             }
             else {
-                JsonObject response = new JsonObject();
-                response.put("message", "Game is already exists");
-                return new JSONResponse(401, response);
+                game = new Game(UUID.randomUUID() ,name, type, description, null, LocalDateTime.now(), useStatistic, GameStatus.ACTIVE);
             }
+
+            String url = "/app/games/" + game.getId().toString();
+//                String sd = wrapper+ "/" +game.getId().toString()+"/";
+            //Unzip
+            File tempFile = File.createTempFile("prefix-", "-suffix");
+//            tempFile.deleteOnExit();
+            file.transferTo(tempFile);
+            ZipFile zipFile = new ZipFile(tempFile);
+            zipFile.extractAll(url);
+            tempFile.delete();
+
+            game.setUrl(wrapper+ "/" +game.getId().toString()+"/");
+
+
+            if (image != null) {
+//                    String orgName = game.getName() + "." + FilenameUtils.getExtension(file.getOriginalFilename());
+                String orgName = UUID.randomUUID() + "." + FilenameUtils.getExtension(file.getOriginalFilename());
+                Path filepath = Paths.get("/app/images", orgName);
+                if(new  File(filepath.toString()).exists()){
+                    System.out.println("File exists");
+                    new File(filepath.toString()).delete();
+                }
+                File filesd = new File("/app/images", orgName);
+                FileUtils.writeByteArrayToFile(filesd, file.getBytes());
+                game.setImage(site_url + "images/" + orgName);
+            }
+            System.out.println(8);
+            this.gameService.createGame(game);
+            System.out.println(9);
+
+            JsonObject response = new JsonObject();
+            response.put("message", "games successfully uploaded");
+            return new JSONResponse(200, response);
         }
         catch (Exception e){
             JsonObject exceptionResponse = new JsonObject();

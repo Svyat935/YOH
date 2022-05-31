@@ -37,6 +37,10 @@ public class GameService {
         return gameRepository.getGameByName(name) == null;
     }
 
+    public Game getGameByName(String name) throws IllegalArgumentException{
+        return gameRepository.getGameByName(name);
+    }
+
     public Game getGameById(UUID id) throws IllegalArgumentException{
         Game game = gameRepository.getGameByUUID(id);
         if (game != null) {

@@ -1,5 +1,6 @@
 package com.yoh.backend.entity;
 
+import com.yoh.backend.enums.GameStatus;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
 
@@ -13,7 +14,7 @@ import java.util.UUID;
 public class Game {
     public Game() {}
 
-    public Game(UUID id, String name, String type, String description, String url, LocalDateTime dateAdding, boolean useStatistic) {
+    public Game(UUID id, String name, String type, String description, String url, LocalDateTime dateAdding, boolean useStatistic, GameStatus gameStatus) {
         this.id = id;
         this.name = name;
         this.type = type;
@@ -21,6 +22,7 @@ public class Game {
         this.url = url;
         this.dateAdding = dateAdding;
         this.useStatistic = useStatistic;
+        this.gameStatus = gameStatus;
     }
 
 
@@ -123,6 +125,18 @@ public class Game {
 
     public void setUseStatistic(boolean useStatistic) {
         this.useStatistic = useStatistic;
+    }
+
+
+    @Column(name = "gameStatus", nullable = false)
+    private GameStatus gameStatus;
+
+    public GameStatus getGameStatus() {
+        return gameStatus;
+    }
+
+    public void setGameStatus(GameStatus gameStatus) {
+        this.gameStatus = gameStatus;
     }
 
     //    @OneToMany(mappedBy = "game")

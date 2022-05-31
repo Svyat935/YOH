@@ -28,6 +28,10 @@ public class GamePatientService {
         gamePatientRepository.createGamePatient(gamePatient);
     }
 
+    public void deactivateGame(Game game) throws IllegalArgumentException{
+        gamePatientRepository.deactivateGame(game);
+    }
+
 //    public void deleteGamePatient(GamePatient gamePatient) throws IllegalArgumentException{
 //        gamePatientRepository.deleteGamePatient(gamePatient);
 //    }

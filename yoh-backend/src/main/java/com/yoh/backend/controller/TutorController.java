@@ -494,6 +494,8 @@ public class TutorController {
         try {
             Tutor tutor = this.tutorService.getTutorByUser(this.userService.getUserById(this.userService.verifyToken(token)));
             Game game = this.gameService.getGameById(UUID.fromString(gameToPatient.getGame_id()));
+            if (!game.getGameStatus().equals(com.yoh.backend.enums.GameStatus.ACTIVE))
+                throw new IllegalArgumentException("Game is not active");
             Patient patient = this.patientService.getPatientById(UUID.fromString(gameToPatient.getPatient_id()));
             GamePatient gamePatient;
             try {
@@ -512,13 +514,15 @@ public class TutorController {
                 gameStatus.setTutor(tutor);
                 gameStatus.setAssignmentDate(LocalDateTime.now());
                 gameStatus.setStatus(Status.ASSIGNED);
+                this.gameStatusService.updateGameStatus(gameStatus);
             }
             catch (IllegalArgumentException ex){
                 gameStatus = new GameStatus(gamePatient, tutor, LocalDateTime.now(), Status.ASSIGNED);
+                this.gameStatusService.createGameStatus(gameStatus);
             }
-            this.patientService.updatePatient(patient);
-            this.gameService.updateGame(game);
-            this.gameStatusService.createGameStatus(gameStatus);
+//            this.patientService.updatePatient(patient);
+//            this.gameService.updateGame(game);
+//            this.gameStatusService.createGameStatus(gameStatus);
             JsonObject response = new JsonObject();
             response.put("message", "Game was assigned");
             return new JSONResponse(200, response);

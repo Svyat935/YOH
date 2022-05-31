@@ -6,6 +6,7 @@ import com.yoh.backend.entity.Admin;
 import com.yoh.backend.entity.Game;
 import com.yoh.backend.entity.Patient;
 import com.yoh.backend.entity.User;
+import com.yoh.backend.enums.GameStatus;
 import com.yoh.backend.request.AddGamesRequest;
 import com.yoh.backend.request.EditGameRequest;
 import com.yoh.backend.request.EditPatientInfoRequest;
@@ -17,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -126,6 +128,7 @@ public class GameController {
                 gameInfo.put("image", game.getImage());
                 gameInfo.put("addAdding", game.getDateAdding());
                 gameInfo.put("useStatistics", game.getUseStatistic());
+                gameInfo.put("gameStatus", game.getGameStatus());
                 gamesList.add(gameInfo);
             }
 //            }
@@ -153,6 +156,7 @@ public class GameController {
             response.put("url", game.getUrl());
             response.put("image", game.getImage());
             response.put("useStatistics", game.getUseStatistic());
+            response.put("gameStatus", game.getGameStatus());
             JsonObject jsonObject = new JsonObject();
             jsonObject.put("gameInfo", response);
             return new JSONResponse(200, jsonObject);
@@ -164,21 +168,41 @@ public class GameController {
     }
 
     @DeleteMapping(path = "/removing")
-    public JSONResponse removeGame(@RequestHeader("token") String token,
+    public String removeGame(@RequestHeader("token") String token,
                                    @Valid @RequestBody GameToRemove gameToRemove) {
         try {
-            //TODO Отцепление от пациентов, проверить возможно работает
             Admin admin = this.adminService.getAdminByUser(this.userService.getUserById(this.userService.verifyToken(token)));
             Game game = this.gameService.getGameById(UUID.fromString(gameToRemove.getGame_id()));
-            gameService.deleteGame(game);
-            JsonObject response = new JsonObject();
-            response.put("messag", "Game was deleted");
-            return new JSONResponse(200, response);
+
+            String gameUrl = "/app/games/" + game.getId().toString();
+            if (new File(gameUrl).delete())
+                System.out.println("game files were deleted");
+            else System.out.println("game not found");
+
+            game.setGameStatus(GameStatus.DELETED);
+            game.setUrl(null);
+            //Удаление из папки
+            this.gamePatientService.deactivateGame(game);
+
+            return "Game was deleted";
         }
         catch (IllegalArgumentException e) {
-            JsonObject exceptionResponse = new JsonObject();
-            exceptionResponse.put("message", e.getMessage());
-            return new JSONResponse(401, exceptionResponse);
+            return e.getMessage();
+        }
+    }
+
+    @DeleteMapping(path = "/deactivate")
+    public String deactivateGame(@RequestHeader("token") String token,
+                             @Valid @RequestBody GameToRemove gameToRemove) {
+        try {
+            Admin admin = this.adminService.getAdminByUser(this.userService.getUserById(this.userService.verifyToken(token)));
+            Game game = this.gameService.getGameById(UUID.fromString(gameToRemove.getGame_id()));
+            game.setGameStatus(GameStatus.DISABLED);
+            this.gamePatientService.deactivateGame(game);
+            return "Game was deactivated";
+        }
+        catch (IllegalArgumentException e) {
+            return e.getMessage();
         }
     }
 
