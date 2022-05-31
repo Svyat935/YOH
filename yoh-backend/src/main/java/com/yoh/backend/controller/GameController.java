@@ -66,14 +66,15 @@ public class GameController {
                                  @RequestParam(value = "order", required = false, defaultValue = "1") String order,
                                  @RequestParam(value = "patientID", required = false) String patientID) {
         try{
+            //TODO Сейчас возвращает только актуальные игры
             User user = this.userService.getUserById(this.userService.verifyToken(token));
-            List<Game> gameList = this.gameService.getAllGamesFiltered(typeRegex, order);
+            List<Game> gameList = this.gameService.getAllGamesFiltered(typeRegex, order, regex);
             JsonObject response = new JsonObject();
             ArrayList<UUID> sdasds = new ArrayList<>();
-            if (!regex.equals("")){
-                gameList = gameList.stream().filter(i -> i.getName().toLowerCase().contains(regex.toLowerCase()))
-                        .collect(Collectors.toList());
-            }
+//            if (!regex.equals("")){
+//                gameList = gameList.stream().filter(i -> i.getName().toLowerCase().contains(regex.toLowerCase()))
+//                        .collect(Collectors.toList());
+//            }
             if (patientID != null) {
                 this.gamePatientService.getAllGamesByPatient(this.patientService.getPatientById(UUID.fromString(patientID))).forEach(i -> sdasds.add(i.getId()));
 //                gameList = gameList.stream().filter(i -> !patientGames.contains(i)).collect(Collectors.toList());

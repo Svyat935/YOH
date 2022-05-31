@@ -55,13 +55,14 @@ public class GameService {
         return gameRepository.getAllGames("");
     }
 
-    public List<Game> getAllGamesFiltered(String typeRegex, String order) {
-        List<Game> unfilteredList = gameRepository.getAllGames(order);
-        if (!typeRegex.equals("")) {
-        return unfilteredList.stream().filter(i -> i.getType().toLowerCase().contains(typeRegex.toLowerCase()))
-                .collect(Collectors.toList());
-            }
-        else return unfilteredList;
+    public List<Game> getAllGamesFiltered(String typeRegex, String order, String regex) {
+        List<Game> unfilteredList = gameRepository.getAllActiveGames(order, regex, typeRegex);
+        return unfilteredList;
+//        if (!typeRegex.equals("")) {
+//        return unfilteredList.stream().filter(i -> i.getType().toLowerCase().contains(typeRegex.toLowerCase()))
+//                .collect(Collectors.toList());
+//            }
+//        else return unfilteredList;
 
     }
 }
