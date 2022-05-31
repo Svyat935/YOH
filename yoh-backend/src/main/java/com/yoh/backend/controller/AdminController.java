@@ -84,10 +84,8 @@ public class AdminController {
             Admin admin = this.adminService.getAdminByUser(this.userService.getUserById(this.userService.verifyToken(token)));
             JsonObject response = new JsonObject();
             List<UserInfoResponse> responseList = new ArrayList<>();
-
-            List<User> userList = this.userService.getAllUsersByAdmin(Integer.parseInt(role), regex, order);
-            if (userList.size() == 0) {
-//                JsonObject response = new JsonObject();
+            int listCount = this.userService.getAllUsersByAdminCount(Integer.parseInt(role), regex);
+            if (listCount != 0) {
                 response.put("previous", false);
                 response.put("next", false);
                 response.put("count", 0);
@@ -95,35 +93,65 @@ public class AdminController {
                 response.put("results", new ArrayList<>());
                 return new JSONResponse(200, response);
             }
-            //Pagination
-            if (start >= userList.size())
-                throw new IllegalArgumentException(
-                        String.format("No element at that index (%s)", start)
-                );
-            int lastIndex;
-            if (start + limit > userList.size()){
-                lastIndex = userList.size();
-                response.put("next", false);
-            }
-            else {
-                lastIndex = start + limit;
-                response.put("next", true);
-            }
-            if (start == 0) response.put("previous", false);
-            else response.put("previous", true);
-            List<User> paginatedUserList = new ArrayList<>();
-            for (int i = start; i < lastIndex; i++){
-                paginatedUserList.add(userList.get(i));
-            }
-            response.put("count", paginatedUserList.size());
-            response.put("size", paginatedUserList.size());
+            if (start >= listCount)
+                throw new IllegalArgumentException(String.format("No element at that index (%s)", start));
 
-            for (User user: paginatedUserList) {
+            List<User> userList = this.userService.getAllUsersByAdminPaginated(Integer.parseInt(role), regex, order, start, limit);
+
+            if (start != 0)
+                response.put("previous", false);
+            else response.put("previous", true);
+
+            if (start + limit > listCount)
+                response.put("next", false);
+            else response.put("next", true);
+
+            response.put("count", userList.size());
+            response.put("size", listCount);
+            for (User user: userList){
                 responseList.add(new UserInfoResponse(user));
             }
-//            response.put("userList", this.userService.getAllUsers());
             response.put("results", responseList);
             return new JSONResponse(200, response);
+//            List<User> userList = this.userService.getAllUsersByAdmin(Integer.parseInt(role), regex, order);
+//            if (userList.size() == 0) {
+////                JsonObject response = new JsonObject();
+//                response.put("previous", false);
+//                response.put("next", false);
+//                response.put("count", 0);
+//                response.put("size", 0);
+//                response.put("results", new ArrayList<>());
+//                return new JSONResponse(200, response);
+//            }
+//            //Pagination
+//            if (start >= userList.size())
+//                throw new IllegalArgumentException(
+//                        String.format("No element at that index (%s)", start)
+//                );
+//            int lastIndex;
+//            if (start + limit > userList.size()){
+//                lastIndex = userList.size();
+//                response.put("next", false);
+//            }
+//            else {
+//                lastIndex = start + limit;
+//                response.put("next", true);
+//            }
+//            if (start == 0) response.put("previous", false);
+//            else response.put("previous", true);
+//            List<User> paginatedUserList = new ArrayList<>();
+//            for (int i = start; i < lastIndex; i++){
+//                paginatedUserList.add(userList.get(i));
+//            }
+//            response.put("count", paginatedUserList.size());
+//            response.put("size", paginatedUserList.size());
+//
+//            for (User user: paginatedUserList) {
+//                responseList.add(new UserInfoResponse(user));
+//            }
+//            response.put("userList", this.userService.getAllUsers());
+//            response.put("results", responseList);
+//            return new JSONResponse(200, response);
         }
         catch (IllegalArgumentException e){
             JsonObject exceptionResponse = new JsonObject();

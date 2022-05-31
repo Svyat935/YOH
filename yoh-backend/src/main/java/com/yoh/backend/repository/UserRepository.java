@@ -58,6 +58,52 @@ public class UserRepository {
         }
     }
 
+    public List<User> getAllUsersByAdminPaginated(Integer role, String order, String regex, int start, int count) {
+        Session session = sessionFactory.openSession();
+        try {
+            Criteria criteria = session.createCriteria(User.class)
+                    .add(Restrictions.ne("role", 0));
+            if (role != -1)
+                criteria.add(Restrictions.eq("role", role));
+
+            if (!regex.equals(""))
+                criteria.add(Restrictions.like("login", regex, MatchMode.ANYWHERE).ignoreCase());
+
+            switch (order) {
+                case "1" -> criteria.addOrder(Order.asc("login"));
+                case "-1" -> criteria.addOrder(Order.desc("login"));
+                case "2" -> criteria.addOrder(Order.asc("dateRegistration"));
+                case "-2" -> criteria.addOrder(Order.desc("dateRegistration"));
+            }
+            criteria.setFirstResult(start);
+            criteria.setMaxResults(count);
+            List<User> users = criteria.list();
+            return users;
+        }
+        finally {
+            session.close();
+        }
+    }
+
+    public int getAllUsersByAdminCount(Integer role, String regex) {
+        Session session = sessionFactory.openSession();
+        try {
+            Criteria criteria = session.createCriteria(User.class)
+                    .add(Restrictions.ne("role", 0));
+            if (role != -1)
+                criteria.add(Restrictions.eq("role", role));
+
+            if (!regex.equals(""))
+                criteria.add(Restrictions.like("login", regex, MatchMode.ANYWHERE).ignoreCase());
+
+            List<User> users = criteria.list();
+            return users.size();
+        }
+        finally {
+            session.close();
+        }
+    }
+
     public void deleteUser(User user) {
         Session session = sessionFactory.openSession();
         try {
