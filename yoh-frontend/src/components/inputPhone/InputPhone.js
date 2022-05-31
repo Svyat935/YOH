@@ -1,17 +1,20 @@
-import React from "react";
+import React, {useEffect} from "react";
 import "./InputPhone.css";
+import IMask from "imask";
 
 export function InputPhone(props) {
+    useEffect(() => {
+        let element = document.getElementById(props.id);
+        let maskOption = {mask: "+7(000)000-00-00", lazy: false}
+        let mask = new IMask(element, maskOption);
+    })
 
     return (
         <input
             id={props.id}
             className="tel"
             style={props.style}
-            value={"+7"}
-            onInput={(e) => {
-                let x = e.target.value.slice(2).replace(/[\D]/g, '').match(/(\d{0,3})(\d{0,3})(\d{0,4})/);
-                e.target.value = !x[2] ? x[1] : '(' + x[1] + ') ' + x[2] + (x[3] ? '-' + x[3] : '');
-            }}/>
+            placeholder={"+7(000)000-00-00"}
+            />
     )
 }
