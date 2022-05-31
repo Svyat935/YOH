@@ -7,11 +7,35 @@ import {LoadPage} from "../../../../../components/loadpage/LoadPage";
 
 export function VGame() {
     let context = useContext(UserContext);
+    const [view, setView] = useState(null);
     const [load, setLoad] = useState(true);
+
+    useEffect(() => {
+        if (context.token) {
+            setView(
+                <div style={
+                    {
+                        display: "flex",
+                        justifyContent: "center"
+                    }
+                }>
+                    <LoadPage
+                        status={load}
+                    >
+                        <iframe
+                            src={context.info.url}
+                            style={{width: "95vw", height: "82vh"}}
+                            onLoad={() => setLoad(false)}
+                        />
+                    </LoadPage>
+                </div>
+            )
+        }
+    }, [context])
 
     return (
         <Back navPanel={<PatientNav context={context}/>}>
-            <div style={
+            {context.token ? <div style={
                 {
                     display: "flex",
                     justifyContent: "center"
@@ -26,7 +50,7 @@ export function VGame() {
                         onLoad={() => setLoad(false)}
                     />
                 </LoadPage>
-            </div>
+            </div> : view}
         </Back>
     )
 }
