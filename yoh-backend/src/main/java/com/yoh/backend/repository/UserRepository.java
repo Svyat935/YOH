@@ -99,7 +99,7 @@ public class UserRepository {
                 criteria.add(Restrictions.like("login", regex, MatchMode.ANYWHERE).ignoreCase());
 
             criteria.setProjection(Projections.rowCount());
-            return (Integer)criteria.uniqueResult();
+            return (int)(long)criteria.uniqueResult();
 //            List<User> users = criteria.list();
 //            return users.size();
         }
