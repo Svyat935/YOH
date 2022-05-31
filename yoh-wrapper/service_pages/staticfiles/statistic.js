@@ -17,6 +17,7 @@ class StatRecord {
 		};
 		this.additional_fields = null;
 		this.getAddFields();
+		window.addEventListener('click', this.stat_func(this));
 	}
 
 	async getAddFields() {
@@ -71,7 +72,6 @@ class StatRecord {
 		params['date_start'] = this.getTime();
 		params['details'] = this.additional_fields;
 		fetch('/api/game_start', {method: 'POST', body: JSON.stringify(params)});
-		document.body.addEventListener('click', this.stat_func(this));
 	}
 
 	gameEnd(params) {
