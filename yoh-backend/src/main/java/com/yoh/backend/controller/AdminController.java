@@ -98,7 +98,7 @@ public class AdminController {
 
             List<User> userList = this.userService.getAllUsersByAdminPaginated(Integer.parseInt(role), regex, order, start, limit);
 
-            if (start != 0)
+            if (start == 0)
                 response.put("previous", false);
             else response.put("previous", true);
 
