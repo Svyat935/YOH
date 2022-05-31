@@ -34,7 +34,7 @@ public class GameService {
     }
 
     public boolean checkGameByName(String name) throws IllegalArgumentException{
-        return gameRepository.getGameByName(name) == null;
+        return gameRepository.getGameByName(name) != null;
     }
 
     public Game getGameByName(String name) throws IllegalArgumentException{
