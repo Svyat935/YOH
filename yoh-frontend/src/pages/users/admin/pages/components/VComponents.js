@@ -228,7 +228,7 @@ export function VComponents(props) {
             valid_status = false;
         }
 
-        if (!fFile.files){
+        if (!fFile.files[0]){
             fFile.style.border = valid_style;
             valid_status = false;
         }
