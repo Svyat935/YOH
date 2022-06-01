@@ -80,7 +80,6 @@ public class AdminController {
                                  @RequestParam(value = "regex", required = false, defaultValue = "") String regex,
                                  @RequestParam(value = "order", required = false, defaultValue = "") String order) {
         try {
-            //TODO прикрутить пагинацию
             Admin admin = this.adminService.getAdminByUser(this.userService.getUserById(this.userService.verifyToken(token)));
             JsonObject response = new JsonObject();
             List<UserInfoResponse> responseList = new ArrayList<>();
@@ -440,6 +439,7 @@ public class AdminController {
                                          @RequestParam(value = "start", required = true) Integer start,
                                          @RequestParam(value = "regex", required = false, defaultValue = "") String regex,
                                          @RequestParam(value = "order", required = false, defaultValue = "1") String order) {
+        //TODO переделать пагинацию
         try {
             Admin admin = this.adminService.getAdminByUser(this.userService.getUserById(this.userService.verifyToken(token)));
             List<Organization> organizationList = this.organizationService.getAllOrganizationsFilteredOrdered(regex, order);

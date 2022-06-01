@@ -65,6 +65,7 @@ public class GameController {
                                  @RequestParam(value = "start", required = true) Integer start,
                                  @RequestParam(value = "order", required = false, defaultValue = "1") String order,
                                  @RequestParam(value = "patientID", required = false) String patientID) {
+        //TODO Переделать пагинацию
         try{
             //TODO Сейчас возвращает только актуальные игры
             User user = this.userService.getUserById(this.userService.verifyToken(token));

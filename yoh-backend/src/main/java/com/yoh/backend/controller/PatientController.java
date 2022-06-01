@@ -86,6 +86,7 @@ public class PatientController {
                                     @RequestParam(value = "regex", required = false, defaultValue = "") String regex,
                                     @RequestParam(value = "typeRegex", required = false, defaultValue = "") String typeRegex,
                                     @RequestParam(value = "order", required = false, defaultValue = "") String order) {
+        //TODO переделать пагинацию
         try {
             Patient patient = this.patientService.getPatientByUser(this.userService.getUserById(this.userService.verifyToken(token)));
             ArrayList<JsonObject> gamesArray = new ArrayList<>();
@@ -410,20 +411,6 @@ public class PatientController {
                                    @RequestHeader("game") String gameID,
                                    @Valid @RequestBody GameEndRequest data) {
         try {
-            System.out.println();
-            System.out.println();
-            System.out.println();
-            System.out.println();
-            System.out.println();
-//            System.out.println(data);
-            System.out.println(data.getDate_end());
-            System.out.println(data.getDetails());
-            System.out.println();
-            System.out.println();
-            System.out.println();
-            System.out.println();
-            System.out.println();
-
             Patient patient = this.patientService.getPatientByUser(this.userService.getUserById(this.userService.verifyToken(token)));
             Game game = this.gameService.getGameById(UUID.fromString(gameID));
             GamePatient gamePatient = this.gamePatientService.getGamePatientByGameAndPatient(game, patient);
