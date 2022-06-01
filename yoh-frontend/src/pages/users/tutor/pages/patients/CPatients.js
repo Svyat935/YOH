@@ -33,7 +33,7 @@ export function CPatients() {
 
     useEffect(async () => {
         if (context.token) {
-            let responseAttachedPatients = await requestAttachedPatients(0, 100);
+            let responseAttachedPatients = await requestAttachedPatients();
 
             if (responseAttachedPatients !== null) {
                 responseAttachedPatients = responseAttachedPatients["jsonObject"]["results"];
