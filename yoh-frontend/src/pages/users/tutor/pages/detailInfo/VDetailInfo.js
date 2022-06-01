@@ -50,7 +50,7 @@ export function VDetailInfo(props) {
                                 setGameForDelete(game);
                                 setShow(true);
                             }}>
-                            <div>
+                            <div style={{width: "100%"}}>
                                 <img style={{width: "100%", borderRadius: 40}} src={gameStub} alt={'game'}/>
                             </div>
                         </InfoBlock>
@@ -161,7 +161,7 @@ export function VDetailInfo(props) {
                                 "Отсутствуют данные"
                         }
                         >
-                            <div>
+                            <div style={{width: "100%"}}>
                                 <img style={{width: "100%", borderRadius: 40}} src={
                                     props.user["image"] ? "https://mobile.itkostroma.ru/images/" + props.user["image"] :
                                         profileStub

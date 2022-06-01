@@ -96,7 +96,7 @@ export function VVector(props) {
                             setShow(true);
                         }
                     }>
-                        <div>
+                        <div style={{width: "100%"}}>
                             <img style={{width: "100%", borderRadius: 40}} src={gameStub} alt={'game'}/>
                         </div>
                     </InfoBlock>

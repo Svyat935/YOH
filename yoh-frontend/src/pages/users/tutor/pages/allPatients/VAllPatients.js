@@ -66,7 +66,7 @@ export function VAllPatients(props) {
                             setShow(true);
                         }
                     } key={patient["id"]} text={fio}>
-                        <div>
+                        <div style={{width: "100%"}}>
                             <img style={{width: "100%", borderRadius: 40}} src={imageSrc} alt={'profile'}/>
                         </div>
                     </InfoBlock>

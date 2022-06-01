@@ -60,7 +60,7 @@ export function VPatients(props) {
                         }
                     }>
                         <InfoBlockStatic key={patient["id"]} text={fio}>
-                            <div>
+                            <div style={{width: "100%"}}>
                                 <img style={{width: "100%", borderRadius: 40}} src={imageSrc} alt={'profile'}/>
                             </div>
                         </InfoBlockStatic>
