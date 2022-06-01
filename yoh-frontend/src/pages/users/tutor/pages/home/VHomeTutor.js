@@ -8,6 +8,7 @@ import profileStub from "../../../../../assets/profileStub.jpg";
 import {RightArrow} from "../../../../../components/arrows/RightArrow/RightArrow";
 import {useNavigate} from "react-router-dom";
 import {ProgressBar} from "../../../../../components/progressBar/ProgressBar";
+import {Slider} from "../../../../../components/slider/Slider";
 
 export function VHomeTutor(props) {
     const router = useNavigate();
@@ -31,33 +32,10 @@ export function VHomeTutor(props) {
                         </div>
                     </InfoBlock>
                 )
-
             })
-        }else{
-            view.push(
-                <div style={
-                    {
-                        height: 387,
-                        width: 936,
-                        display: "flex",
-                        justifyContent: "center",
-                        alignItems: "center"
-                    }
-                }>
-                    <h3>Наблюдаемые пользователи в системе отсутствуют.</h3>
-                </div>
-            )
         }
 
-        return (
-            <div>
-                <h3 style={{marginTop: 20}}>Последняя активность пользователей:</h3>
-                <div style={{display: "flex", justifyContent: "space-evenly"}}>
-                    {view}
-                    {view.length === 5 ? <RightArrow onClick={() => router("/user/tutor/patients/")}/> : null}
-                </div>
-            </div>
-        )
+        return view;
     }
 
     const createStatusUsers = () => {
@@ -94,7 +72,24 @@ export function VHomeTutor(props) {
                             "Добрый день, " + props.account["name"] + "!" : "Добрый день!"
                     }
                     </h1>
-                    {createViewUsers()}
+                    <h3 style={{marginTop: 20}}>Последняя активность пользователей:</h3>
+                    {
+                        props.users.length > 0 ?
+                            <Slider max={5}>
+                                {createViewUsers()}
+                            </Slider> :
+                        <div style={
+                            {
+                                height: 387,
+                                width: 936,
+                                display: "flex",
+                                justifyContent: "center",
+                                alignItems: "center"
+                            }
+                        }>
+                            <h3>Наблюдаемые пользователи в системе отсутствуют.</h3>
+                        </div>
+                    }
                 </Row>
             </Container>
             <Container>
@@ -114,9 +109,7 @@ export function VHomeTutor(props) {
                                 padding: "10px 20px 30px 20px"
                             }
                         }>
-                            {
-                                createStatusUsers()
-                            }
+                            {createStatusUsers()}
                         </div>
                     </div>
                 </Row>
