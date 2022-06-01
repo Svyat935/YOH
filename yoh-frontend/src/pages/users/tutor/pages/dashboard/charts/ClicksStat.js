@@ -5,6 +5,7 @@ export class ClickStat extends Component {
     constructor(props) {
         super(props);
 
+        this.current = [props.clicks, props.missclicks];
         this.state = {
             options: {
                 chart: {
@@ -48,6 +49,27 @@ export class ClickStat extends Component {
                 data: props.missclicks,
             }],
         };
+    }
+
+    componentDidUpdate(prevProps, prevState, snapshot) {
+        if (this.current !== prevProps.data) {
+            this.current = [prevProps.clicks, prevProps.missclicks];
+            this.setState(
+                {
+                    options:{
+                        ...prevState.options,
+                        labels: prevProps.labels,
+                    },
+                    series: [{
+                        name: "Клики",
+                        data: prevState.clicks,
+                    }, {
+                        name: "Миссклики",
+                        data: prevState.missclicks,
+                    }],
+                }
+            )
+        }
     }
 
     render() {

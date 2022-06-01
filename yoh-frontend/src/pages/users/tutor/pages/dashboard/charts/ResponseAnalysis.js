@@ -5,6 +5,7 @@ export class ResponseAnalysis extends Component {
     constructor(props) {
         super(props);
 
+        this.current = [props.correct, props.incorrect]
         this.state = {
             options: {
                 chart: {
@@ -51,6 +52,30 @@ export class ResponseAnalysis extends Component {
                 }
             ],
         };
+    }
+
+    componentDidUpdate(prevProps, prevState, snapshot) {
+        if (this.current !== prevProps.data){
+            this.current = [prevProps.correct, prevProps.incorrect];
+            this.setState(
+                {
+                    options:{
+                        ...prevState.options,
+                        labels: prevProps.labels,
+                    },
+                    series: [
+                        {
+                            name: "Правильные ответы",
+                            data: prevProps.correct,
+                        },
+                        {
+                            name: "Неправильные ответы",
+                            data: prevProps.incorrect,
+                        }
+                    ],
+                }
+            )
+        }
     }
 
     render() {

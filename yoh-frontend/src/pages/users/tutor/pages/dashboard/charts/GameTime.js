@@ -17,6 +17,7 @@ export class GameTime extends Component {
             )
         })
 
+        this.current = date_range;
         this.state = {
             options: {
                 chart: {
@@ -52,6 +53,29 @@ export class GameTime extends Component {
                 }
             ],
         };
+    }
+
+    componentDidUpdate(prevProps, prevState, snapshot) {
+        let date_range = [];
+        prevProps.dateRange.forEach((datePart) => {
+            let start_date = new Date(datePart['daterange'][0]).getTime(),
+                end_date = new Date(datePart['daterange'][1]).getTime();
+
+            date_range.push(
+                {
+                    x: datePart['level_name'],
+                    y: [start_date, end_date]
+                }
+            )
+        })
+
+        if (this.current !== date_range) {
+            this.current = date_range;
+            this.setState({
+                options:{...prevState.options},
+                series: date_range
+            });
+        }
     }
 
     render() {
