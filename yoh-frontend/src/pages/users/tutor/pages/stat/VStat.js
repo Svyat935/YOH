@@ -38,7 +38,7 @@ export function VStat(props) {
             <Container>
                 <Row>
                     <h3>Пациент: {fio}</h3>
-                    <h3>Игра: {props.context ? props.context.gameName : null}</h3>
+                    <h3>Игра: {props.context ? props.context.info.gameName : null}</h3>
                     <h3>Попытка номер: {props.indexAttempt}</h3>
                 </Row>
                 <Row>
