@@ -52,7 +52,7 @@ export class ClickStat extends Component {
     }
 
     componentDidUpdate(prevProps, prevState, snapshot) {
-        if (this.current !== prevProps.data) {
+        if (this.current !== [prevProps.clicks, prevProps.missclicks]) {
             this.current = [prevProps.clicks, prevProps.missclicks];
             this.setState(
                 {
