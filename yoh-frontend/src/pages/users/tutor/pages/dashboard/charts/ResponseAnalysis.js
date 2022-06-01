@@ -55,7 +55,7 @@ export class ResponseAnalysis extends Component {
     }
 
     componentDidUpdate(prevProps, prevState, snapshot) {
-        if (this.current !== [prevProps.correct, prevProps.incorrect]){
+        if (this.current != [prevProps.correct, prevProps.incorrect]){
             this.current = [prevProps.correct, prevProps.incorrect];
             this.setState(
                 {
