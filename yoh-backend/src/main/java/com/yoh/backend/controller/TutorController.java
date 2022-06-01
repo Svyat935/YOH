@@ -71,6 +71,7 @@ public class TutorController {
                                     @RequestParam(value = "start", required = true) Integer start,
                                     @RequestParam(value = "regex", required = false, defaultValue = "") String regex,
                                     @RequestParam(value = "order", required = false, defaultValue = "1") String order) {
+        //TODO переделать пагинацию
         try {
             Tutor tutor = this.tutorService.getTutorByUser(this.userService.getUserById(this.userService.verifyToken(token)));
             ArrayList<JsonObject> patientList = new ArrayList<JsonObject>();
@@ -186,6 +187,7 @@ public class TutorController {
                                        @RequestParam(value = "start", required = true) Integer start,
                                        @RequestParam(value = "regex", required = false, defaultValue = "") String regex,
                                        @RequestParam(value = "order", required = false, defaultValue = "1") String order) {
+        //TODO переделать пагинацию
         try {
             Tutor tutor = this.tutorService.getTutorByUser(this.userService.getUserById(this.userService.verifyToken(token)));
             Organization organization = this.tutorService.getTutorByUser(this.userService.getUserById(this.userService.verifyToken(token))).getOrganization();
@@ -365,6 +367,7 @@ public class TutorController {
                                            @RequestParam(value = "regex", required = false, defaultValue = "") String regex,
                                            @RequestParam(value = "typeRegex", required = false, defaultValue = "") String typeRegex,
                                            @RequestParam(value = "order", required = false, defaultValue = "1") String order) {
+        //TODO переделать пагинацию
         try {
             Tutor tutorValidation = this.tutorService.getTutorByUser(this.userService.getUserById(this.userService.verifyToken(token)));
             Patient patient = this.patientService.getPatientById(UUID.fromString(patientID));
