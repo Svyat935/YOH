@@ -42,6 +42,7 @@ export function VDetailInfo(props) {
                             onClick={() => {
                                 let info = props.context.info ? props.context.info : {};
                                 info["gamePatientId"] = game["gamePatientId"];
+                                info["gameName"] = game["name"];
                                 props.context.addInfo(info);
                                 router("/user/tutor/stat");
                             }}

@@ -28,13 +28,17 @@ export function VStat(props) {
         return view;
     }
 
+    const fio = props.context.patient['surname'] && props.context.patient['name'] ?
+        props.context.patient['surname'] + " " + props.context.patient['name'] : "Отсутствует ФИО"
+
     return (
         <Back navLeft={<ButtonA style={{boxShadow: "none"}} width={200} text={"Вернуться"}
                                 onClick={() => router("/user/tutor/detail")}/>}
               navPanel={<TutorNav context={props.context}/>}>
             <Container>
                 <Row>
-
+                    <h3>Пациент: {fio}</h3>
+                    <h3>Попытка номер: {props.indexAttempt}</h3>
                 </Row>
                 <Row>
                     <div style={
@@ -46,7 +50,11 @@ export function VStat(props) {
                         {
                             0 < props.currentAttempt ?
                             <ButtonA text={"Предыдущая"} onClick={
-                                () => {props.setCurrentAttempt(props.currentAttempt - 1); props.refresh();}
+                                () => {
+                                    props.setCurrentAttempt(props.currentAttempt - 1);
+                                    props.changeIndexAttempt(props.indexAttempt - 1);
+                                    props.refresh();
+                                }
                             }/> : null
                         }
                         {
@@ -55,7 +63,11 @@ export function VStat(props) {
                         {
                             props.attempts.length-1 > props.currentAttempt ?
                             <ButtonA text={"Следующая"} onClick={
-                                () => {props.setCurrentAttempt(props.currentAttempt + 1); props.refresh();}
+                                () => {
+                                    props.setCurrentAttempt(props.currentAttempt + 1);
+                                    props.changeIndexAttempt(props.indexAttempt + 1);
+                                    props.refresh();
+                                }
                             }/> : null
                         }
                     </div>

@@ -7,6 +7,7 @@ export function CStat() {
     const context = useContext(UserContext);
     const [_, rerun] = useState(new class{});
     const [attempts, setAttempts] = useState([]);
+    const [indexAttempt, setIndexAttempt] = useState(0);
     const [currentAttempt, setCurrentAttempt] = useState([]);
     const [allTime, setAllTime] = useState(null);
     const [clicks, setClicks] = useState(null);
@@ -88,12 +89,12 @@ export function CStat() {
         if (context.token){
             let attempt;
             if (attempts.length === 0){
-                console.log(context.info.gamePatientId);
                 let responseAttempts = await requestGetAttemptsGames(context.info.gamePatientId);
                 let attempts = responseAttempts["attempts"];
                 setAttempts(attempts);
                 attempt = attempts[0];
                 setCurrentAttempt(0);
+                setIndexAttempt(1);
                 //.slice(-1)[0];
             }else{
                 attempt = attempts[currentAttempt];
@@ -125,6 +126,8 @@ export function CStat() {
                 answers={answers}
                 timelines={timelines}
                 attempts={attempts}
+                changeIndexAttempt={setIndexAttempt}
+                indexAttempt={indexAttempt}
                 currentAttempt={currentAttempt}
                 setCurrentAttempt={setCurrentAttempt}
             />
