@@ -29,10 +29,12 @@ export function VStat(props) {
     }
 
     return (
-        <Back navPanel={<TutorNav context={props.context}/>}>
+        <Back navLeft={<ButtonA style={{boxShadow: "none"}} width={200} text={"Вернуться"}
+                                onClick={() => router("/user/tutor/detail")}/>}
+              navPanel={<TutorNav context={props.context}/>}>
             <Container>
                 <Row>
-                    <ButtonA width={200} text={"Вернуться"} onClick={() => router("/user/tutor/detail")}/>
+
                 </Row>
                 <Row>
                     <div style={

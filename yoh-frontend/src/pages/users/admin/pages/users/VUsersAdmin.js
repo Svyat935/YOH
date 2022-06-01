@@ -48,7 +48,7 @@ export function VUsersAdmin(props) {
             }
         },
         {
-            "text": "Пилигрим", "value": 3, "onClick": () => {
+            "text": "Без роли", "value": 3, "onClick": () => {
                 props.setRole(4);
                 props.refresh();
             }
@@ -60,7 +60,7 @@ export function VUsersAdmin(props) {
             }
         },
         {
-            "text": "Пациент", "value": 5, "onClick": () => {
+            "text": "Наблюдаемый", "value": 5, "onClick": () => {
                 props.setRole(1);
                 props.refresh();
             }
@@ -348,7 +348,7 @@ export function VUsersAdmin(props) {
             fSecondName.style.border = validStyle;
             validStatus = false;
         }
-        if (fPhone.value !== "+7(___)___-__-__" && fPhone.value.includes("_")){
+        if (fPhone.value !== "+7(___)___-__-__" && fPhone.value.includes("_")) {
             fPhone.style.border = validStyle;
             validStatus = false;
         }
@@ -390,7 +390,9 @@ export function VUsersAdmin(props) {
             <h3>Выберите действие: </h3>
             {
                 userForChanging["role"] === 4 ? <ButtonB width={"70%"} text={"Изменить роль"} onClick={
-                    () => {setButtonStatus(4)}
+                    () => {
+                        setButtonStatus(4)
+                    }
                 }
                 /> : null
             }
@@ -402,7 +404,9 @@ export function VUsersAdmin(props) {
                     }
                 }/> : null
             }
-            <ButtonB width={"70%"} text={"Изменить пароль"} onClick={() => {setButtonStatus(1);}}/>
+            <ButtonB width={"70%"} text={"Изменить пароль"} onClick={() => {
+                setButtonStatus(1);
+            }}/>
         </div>
     )
 
@@ -415,7 +419,7 @@ export function VUsersAdmin(props) {
             }
         }>
             <h3>Выберите роль: </h3>
-            <ButtonB text={"Пациент"} onClick={
+            <ButtonB text={"Наблюдаемый"} onClick={
                 async () => {
                     let id = null;
                     if (currentUserLogin !== null) {
@@ -608,6 +612,22 @@ export function VUsersAdmin(props) {
                     props.refresh();
                 }}/>
             )
+
+        // if (props.size > props.limit){
+        //     for (let index = 0; index < props.size; index + props.limit){
+        //         if (index === 0){
+        //             view.push(
+        //                 <ButtonA width={56} text={1} onClick={() => {
+        //                     props.setStart(0);
+        //                     props.refresh();
+        //                 }}/>
+        //             )
+        //         }else{
+        //             if (props.start + props.limit * 3)
+        //         }
+        //     }
+        // }
+
         if (props.users.length === 10) {
             view.push(
                 <ButtonA width={300} text={"Следующая страница"} onClick={() => {
@@ -620,36 +640,36 @@ export function VUsersAdmin(props) {
     }
 
     const modalBody = () => {
-        if (buttonStatus === 0){
+        if (buttonStatus === 0) {
             return createUserView;
-        }else if (buttonStatus === 1){
+        } else if (buttonStatus === 1) {
             return createUserPasswordView;
-        }else if (buttonStatus === 2){
+        } else if (buttonStatus === 2) {
             return <p>
                 {
                     "Вы уверен что хотите изменить пароль " +
                     "у пользователя c Логиным: " + userForChanging["login"] + "?"
                 }
             </p>
-        }else if (buttonStatus === 3){
+        } else if (buttonStatus === 3) {
             return chooseChangeAction;
-        }else if (buttonStatus === 4){
+        } else if (buttonStatus === 4) {
             return changingRoleView;
-        }else if (buttonStatus === 5){
+        } else if (buttonStatus === 5) {
             return fillUser();
         }
     }
 
     const modalTitle = () => {
-        if (buttonStatus === 0){
+        if (buttonStatus === 0) {
             return "Добавление пользователя";
-        }else if (buttonStatus === 1 || buttonStatus === 2){
+        } else if (buttonStatus === 1 || buttonStatus === 2) {
             return "Изменить пароль";
-        }else if (buttonStatus === 3){
+        } else if (buttonStatus === 3) {
             return "Изменение пользователя";
-        }else if (buttonStatus === 4){
+        } else if (buttonStatus === 4) {
             return "Изменение роли";
-        }else if (buttonStatus === 5){
+        } else if (buttonStatus === 5) {
             return "Изменение данных";
         }
         return null;
@@ -659,15 +679,16 @@ export function VUsersAdmin(props) {
         let view = [<ButtonB text={"Отмена"} onClick={clearAll}/>];
         if (buttonStatus === 0) {
             view.push(<ButtonB text={"Добавить"} onClick={addUser}/>);
-        } else if (buttonStatus === 1){
+        } else if (buttonStatus === 1) {
             view.push(<ButtonB text={"Изменить"} onClick={changeUserPassword}/>)
         } else if (buttonStatus === 2) {
             view.push(<ButtonB text={"Изменить"} onClick={() => {
-                props.changePassword(userForChanging["id"], password); setShow(false);
+                props.changePassword(userForChanging["id"], password);
+                setShow(false);
             }}/>);
-        } else if (buttonStatus === 5){
+        } else if (buttonStatus === 5) {
             view.push(<ButtonB text={"Изменить информацию"}
-                         onClick={() => role === 1 ? addInfoForPatient() : addInfoForTutor()}/>)
+                               onClick={() => role === 1 ? addInfoForPatient() : addInfoForTutor()}/>)
         }
 
         return (

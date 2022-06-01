@@ -69,6 +69,20 @@ export function CDetailInfo() {
         });
     }
 
+    const requestDeleteGameForPatient = async (game_id, user_id) => {
+        return await fetch("/tutor/patients/games/removing", {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+                'token': context.token
+            },
+            body: JSON.stringify({game_id: game_id, patient_id: user_id})
+        }).then((response) => {
+            if (response.status === 200) return response.json()
+            else return null;
+        });
+    }
+
     useEffect(async () => {
         if (context.token){
             let responseUser = await requestGetInfoForUser(context.info.patient["id"]);
@@ -104,6 +118,7 @@ export function CDetailInfo() {
                 games={games}
                 status={status}
                 detach={requestDetachPatient}
+                deleteGame={requestDeleteGameForPatient}
                 refresh={() => rerun(new class{})}
             />
         </LoadPage>

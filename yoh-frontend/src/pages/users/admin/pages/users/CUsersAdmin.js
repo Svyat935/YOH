@@ -11,6 +11,7 @@ export function CUsersAdmin() {
     const [regex, setRegex] = useState("");
     const [start, setStart] = useState(0);
     const [limit, setLimit] = useState(10);
+    const [size, setSize] = useState(0);
     const [role, setRole] = useState(-1);
     const [_, rerun] = useState(new class{});
     const [load, setLoad] = useState(true);
@@ -188,7 +189,10 @@ export function CUsersAdmin() {
             let responseOrganizations = await requestGetAllOrganizations();
 
             if (responseUsers !== null){
-                responseUsers = responseUsers["jsonObject"]["results"];
+                responseUsers = responseUsers["jsonObject"];
+                setSize(responseUsers["size"]);
+
+                responseUsers = responseUsers["results"];
                 for (let user of responseUsers){
                     if (user["role"] === 1){
                         let image = await requestGetImagePatient(user["id"]);
@@ -232,6 +236,8 @@ export function CUsersAdmin() {
                 setRole={setRole}
                 setStart={setStart}
                 start={start}
+                limit={limit}
+                size={size}
                 refresh={() => rerun(new class{})}
             />
         </LoadPage>

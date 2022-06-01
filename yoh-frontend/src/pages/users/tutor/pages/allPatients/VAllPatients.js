@@ -82,7 +82,7 @@ export function VAllPatients(props) {
                         alignItems: "center"
                     }
                 }>
-                    <h3>Доступные пациенты в организации отсутствуют.</h3>
+                    <h3>Доступные наблюдаемые в организации отсутствуют.</h3>
                 </div>
             )
         }
@@ -141,7 +141,7 @@ export function VAllPatients(props) {
             </Modal>
             <Container style={{marginTop: 20}}>
                 <Row>
-                    <h1 style={{marginBottom: 20}}>Список пациентов организации</h1>
+                    <h1 style={{marginBottom: 20}}>Список наблюдаемых организации</h1>
                     <Col md={4} style={
                         {
                             display: "flex",

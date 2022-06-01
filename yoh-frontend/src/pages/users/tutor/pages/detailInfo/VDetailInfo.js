@@ -16,6 +16,7 @@ import {InfoBlock} from "../../../../../components/infoBlock/InfoBlock";
 export function VDetailInfo(props) {
     const router = useNavigate();
     const [show, setShow] = useState(false);
+    const [gameForDelete, setGameForDelete] = useState(null);
     const allGames = props.status !== null ? props.status["Done"] + props.status["Assigned"] + props.status["Started"] : 0,
         statDone = allGames !== 0 ? Math.round(props.status["Done"] / allGames * 100) : 0,
         statAssigned = allGames !== 0 ? Math.round(props.status["Assigned"] / allGames * 100) : 0,
@@ -42,9 +43,12 @@ export function VDetailInfo(props) {
                                 let info = props.context.info ? props.context.info : {};
                                 info["gamePatientId"] = game["gamePatientId"];
                                 props.context.addInfo(info);
-
                                 router("/user/tutor/stat");
-                        }}>
+                            }}
+                            onClickClose={() => {
+                                setGameForDelete(game);
+                                setShow(true);
+                            }}>
                             <div>
                                 <img style={{width: "100%"}} src={gameStub} alt={'game'}/>
                             </div>
@@ -90,23 +94,29 @@ export function VDetailInfo(props) {
     }
 
     return (
-        <Back navPanel={<TutorNav context={props.context}/>}>
+        <Back navLeft={
+            <ButtonA style={{boxShadow: "none"}}
+                     text={"Вернуться"} onClick={() => router("/user/tutor/patients/")}/>
+        }
+              navPanel={<TutorNav context={props.context}/>}>
             <Modal
                 show={show}
                 backdrop={true}
                 keyboard={true}
-                onHide={() => setShow(false)}
+                onHide={() => {setShow(false); setGameForDelete(null)}}
             >
                 <Modal.Header closeButton>
                     <Modal.Title>{
-                        "Открепить Пользователя"
+                        gameForDelete !== null ? "Удаление игры" : "Открепить Пользователя"
                     }</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
                     {
-                        "Вы уверены, что хотите открепить пользователя: '" +
-                            props.user["surname"] + " " +props.user["name"] +
-                        "' ?"
+                        gameForDelete !== null ?
+                                "Вы уверены, что хотите удалить игру '" + gameForDelete["name"] +"' у пользователя?" :
+                            "Вы уверены, что хотите открепить пользователя: '" +
+                                    props.user["surname"] + " " +props.user["name"] + "' ?"
+
                     }
                 </Modal.Body>
                 <Modal.Footer>
@@ -119,10 +129,18 @@ export function VDetailInfo(props) {
                         }
                     }>
                         <ButtonB text={"Отмена"} onClick={() => setShow(false)}/>
-                        <ButtonB text={"Открепить"} onClick={() => {
-                            props.detach(props.user["id"]);
-                            router("/user/tutor/patients/");
-                        }}/>
+                        {
+                            gameForDelete !== null ?
+                                <ButtonB text={"Удалить"} onClick={() => {
+                                    props.deleteGame(gameForDelete["id"], props.user["id"]);
+                                    props.refresh();
+                                    setShow(false);
+                                }}/> :
+                            <ButtonB text={"Открепить"} onClick={() => {
+                                props.detach(props.user["id"]);
+                                router("/user/tutor/patients/");
+                            }}/>
+                        }
                     </div>
                 </Modal.Footer>
             </Modal>
@@ -154,9 +172,9 @@ export function VDetailInfo(props) {
                         <ButtonA width={300} text={"Добавить игру"} onClick={() => {
                             router("/user/tutor/vector/");
                         }}/>
-                        <ButtonA width={300} text={"Удалить игру"} onClick={() => {
-                            router("/user/tutor/delete/");
-                        }}/>
+                        {/*<ButtonA width={300} text={"Удалить игру"} onClick={() => {*/}
+                        {/*    router("/user/tutor/delete/");*/}
+                        {/*}}/>*/}
                         <ButtonA width={300} text={"Открепить"} onClick={() => {
                             setShow(true);
                         }}/>

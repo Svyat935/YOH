@@ -4,11 +4,14 @@ import {Container} from "react-bootstrap";
 import {UserContext} from "../../../../../context/userContext";
 import {TutorNav} from "../../../../../components/navigate/NavPanel/Tutor/TutorNav";
 import {LoadPage} from "../../../../../components/loadpage/LoadPage";
+import {ButtonA} from "../../../../../components/buttons/ButtonA/ButtonA";
+import {useNavigate} from "react-router-dom";
 
 export function VGame() {
     let context = useContext(UserContext);
     const [src, setSrc] = useState(null);
     const [load, setLoad] = useState(true);
+    const router = useNavigate();
 
     useEffect(() => {
         if (context.token) {
@@ -17,7 +20,10 @@ export function VGame() {
     }, [context])
 
     return (
-        <Back navPanel={<TutorNav context={context}/>}>
+        <Back navLeft={
+            <ButtonA style={{boxShadow: "none"}}
+                     text={"Вернуться"} onClick={() => router("/user/tutor/detail/")}/>
+        } navPanel={<TutorNav context={context}/>}>
             <div style={
                 {
                     display: "flex",

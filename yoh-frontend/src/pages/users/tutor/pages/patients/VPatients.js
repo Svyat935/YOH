@@ -90,7 +90,7 @@ export function VPatients(props) {
                         alignItems: "center"
                     }
                 }>
-                    <h3>Наблюдаемые пациенты отсутствуют.</h3>
+                    <h3>Наблюдаемые отсутствуют.</h3>
                 </div>
             )
         }
@@ -140,7 +140,7 @@ export function VPatients(props) {
             </Modal>
             <Container style={{marginTop: 20}}>
                 <Row>
-                    <h1 style={{marginBottom: 20}}>Список наблюдаемых пациентов</h1>
+                    <h1 style={{marginBottom: 20}}>Список наблюдаемых</h1>
                     <Col md={4} style={
                         {
                             display: "flex",
