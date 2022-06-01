@@ -22,7 +22,7 @@ export function VGame() {
     return (
         <Back navLeft={
             <ButtonA style={{boxShadow: "none"}}
-                     text={"Вернуться"} onClick={() => router("/user/patient/game/")}/>}
+                     text={"Вернуться"} onClick={() => router("/user/patient/")}/>}
               navPanel={<PatientNav context={context}/>}>
             <div style={
                 {

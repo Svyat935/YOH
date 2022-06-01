@@ -43,7 +43,7 @@ export function VHomeAdmin(props) {
                 view.push(
                     <InfoBlock ikey={game["id"]} text={game["name"]} onClick={() => router("/user/admin/components/")}>
                         <div>
-                            <img style={{width: "100%"}} src={gameStub} alt={'game'}/>
+                            <img style={{width: "100%", borderRadius: 40}} src={gameStub} alt={'game'}/>
                         </div>
                     </InfoBlock>
                 )

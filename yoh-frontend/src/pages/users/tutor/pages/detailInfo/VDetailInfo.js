@@ -51,7 +51,7 @@ export function VDetailInfo(props) {
                                 setShow(true);
                             }}>
                             <div>
-                                <img style={{width: "100%"}} src={gameStub} alt={'game'}/>
+                                <img style={{width: "100%", borderRadius: 40}} src={gameStub} alt={'game'}/>
                             </div>
                         </InfoBlock>
                     )
@@ -162,7 +162,7 @@ export function VDetailInfo(props) {
                         }
                         >
                             <div>
-                                <img style={{width: "100%"}} src={
+                                <img style={{width: "100%", borderRadius: 40}} src={
                                     props.user["image"] ? "https://mobile.itkostroma.ru/images/" + props.user["image"] :
                                         profileStub
                                 } alt={'game'}/>
