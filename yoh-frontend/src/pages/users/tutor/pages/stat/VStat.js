@@ -28,8 +28,8 @@ export function VStat(props) {
         return view;
     }
 
-    const fio = props.context.token && props.context.patient['surname'] && props.context.patient['name'] ?
-        props.context.patient['surname'] + " " + props.context.patient['name'] : "Отсутствует ФИО"
+    const fio = props.context.token && props.context.info.patient['surname'] && props.context.info.patient['name'] ?
+        props.context.info.patient['surname'] + " " + props.context.info.patient['name'] : "Отсутствует ФИО"
 
     return (
         <Back navLeft={<ButtonA style={{boxShadow: "none"}} width={200} text={"Вернуться"}
