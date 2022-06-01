@@ -5,7 +5,7 @@ export class ClickStat extends Component {
     constructor(props) {
         super(props);
 
-        this.current = [props.clicks, props.missclicks];
+        this.current = JSON.stringify([props.clicks, props.missclicks]);
         this.state = {
             options: {
                 chart: {
@@ -54,8 +54,8 @@ export class ClickStat extends Component {
     componentDidUpdate(prevProps, prevState, snapshot) {
 
         console.log(this.current, [prevProps.clicks, prevProps.missclicks]);
-        if (this.current != [prevProps.clicks, prevProps.missclicks]) {
-            this.current = [prevProps.clicks, prevProps.missclicks];
+        if (this.current !== JSON.stringify([prevProps.clicks, prevProps.missclicks])) {
+            this.current = JSON.stringify([prevProps.clicks, prevProps.missclicks]);
             this.setState(
                 {
                     options:{

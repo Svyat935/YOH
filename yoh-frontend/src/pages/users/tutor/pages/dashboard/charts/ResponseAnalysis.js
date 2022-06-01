@@ -5,7 +5,7 @@ export class ResponseAnalysis extends Component {
     constructor(props) {
         super(props);
 
-        this.current = [props.correct, props.incorrect]
+        this.current = JSON.stringify([props.correct, props.incorrect]);
         this.state = {
             options: {
                 chart: {
@@ -55,8 +55,8 @@ export class ResponseAnalysis extends Component {
     }
 
     componentDidUpdate(prevProps, prevState, snapshot) {
-        if (this.current != [prevProps.correct, prevProps.incorrect]){
-            this.current = [prevProps.correct, prevProps.incorrect];
+        if (this.current !== JSON.stringify([prevProps.correct, prevProps.incorrect])){
+            this.current = JSON.stringify([prevProps.correct, prevProps.incorrect]);
             this.setState(
                 {
                     options:{

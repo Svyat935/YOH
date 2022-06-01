@@ -17,7 +17,7 @@ export class GameTime extends Component {
             )
         })
 
-        this.current = date_range;
+        this.current = JSON.stringify(date_range);
         this.state = {
             options: {
                 chart: {
@@ -70,7 +70,7 @@ export class GameTime extends Component {
         })
 
         if (this.current !== date_range) {
-            this.current = date_range;
+            this.current = JSON.stringify(date_range);
             this.setState({
                 options:{...prevState.options},
                 series: date_range
