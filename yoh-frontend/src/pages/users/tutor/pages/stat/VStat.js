@@ -28,7 +28,7 @@ export function VStat(props) {
         return view;
     }
 
-    const fio = props.context.patient['surname'] && props.context.patient['name'] ?
+    const fio = props.context && props.context.patient['surname'] && props.context.patient['name'] ?
         props.context.patient['surname'] + " " + props.context.patient['name'] : "Отсутствует ФИО"
 
     return (
