@@ -360,6 +360,12 @@ public class PatientController {
             StartedGame startedGame = new StartedGame(gamePatient, dateStart, null, data.getDetails());
             this.startedGameService.saveStartedGame(startedGame);
 
+            GameStatus gameStatus = this.gameStatusService.getGameStatusByGamePatient(gamePatient);
+            if (gameStatus.getStatus() != Status.DONE){
+                gameStatus.setStatus(Status.STARTED);
+                this.gameStatusService.updateGameStatus(gameStatus);
+            }
+
             JsonObject response = new JsonObject();
             response.put("result", "OK");
             return new JSONResponse(200, response);
@@ -426,6 +432,12 @@ public class PatientController {
             startedGame.setDateEnd(dateEnd);
             startedGame.setDetails(data.getDetails());
             this.startedGameService.saveStartedGame(startedGame);
+
+            GameStatus gameStatus = this.gameStatusService.getGameStatusByGamePatient(gamePatient);
+            if (gameStatus.getStatus() != Status.DONE){
+                gameStatus.setStatus(Status.DONE);
+                this.gameStatusService.updateGameStatus(gameStatus);
+            }
 
             JsonObject response = new JsonObject();
             response.put("result", "OK");
