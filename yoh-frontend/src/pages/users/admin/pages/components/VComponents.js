@@ -202,19 +202,49 @@ export function VComponents(props) {
         let fName = document.getElementById("name"),
             fDescription = document.getElementById("description"),
             fFile = document.getElementById("file"),
-            FType = document.getElementById("type"),
-            FStatistics = document.getElementById("useStatistics");
+            fType = document.getElementById("type"),
+            fStatistics = document.getElementById("useStatistics");
+        let valid_style = "red 1px solid"
+        let none_style = "none"
+        let valid_status = true;
 
-        let formData = new FormData();
-        formData.append("name", fName.value);
-        formData.append("description", fDescription.value);
-        formData.append("type", FType.value);
-        formData.append("file", fFile.files[0]);
-        formData.append("useStatistic", FStatistics.value);
-        let response = await props.sendGames(formData);
-        // //TODO: Validate.
-        props.refresh();
-        setShow(false);
+        fName.style.border = none_style;
+        fDescription.style.border = none_style;
+        fType.style.border = none_style;
+        fFile.style.border = none_style;
+
+        if (!fName.value){
+            fName.style.border = valid_style;
+            valid_status = false;
+        }
+
+        if (!fDescription.value){
+            fDescription.style.border = valid_style;
+            valid_status = false;
+        }
+
+        if (!fType.value){
+            fType.style.border = valid_style;
+            valid_status = false;
+        }
+
+        if (!fFile.files){
+            fFile.style.border = valid_style;
+            valid_status = false;
+        }
+
+        if (valid_status){
+            let formData = new FormData();
+            formData.append("name", fName.value);
+            formData.append("description", fDescription.value);
+            formData.append("type", fType.value);
+            formData.append("file", fFile.files[0]);
+            formData.append("useStatistic", fStatistics.value);
+            let response = await props.sendGames(formData);
+            // //TODO: Validate.
+            props.refresh();
+            setShow(false);
+        }
     }
 
     const removeGame = () => {
