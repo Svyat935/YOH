@@ -66,7 +66,7 @@ export function VAuth(props) {
 
 
     return (
-        <Back nav={<BasicNav/>}>
+        <Back navLeft={<BasicNav/>}>
             <PopUp text={textPopUp}/>
             <Container>
                 <Row>

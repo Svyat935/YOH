@@ -6,9 +6,10 @@
     left: 0;
     top: 0;
     display: flex;
+    float: right;
     align-items: center;
     justify-content: end;
-    z-index: 11;
+    z-index: 10;
 }
 
 #hat-left{
@@ -21,7 +22,7 @@
     display: flex;
     align-items: center;
     justify-content: start;
-    z-index: 11;
+    z-index: 10;
 }
 
 .nav-link{

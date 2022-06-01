@@ -8,7 +8,7 @@ import {BasicNav} from "../../../components/navigate/Basic/BasicNav";
 export function VContacts() {
 
     return (
-        <Back nav={<BasicNav/>}>
+        <Back navLeft={<BasicNav/>}>
             <Container>
                 <Row>
                     <h2 style={{marginTop: 20}}>За вопросами обращаться:</h2>

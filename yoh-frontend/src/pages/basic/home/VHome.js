@@ -6,7 +6,7 @@ import homeImages from "../../../assets/homeImages.jpg";
 
 export function VHome() {
     return (
-        <Back nav={<BasicNav/>}>
+        <Back navLeft={<BasicNav/>}>
             <Container>
                 <Row style={{height: "78vh"}} className={"align-items-center"}>
                     <Col>
