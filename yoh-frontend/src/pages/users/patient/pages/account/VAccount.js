@@ -177,7 +177,7 @@ export function VAccount(props) {
 
         return (
             <InfoBlockStatic>
-                <div>
+                <div style={{width: "100%"}}>
                     <img style={{width: "100%"}} src={imageClass.src ? imageClass.src : profileStub} alt={'game'}/>
                 </div>
             </InfoBlockStatic>
