@@ -59,10 +59,11 @@ class StatRecord {
 		this.clearClicks();
 	}
 
-	sendEndGame() {
+	sendLeaveGame() {
 		if ('endGame' in window) {
 			endGame.postMessage('it is end game');
 		}
+		parent.postMessage("it is end game", "*");
 	}
 
 	gameStart(params) {
@@ -81,7 +82,7 @@ class StatRecord {
 		params['date_end'] = this.getTime();
 		params['details'] = this.additional_fields;
 		fetch('/api/game_end', {method: 'POST', body: JSON.stringify(params)});
-		this.sendEndGame();
+		// this.sendLeaveGame();
 	}
 
 	sendMissClick(params) {

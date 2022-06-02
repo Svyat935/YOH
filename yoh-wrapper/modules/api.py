@@ -103,7 +103,7 @@ def send_game_end_route():
     post(send_url, json=data, headers=headers)
 
     resp = make_response(json.dumps({'message': 'Success'}))
-    resp.set_cookie('EndGame', 'true', expires=datetime.now() + timedelta(seconds=10))
+    resp.set_cookie('EndGame', 'true', expires=datetime.now() + timedelta(seconds=10), samesite='None', secure=True)
 
     return resp
 
@@ -230,8 +230,8 @@ def timeline_widget_route():
     return make_response(json.dumps(result, default=json_serial))
 
 
-@api_bp.route('test_post')
-def post_route():
-    resp = make_response('', 200)
+@api_bp.route('/leave_game_event', methods=['POST'])
+def leave_game_event_route():
+    resp = make_response(json.dumps({'message': 'Success'}), 200)
     resp.set_cookie('EndGame', 'true', expires=datetime.now() + timedelta(seconds=10), samesite='None', secure=True)
     return resp

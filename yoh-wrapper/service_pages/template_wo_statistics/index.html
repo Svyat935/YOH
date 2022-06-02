@@ -47,7 +47,8 @@
             if ('endGame' in window) {
                 endGame.postMessage('it is end game');
             }
-            console.log('Отправлено сообщение мобильному приложению!');
+            parent.postMessage("it is end game", "*");
+            console.log('Отправлено сообщение о закрытии игры!');
         }
         else {
             setTimeout(waitCookie, 1000);
