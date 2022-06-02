@@ -233,5 +233,5 @@ def timeline_widget_route():
 @api_bp.route('test_post')
 def post_route():
     resp = make_response('', 200)
-    resp.set_cookie('EndGame', 'true', expires=datetime.now() + timedelta(seconds=10), samesite='None')
+    resp.set_cookie('EndGame', 'true', expires=datetime.now() + timedelta(seconds=10), samesite='None', secure=True)
     return resp
