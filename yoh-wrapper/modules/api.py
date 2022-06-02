@@ -7,14 +7,18 @@ from urllib import parse
 from flask import Blueprint, make_response, request, session, abort
 from flask_cors import CORS
 from werkzeug.exceptions import HTTPException
-from requests import post
+from requests import post, get
 from .templates import GET_ATTEMPT_PAGINATION, GET_ALL_TIME_WIDGET, CLICKS_WIDGET, ANSWERS_WIDGET, TIMELINE_WIDGET
 
 
+# Инициализируем модуль API
 api_bp = Blueprint('API', __name__, url_prefix='/api')
+# Указываем, что по этому адресу разрешаются кросс-доменные запросы
 CORS(api_bp, resources={r"/api/*": {"origins": "*"}})
+# Сообщаем драйверу, что мы в своей БД используем UUID, чтобы он подтянул нужные расширения
 psycopg2.extras.register_uuid()
 
+# Параметры подключения к БД
 CONNECT_PARAMS = {
     "host": "yoh-db",
     "port": "5432",
@@ -25,8 +29,9 @@ CONNECT_PARAMS = {
 
 
 def json_serial(obj):
-    """JSON serializer for objects not serializable by default json code"""
-
+    """
+    JSON сериализация для объектов, которые не сериализуются в стандартном JSON
+    """
     if isinstance(obj, (datetime, date)):
         return obj.isoformat()
     if isinstance(obj, uuid.UUID):
@@ -36,6 +41,10 @@ def json_serial(obj):
 
 @api_bp.errorhandler(HTTPException)
 def error_handler_route(error):
+    """
+    Обработчик ошибок для API.
+    Возвращает JSON, а не стандартную страницу с ошибкой
+    """
     if error.code == 401:
         message = 'Session ID or Game ID not passed'
     else:
@@ -51,6 +60,9 @@ def error_handler_route(error):
 
 
 def url_parse(url):
+    """
+    Достает из переданного URL игру и токен
+    """
     parsed_url = parse.urlsplit(url)
     game = parsed_url.path.split('/')[-2]
     token = parse.parse_qs(parsed_url.query)['token'][0]
@@ -59,6 +71,10 @@ def url_parse(url):
 
 @api_bp.route('/game_start', methods=['POST'])
 def send_game_start_route():
+    """
+    Отправка информации о начале игры.
+    На бэкенде выполняется вставка в таблицу "started_games" с пустой датой конца
+    """
     data = json.loads(request.data)
 
     token = session.get('user')
@@ -83,6 +99,10 @@ def send_game_start_route():
 
 @api_bp.route('/game_end', methods=['POST'])
 def send_game_end_route():
+    """
+    Отправка информации о конце игры.
+    На бэкенде выполняется обновление таблицы "started_games" с записью датой конца
+    """
     data = json.loads(request.data)
 
     token = session.get('user')
@@ -110,6 +130,10 @@ def send_game_end_route():
 
 @api_bp.route('/statistics', methods=['POST'])
 def statistics_route():
+    """
+    Основной метод отправки статистики в процессе прохождения игры
+    На бэкенде выполняется вставка в таблицу "game_statistics"
+    """
     data = json.loads(request.data)
 
     token = session.get('user')
@@ -118,12 +142,6 @@ def statistics_route():
         game, token = url_parse(request.referrer)
         if not token or not game:
             abort(401)
-
-    # statistic_types = {
-    #     Решили вопрос полностью правильно: 1
-    #     Решили вопрос полностью неправильно: 2
-    #     Просто переключили уровень: 3
-    # }
 
     headers = {
         'Content-Type': 'application/json',
@@ -141,13 +159,35 @@ def statistics_route():
 
 @api_bp.route('/additional_fields', methods=['GET'])
 def additional_fields_route():
-    add_fields = session.get('additional_fields') or '{}'
-    return make_response(add_fields)
+    """
+    Метод получения дополнительных полей для игры
+    """
+    token = session.get('user')
+    game = session.get('current_game')
+    if not token or not game:
+        game, token = url_parse(request.referrer)
+        if not token or not game:
+            abort(401)
+
+    headers = {
+        'Content-Type': 'application/json',
+        'token': token,
+        'game': game
+    }
+    send_url = 'http://yoh-backend:8080/patient/games/statistics/additional_fields'
+    result = get(send_url, headers=headers).json()
+
+    return make_response(json.dumps(result.get('jsonObject', {}).get('result')))
 
 
 @api_bp.route('/statistic_pagination', methods=['GET'])
 def statistic_pagination_route():
-    # gp_id
+    """
+    Возвращает идентификаторы попыток в порядке возрастания
+
+    Принимает на вход в аргументах:
+        gp_id - uuid - идентификатор game_patient_id
+    """
     parameters = request.args
 
     with psycopg2.connect(**CONNECT_PARAMS) as conn:
@@ -159,6 +199,14 @@ def statistic_pagination_route():
 
 
 def format_response_json(result, source, fields):
+    """
+    Выполняет форматирование результата для разных получателей
+
+    Принимает на вход:
+        result - dict - Результат из БД
+        source - str - источник запроса, для кого выполняется форматирование
+        fields - list[str] - Список итерируемых полей
+    """
     if source == 'mobile':
         result = {
             'format': fields,
@@ -171,7 +219,15 @@ def format_response_json(result, source, fields):
 
 @api_bp.route('/all_time_widget', methods=['GET'])
 def all_time_widget_route():
-    # sg_id, [source]
+    """
+    Возвращает данные для виджета потраченного времени
+
+    Принимает на вход в аргументах:
+        sg_id - uuid - идентификатор started_game_id(попытки, полученной в пагинации)
+        *source - str - источник запроса для нужного формата возвращаемого значения
+
+    * - опционально
+    """
     parameters = request.args
 
     with psycopg2.connect(**CONNECT_PARAMS) as conn:
@@ -187,7 +243,15 @@ def all_time_widget_route():
 
 @api_bp.route('/clicks_widget', methods=['GET'])
 def clicks_widget_route():
-    # sg_id, [source]
+    """
+    Возвращает данные для виджета кликов
+
+    Принимает на вход в аргументах:
+        sg_id - uuid - идентификатор started_game_id(попытки, полученной в пагинации)
+        *source - str - источник запроса для нужного формата возвращаемого значения
+
+    * - опционально
+    """
     parameters = request.args
 
     with psycopg2.connect(**CONNECT_PARAMS) as conn:
@@ -203,7 +267,15 @@ def clicks_widget_route():
 
 @api_bp.route('/answers_widget', methods=['GET'])
 def answers_widget_route():
-    # sg_id, [source]
+    """
+    Возвращает данные для виджета ответов
+
+    Принимает на вход в аргументах:
+        sg_id - uuid - идентификатор started_game_id(попытки, полученной в пагинации)
+        *source - str - источник запроса для нужного формата возвращаемого значения
+
+    * - опционально
+    """
     parameters = request.args
 
     with psycopg2.connect(**CONNECT_PARAMS) as conn:
@@ -219,7 +291,15 @@ def answers_widget_route():
 
 @api_bp.route('/timeline_widget', methods=['GET'])
 def timeline_widget_route():
-    # sg_id, [source]
+    """
+    Возвращает данные для виджета затраченного времени по каждому уровню
+
+    Принимает на вход в аргументах:
+        sg_id - uuid - идентификатор started_game_id(попытки, полученной в пагинации)
+        *source - str - источник запроса для нужного формата возвращаемого значения
+
+    * - опционально
+    """
     parameters = request.args
 
     with psycopg2.connect(**CONNECT_PARAMS) as conn:
@@ -232,6 +312,16 @@ def timeline_widget_route():
 
 @api_bp.route('/leave_game_event', methods=['POST'])
 def leave_game_event_route():
+    """
+    Сигнализирует серверу о завершении игры для приложений, не использующих класс по сбору статистики.
+
+    Метод записывает в куки флаг о завершении игры. Через 10 секунд этот куки будет очищен.
+
+    Интерфейс каждую секунду делает проверку на этот флаг.
+    При обнаружении выполняет отправку события для мобильного приложения или браузеру.
+    """
     resp = make_response(json.dumps({'message': 'Success'}), 200)
+    # samesite='None', secure=True нужен для кросс-доменных сохранений cookie
+    # Без этих флагов сохранение куки не работает, так как интерфейс находится в другом домене, а игра запущена в iframe
     resp.set_cookie('EndGame', 'true', expires=datetime.now() + timedelta(seconds=10), samesite='None', secure=True)
     return resp

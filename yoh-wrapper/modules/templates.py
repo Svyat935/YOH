@@ -1,3 +1,4 @@
+# Пагинация попыток
 GET_ATTEMPT_PAGINATION = """
 select array(
     select
@@ -10,6 +11,7 @@ select array(
 ) as "attempts";
 """
 
+# Данные для виджета общего потраченного времени
 GET_ALL_TIME_WIDGET = """
 select 
     COALESCE(array_agg("level_name"), ARRAY[]::text[]) as "level_names",
@@ -30,6 +32,7 @@ from (
 ) a;
 """
 
+# Данные для виджета кликов
 CLICKS_WIDGET = """
 select
     COALESCE(array_agg("level_name"), ARRAY[]::text[]) as "level_names",
@@ -48,6 +51,7 @@ from (
 ) a;
 """
 
+# Данные для виджета ответов
 ANSWERS_WIDGET = """
 select
     COALESCE(array_agg("level_name"), ARRAY[]::text[]) as "level_names",
@@ -67,6 +71,7 @@ from (
 ) a;
 """
 
+# Данные для виджета потраченного времени по каждому уровню
 TIMELINE_WIDGET = """
 select 
     "level_name",
