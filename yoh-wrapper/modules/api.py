@@ -123,7 +123,6 @@ def send_game_end_route():
     post(send_url, json=data, headers=headers)
 
     resp = make_response(json.dumps({'message': 'Success'}))
-    resp.set_cookie('EndGame', 'true', expires=datetime.now() + timedelta(seconds=10), samesite='None', secure=True)
 
     return resp
 
