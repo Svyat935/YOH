@@ -67,22 +67,14 @@ public class GameController {
                                  @RequestParam(value = "patientID", required = false) String patientID) {
         //TODO Переделать пагинацию
         try{
-            //TODO Сейчас возвращает только актуальные игры
             User user = this.userService.getUserById(this.userService.verifyToken(token));
-            List<Game> gameList = this.gameService.getAllGamesFiltered(typeRegex, order, regex);
+            if (user.getRole() != 0 || user.getRole() != 3)
+                throw new IllegalArgumentException("This user doesn't have permission");
             JsonObject response = new JsonObject();
-            ArrayList<UUID> sdasds = new ArrayList<>();
-//            if (!regex.equals("")){
-//                gameList = gameList.stream().filter(i -> i.getName().toLowerCase().contains(regex.toLowerCase()))
-//                        .collect(Collectors.toList());
-//            }
-            if (patientID != null) {
-                this.gamePatientService.getAllGamesByPatient(this.patientService.getPatientById(UUID.fromString(patientID))).forEach(i -> sdasds.add(i.getId()));
-//                gameList = gameList.stream().filter(i -> !patientGames.contains(i)).collect(Collectors.toList());
-                gameList = gameList.stream().filter(i -> !sdasds.contains(i.getId())).collect(Collectors.toList());
-            }
-            if (gameList.size() == 0) {
-//                JsonObject response = new JsonObject();
+            ArrayList<UUID> UUIDList = new ArrayList<>();
+            if (patientID != null) this.gamePatientService.getAllGamesByPatient(this.patientService.getPatientById(UUID.fromString(patientID))).forEach(i -> UUIDList.add(i.getId()));
+            int listCount = this.gameService.getAllActiveGamesFilteredCount(typeRegex, regex, UUIDList);
+            if (listCount == 0) {
                 response.put("previous", false);
                 response.put("next", false);
                 response.put("count", 0);
@@ -90,54 +82,110 @@ public class GameController {
                 response.put("results", new ArrayList<>());
                 return new JSONResponse(200, response);
             }
-            ArrayList<JsonObject> gamesList = new ArrayList<JsonObject>();
-//            JsonObject response = new JsonObject();
+            if (start >= listCount)
+                throw new IllegalArgumentException(String.format("No element at that index (%s)", start));
 
-
-
-            //Pagination
-            if (start >= gameList.size())
-                throw new IllegalArgumentException(
-                        String.format("No element at that index (%s)", start)
-                );
-            int lastIndex;
-            if (start + limit > gameList.size()){
-                lastIndex = gameList.size();
-                response.put("next", false);
-            }
-            else {
-                lastIndex = start + limit;
-                response.put("next", true);
-            }
-            if (start == 0) response.put("previous", false);
+            List<Game> gameList = this.gameService.getAllActiveGamesFiltered(order, typeRegex, regex, UUIDList, start, limit);
+            if (start == 0)
+                response.put("previous", false);
             else response.put("previous", true);
-            List<Game> paginatedGameList = new ArrayList<>();
-            for (int i = start; i < lastIndex; i++){
-                paginatedGameList.add(gameList.get(i));
-            }
-            response.put("count", paginatedGameList.size());
-            response.put("size", paginatedGameList.size());
 
+            if (start + limit > listCount)
+                response.put("next", false);
+            else response.put("next", true);
 
-//            if (games.size() != 0){
-            for(Game game: paginatedGameList){
-                JsonObject gameInfo = new JsonObject();
-                gameInfo.put("id", game.getId());
-                gameInfo.put("name", game.getName());
-                gameInfo.put("type", game.getType());
-                gameInfo.put("description", game.getDescription());
-                gameInfo.put("url", game.getUrl());
-                gameInfo.put("image", game.getImage());
-                gameInfo.put("addAdding", game.getDateAdding());
-                gameInfo.put("useStatistics", game.getUseStatistic());
-                gameInfo.put("gameStatus", game.getGameStatus());
-                gamesList.add(gameInfo);
-            }
+            response.put("count", gameList.size());
+            response.put("size", listCount);
+//            ArrayList<JsonObject> gamesInfoList = new ArrayList<JsonObject>();
+//            for(Game game: gameList){
+//                JsonObject gameInfo = new JsonObject();
+//                gameInfo.put("id", game.getId());
+//                gameInfo.put("name", game.getName());
+//                gameInfo.put("type", game.getType());
+//                gameInfo.put("description", game.getDescription());
+//                gameInfo.put("url", game.getUrl());
+//                gameInfo.put("image", game.getImage());
+//                gameInfo.put("addAdding", game.getDateAdding());
+//                gameInfo.put("useStatistics", game.getUseStatistic());
+//                gameInfo.put("gameStatus", game.getGameStatus());
+//                gamesInfoList.add(gameInfo);
 //            }
-
-            response.put("results", gamesList);
+////            }
+//
+//            response.put("results", gamesInfoList);
+            response.put("results", gameList);
             return new JSONResponse(200, response);
-        }catch (IllegalArgumentException e){
+
+//            User user = this.userService.getUserById(this.userService.verifyToken(token));
+//            List<Game> gameList = this.gameService.getAllGamesFiltered(typeRegex, order, regex);
+//            JsonObject response = new JsonObject();
+//            ArrayList<UUID> sdasds = new ArrayList<>();
+////            if (!regex.equals("")){
+////                gameList = gameList.stream().filter(i -> i.getName().toLowerCase().contains(regex.toLowerCase()))
+////                        .collect(Collectors.toList());
+////            }
+//            if (patientID != null) {
+//                this.gamePatientService.getAllGamesByPatient(this.patientService.getPatientById(UUID.fromString(patientID))).forEach(i -> sdasds.add(i.getId()));
+////                gameList = gameList.stream().filter(i -> !patientGames.contains(i)).collect(Collectors.toList());
+//                gameList = gameList.stream().filter(i -> !sdasds.contains(i.getId())).collect(Collectors.toList());
+//            }
+//            if (gameList.size() == 0) {
+////                JsonObject response = new JsonObject();
+//                response.put("previous", false);
+//                response.put("next", false);
+//                response.put("count", 0);
+//                response.put("size", 0);
+//                response.put("results", new ArrayList<>());
+//                return new JSONResponse(200, response);
+//            }
+//            ArrayList<JsonObject> gamesList = new ArrayList<JsonObject>();
+////            JsonObject response = new JsonObject();
+//
+//
+//
+//            //Pagination
+//            if (start >= gameList.size())
+//                throw new IllegalArgumentException(
+//                        String.format("No element at that index (%s)", start)
+//                );
+//            int lastIndex;
+//            if (start + limit > gameList.size()){
+//                lastIndex = gameList.size();
+//                response.put("next", false);
+//            }
+//            else {
+//                lastIndex = start + limit;
+//                response.put("next", true);
+//            }
+//            if (start == 0) response.put("previous", false);
+//            else response.put("previous", true);
+//            List<Game> paginatedGameList = new ArrayList<>();
+//            for (int i = start; i < lastIndex; i++){
+//                paginatedGameList.add(gameList.get(i));
+//            }
+//            response.put("count", paginatedGameList.size());
+//            response.put("size", paginatedGameList.size());
+//
+//
+////            if (games.size() != 0){
+//            for(Game game: paginatedGameList){
+//                JsonObject gameInfo = new JsonObject();
+//                gameInfo.put("id", game.getId());
+//                gameInfo.put("name", game.getName());
+//                gameInfo.put("type", game.getType());
+//                gameInfo.put("description", game.getDescription());
+//                gameInfo.put("url", game.getUrl());
+//                gameInfo.put("image", game.getImage());
+//                gameInfo.put("addAdding", game.getDateAdding());
+//                gameInfo.put("useStatistics", game.getUseStatistic());
+//                gameInfo.put("gameStatus", game.getGameStatus());
+//                gamesList.add(gameInfo);
+//            }
+////            }
+//
+//            response.put("results", gamesList);
+//            return new JSONResponse(200, response);
+        }catch (Exception e){
             JsonObject exceptionResponse = new JsonObject();
             exceptionResponse.put("message", e.getMessage());
             return new JSONResponse(401, exceptionResponse);

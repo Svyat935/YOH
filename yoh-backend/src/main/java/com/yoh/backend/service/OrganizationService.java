@@ -37,6 +37,19 @@ public class OrganizationService {
         return organizationRepository.getAllOrganizationsOrdered(order, regex);
     }
 
+    public List<Organization> getAllOrganizationsFilteredOrderedPaginated(String regex, String order, int start, int limit) {
+//        if (!regex.equals(""))
+//            return organizationRepository.getAllOrganizationsOrdered(order)
+//                    .stream()
+//                    .filter(i -> i.getName().contains(regex))
+//                    .collect(Collectors.toList());
+        return organizationRepository.getAllOrganizationsOrderedPaginated(order, regex, start, limit);
+    }
+
+    public int getAllOrganizationsFilteredCount(String regex) {
+        return organizationRepository.getAllOrganizationsCount(regex);
+    }
+
     public void updateOrganization(Organization organization) throws IllegalArgumentException{
         organizationRepository.createOrganization(organization);
     }

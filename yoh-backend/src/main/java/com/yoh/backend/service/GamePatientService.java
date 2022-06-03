@@ -69,13 +69,28 @@ public class GamePatientService {
 //                .collect(Collectors.toList());
     }
 
+    public int getAllActiveGamesPatientByPatientCount(Patient patient, String typeRegex, String regex) throws IllegalArgumentException{
+        return gamePatientRepository.getAllActiveGamesPatientByPatientCount(patient, typeRegex, regex);
+//                .stream()
+//                .filter(i -> i.getGamePatientStatus().equals(GamePatientStatus.ACTIVE))
+//                .collect(Collectors.toList());
+    }
+
+    public List<GamePatient> getAllActiveGamesPatientByPatientOrderedPaginated(Patient patient, String order, String typeRegex, String regex, int start, int limit){
+        return gamePatientRepository.getAllActiveGamesPatientByPatientOrderedPaginated(patient, order, typeRegex, regex, start, limit);
+    }
+
     public List<Patient> getAllPatientsByGame(Game game) throws IllegalArgumentException{
         List<GamePatient> gamePatientList = gamePatientRepository.getAllPatientByGame(game);
         return gamePatientList.stream().map(GamePatient::getPatient).collect(Collectors.toList());
     }
 
-    public List<GamePatient> getAllGamePatientsByPatientOrdered(Patient patient, String order, String typeRegex, String regex) throws IllegalArgumentException{
-        return gamePatientRepository.getAllGamesPatientByPatientOrdered(patient, order, typeRegex, regex);
+    public List<GamePatient> getAllGamePatientsByPatientOrderedPaginated(Patient patient, String order, String typeRegex, String regex, int start, int limit) throws IllegalArgumentException{
+        return gamePatientRepository.getAllGamePatientsByPatientOrderedPaginated(patient, order, typeRegex, regex, start, limit);
+    }
+
+    public int getAllGamePatientsByPatientCount(Patient patient, String typeRegex, String regex) throws IllegalArgumentException {
+        return gamePatientRepository.getAllGamePatientsByPatientCount(patient, typeRegex, regex);
     }
 
     public List<GamePatient> getAllGamePatientsByPatient(Patient patient) throws IllegalArgumentException{

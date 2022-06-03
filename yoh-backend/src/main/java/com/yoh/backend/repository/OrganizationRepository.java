@@ -104,7 +104,41 @@ public class OrganizationRepository {
                 case "-2" -> criteria.addOrder(Order.desc("dateRegistration"));
             }
             return criteria.list();
-//            return organizations;
+        }
+        finally {
+            session.close();
+        }
+    }
+
+    public List<Organization> getAllOrganizationsOrderedPaginated(String order, String regex, int start, int count) {
+        Session session = sessionFactory.openSession();
+        try {
+            Criteria criteria = session.createCriteria(Organization.class);
+            if (!regex.equals(""))
+                criteria.add(Restrictions.like("name", regex, MatchMode.ANYWHERE).ignoreCase());
+
+            switch (order) {
+                case "1" -> criteria.addOrder(Order.asc("name"));
+                case "-1" -> criteria.addOrder(Order.desc("name"));
+                case "2" -> criteria.addOrder(Order.asc("dateRegistration"));
+                case "-2" -> criteria.addOrder(Order.desc("dateRegistration"));
+            }
+            criteria.setFirstResult(start);
+            criteria.setMaxResults(count);
+            return criteria.list();
+        }
+        finally {
+            session.close();
+        }
+    }
+
+    public int getAllOrganizationsCount(String regex) {
+        Session session = sessionFactory.openSession();
+        try {
+            Criteria criteria = session.createCriteria(Organization.class);
+            if (!regex.equals(""))
+                criteria.add(Restrictions.like("name", regex, MatchMode.ANYWHERE).ignoreCase());
+            return (int)(long)criteria.uniqueResult();
         }
         finally {
             session.close();

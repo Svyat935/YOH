@@ -100,8 +100,6 @@ public class UserRepository {
 
             criteria.setProjection(Projections.rowCount());
             return (int)(long)criteria.uniqueResult();
-//            List<User> users = criteria.list();
-//            return users.size();
         }
         finally {
             session.close();

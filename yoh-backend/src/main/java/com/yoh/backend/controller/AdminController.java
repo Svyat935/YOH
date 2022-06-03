@@ -439,14 +439,12 @@ public class AdminController {
                                          @RequestParam(value = "start", required = true) Integer start,
                                          @RequestParam(value = "regex", required = false, defaultValue = "") String regex,
                                          @RequestParam(value = "order", required = false, defaultValue = "1") String order) {
-        //TODO переделать пагинацию
         try {
             Admin admin = this.adminService.getAdminByUser(this.userService.getUserById(this.userService.verifyToken(token)));
-            List<Organization> organizationList = this.organizationService.getAllOrganizationsFilteredOrdered(regex, order);
             JsonObject response = new JsonObject();
+            int listCount = this.organizationService.getAllOrganizationsFilteredCount(regex);
 
-            if (organizationList.size() == 0) {
-//                JsonObject response = new JsonObject();
+            if (listCount == 0) {
                 response.put("previous", false);
                 response.put("next", false);
                 response.put("count", 0);
@@ -454,33 +452,64 @@ public class AdminController {
                 response.put("results", new ArrayList<>());
                 return new JSONResponse(200, response);
             }
-            //Pagination
-            List<Organization> paginatedOrganizationList = new ArrayList<>();
-            if (start >= organizationList.size())
-                throw new IllegalArgumentException(
-                        String.format("No element at that index (%s)", start)
-                );
-            int lastIndex;
-            if (start + limit > organizationList.size()){
-                lastIndex = organizationList.size();
-                response.put("next", false);
-            }
-            else {
-                lastIndex = start + limit;
-                response.put("next", true);
-            }
-            if (start == 0) response.put("previous", false);
+
+            if (start >= listCount)
+                throw new IllegalArgumentException(String.format("No element at that index (%s)", start));
+            List<Organization> organizationList = this.organizationService.getAllOrganizationsFilteredOrderedPaginated(regex, order, start, limit);
+
+            if (start == 0)
+                response.put("previous", false);
             else response.put("previous", true);
 
-            for (int i = start; i < lastIndex; i++){
-                paginatedOrganizationList.add(organizationList.get(i));
-            }
-            response.put("count", paginatedOrganizationList.size());
-            response.put("size", organizationList.size());
+            if (start + limit > listCount)
+                response.put("next", false);
+            else response.put("next", true);
 
-//            response.put("userList", this.userService.getAllUsers());
-            response.put("results", paginatedOrganizationList);
+            response.put("count", organizationList.size());
+            response.put("size", listCount);
+            response.put("results", organizationList);
             return new JSONResponse(200, response);
+
+//            Admin admin = this.adminService.getAdminByUser(this.userService.getUserById(this.userService.verifyToken(token)));
+//            List<Organization> organizationList = this.organizationService.getAllOrganizationsFilteredOrdered(regex, order);
+//            JsonObject response = new JsonObject();
+//
+//            if (organizationList.size() == 0) {
+////                JsonObject response = new JsonObject();
+//                response.put("previous", false);
+//                response.put("next", false);
+//                response.put("count", 0);
+//                response.put("size", 0);
+//                response.put("results", new ArrayList<>());
+//                return new JSONResponse(200, response);
+//            }
+//            //Pagination
+//            List<Organization> paginatedOrganizationList = new ArrayList<>();
+//            if (start >= organizationList.size())
+//                throw new IllegalArgumentException(
+//                        String.format("No element at that index (%s)", start)
+//                );
+//            int lastIndex;
+//            if (start + limit > organizationList.size()){
+//                lastIndex = organizationList.size();
+//                response.put("next", false);
+//            }
+//            else {
+//                lastIndex = start + limit;
+//                response.put("next", true);
+//            }
+//            if (start == 0) response.put("previous", false);
+//            else response.put("previous", true);
+//
+//            for (int i = start; i < lastIndex; i++){
+//                paginatedOrganizationList.add(organizationList.get(i));
+//            }
+//            response.put("count", paginatedOrganizationList.size());
+//            response.put("size", organizationList.size());
+//
+////            response.put("userList", this.userService.getAllUsers());
+//            response.put("results", paginatedOrganizationList);
+//            return new JSONResponse(200, response);
         }
         catch (IllegalArgumentException e){
             JsonObject exceptionResponse = new JsonObject();
