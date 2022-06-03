@@ -139,8 +139,8 @@ public class TutorController {
                 int started = 0;
                 for (GamePatient gamePatient: this.gamePatientService.getAllActiveGamePatientsByPatient(patient)){
                     //TODO оптимизация
-                    GameStatus gameStatus = this.gameStatusService.getGameStatusByGamePatient(gamePatient);
-                    switch (gameStatus.getStatus()){
+//                    GameStatus gameStatus = this.gameStatusService.getGameStatusByGamePatient(gamePatient);
+                    switch (gamePatient.getStatus()){
                         case DONE -> done++;
                         case ASSIGNED -> assigned++;
                         case FAILED -> failed++;
@@ -425,7 +425,6 @@ public class TutorController {
                                            @RequestParam(value = "regex", required = false, defaultValue = "") String regex,
                                            @RequestParam(value = "typeRegex", required = false, defaultValue = "") String typeRegex,
                                            @RequestParam(value = "order", required = false, defaultValue = "1") String order) {
-        //TODO переделать пагинацию
         try {
             Tutor tutorValidation = this.tutorService.getTutorByUser(this.userService.getUserById(this.userService.verifyToken(token)));
             Patient patient = this.patientService.getPatientById(UUID.fromString(patientID));
@@ -456,7 +455,7 @@ public class TutorController {
             response.put("size", listCount);
             for (GamePatient gamePatient: gamePatientList) {
                 JsonObject gamesInfo = new JsonObject();
-                GameStatus gameStatus = this.gameStatusService.getGameStatusByGamePatient(gamePatient);
+//                GameStatus gameStatus = this.gameStatusService.getGameStatusByGamePatient(gamePatient);
                 gamesInfo.put("id", gamePatient.getGame().getId().toString());
                 gamesInfo.put("gamePatientId", gamePatient.getId().toString());
                 gamesInfo.put("name", gamePatient.getGame().getName());
@@ -465,9 +464,9 @@ public class TutorController {
                 gamesInfo.put("image", gamePatient.getGame().getImage());
                 gamesInfo.put("url", gamePatient.getGame().getUrl());
                 gamesInfo.put("useStatistics", gamePatient.getGame().getUseStatistic());
-                gamesInfo.put("assignmentDate", gameStatus.getAssignmentDate());
-                gamesInfo.put("assignedBy", gameStatus.getTutor().getId().toString());
-                gamesInfo.put("status", gameStatus.getStatus().toString());
+                gamesInfo.put("assignmentDate", gamePatient.getAssignmentDate());
+                gamesInfo.put("assignedBy", gamePatient.getTutor().getId().toString());
+                gamesInfo.put("status", gamePatient.getStatus().toString());
                 gamesInfo.put("active", gamePatient.getGamePatientStatus().toString());
                 gamesArray.add(gamesInfo);
             }
@@ -612,25 +611,28 @@ public class TutorController {
             try {
                 gamePatient = this.gamePatientService.getGamePatientByGameAndPatient(game, patient);
                 gamePatient.setGamePatientStatus(GamePatientStatus.ACTIVE);
+                gamePatient.setStatus(Status.ASSIGNED);
+                gamePatient.setAssignmentDate(LocalDateTime.now());
+                gamePatient.setTutor(tutor);
                 this.gamePatientService.saveGamePatient(gamePatient);
             }
             catch (IllegalArgumentException ds){
-                gamePatient = new GamePatient(game, patient, GamePatientStatus.ACTIVE);
+                gamePatient = new GamePatient(game, patient, tutor, LocalDateTime.now(), GamePatientStatus.ACTIVE);
                 this.gamePatientService.createGamePatient(gamePatient);
             }
-            GameStatus gameStatus;
-            try {
-                //Если игра уже была когдато назначена
-                gameStatus = this.gameStatusService.getGameStatusByGamePatient(gamePatient);
-                gameStatus.setTutor(tutor);
-                gameStatus.setAssignmentDate(LocalDateTime.now());
-                gameStatus.setStatus(Status.ASSIGNED);
-                this.gameStatusService.updateGameStatus(gameStatus);
-            }
-            catch (IllegalArgumentException ex){
-                gameStatus = new GameStatus(gamePatient, tutor, LocalDateTime.now(), Status.ASSIGNED);
-                this.gameStatusService.createGameStatus(gameStatus);
-            }
+//            GameStatus gameStatus;
+//            try {
+//                //Если игра уже была когдато назначена
+//                gameStatus = this.gameStatusService.getGameStatusByGamePatient(gamePatient);
+//                gameStatus.setTutor(tutor);
+//                gameStatus.setAssignmentDate(LocalDateTime.now());
+//                gameStatus.setStatus(Status.ASSIGNED);
+//                this.gameStatusService.updateGameStatus(gameStatus);
+//            }
+//            catch (IllegalArgumentException ex){
+//                gameStatus = new GameStatus(gamePatient, tutor, LocalDateTime.now(), Status.ASSIGNED);
+//                this.gameStatusService.createGameStatus(gameStatus);
+//            }
 //            this.patientService.updatePatient(patient);
 //            this.gameService.updateGame(game);
 //            this.gameStatusService.createGameStatus(gameStatus);
@@ -661,23 +663,35 @@ public class TutorController {
                 try {
                     gamePatient = this.gamePatientService.getGamePatientByGameAndPatient(game, patient);
                     gamePatient.setGamePatientStatus(GamePatientStatus.ACTIVE);
+                    gamePatient.setStatus(Status.ASSIGNED);
+                    gamePatient.setAssignmentDate(LocalDateTime.now());
+                    gamePatient.setTutor(tutor);
                     this.gamePatientService.saveGamePatient(gamePatient);
                 }
                 catch (IllegalArgumentException ds){
-                    gamePatient = new GamePatient(game, patient, GamePatientStatus.ACTIVE);
+                    gamePatient = new GamePatient(game, patient, tutor, LocalDateTime.now(), GamePatientStatus.ACTIVE);
                     this.gamePatientService.createGamePatient(gamePatient);
                 }
-                GameStatus gameStatus;
-                try {
-                    //Если игра уже была когдато назначена
-                    gameStatus = this.gameStatusService.getGameStatusByGamePatient(gamePatient);
-                    gameStatus.setTutor(tutor);
-                    gameStatus.setAssignmentDate(LocalDateTime.now());
-                    gameStatus.setStatus(Status.ASSIGNED);
-                }
-                catch (IllegalArgumentException ex){
-                    gameStatus = new GameStatus(gamePatient, tutor, LocalDateTime.now(), Status.ASSIGNED);
-                }
+//                try {
+//                    gamePatient = this.gamePatientService.getGamePatientByGameAndPatient(game, patient);
+//                    gamePatient.setGamePatientStatus(GamePatientStatus.ACTIVE);
+//                    this.gamePatientService.saveGamePatient(gamePatient);
+//                }
+//                catch (IllegalArgumentException ds){
+//                    gamePatient = new GamePatient(game, patient, GamePatientStatus.ACTIVE);
+//                    this.gamePatientService.createGamePatient(gamePatient);
+//                }
+//                GameStatus gameStatus;
+//                try {
+//                    //Если игра уже была когдато назначена
+//                    gameStatus = this.gameStatusService.getGameStatusByGamePatient(gamePatient);
+//                    gameStatus.setTutor(tutor);
+//                    gameStatus.setAssignmentDate(LocalDateTime.now());
+//                    gameStatus.setStatus(Status.ASSIGNED);
+//                }
+//                catch (IllegalArgumentException ex){
+//                    gameStatus = new GameStatus(gamePatient, tutor, LocalDateTime.now(), Status.ASSIGNED);
+//                }
 //                GamePatient gamePatient = new GamePatient(game, patient, GamePatientStatus.ACTIVE);
 //                this.gamePatientService.createGamePatient(gamePatient);
 //                //TODO проверка на то, что игры уже были добавлены
@@ -851,8 +865,8 @@ public class TutorController {
                 int failed = 0;
                 int started = 0;
                 for (GamePatient gamePatient: this.gamePatientService.getAllActiveGamePatientsByPatient(patient)){
-                    GameStatus gameStatus = this.gameStatusService.getGameStatusByGamePatient(gamePatient);
-                    switch (gameStatus.getStatus()){
+//                    GameStatus gameStatus = this.gameStatusService.getGameStatusByGamePatient(gamePatient);
+                    switch (gamePatient.getStatus()){
                         case DONE -> done++;
                         case ASSIGNED -> assigned++;
                         case FAILED -> failed++;

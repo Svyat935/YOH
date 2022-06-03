@@ -1,8 +1,10 @@
 package com.yoh.backend.entity;
 
 import com.yoh.backend.enums.GamePatientStatus;
+import com.yoh.backend.enums.Status;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
@@ -10,9 +12,11 @@ import java.util.UUID;
 public class GamePatient {
     public GamePatient() {}
 
-    public GamePatient(Game game, Patient patient, GamePatientStatus gamePatientStatus){
+    public GamePatient(Game game, Patient patient, Tutor tutor, LocalDateTime assignmentDate, GamePatientStatus gamePatientStatus){
         this.game = game;
         this.patient = patient;
+        this.tutor = tutor;
+        this.assignmentDate = assignmentDate;
         this.gamePatientStatus = gamePatientStatus;
     }
 
@@ -51,6 +55,32 @@ public class GamePatient {
     }
 
 
+    @ManyToOne
+    private Tutor tutor;
+
+    public Tutor getTutor() {
+        return this.tutor;
+    }
+
+    public void setTutor(Tutor tutor) {
+        this.tutor = tutor;
+    }
+
+
+    @Column(name = "assignmentDate", nullable = true)
+    private LocalDateTime assignmentDate;
+
+    public LocalDateTime getAssignmentDate() {
+        return this.assignmentDate;
+    }
+
+    public void setAssignmentDate(LocalDateTime assignmentDate) {
+        this.assignmentDate = assignmentDate;
+    }
+
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "gamePatientStatus", nullable = false)
     private GamePatientStatus gamePatientStatus;
 
     public GamePatientStatus getGamePatientStatus() {
@@ -59,5 +89,18 @@ public class GamePatient {
 
     public void setGamePatientStatus(GamePatientStatus gamePatientStatus) {
         this.gamePatientStatus = gamePatientStatus;
+    }
+
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status", nullable = false)
+    private Status status;
+
+    public Status getStatus(){
+        return this.status;
+    }
+
+    public void setStatus(Status status){
+        this.status = status;
     }
 }
