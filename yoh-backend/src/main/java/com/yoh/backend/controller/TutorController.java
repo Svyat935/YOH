@@ -66,7 +66,7 @@ public class TutorController {
 
     //TODO выборка
     @GetMapping(path = "/patients/getting")
-    public JSONResponse getPatients(@RequestHeader("token") String token,
+    public JsonObject getPatients(@RequestHeader("token") String token,
                                     @RequestParam(value = "limit", required = true) Integer limit,
                                     @RequestParam(value = "start", required = true) Integer start,
                                     @RequestParam(value = "regex", required = false, defaultValue = "") String regex,
@@ -96,7 +96,7 @@ public class TutorController {
                 response.put("count", 0);
                 response.put("size", 0);
                 response.put("results", new ArrayList<>());
-                return new JSONResponse(200, response);
+                return response;
             }
             //Pagination
             if (start >= patients.size())
@@ -164,17 +164,17 @@ public class TutorController {
             }
 
             response.put("results", patientList);
-            return new JSONResponse(200, response);
+            return response;
         }
         catch (IllegalArgumentException e){
             JsonObject exceptionResponse = new JsonObject();
             exceptionResponse.put("message", e.getMessage());
-            return new JSONResponse(401, exceptionResponse);
+            return exceptionResponse;
         }
     }
 
     @GetMapping(path = "/patients/getting/all")
-    public JSONResponse getAllPatients(@RequestHeader("token") String token,
+    public JsonObject getAllPatients(@RequestHeader("token") String token,
                                        @RequestParam(value = "limit", required = true) Integer limit,
                                        @RequestParam(value = "start", required = true) Integer start,
                                        @RequestParam(value = "regex", required = false, defaultValue = "") String regex,
@@ -191,7 +191,7 @@ public class TutorController {
                 response.put("count", 0);
                 response.put("size", 0);
                 response.put("results", new ArrayList<>());
-                return new JSONResponse(200, response);
+                return response;
             }
             if (start >= listCount)
                 throw new IllegalArgumentException(String.format("No element at that index (%s)", start));
@@ -245,7 +245,7 @@ public class TutorController {
             }
 //            }
             response.put("results", patientInfoList);
-            return new JSONResponse(200, response);
+            return response;
 
 //            Tutor tutor = this.tutorService.getTutorByUser(this.userService.getUserById(this.userService.verifyToken(token)));
 //            Organization organization = this.tutorService.getTutorByUser(this.userService.getUserById(this.userService.verifyToken(token))).getOrganization();
@@ -262,7 +262,7 @@ public class TutorController {
 //                response.put("count", 0);
 //                response.put("size", 0);
 //                response.put("results", new ArrayList<>());
-//                return new JSONResponse(200, response);
+//                return response);
 //            }
 //
 //            //Pagination
@@ -327,17 +327,17 @@ public class TutorController {
 //            }
 ////            }
 //            response.put("results", patientList);
-//            return new JSONResponse(200, response);
+//            return response);
         }
         catch (IllegalArgumentException e){
             JsonObject exceptionResponse = new JsonObject();
             exceptionResponse.put("message", e.getMessage());
-            return new JSONResponse(401, exceptionResponse);
+            return exceptionResponse;
         }
     }
 
     @GetMapping(path = "/patients/getting/one")
-    public JSONResponse getOnePatient(@RequestHeader("token") String token,
+    public JsonObject getOnePatient(@RequestHeader("token") String token,
                                       @RequestParam String patientID) {
         try {
             Tutor tutorValidation = this.tutorService.getTutorByUser(this.userService.getUserById(this.userService.verifyToken(token)));
@@ -407,18 +407,18 @@ public class TutorController {
             }
             else response.put("tutor", null);
 
-            return new JSONResponse(200, response);
+            return response;
         }
         catch (IllegalArgumentException e){
             JsonObject exceptionResponse = new JsonObject();
             exceptionResponse.put("message", e.getMessage());
-            return new JSONResponse(401, exceptionResponse);
+            return exceptionResponse;
         }
     }
 
 
     @GetMapping(path = "/patients/getting/one/games")
-    public JSONResponse getOnePatientGames(@RequestHeader("token") String token,
+    public JsonObject getOnePatientGames(@RequestHeader("token") String token,
                                            @RequestParam String patientID,
                                            @RequestParam(value = "limit", required = true) Integer limit,
                                            @RequestParam(value = "start", required = true) Integer start,
@@ -437,7 +437,7 @@ public class TutorController {
                 response.put("count", 0);
                 response.put("size", 0);
                 response.put("results", new ArrayList<>());
-                return new JSONResponse(200, response);
+                return response;
             }
             if (start >= listCount)
                 throw new IllegalArgumentException(String.format("No element at that index (%s)", start));
@@ -471,7 +471,7 @@ public class TutorController {
                 gamesArray.add(gamesInfo);
             }
             response.put("results", gamesArray);
-            return new JSONResponse(200, response);
+            return response;
 
 
 ////            List<Game> gameList = patient.getGames().stream().filter(i -> i.getName().toLowerCase().contains(regex.toLowerCase())
@@ -489,7 +489,7 @@ public class TutorController {
 //                response.put("count", 0);
 //                response.put("size", 0);
 //                response.put("results", new ArrayList<>());
-//                return new JSONResponse(200, response);
+//                return response);
 //            }
 //
 //            //Pagination
@@ -533,19 +533,19 @@ public class TutorController {
 //                gamesArray.add(gamesInfo);
 //            }
 //            response.put("results", gamesArray);
-//            return new JSONResponse(200, response);
+//            return response);
 
         }
         catch (IllegalArgumentException e){
             JsonObject exceptionResponse = new JsonObject();
             exceptionResponse.put("message", e.getMessage());
-            return new JSONResponse(401, exceptionResponse);
+            return exceptionResponse;
         }
     }
 
 
     @PostMapping(path = "/patients/attaching")
-    public JSONResponse attachPatient(@RequestHeader("token") String token,
+    public JsonObject attachPatient(@RequestHeader("token") String token,
                                       @Valid @RequestBody PatientToTutor patientToTutor) {
         try {
             Tutor tutor = this.tutorService.getTutorByUser(this.userService.getUserById(this.userService.verifyToken(token)));
@@ -556,17 +556,17 @@ public class TutorController {
 //            this.tutorService.updateTutor(tutor);
             JsonObject response = new JsonObject();
             response.put("message", "Patient was assigned");
-            return new JSONResponse(200, response);
+            return response;
         }
         catch (IllegalArgumentException e){
             JsonObject exceptionResponse = new JsonObject();
             exceptionResponse.put("message", e.getMessage());
-            return new JSONResponse(401, exceptionResponse);
+            return exceptionResponse;
         }
     }
 
     @DeleteMapping(path = "/patients/detaching")
-    public JSONResponse detachPatient(@RequestHeader("token") String token,
+    public JsonObject detachPatient(@RequestHeader("token") String token,
                                       @Valid @RequestBody PatientToTutor patientToTutor) {
 
         try {
@@ -581,23 +581,23 @@ public class TutorController {
 
                     JsonObject response = new JsonObject();
                     response.put("message", "Patient was detached");
-                    return new JSONResponse(200, response);
+                    return response;
                 }
             }
             JsonObject errorResponse = new JsonObject();
             errorResponse.put("message", "Patient was not founded");
-            return new JSONResponse( 401, errorResponse);
+            return errorResponse;
         }
         catch (IllegalArgumentException e){
             JsonObject exceptionResponse = new JsonObject();
             exceptionResponse.put("message", e.getMessage());
-            return new JSONResponse(401, exceptionResponse);
+            return exceptionResponse;
         }
     }
 
     // // [START] Games
     @PostMapping(path = "/patients/games/adding")
-    public JSONResponse addGameForPatient(@RequestHeader("token") String token,
+    public JsonObject addGameForPatient(@RequestHeader("token") String token,
                                           @Valid @RequestBody GameToPatient gameToPatient) {
         //TODO проверить что есть
         //TODO проверить статусы
@@ -638,19 +638,19 @@ public class TutorController {
 //            this.gameStatusService.createGameStatus(gameStatus);
             JsonObject response = new JsonObject();
             response.put("message", "Game was assigned");
-            return new JSONResponse(200, response);
+            return response;
         }
         catch (Exception e){
             JsonObject exceptionResponse = new JsonObject();
             System.out.println("18");
             exceptionResponse.put("message", e.getMessage());
             System.out.println("19");
-            return new JSONResponse(401, exceptionResponse);
+            return exceptionResponse;
         }
     }
 
     @PostMapping(path = "/patients/games/new")
-    public JSONResponse newGamesForPatient(@RequestHeader("token") String token,
+    public JsonObject newGamesForPatient(@RequestHeader("token") String token,
                                            @Valid @RequestBody GamesToPatient gamesToPatient) {
         // TODO проверить работу
         // TODO сделать добавление статусов
@@ -701,17 +701,17 @@ public class TutorController {
             }
             JsonObject response = new JsonObject();
             response.put("message", "List of games was changed");
-            return new JSONResponse(200, response);
+            return response;
         }
         catch (IllegalArgumentException e){
             JsonObject exceptionResponse = new JsonObject();
             exceptionResponse.put("message", e.getMessage());
-            return new JSONResponse(401, exceptionResponse);
+            return exceptionResponse;
         }
     }
 
     @DeleteMapping(path = "/patients/games/removing")
-    public JSONResponse removeGameForPatient(@RequestHeader("token") String token,
+    public JsonObject removeGameForPatient(@RequestHeader("token") String token,
                                              @Valid @RequestBody GameToPatient gameToPatient) {
         try {
             Tutor tutor = this.tutorService.getTutorByUser(this.userService.getUserById(this.userService.verifyToken(token)));
@@ -723,17 +723,17 @@ public class TutorController {
             this.gamePatientService.saveGamePatient(gamePatient);
             JsonObject errorResponse = new JsonObject();
             errorResponse.put("message", "Game was detached");
-            return new JSONResponse(200, errorResponse);
+            return errorResponse;
         }
         catch (Exception e){
             JsonObject exceptionResponse = new JsonObject();
             exceptionResponse.put("message", e.getMessage());
-            return new JSONResponse(401, exceptionResponse);
+            return exceptionResponse;
         }
     }
 
     @DeleteMapping(path = "/patients/games/clear")
-    public JSONResponse clearGamesForPatient(@RequestHeader("token") String token,
+    public JsonObject clearGamesForPatient(@RequestHeader("token") String token,
                                              @Valid @RequestBody PatientToTutor patientToTutor) {
         try {
             Tutor tutor = this.tutorService.getTutorByUser(this.userService.getUserById(this.userService.verifyToken(token)));
@@ -744,17 +744,17 @@ public class TutorController {
             }
             JsonObject response = new JsonObject();
             response.put("message", "List of games was cleared");
-            return new JSONResponse(200, response);
+            return response;
         }
         catch (IllegalArgumentException e){
             JsonObject exceptionResponse = new JsonObject();
             exceptionResponse.put("message", e.getMessage());
-            return new JSONResponse(401, exceptionResponse);
+            return exceptionResponse;
         }
     }
 
 //    @GetMapping(path = "/patients/games/get-statistics")
-//    public JSONResponse getStatisticsForGame(@RequestHeader("token") String token,
+//    public JsonObject getStatisticsForGame(@RequestHeader("token") String token,
 //                                             @RequestParam String patientID) {
 //        try {
 //            //TODO message
@@ -781,17 +781,17 @@ public class TutorController {
 //            }
 //            JsonObject response = new JsonObject();
 //            response.put("gameStatisticList", gameStatisticList);
-//            return new JSONResponse(200, response);
+//            return response);
 //        }
 //        catch (IllegalArgumentException e){
 //            JsonObject exceptionResponse = new JsonObject();
 //            exceptionResponse.put("message", e.getMessage());
-//            return new JSONResponse(401, exceptionResponse);
+//            return exceptionResponse);
 //        }
 //    }
 
 //    @GetMapping(path = "/patients/games/get-statistic")
-//    public JSONResponse getStatisticsForGame(@RequestHeader("token") String token,
+//    public JsonObject getStatisticsForGame(@RequestHeader("token") String token,
 //                                             @RequestParam String patientID,
 //                                             @RequestParam String gameID) {
 //        try {
@@ -819,17 +819,17 @@ public class TutorController {
 //            }
 //            JsonObject response = new JsonObject();
 //            response.put("gameStatisticList", gameStatisticList);
-//            return new JSONResponse(200, response);
+//            return response);
 //        }
 //        catch (IllegalArgumentException e){
 //            JsonObject exceptionResponse = new JsonObject();
 //            exceptionResponse.put("message", e.getMessage());
-//            return new JSONResponse(401, exceptionResponse);
+//            return exceptionResponse);
 //        }
 //    }
 
 //    @DeleteMapping(path = "/patients/games/clear-statistics")
-//    public JSONResponse clearStatisticsForGame(@RequestHeader("token") String token,
+//    public JsonObject clearStatisticsForGame(@RequestHeader("token") String token,
 //                                               @Valid @RequestBody GameToPatient gameToPatient){
 //        try {
 //            Tutor tutor = this.tutorService.getTutorByUser(this.userService.getUserById(this.userService.verifyToken(token)));
@@ -843,17 +843,17 @@ public class TutorController {
 //            }
 //            JsonObject response = new JsonObject();
 //            response.put("message", "Game statistic was cleared");
-//            return new JSONResponse(200, response);
+//            return response);
 //        }
 //        catch (IllegalArgumentException e){
 //            JsonObject exceptionResponse = new JsonObject();
 //            exceptionResponse.put("message", e.getMessage());
-//            return new JSONResponse(401, exceptionResponse);
+//            return exceptionResponse);
 //        }
 //    }
 
     @GetMapping(path = "/patients/getStatusStatistic")
-    public JSONResponse getPatientStatusesStatistic(@RequestHeader("token") String token,
+    public JsonObject getPatientStatusesStatistic(@RequestHeader("token") String token,
                                                     @RequestParam String patientID) {
         try {
             Tutor tutor = this.tutorService.getTutorByUser(this.userService.getUserById(this.userService.verifyToken(token)));
@@ -878,23 +878,23 @@ public class TutorController {
                 response.put("Assigned", assigned);
                 response.put("Failed", failed);
                 response.put("Started", started);
-                return new JSONResponse(200, response);
+                return response;
             }
             else {
                 JsonObject exceptionResponse = new JsonObject();
                 exceptionResponse.put("message", "Organizations must be same");
-                return new JSONResponse(401, exceptionResponse);
+                return exceptionResponse;
             }
         }
         catch (IllegalArgumentException e){
             JsonObject exceptionResponse = new JsonObject();
             exceptionResponse.put("message", e.getMessage());
-            return new JSONResponse(401, exceptionResponse);
+            return exceptionResponse;
         }
     }
 
     @PostMapping(path = "/patients/tests/adding")
-    public JSONResponse addingTestForPatient(@RequestHeader("token") String token,
+    public JsonObject addingTestForPatient(@RequestHeader("token") String token,
                                              @Valid @RequestBody TestToPatient testToPatient) {
         try {
             Tutor tutor = this.tutorService.getTutorByUser(this.userService.getUserById(this.userService.verifyToken(token)));
@@ -904,17 +904,17 @@ public class TutorController {
             this.patientService.updatePatient(patient);
             JsonObject response = new JsonObject();
             response.put("message", "Test was added");
-            return new JSONResponse(200, response);
+            return response;
         }
         catch (IllegalArgumentException e){
             JsonObject exceptionResponse = new JsonObject();
             exceptionResponse.put("message", e.getMessage());
-            return new JSONResponse(401, exceptionResponse);
+            return exceptionResponse;
         }
     }
 
     @PostMapping(path = "/patients/tests/new")
-    public JSONResponse newTestsForPatient(@RequestHeader("token") String token,
+    public JsonObject newTestsForPatient(@RequestHeader("token") String token,
                                            @Valid @RequestBody TestsToPatient testsToPatient) {
         try {
             Tutor tutor = this.tutorService.getTutorByUser(this.userService.getUserById(this.userService.verifyToken(token)));
@@ -927,17 +927,17 @@ public class TutorController {
             this.patientService.updatePatient(patient);
             JsonObject response = new JsonObject();
             response.put("message", "List of tests was changed");
-            return new JSONResponse(200, response);
+            return response;
         }
         catch (IllegalArgumentException e){
             JsonObject exceptionResponse = new JsonObject();
             exceptionResponse.put("message", e.getMessage());
-            return new JSONResponse(401, exceptionResponse);
+            return exceptionResponse;
         }
     }
 
     @DeleteMapping(path = "/patients/tests/removing")
-    public JSONResponse removeTestForPatient(@RequestHeader("token") String token,
+    public JsonObject removeTestForPatient(@RequestHeader("token") String token,
                                              @Valid @RequestBody TestToPatient testToPatient) {
         try {
             Tutor tutor = this.tutorService.getTutorByUser(this.userService.getUserById(this.userService.verifyToken(token)));
@@ -949,22 +949,22 @@ public class TutorController {
                     this.patientService.updatePatient(patient);
                     JsonObject response = new JsonObject();
                     response.put("message", "Test was removed");
-                    return new JSONResponse(200, response);
+                    return response;
                 }
             }
             JsonObject errorResponse = new JsonObject();
             errorResponse.put("message", "Test was not founded");
-            return new JSONResponse(401, errorResponse);
+            return errorResponse;
         }
         catch (IllegalArgumentException e){
             JsonObject exceptionResponse = new JsonObject();
             exceptionResponse.put("message", e.getMessage());
-            return new JSONResponse(401, exceptionResponse);
+            return exceptionResponse;
         }
     }
 
     @DeleteMapping(path = "/patients/tests/clear")
-    public JSONResponse clearTestsForPatients(@RequestHeader("token") String token,
+    public JsonObject clearTestsForPatients(@RequestHeader("token") String token,
                                               @Valid @RequestBody PatientToTutor patientToTutor) {
         //TODO
         try {
@@ -974,17 +974,17 @@ public class TutorController {
             this.patientService.updatePatient(patient);
             JsonObject response = new JsonObject();
             response.put("message", "List of test was cleared");
-            return new JSONResponse(200, response);
+            return response;
         }
         catch (IllegalArgumentException e){
             JsonObject exceptionResponse = new JsonObject();
             exceptionResponse.put("message", e.getMessage());
-            return new JSONResponse(401, exceptionResponse);
+            return exceptionResponse;
         }
     }
 
     @GetMapping(path = "/patients/tests/get-statistics")
-    public JSONResponse getStatisticsForPatients(@RequestHeader("token") String token,
+    public JsonObject getStatisticsForPatients(@RequestHeader("token") String token,
                                                  @RequestParam String patientID) {
         //TODO
         try {
@@ -1004,17 +1004,17 @@ public class TutorController {
             }
             JsonObject response = new JsonObject();
             response.put("testStatisticList", testStatisticList);
-            return new JSONResponse(200, response);
+            return response;
         }
         catch (IllegalArgumentException e){
             JsonObject exceptionResponse = new JsonObject();
             exceptionResponse.put("message", e.getMessage());
-            return new JSONResponse(401, exceptionResponse);
+            return exceptionResponse;
         }
     }
 
     @DeleteMapping(path = "/patients/tests/clear-statistics")
-    public JSONResponse deleteStatisticForPatient(@RequestHeader("token") String token,
+    public JsonObject deleteStatisticForPatient(@RequestHeader("token") String token,
                                                   @Valid @RequestBody TestToPatient testToPatient) {
         //TODO
         try {
@@ -1031,17 +1031,17 @@ public class TutorController {
             this.patientService.updatePatient(patient);
             JsonObject response = new JsonObject();
             response.put("message", "Statistic for test was cleared");
-            return new JSONResponse(200, response);
+            return response;
         }
         catch (IllegalArgumentException e){
             JsonObject exceptionResponse = new JsonObject();
             exceptionResponse.put("message", e.getMessage());
-            return new JSONResponse(401, exceptionResponse);
+            return exceptionResponse;
         }
     }
 
     @GetMapping(path = "/account")
-    public JSONResponse accountOfTutor(@RequestHeader("token") String token) {
+    public JsonObject accountOfTutor(@RequestHeader("token") String token) {
         try {
             Tutor tutor = this.tutorService.getTutorByUser(this.userService.getUserById(this.userService.verifyToken(token)));
             JsonObject response = new JsonObject();
@@ -1057,17 +1057,17 @@ public class TutorController {
             response.put("login", tutor.getUser().getLogin());
             response.put("email", tutor.getUser().getEmail());
             response.put("image", tutor.getImage());
-            return new JSONResponse(200, response);
+            return response;
         }
         catch (IllegalArgumentException e){
             JsonObject exceptionResponse = new JsonObject();
             exceptionResponse.put("message", e.getMessage());
-            return new JSONResponse(401, exceptionResponse);
+            return exceptionResponse;
         }
     }
 
     @PutMapping(path = "/account/changing")
-    public JSONResponse editAccountOfTutor(@RequestHeader("token") String token,
+    public JsonObject editAccountOfTutor(@RequestHeader("token") String token,
                                            @Valid @RequestBody EditTutorInfoRequest editTutorInfoRequest) {
         try {
             Tutor tutor = this.tutorService.getTutorByUser(this.userService.getUserById(this.userService.verifyToken(token)));
@@ -1086,17 +1086,17 @@ public class TutorController {
             this.tutorService.updateTutor(tutor);
             JsonObject response = new JsonObject();
             response.put("message", "Tutor account was edited");
-            return new JSONResponse(200, response);
+            return response;
         }
         catch (IllegalArgumentException e){
             JsonObject exceptionResponse = new JsonObject();
             exceptionResponse.put("message", e.getMessage());
-            return new JSONResponse(401, exceptionResponse);
+            return exceptionResponse;
         }
     }
 
     @PostMapping(path = "/account/image/add")
-    public JSONResponse uploadTutorImage(@RequestHeader("token") String token,
+    public JsonObject uploadTutorImage(@RequestHeader("token") String token,
                                          @RequestParam("image") MultipartFile file) {
         try {
             Tutor tutor = this.tutorService.getTutorByUser(this.userService.getUserById(this.userService.verifyToken(token)));
@@ -1127,18 +1127,18 @@ public class TutorController {
             System.out.println();
             System.out.println(tutor.getImage());
             System.out.println();
-            return new JSONResponse(200, response);
+            return response;
         }
         catch (Exception e){
             JsonObject exceptionResponse = new JsonObject();
             exceptionResponse.put("message", e.getMessage());
-            return new JSONResponse(401, exceptionResponse);
+            return exceptionResponse;
         }
     }
 
 //    //TODO Подумать над удалением
 //    @PutMapping(path = "/account/image/edit")
-//    public JSONResponse updateTutorImage(@RequestHeader("token") String token,
+//    public JsonObject updateTutorImage(@RequestHeader("token") String token,
 //                                         @RequestParam("image") MultipartFile file) {
 //        try {
 //            Tutor tutor = this.tutorService.getTutorByUser(this.userService.getUserById(this.userService.verifyToken(token)));
@@ -1147,17 +1147,17 @@ public class TutorController {
 //            this.tutorService.updateTutor(tutor);
 //            JsonObject response = new JsonObject();
 //            response.put("message", "Tutor account image was edited");
-//            return new JSONResponse(200, response);
+//            return response);
 //        }
 //        catch (Exception e){
 //            JsonObject exceptionResponse = new JsonObject();
 //            exceptionResponse.put("message", e.getMessage());
-//            return new JSONResponse(401, exceptionResponse);
+//            return exceptionResponse);
 //        }
 //    }
 
     @DeleteMapping(path = "/account/image/delete")
-    public JSONResponse deleteTutorImage(@RequestHeader("token") String token) {
+    public JsonObject deleteTutorImage(@RequestHeader("token") String token) {
         try {
             Tutor tutor = this.tutorService.getTutorByUser(this.userService.getUserById(this.userService.verifyToken(token)));
 //            byte[] imageBytes = null;
@@ -1166,34 +1166,34 @@ public class TutorController {
             this.tutorService.updateTutor(tutor);
             JsonObject response = new JsonObject();
             response.put("message", "Tutor account image was deleted");
-            return new JSONResponse(200, response);
+            return response;
         }
         catch (Exception e){
             JsonObject exceptionResponse = new JsonObject();
             exceptionResponse.put("message", e.getMessage());
-            return new JSONResponse(401, exceptionResponse);
+            return exceptionResponse;
         }
     }
 
     @GetMapping(path = "/account/image")
-    public JSONResponse getTutorImage(@RequestHeader("token") String token) {
+    public JsonObject getTutorImage(@RequestHeader("token") String token) {
         try {
             Tutor tutor = this.tutorService.getTutorByUser(this.userService.getUserById(this.userService.verifyToken(token)));
             if (tutor.getImage() != null) {
                 JsonObject response = new JsonObject();
                 response.put("image", tutor.getImage());
-                return new JSONResponse(200, response);
+                return response;
             }
             else {
                 JsonObject response = new JsonObject();
                 response.put("message", "Tutor does not have an image");
-                return new JSONResponse(200, response);
+                return response;
             }
         }
         catch (Exception e){
             JsonObject exceptionResponse = new JsonObject();
             exceptionResponse.put("message", e.getMessage());
-            return new JSONResponse(401, exceptionResponse);
+            return exceptionResponse;
         }
     }
     // // [END] Games

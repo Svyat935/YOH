@@ -9,7 +9,7 @@ import com.yoh.backend.request.AddGamesRequest;
 import com.yoh.backend.request.EditGameRequest;
 import com.yoh.backend.request.EditPatientInfoRequest;
 import com.yoh.backend.request.GameToRemove;
-import com.yoh.backend.response.JSONResponse;
+//import com.yoh.backend.response.JsonObject;
 import com.yoh.backend.service.*;
 import com.yoh.backend.util.ImageUtility;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,23 +42,23 @@ public class GameController {
     private PatientService patientService;
 
 //    @PostMapping(path = "/adding")
-//    public JSONResponse addGame(@RequestHeader("token") String token, @Valid @RequestBody AddGamesRequest addGamesRequest) {
+//    public JsonObject addGame(@RequestHeader("token") String token, @Valid @RequestBody AddGamesRequest addGamesRequest) {
 //        try{
 //            Admin admin = this.adminService.getAdminByUser(this.userService.getUserById(this.userService.verifyToken(token)));
 //            Game game = new Game(addGamesRequest.getName(), addGamesRequest.getDescription(), addGamesRequest.getUrl());
 //            gameService.createGame(game);
 //            JsonObject response = new JsonObject();
 //            response.put("message", "Game was added.");
-//            return new JSONResponse(200, response);
+//            return response);
 //        }catch (IllegalArgumentException e){
 //            JsonObject exceptionResponse = new JsonObject();
 //            exceptionResponse.put("message", e.getMessage());
-//            return new JSONResponse(401, exceptionResponse);
+//            return exceptionResponse);
 //        }
 //    }
 
     @GetMapping(path = "/all")
-    public JSONResponse allGames(@RequestHeader("token") String token,
+    public JsonObject allGames(@RequestHeader("token") String token,
                                  @RequestParam(value = "regex", required = false, defaultValue = "") String regex,
                                  @RequestParam(value = "typeRegex", required = false, defaultValue = "") String typeRegex,
                                  @RequestParam(value = "limit", required = true) Integer limit,
@@ -80,7 +80,7 @@ public class GameController {
                 response.put("count", 0);
                 response.put("size", 0);
                 response.put("results", new ArrayList<>());
-                return new JSONResponse(200, response);
+                return response;
             }
             if (start >= listCount)
                 throw new IllegalArgumentException(String.format("No element at that index (%s)", start));
@@ -114,7 +114,7 @@ public class GameController {
 //
 //            response.put("results", gamesInfoList);
             response.put("results", gameList);
-            return new JSONResponse(200, response);
+            return response;
 
 //            User user = this.userService.getUserById(this.userService.verifyToken(token));
 //            List<Game> gameList = this.gameService.getAllGamesFiltered(typeRegex, order, regex);
@@ -136,7 +136,7 @@ public class GameController {
 //                response.put("count", 0);
 //                response.put("size", 0);
 //                response.put("results", new ArrayList<>());
-//                return new JSONResponse(200, response);
+//                return response);
 //            }
 //            ArrayList<JsonObject> gamesList = new ArrayList<JsonObject>();
 ////            JsonObject response = new JsonObject();
@@ -184,16 +184,16 @@ public class GameController {
 ////            }
 //
 //            response.put("results", gamesList);
-//            return new JSONResponse(200, response);
+//            return response);
         }catch (Exception e){
             JsonObject exceptionResponse = new JsonObject();
             exceptionResponse.put("message", e.getMessage());
-            return new JSONResponse(401, exceptionResponse);
+            return exceptionResponse;
         }
     }
 
     @GetMapping(path = "/get")
-    public JSONResponse getGame(@RequestHeader("token") String token,
+    public JsonObject getGame(@RequestHeader("token") String token,
                                 @RequestParam String gameID) {
         try{
             User user = this.userService.getUserById(this.userService.verifyToken(token));
@@ -209,11 +209,11 @@ public class GameController {
             response.put("gameStatus", game.getGameStatus());
             JsonObject jsonObject = new JsonObject();
             jsonObject.put("gameInfo", response);
-            return new JSONResponse(200, jsonObject);
+            return jsonObject;
         }catch (IllegalArgumentException e){
             JsonObject exceptionResponse = new JsonObject();
             exceptionResponse.put("message", e.getMessage());
-            return new JSONResponse(401, exceptionResponse);
+            return exceptionResponse;
         }
     }
 
@@ -291,7 +291,7 @@ public class GameController {
     }
 
     @PutMapping(path = "/changing")
-    public JSONResponse changeGame(@RequestHeader("token") String token,
+    public JsonObject changeGame(@RequestHeader("token") String token,
                                    @Valid @RequestBody EditGameRequest editGameRequest) {
         try {
             Admin admin = this.adminService.getAdminByUser(this.userService.getUserById(this.userService.verifyToken(token)));
@@ -305,12 +305,12 @@ public class GameController {
             gameService.updateGame(game);
             JsonObject response = new JsonObject();
             response.put("status", "OK");
-            return new JSONResponse(200, response);
+            return response;
         }
         catch (IllegalArgumentException e) {
             JsonObject exceptionResponse = new JsonObject();
             exceptionResponse.put("message", e.getMessage());
-            return new JSONResponse(401, exceptionResponse);
+            return exceptionResponse;
         }
     }
 }

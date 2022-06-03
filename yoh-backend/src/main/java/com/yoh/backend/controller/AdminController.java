@@ -7,7 +7,7 @@ import com.yoh.backend.entity.*;
 import com.yoh.backend.enums.GameStatus;
 import com.yoh.backend.enums.Gender;
 import com.yoh.backend.request.*;
-import com.yoh.backend.response.JSONResponse;
+//import com.yoh.backend.response.JSONResponse;
 import com.yoh.backend.response.UserInfoResponse;
 import com.yoh.backend.service.*;
 import com.yoh.backend.util.ImageUtility;
@@ -73,7 +73,7 @@ public class AdminController {
     private GameService gameService;
 
     @GetMapping(path = "/users/all")
-    public JSONResponse getUsers(@RequestHeader("token") String token,
+    public JsonObject getUsers(@RequestHeader("token") String token,
                                  @RequestParam(value = "limit", required = true) Integer limit,
                                  @RequestParam(value = "start", required = true) Integer start,
                                  @RequestParam(value = "role", required = false, defaultValue = "-1") String role,
@@ -90,7 +90,7 @@ public class AdminController {
                 response.put("count", 0);
                 response.put("size", 0);
                 response.put("results", new ArrayList<>());
-                return new JSONResponse(200, response);
+                return response;
             }
             if (start >= listCount)
                 throw new IllegalArgumentException(String.format("No element at that index (%s)", start));
@@ -111,7 +111,7 @@ public class AdminController {
                 responseList.add(new UserInfoResponse(user));
             }
             response.put("results", responseList);
-            return new JSONResponse(200, response);
+            return response;
 //            List<User> userList = this.userService.getAllUsersByAdmin(Integer.parseInt(role), regex, order);
 //            if (userList.size() == 0) {
 ////                JsonObject response = new JsonObject();
@@ -155,12 +155,12 @@ public class AdminController {
         catch (IllegalArgumentException e){
             JsonObject exceptionResponse = new JsonObject();
             exceptionResponse.put("message", e.getMessage());
-            return new JSONResponse(401, exceptionResponse);
+            return exceptionResponse;
         }
     }
 
     @GetMapping(path = "/users/get")
-    public JSONResponse getUserInfo(@RequestHeader("token") String token,
+    public JsonObject getUserInfo(@RequestHeader("token") String token,
                                     @RequestParam String id) {
         try {
             Admin admin = this.adminService.getAdminByUser(this.userService.getUserById(this.userService.verifyToken(token)));
@@ -206,7 +206,7 @@ public class AdminController {
                         tutorInfo.put("email", tutor.getUser().getEmail());
                         response.put("tutor", tutorInfo);
                     }
-                    return new JSONResponse(200, response);
+                    return response;
                 }
                 case 3 -> {
                     //tutor
@@ -222,22 +222,22 @@ public class AdminController {
                     response.put("organizationString", tutor.getOrganizationString());
                     response.put("login", tutor.getUser().getLogin());
                     response.put("email", tutor.getUser().getEmail());
-                    return new JSONResponse(200, response);
+                    return response;
                 }
             }
             JsonObject genericResponse = new JsonObject();
             genericResponse.put("message", "User was not founded");
-            return new JSONResponse(401, genericResponse);
+            return genericResponse;
         }
         catch (IllegalArgumentException e){
             JsonObject exceptionResponse = new JsonObject();
             exceptionResponse.put("message", e.getMessage());
-            return new JSONResponse(401, exceptionResponse);
+            return exceptionResponse;
         }
     }
 
     @GetMapping(path = "/users/tutor/image")
-    public JSONResponse getTutorImage(@RequestHeader("token") String token,
+    public JsonObject getTutorImage(@RequestHeader("token") String token,
                                       @RequestParam String userID) {
         try {
             Admin admin = this.adminService.getAdminByUser(this.userService.getUserById(this.userService.verifyToken(token)));
@@ -245,21 +245,21 @@ public class AdminController {
             if (tutor.getImage() != null) {
                 JsonObject response = new JsonObject();
                 response.put("image", tutor.getImage());
-                return new JSONResponse(200, response);
+                return response;
             }
             JsonObject response = new JsonObject();
             response.put("message", "Tutor does not have an image");
-            return new JSONResponse(200, response);
+            return response;
         }
         catch (IllegalArgumentException e){
             JsonObject exceptionResponse = new JsonObject();
             exceptionResponse.put("message", e.getMessage());
-            return new JSONResponse(401, exceptionResponse);
+            return exceptionResponse;
         }
     }
 
     @GetMapping(path = "/users/patient/image")
-    public JSONResponse getPatientImage(@RequestHeader("token") String token,
+    public JsonObject getPatientImage(@RequestHeader("token") String token,
                                       @RequestParam String userID) {
         try {
             Admin admin = this.adminService.getAdminByUser(this.userService.getUserById(this.userService.verifyToken(token)));
@@ -267,21 +267,21 @@ public class AdminController {
             if (patient.getImage() != null) {
                 JsonObject response = new JsonObject();
                 response.put("image", patient.getImage());
-                return new JSONResponse(200, response);
+                return response;
             }
             JsonObject response = new JsonObject();
             response.put("message", "Patient does not have an image");
-            return new JSONResponse(200, response);
+            return response;
         }
         catch (IllegalArgumentException e){
             JsonObject exceptionResponse = new JsonObject();
             exceptionResponse.put("message", e.getMessage());
-            return new JSONResponse(401, exceptionResponse);
+            return exceptionResponse;
         }
     }
 
     @PostMapping(path = "/upload/games")
-    public JSONResponse uploadGames(@RequestHeader("token") String token,
+    public JsonObject uploadGames(@RequestHeader("token") String token,
                                     @RequestParam MultipartFile file,
                                     @RequestParam String type,
                                     @RequestParam String name,
@@ -332,17 +332,17 @@ public class AdminController {
 
             JsonObject response = new JsonObject();
             response.put("message", "games successfully uploaded");
-            return new JSONResponse(200, response);
+            return response;
         }
         catch (Exception e){
             JsonObject exceptionResponse = new JsonObject();
             exceptionResponse.put("message", e.getMessage());
-            return new JSONResponse(401, exceptionResponse);
+            return exceptionResponse;
         }
     }
 
     @PostMapping(path = "/upload/games/image")
-    public JSONResponse uploadTutorImage(@RequestHeader("token") String token,
+    public JsonObject uploadTutorImage(@RequestHeader("token") String token,
                                          @RequestParam String gameID,
                                          @RequestParam MultipartFile file){
         try {
@@ -371,12 +371,12 @@ public class AdminController {
             JsonObject response = new JsonObject();
             response.put("message", "Game image was edited");
             response.put("image", orgName);
-            return new JSONResponse(200, response);
+            return response;
         }
         catch (Exception e){
             JsonObject exceptionResponse = new JsonObject();
             exceptionResponse.put("message", e.getMessage());
-            return new JSONResponse(401, exceptionResponse);
+            return exceptionResponse;
         }
     }
 
@@ -394,7 +394,7 @@ public class AdminController {
     }
 
     @PostMapping(path = "/user/password/edit")
-    public JSONResponse changePassword(@RequestHeader("token") String token,
+    public JsonObject changePassword(@RequestHeader("token") String token,
                                        @Valid @RequestBody ChangePasswordRequest changePasswordRequest){
         try {
             Admin admin = this.adminService.getAdminByUser(this.userService.getUserById(this.userService.verifyToken(token)));
@@ -405,17 +405,17 @@ public class AdminController {
             this.userService.saveUser(user);
             JsonObject response = new JsonObject();
             response.put("message", "Password was changed");
-            return new JSONResponse(200, response);
+            return response;
         }
         catch (IllegalArgumentException e){
             JsonObject exceptionResponse = new JsonObject();
             exceptionResponse.put("message", e.getMessage());
-            return new JSONResponse(401, exceptionResponse);
+            return exceptionResponse;
         }
     }
 
     @PostMapping(path = "/user/email/edit")
-    public JSONResponse changePassword(@RequestHeader("token") String token,
+    public JsonObject changePassword(@RequestHeader("token") String token,
                                        @Valid @RequestBody ChangeEmailRequest changeEmailRequest){
         try {
             Admin admin = this.adminService.getAdminByUser(this.userService.getUserById(this.userService.verifyToken(token)));
@@ -424,17 +424,17 @@ public class AdminController {
             this.userService.saveUser(user);
             JsonObject response = new JsonObject();
             response.put("message", "Email was changed");
-            return new JSONResponse(200, response);
+            return response;
         }
         catch (IllegalArgumentException e){
             JsonObject exceptionResponse = new JsonObject();
             exceptionResponse.put("message", e.getMessage());
-            return new JSONResponse(401, exceptionResponse);
+            return exceptionResponse;
         }
     }
 
     @GetMapping(path = "/organizations/all")
-    public JSONResponse getOrganizations(@RequestHeader("token") String token,
+    public JsonObject getOrganizations(@RequestHeader("token") String token,
                                          @RequestParam(value = "limit", required = true) Integer limit,
                                          @RequestParam(value = "start", required = true) Integer start,
                                          @RequestParam(value = "regex", required = false, defaultValue = "") String regex,
@@ -450,7 +450,7 @@ public class AdminController {
                 response.put("count", 0);
                 response.put("size", 0);
                 response.put("results", new ArrayList<>());
-                return new JSONResponse(200, response);
+                return response;
             }
 
             if (start >= listCount)
@@ -468,7 +468,7 @@ public class AdminController {
             response.put("count", organizationList.size());
             response.put("size", listCount);
             response.put("results", organizationList);
-            return new JSONResponse(200, response);
+            return response;
 
 //            Admin admin = this.adminService.getAdminByUser(this.userService.getUserById(this.userService.verifyToken(token)));
 //            List<Organization> organizationList = this.organizationService.getAllOrganizationsFilteredOrdered(regex, order);
@@ -514,12 +514,12 @@ public class AdminController {
         catch (IllegalArgumentException e){
             JsonObject exceptionResponse = new JsonObject();
             exceptionResponse.put("message", e.getMessage());
-            return new JSONResponse(401, exceptionResponse);
+            return exceptionResponse;
         }
     }
 
     @PostMapping("/organizations/add")
-    public JSONResponse createOrganization(@RequestHeader("token") String token,
+    public JsonObject createOrganization(@RequestHeader("token") String token,
                                            @Valid @RequestBody OrganizationForAdding organizationForAdding) {
         try {
             Admin admin = this.adminService.getAdminByUser(this.userService.getUserById(this.userService.verifyToken(token)));
@@ -528,16 +528,16 @@ public class AdminController {
             this.organizationService.createOrganization(organization);
             JsonObject response = new JsonObject();
             response.put("message", "Organization was created");
-            return new JSONResponse(200, response);
+            return response;
         } catch (IllegalArgumentException e) {
             JsonObject exceptionResponse = new JsonObject();
             exceptionResponse.put("message", e.getMessage());
-            return new JSONResponse(401, exceptionResponse);
+            return exceptionResponse;
         }
     }
 
     @DeleteMapping("/organizations/delete")
-    public JSONResponse deleteOrganization(@RequestHeader("token") String token,
+    public JsonObject deleteOrganization(@RequestHeader("token") String token,
                                            @Valid @RequestBody OrganizationToDelete organizationToDelete) {
         try {
             Admin admin = this.adminService.getAdminByUser(this.userService.getUserById(this.userService.verifyToken(token)));
@@ -563,17 +563,17 @@ public class AdminController {
             this.organizationService.deleteOrganization(organization);
             JsonObject response = new JsonObject();
             response.put("message", "Organization was deleted");
-            return new JSONResponse(200, response);
+            return response;
 
         } catch (IllegalArgumentException e) {
             JsonObject exceptionResponse = new JsonObject();
             exceptionResponse.put("message", e.getMessage());
-            return new JSONResponse(401, exceptionResponse);
+            return exceptionResponse;
         }
     }
 
     @PostMapping("/assign/role")
-    public JSONResponse assignRoleUser(@RequestHeader("token") String token,
+    public JsonObject assignRoleUser(@RequestHeader("token") String token,
                                        @Valid @RequestBody RoleForAssign roleForAssign) {
         try {
             Admin admin = this.adminService.getAdminByUser(this.userService.getUserById(this.userService.verifyToken(token)));
@@ -589,7 +589,7 @@ public class AdminController {
                     this.adminService.createAdmin(user_admin);
                     JsonObject response = new JsonObject();
                     response.put("message", "Admin was assigned");
-                    return new JSONResponse(200, response);
+                    return response;
                 }
                 case 1 -> {
                     userForAssign.setRole(role);
@@ -600,7 +600,7 @@ public class AdminController {
                     this.patientService.createPatient(patient);
                     JsonObject response = new JsonObject();
                     response.put("message", "Patient was assigned");
-                    return new JSONResponse(200, response);
+                    return response;
                 }
                 case 2 -> {
                     userForAssign.setRole(role);
@@ -611,7 +611,7 @@ public class AdminController {
                     this.researcherService.createResearcher(researcher);
                     JsonObject response = new JsonObject();
                     response.put("message", "Researcher was assigned");
-                    return new JSONResponse(200, response);
+                    return response;
                 }
                 case 3 -> {
                     userForAssign.setRole(role);
@@ -622,61 +622,62 @@ public class AdminController {
                     this.tutorService.createTutor(tutor);
                     JsonObject response = new JsonObject();
                     response.put("message", "Tutor was assigned");
-                    return new JSONResponse(200, response);
+                    return response;
                 }
             }
         } catch (IllegalArgumentException e) {
             JsonObject exceptionResponse = new JsonObject();
             exceptionResponse.put("message", e.getMessage());
-            return new JSONResponse(401, exceptionResponse);
+            return exceptionResponse;
         }
         JsonObject defaultResponse = new JsonObject();
         defaultResponse.put("message", "No such role");
-        return new JSONResponse(401, defaultResponse);
+        return defaultResponse;
     }
 
     @PostMapping("/assign/organization")
-    public JSONResponse assignOrganization(@RequestHeader("token") String token,
+    public JsonObject assignOrganization(@RequestHeader("token") String token,
                                            @Valid @RequestBody OrganizationForAssign organizationForAssign) {
         try {
             Admin admin = this.adminService.getAdminByUser(this.userService.getUserById(this.userService.verifyToken(token)));
             User userForAssign = this.userService.getUserById(UUID.fromString(organizationForAssign.getUser()));
             Organization newOrganization = this.organizationService.getOrganizationById(UUID.fromString(organizationForAssign.getOrganization()));
 
-            Patient patient = patientService.getPatientByUser(userForAssign);
-            if (patient == null) {
-                Researcher researcher = researcherService.getResearcherByUser(userForAssign);
-                if (researcher == null) {
-                    Tutor tutor = tutorService.getTutorByUser(userForAssign);
-                    if (tutor != null) {
-                        tutor.setOrganization(newOrganization);
-                        this.tutorService.updateTutor(tutor);
-                    } else {
-                        JsonObject exceptionResponse = new JsonObject();
-                        exceptionResponse.put("message", String.format("User was not founded in roles %s", userForAssign.getId()));
-                        return new JSONResponse(401, exceptionResponse);
-                    }
-                } else {
+            switch (userForAssign.getRole()){
+                case 1 -> {
+                    Patient patient = patientService.getPatientByUser(userForAssign);
+                    patient.setOrganization(newOrganization);
+                    this.patientService.updatePatient(patient);
+                }
+                case 2 -> {
+                    Researcher researcher = researcherService.getResearcherByUser(userForAssign);
                     researcher.setOrganization(newOrganization);
                     this.researcherService.updateResearcher(researcher);
                 }
-            } else {
-                patient.setOrganization(newOrganization);
-                this.patientService.updatePatient(patient);
+                case 3 -> {
+                    Tutor tutor = tutorService.getTutorByUser(userForAssign);
+                    tutor.setOrganization(newOrganization);
+                    this.tutorService.updateTutor(tutor);
+                }
+                default -> {
+                    JsonObject exceptionResponse = new JsonObject();
+                    exceptionResponse.put("message", String.format("User %s was not founded in roles", userForAssign.getId()));
+                    return exceptionResponse;
+                }
             }
             JsonObject response = new JsonObject();
             response.put("message", "Organization was assigned");
-            return new JSONResponse(200, response);
+            return response;
         } catch (IllegalArgumentException e) {
             JsonObject exceptionResponse = new JsonObject();
             exceptionResponse.put("message", e.getMessage());
-            return new JSONResponse(401, exceptionResponse);
+            return exceptionResponse;
         }
 
     }
 
     @PutMapping(path = "/users/patient/editing")
-    public JSONResponse editAccountOfPatient(@RequestHeader("token") String token,
+    public JsonObject editAccountOfPatient(@RequestHeader("token") String token,
                                              @Valid @RequestBody EditPatientInfoByAdminRequest editPatientInfoByAdminRequest) {
         try {
             Admin admin = this.adminService.getAdminByUser(this.userService.getUserById(this.userService.verifyToken(token)));
@@ -708,17 +709,17 @@ public class AdminController {
             this.patientService.updatePatient(patient);
             JsonObject response = new JsonObject();
             response.put("message", "Patient account was edited");
-            return new JSONResponse(200, response);
+            return response;
         }
         catch (Exception e){
             JsonObject exceptionResponse = new JsonObject();
             exceptionResponse.put("message", e.getMessage());
-            return new JSONResponse(401, exceptionResponse);
+            return exceptionResponse;
         }
     }
 
     @PutMapping(path = "/users/tutor/editing")
-    public JSONResponse editAccountOfTutor(@RequestHeader("token") String token,
+    public JsonObject editAccountOfTutor(@RequestHeader("token") String token,
                                            @Valid @RequestBody EditTutorInfoByAdminRequest editTutorInfoByAdminRequest) {
         try {
             Admin admin = this.adminService.getAdminByUser(this.userService.getUserById(this.userService.verifyToken(token)));
@@ -738,12 +739,12 @@ public class AdminController {
             this.tutorService.updateTutor(tutor);
             JsonObject response = new JsonObject();
             response.put("message", "Tutor account was edited");
-            return new JSONResponse(200, response);
+            return response;
         }
         catch (IllegalArgumentException e){
             JsonObject exceptionResponse = new JsonObject();
             exceptionResponse.put("message", e.getMessage());
-            return new JSONResponse(401, exceptionResponse);
+            return exceptionResponse;
         }
     }
 }
