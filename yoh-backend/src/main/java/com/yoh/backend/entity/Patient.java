@@ -164,17 +164,6 @@ public class Patient implements Comparable<Patient>{
     }
 
 
-    @ManyToMany
-    private List<Test> tests;
-
-    public List<Test> getTests() {
-        return tests;
-    }
-
-    public void setTests(List<Test> tests) {
-        this.tests = tests;
-    }
-
 
 //    @ManyToMany
 //    @LazyCollection(LazyCollectionOption.FALSE)
@@ -239,15 +228,6 @@ public class Patient implements Comparable<Patient>{
 //        this.gameStatuses = gameStatuses;
 //    }
 
-
-    @OneToMany(mappedBy = "patient")
-    private List<TestStatus> testStatuses;
-
-    public List<TestStatus> getTestStatuses() { return testStatuses; }
-
-    public void setTestStatuses(List<TestStatus> testStatuses) {
-        this.testStatuses = testStatuses;
-    }
 
 
     @Column(name = "image", unique = false, nullable = true)
