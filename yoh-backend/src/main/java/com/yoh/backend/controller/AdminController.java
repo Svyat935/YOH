@@ -178,10 +178,14 @@ public class AdminController {
                     if (patient.getGender() != null)
                         response.put("gender", patient.getGender().toString());
                     else response.put("gender", null);
-                    if (patient.getOrganization() != null)
+                    if (patient.getOrganization() != null) {
                         response.put("organization", patient.getOrganization().getId().toString());
-                    else response.put("organization", null);
-                    response.put("organizationString", patient.getOrganizationString());
+
+                    }
+                    else {
+                        response.put("organization", null);
+                        response.put("organizationString", null);
+                    }
                     if (patient.getBirthDate() != null)
                         response.put("birthDate", patient.getBirthDate().toString());
                     else response.put("birthDate", null);

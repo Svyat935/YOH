@@ -154,9 +154,10 @@ public class TutorController {
                 statusInfo.put("Started", started);
                 patientInfo.put("statusInfo", statusInfo);
 
-
-
-                patientInfo.put("organizationString", patient.getOrganizationString());
+                if (patient.getOrganization() != null)
+                    patientInfo.put("organizationString", patient.getOrganization().getName());
+                else
+                    patientInfo.put("organizationString", null);
                 patientInfo.put("image", patient.getImage());
                 patientInfo.put("login", patient.getUser().getLogin());
                 patientInfo.put("email", patient.getUser().getEmail());
@@ -237,7 +238,10 @@ public class TutorController {
                 }
                 else patientInfo.put("tutor", null);
                 patientInfo.put("image", patient.getImage());
-                patientInfo.put("organizationString", patient.getOrganizationString());
+                if (patient.getOrganization() != null)
+                    patientInfo.put("organizationString", patient.getOrganization().getName());
+                else
+                    patientInfo.put("organizationString", null);
                 patientInfo.put("login", patient.getUser().getLogin());
                 patientInfo.put("email", patient.getUser().getEmail());
                 patientInfo.put("dateRegistration", patient.getUser().getDateRegistration().toString());
@@ -357,7 +361,11 @@ public class TutorController {
                 response.put("organization", null);
             }
             response.put("image", patient.getImage());
-            response.put("organization", patient.getOrganizationString());
+            if (patient.getOrganization() != null)
+                response.put("organization", patient.getOrganization().getName());
+            else
+                response.put("organization", null);
+//            response.put("organization", patient.getOrganizationString());
             response.put("birthDate", patient.getBirthDate());
             response.put("numberPhone", patient.getNumberPhone());
             response.put("address", patient.getAddress());
