@@ -1,6 +1,7 @@
 package com.yoh.backend.entity;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -34,6 +35,16 @@ public class Test {
         this.subject = subject;
     }
 
+    @Column(name = "dateAdding", nullable = false)
+    private LocalDateTime dateAdding;
+
+    public LocalDateTime getDateAdding() {
+        return dateAdding;
+    }
+
+    public void setDateAdding(LocalDateTime dateAdding) {
+        this.dateAdding = dateAdding;
+    }
 
     @ManyToMany
     private List<Question> questions;
