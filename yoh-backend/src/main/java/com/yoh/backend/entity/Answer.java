@@ -22,7 +22,7 @@ public class Answer {
     }
 
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     private Result result;
 
     public Result getResult(){
@@ -34,7 +34,7 @@ public class Answer {
     }
 
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     private Question question;
 
     public Question getQuestion(){

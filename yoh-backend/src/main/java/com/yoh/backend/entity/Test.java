@@ -46,4 +46,15 @@ public class Test {
         this.questions = questions;
     }
 
+
+    @ManyToMany
+    private List<Patient> patients;
+
+    public List<Patient> getPatients() {
+        return patients;
+    }
+
+    public void setPatients(List<Patient> patients) {
+        this.patients = patients;
+    }
 }

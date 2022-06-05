@@ -835,22 +835,23 @@ public class PatientController {
         }
     }
 
-    @GetMapping(path = "/tests/status")
-    public JsonObject getStatusOfTest(@RequestHeader("token") String token,
-                                        @RequestParam String testID) {
-        try {
-            Patient patient = this.patientService.getPatientByUser(this.userService.getUserById(this.userService.verifyToken(token)));
-            TestStatus testStatus = this.testStatusService.getTestStatusByTestAndPatient(this.testService.getTestById(UUID.fromString(testID)), patient);
-            JsonObject response = new JsonObject();
-            response.put("testStatus", testStatus.getStatus());
-            return response;
-        }
-        catch (IllegalArgumentException e){
-            JsonObject exceptionResponse = new JsonObject();
-            exceptionResponse.put("message", e.getMessage());
-            return exceptionResponse;
-        }
-    }
+//    @GetMapping(path = "/tests/status")
+//    public JsonObject getStatusOfTest(@RequestHeader("token") String token,
+//                                        @RequestParam String testID) {
+//        try {
+//            Patient patient = this.patientService.getPatientByUser(this.userService.getUserById(this.userService.verifyToken(token)));
+////            TestStatus testStatus = this.testStatusService.getTestStatusByTestAndPatient(this.testService.getTestById(UUID.fromString(testID)), patient);
+//            Result result = this.re
+//            JsonObject response = new JsonObject();
+//            response.put("testStatus", testStatus.getStatus());
+//            return response;
+//        }
+//        catch (IllegalArgumentException e){
+//            JsonObject exceptionResponse = new JsonObject();
+//            exceptionResponse.put("message", e.getMessage());
+//            return exceptionResponse;
+//        }
+//    }
 
     @PutMapping(path = "/tests/status/update")
     public JsonObject updateStatusOfTest(@RequestHeader("token") String token,

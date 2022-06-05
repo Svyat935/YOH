@@ -1,6 +1,10 @@
 package com.yoh.backend.entity;
 
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
+
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -56,6 +60,30 @@ public class Question {
 
     public void setScore(String score){
         this.score = score;
+    }
+
+    @OneToMany(mappedBy = "question")
+    @LazyCollection(LazyCollectionOption.FALSE)
+    private List<Answer> answers = new ArrayList<>();
+
+    public List<Answer> getAnswers() {
+        return answers;
+    }
+
+    public void setAnswers(List<Answer> answers) {
+        this.answers = answers;
+    }
+
+
+    @ManyToMany
+    private List<Test> tests;
+
+    public List<Test> getTests() {
+        return tests;
+    }
+
+    public void setTests(List<Test> tests) {
+        this.tests = tests;
     }
 
 }
