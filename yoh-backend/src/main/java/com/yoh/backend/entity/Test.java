@@ -36,18 +36,6 @@ public class Test {
 
 
     @ManyToMany
-    private List<Patient> patients;
-
-    public List<Patient> getPatients() {
-        return patients;
-    }
-
-    public void setPatients(List<Patient> patients) {
-        this.patients = patients;
-    }
-
-
-    @ManyToMany
     private List<Question> questions;
 
     public List<Question> getQuestions() {
@@ -58,15 +46,4 @@ public class Test {
         this.questions = questions;
     }
 
-
-    @OneToMany(mappedBy = "test")
-    private List<Result> results;
-
-    public List<Result> getResults() {
-        return results;
-    }
-
-    public void setResults(List<Result> results) {
-        this.results = results;
-    }
 }

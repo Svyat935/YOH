@@ -58,27 +58,4 @@ public class Question {
         this.score = score;
     }
 
-
-    @ManyToMany(mappedBy = "questions")
-    private List<Test> tests;
-
-    public List<Test> getTests() {
-        return tests;
-    }
-
-    public void setTests(List<Test> tests) {
-        this.tests = tests;
-    }
-
-
-    @OneToMany(mappedBy = "question")
-    private List<Answer> answers;
-
-    public List<Answer> getAnswers() {
-        return answers;
-    }
-
-    public void setAnswers(List<Answer> answers) {
-        this.answers = answers;
-    }
 }

@@ -99,21 +99,18 @@ public class Tutor {
 
     public void setOrganization(Organization organization){
         this.organization = organization;
-        if (organization != null)
-            this.setOrganizationString(organization.getName());
-        else this.setOrganizationString(null);
     }
 
-    @Column(name = "organizationString", length = 128, nullable = true)
-    private String organizationString;
-
-    public String getOrganizationString(){
-        return this.organizationString;
-    }
-
-    public void setOrganizationString(String organizationString){
-        this.organizationString = organizationString;
-    }
+//    @Column(name = "organizationString", length = 128, nullable = true)
+//    private String organizationString;
+//
+//    public String getOrganizationString(){
+//        return this.organizationString;
+//    }
+//
+//    public void setOrganizationString(String organizationString){
+//        this.organizationString = organizationString;
+//    }
 
 
     @Column(name = "image", unique = false, nullable = true)

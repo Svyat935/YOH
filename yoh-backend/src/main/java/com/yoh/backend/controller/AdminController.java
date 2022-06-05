@@ -202,10 +202,14 @@ public class AdminController {
                         tutorInfo.put("name", tutor.getName());
                         tutorInfo.put("surname", tutor.getSurname());
                         tutorInfo.put("secondName", tutor.getSecondName());
-                        if (tutor.getOrganization() != null)
+                        if (tutor.getOrganization() != null) {
                             tutorInfo.put("organization", tutor.getOrganization().getId().toString());
-                        else tutorInfo.put("organization", null);
-                        tutorInfo.put("organizationString", tutor.getOrganizationString());
+                            tutorInfo.put("organizationString", tutor.getOrganization().getName());
+                        }
+                        else {
+                            tutorInfo.put("organization", null);
+                            tutorInfo.put("organizationString", null);
+                        }
                         tutorInfo.put("login", tutor.getUser().getLogin());
                         tutorInfo.put("email", tutor.getUser().getEmail());
                         response.put("tutor", tutorInfo);
@@ -222,8 +226,12 @@ public class AdminController {
                     response.put("secondName", tutor.getSecondName());
                     if (tutor.getOrganization() != null) {
                         response.put("organization", tutor.getOrganization().getId().toString());
-                    } else response.put("organization", null);
-                    response.put("organizationString", tutor.getOrganizationString());
+                        response.put("organizationString", tutor.getOrganization().getName());
+                    }
+                    else {
+                        response.put("organization", null);
+                        response.put("organizationString", null);
+                    }
                     response.put("login", tutor.getUser().getLogin());
                     response.put("email", tutor.getUser().getEmail());
                     return response;

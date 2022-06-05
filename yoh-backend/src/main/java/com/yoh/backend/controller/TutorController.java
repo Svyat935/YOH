@@ -225,13 +225,14 @@ public class TutorController {
                     tutorInfo.put("name", tutor.getName());
                     tutorInfo.put("surname", tutor.getSurname());
                     tutorInfo.put("secondName", tutor.getSecondName());
-                    if (tutor.getOrganization() != null){
+                    if (tutor.getOrganization() != null) {
                         tutorInfo.put("organization", tutor.getOrganization().getId().toString());
+                        tutorInfo.put("organizationString", tutor.getOrganization().getName());
                     }
                     else {
                         tutorInfo.put("organization", null);
+                        tutorInfo.put("organizationString", null);
                     }
-                    tutorInfo.put("organizationString", tutor.getOrganizationString());
                     tutorInfo.put("login", tutor.getUser().getLogin());
                     tutorInfo.put("email", tutor.getUser().getEmail());
                     patientInfo.put("tutor", tutorInfo);
@@ -402,13 +403,14 @@ public class TutorController {
                 tutorInfo.put("name", tutor.getName());
                 tutorInfo.put("surname", tutor.getSurname());
                 tutorInfo.put("secondName", tutor.getSecondName());
-                if (tutor.getOrganization() != null){
+                if (tutor.getOrganization() != null) {
                     tutorInfo.put("organization", tutor.getOrganization().getId().toString());
+                    tutorInfo.put("organizationString", tutor.getOrganization().getName());
                 }
                 else {
                     tutorInfo.put("organization", null);
+                    tutorInfo.put("organizationString", null);
                 }
-                tutorInfo.put("organizationString", tutor.getOrganizationString());
                 tutorInfo.put("login", tutor.getUser().getLogin());
                 tutorInfo.put("email", tutor.getUser().getEmail());
                 response.put("tutor", tutorInfo);
@@ -1061,7 +1063,14 @@ public class TutorController {
                 response.put("organization", tutor.getOrganization().getId().toString());
             }
             else response.put("organization", null);
-            response.put("organizationString",tutor.getOrganizationString());
+            if (tutor.getOrganization() != null) {
+                response.put("organization", tutor.getOrganization().getId().toString());
+                response.put("organizationString", tutor.getOrganization().getName());
+            }
+            else {
+                response.put("organization", null);
+                response.put("organizationString", null);
+            }
             response.put("login", tutor.getUser().getLogin());
             response.put("email", tutor.getUser().getEmail());
             response.put("image", tutor.getImage());
