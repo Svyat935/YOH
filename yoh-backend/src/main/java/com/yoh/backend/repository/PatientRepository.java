@@ -139,12 +139,12 @@ public class PatientRepository {
         try {
             Criteria criteria = session.createCriteria(Patient.class)
                     .add(Restrictions.eq("organization", organization));
-//            if (!regex.equals("")) {
-//                Criterion name = Restrictions.like("name", regex, MatchMode.ANYWHERE).ignoreCase();
-//                Criterion surname = Restrictions.like("surname", regex, MatchMode.ANYWHERE).ignoreCase();
-//                Criterion secondName = Restrictions.like("secondName", regex, MatchMode.ANYWHERE).ignoreCase();
-//                criteria.add(Restrictions.or(name, surname, secondName));
-//            }
+            if (!regex.equals("")) {
+                Criterion name = Restrictions.like("name", regex, MatchMode.ANYWHERE).ignoreCase();
+                Criterion surname = Restrictions.like("surname", regex, MatchMode.ANYWHERE).ignoreCase();
+                Criterion secondName = Restrictions.like("secondName", regex, MatchMode.ANYWHERE).ignoreCase();
+                criteria.add(Restrictions.or(name, surname, secondName));
+            }
 //            switch (order) {
 //                case "1" -> criteria.addOrder(Order.asc("surname"));
 //                case "-1" -> criteria.addOrder(Order.desc("surname"));
