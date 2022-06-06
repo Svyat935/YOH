@@ -67,11 +67,11 @@ public class PatientController {
     @Autowired
     private TestStatisticService testStatisticService;
 
-    @Autowired
-    private GameStatusService gameStatusService;
-
-    @Autowired
-    private TestStatusService testStatusService;
+//    @Autowired
+//    private GameStatusService gameStatusService;
+//
+//    @Autowired
+//    private TestStatusService testStatusService;
 
     @Autowired
     private GamePatientService gamePatientService;

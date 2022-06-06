@@ -25,7 +25,7 @@ public class PatientInfoResponse {
         this.secondName = patient.getSecondName();
         this.gender = patient.getGender().toString();
         this.organization = patient.getOrganization().getId().toString();
-        this.organizationString = patient.getOrganizationString();
+        this.organizationString = patient.getOrganization().getName();
         this.birthDate = patient.getBirthDate().toString();
         this.numberPhone = patient.getNumberPhone();
         this.address = patient.getAddress();

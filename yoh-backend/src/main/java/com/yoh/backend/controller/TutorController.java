@@ -52,9 +52,9 @@ public class TutorController {
 
     @Autowired
     private OrganizationService organizationService;
-
-    @Autowired
-    private GameStatusService gameStatusService;
+//
+//    @Autowired
+//    private GameStatusService gameStatusService;
 
     @Autowired
     private GamePatientService gamePatientService;
@@ -903,95 +903,95 @@ public class TutorController {
         }
     }
 
-    @PostMapping(path = "/patients/tests/adding")
-    public JsonObject addingTestForPatient(@RequestHeader("token") String token,
-                                             @Valid @RequestBody TestToPatient testToPatient) {
-        try {
-            Tutor tutor = this.tutorService.getTutorByUser(this.userService.getUserById(this.userService.verifyToken(token)));
-            Test test = this.testService.getTestById(UUID.fromString(testToPatient.getTest_id()));
-            Patient patient = this.patientService.getPatientById(UUID.fromString(testToPatient.getPatient_id()));
-            patient.getTests().add(test);
-            this.patientService.updatePatient(patient);
-            JsonObject response = new JsonObject();
-            response.put("message", "Test was added");
-            return response;
-        }
-        catch (IllegalArgumentException e){
-            JsonObject exceptionResponse = new JsonObject();
-            exceptionResponse.put("message", e.getMessage());
-            return exceptionResponse;
-        }
-    }
+//    @PostMapping(path = "/patients/tests/adding")
+//    public JsonObject addingTestForPatient(@RequestHeader("token") String token,
+//                                             @Valid @RequestBody TestToPatient testToPatient) {
+//        try {
+//            Tutor tutor = this.tutorService.getTutorByUser(this.userService.getUserById(this.userService.verifyToken(token)));
+//            Test test = this.testService.getTestById(UUID.fromString(testToPatient.getTest_id()));
+//            Patient patient = this.patientService.getPatientById(UUID.fromString(testToPatient.getPatient_id()));
+//            patient.getTests().add(test);
+//            this.patientService.updatePatient(patient);
+//            JsonObject response = new JsonObject();
+//            response.put("message", "Test was added");
+//            return response;
+//        }
+//        catch (IllegalArgumentException e){
+//            JsonObject exceptionResponse = new JsonObject();
+//            exceptionResponse.put("message", e.getMessage());
+//            return exceptionResponse;
+//        }
+//    }
 
-    @PostMapping(path = "/patients/tests/new")
-    public JsonObject newTestsForPatient(@RequestHeader("token") String token,
-                                           @Valid @RequestBody TestsToPatient testsToPatient) {
-        try {
-            Tutor tutor = this.tutorService.getTutorByUser(this.userService.getUserById(this.userService.verifyToken(token)));
-            Patient patient = this.patientService.getPatientById(UUID.fromString(testsToPatient.getPatient_id()));
-            List<Test> listOfTests = new ArrayList<Test>();
-            for (String id : testsToPatient.getTests_id()){
-                listOfTests.add(this.testService.getTestById(UUID.fromString(id)));
-            }
-            patient.setTests(listOfTests);
-            this.patientService.updatePatient(patient);
-            JsonObject response = new JsonObject();
-            response.put("message", "List of tests was changed");
-            return response;
-        }
-        catch (IllegalArgumentException e){
-            JsonObject exceptionResponse = new JsonObject();
-            exceptionResponse.put("message", e.getMessage());
-            return exceptionResponse;
-        }
-    }
+//    @PostMapping(path = "/patients/tests/new")
+//    public JsonObject newTestsForPatient(@RequestHeader("token") String token,
+//                                           @Valid @RequestBody TestsToPatient testsToPatient) {
+//        try {
+//            Tutor tutor = this.tutorService.getTutorByUser(this.userService.getUserById(this.userService.verifyToken(token)));
+//            Patient patient = this.patientService.getPatientById(UUID.fromString(testsToPatient.getPatient_id()));
+//            List<Test> listOfTests = new ArrayList<Test>();
+//            for (String id : testsToPatient.getTests_id()){
+//                listOfTests.add(this.testService.getTestById(UUID.fromString(id)));
+//            }
+//            patient.setTests(listOfTests);
+//            this.patientService.updatePatient(patient);
+//            JsonObject response = new JsonObject();
+//            response.put("message", "List of tests was changed");
+//            return response;
+//        }
+//        catch (IllegalArgumentException e){
+//            JsonObject exceptionResponse = new JsonObject();
+//            exceptionResponse.put("message", e.getMessage());
+//            return exceptionResponse;
+//        }
+//    }
 
-    @DeleteMapping(path = "/patients/tests/removing")
-    public JsonObject removeTestForPatient(@RequestHeader("token") String token,
-                                             @Valid @RequestBody TestToPatient testToPatient) {
-        try {
-            Tutor tutor = this.tutorService.getTutorByUser(this.userService.getUserById(this.userService.verifyToken(token)));
-            Patient patient = this.patientService.getPatientById(UUID.fromString(testToPatient.getPatient_id()));
-            List<Test> listOfTests = patient.getTests();
-            for (Test test: listOfTests){
-                if (test.getId().toString().equals(testToPatient.getTest_id())){
-                    patient.getTests().remove(this.testService.getTestById(UUID.fromString(testToPatient.getTest_id())));
-                    this.patientService.updatePatient(patient);
-                    JsonObject response = new JsonObject();
-                    response.put("message", "Test was removed");
-                    return response;
-                }
-            }
-            JsonObject errorResponse = new JsonObject();
-            errorResponse.put("message", "Test was not founded");
-            return errorResponse;
-        }
-        catch (IllegalArgumentException e){
-            JsonObject exceptionResponse = new JsonObject();
-            exceptionResponse.put("message", e.getMessage());
-            return exceptionResponse;
-        }
-    }
-
-    @DeleteMapping(path = "/patients/tests/clear")
-    public JsonObject clearTestsForPatients(@RequestHeader("token") String token,
-                                              @Valid @RequestBody PatientToTutor patientToTutor) {
-        //TODO
-        try {
-            Tutor tutor = this.tutorService.getTutorByUser(this.userService.getUserById(this.userService.verifyToken(token)));
-            Patient patient = this.patientService.getPatientById(UUID.fromString(patientToTutor.getPatient()));
-            patient.setTests(new ArrayList<Test>());
-            this.patientService.updatePatient(patient);
-            JsonObject response = new JsonObject();
-            response.put("message", "List of test was cleared");
-            return response;
-        }
-        catch (IllegalArgumentException e){
-            JsonObject exceptionResponse = new JsonObject();
-            exceptionResponse.put("message", e.getMessage());
-            return exceptionResponse;
-        }
-    }
+//    @DeleteMapping(path = "/patients/tests/removing")
+//    public JsonObject removeTestForPatient(@RequestHeader("token") String token,
+//                                             @Valid @RequestBody TestToPatient testToPatient) {
+//        try {
+//            Tutor tutor = this.tutorService.getTutorByUser(this.userService.getUserById(this.userService.verifyToken(token)));
+//            Patient patient = this.patientService.getPatientById(UUID.fromString(testToPatient.getPatient_id()));
+//            List<Test> listOfTests = patient.getTests();
+//            for (Test test: listOfTests){
+//                if (test.getId().toString().equals(testToPatient.getTest_id())){
+//                    patient.getTests().remove(this.testService.getTestById(UUID.fromString(testToPatient.getTest_id())));
+//                    this.patientService.updatePatient(patient);
+//                    JsonObject response = new JsonObject();
+//                    response.put("message", "Test was removed");
+//                    return response;
+//                }
+//            }
+//            JsonObject errorResponse = new JsonObject();
+//            errorResponse.put("message", "Test was not founded");
+//            return errorResponse;
+//        }
+//        catch (IllegalArgumentException e){
+//            JsonObject exceptionResponse = new JsonObject();
+//            exceptionResponse.put("message", e.getMessage());
+//            return exceptionResponse;
+//        }
+//    }
+//
+//    @DeleteMapping(path = "/patients/tests/clear")
+//    public JsonObject clearTestsForPatients(@RequestHeader("token") String token,
+//                                              @Valid @RequestBody PatientToTutor patientToTutor) {
+//        //TODO
+//        try {
+//            Tutor tutor = this.tutorService.getTutorByUser(this.userService.getUserById(this.userService.verifyToken(token)));
+//            Patient patient = this.patientService.getPatientById(UUID.fromString(patientToTutor.getPatient()));
+//            patient.setTests(new ArrayList<Test>());
+//            this.patientService.updatePatient(patient);
+//            JsonObject response = new JsonObject();
+//            response.put("message", "List of test was cleared");
+//            return response;
+//        }
+//        catch (IllegalArgumentException e){
+//            JsonObject exceptionResponse = new JsonObject();
+//            exceptionResponse.put("message", e.getMessage());
+//            return exceptionResponse;
+//        }
+//    }
 
     @GetMapping(path = "/patients/tests/get-statistics")
     public JsonObject getStatisticsForPatients(@RequestHeader("token") String token,
