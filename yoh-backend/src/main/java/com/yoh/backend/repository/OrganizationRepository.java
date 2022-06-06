@@ -8,6 +8,7 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.MatchMode;
 import org.hibernate.criterion.Order;
+import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -110,7 +111,7 @@ public class OrganizationRepository {
         }
     }
 
-    public List<Organization> getAllOrganizationsOrderedPaginated(String order, String regex, int start, int count) {
+    public List<Organization> getAllOrganizationsOrderedPaginated(String order, String regex, int start, int limit) {
         Session session = sessionFactory.openSession();
         try {
             Criteria criteria = session.createCriteria(Organization.class);
@@ -124,7 +125,7 @@ public class OrganizationRepository {
                 case "-2" -> criteria.addOrder(Order.desc("dateRegistration"));
             }
             criteria.setFirstResult(start);
-            criteria.setMaxResults(count);
+            criteria.setMaxResults(limit);
             return criteria.list();
         }
         finally {
@@ -138,6 +139,7 @@ public class OrganizationRepository {
             Criteria criteria = session.createCriteria(Organization.class);
             if (!regex.equals(""))
                 criteria.add(Restrictions.like("name", regex, MatchMode.ANYWHERE).ignoreCase());
+            criteria.setProjection(Projections.rowCount());
             return (int)(long)criteria.uniqueResult();
         }
         finally {

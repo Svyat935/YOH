@@ -7,6 +7,7 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.MatchMode;
 import org.hibernate.criterion.Order;
+import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -219,6 +220,7 @@ public class GamePatientRepository {
                 Criteria criteriaRegex = criteria.createCriteria("game");
                 criteriaRegex.add(Restrictions.like("name", regex, MatchMode.ANYWHERE).ignoreCase());
             }
+            criteria.setProjection(Projections.rowCount());
             return (int)(long)criteria.uniqueResult();
         }
         finally {

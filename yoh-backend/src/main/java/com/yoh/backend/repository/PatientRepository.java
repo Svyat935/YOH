@@ -8,10 +8,7 @@ import org.aspectj.weaver.ast.Or;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.criterion.Criterion;
-import org.hibernate.criterion.MatchMode;
-import org.hibernate.criterion.Order;
-import org.hibernate.criterion.Restrictions;
+import org.hibernate.criterion.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -129,6 +126,7 @@ public class PatientRepository {
                 Criterion secondName = Restrictions.like("secondName", regex, MatchMode.ANYWHERE).ignoreCase();
                 criteria.add(Restrictions.or(name, surname, secondName));
             }
+            criteria.setProjection(Projections.rowCount());
             return (int)(long)criteria.uniqueResult();
         }
         finally {
