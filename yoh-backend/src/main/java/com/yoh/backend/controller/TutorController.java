@@ -610,7 +610,7 @@ public class TutorController {
         try {
             Tutor tutor = this.tutorService.getTutorByUser(this.userService.getUserById(this.userService.verifyToken(token)));
             Game game = this.gameService.getGameById(UUID.fromString(gameToPatient.getGame_id()));
-            if (!game.getGameStatus().equals(GameActiveStatus.ACTIVE))
+            if (!game.getGameActiveStatus().equals(GameActiveStatus.ACTIVE))
                 throw new IllegalArgumentException("Game is not active");
             Patient patient = this.patientService.getPatientById(UUID.fromString(gameToPatient.getPatient_id()));
             GamePatient gamePatient;

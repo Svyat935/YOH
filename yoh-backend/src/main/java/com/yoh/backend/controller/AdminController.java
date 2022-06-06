@@ -300,7 +300,7 @@ public class AdminController {
             Game game;
             if (this.gameService.checkGameByName(name)){
                 game = this.gameService.getGameByName(name);
-                game.setGameStatus(GameActiveStatus.ACTIVE);
+                game.setActiveGameStatus(GameActiveStatus.ACTIVE);
             }
             else {
                 game = new Game(UUID.randomUUID() ,name, type, description, null, LocalDateTime.now(), useStatistic, GameActiveStatus.ACTIVE);
