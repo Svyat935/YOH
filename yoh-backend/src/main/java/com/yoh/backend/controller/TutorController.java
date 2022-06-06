@@ -174,7 +174,7 @@ public class TutorController {
     public JsonObject getAllPatients(@RequestHeader("token") String token,
                                        @RequestParam(value = "limit", required = true) Integer limit,
                                        @RequestParam(value = "start", required = true) Integer start,
-                                       @RequestParam(value = "regex", required = false) String regex,
+                                       @RequestParam(value = "regex", required = false, defaultValue = "") String regex,
                                        @RequestParam(value = "order", required = false, defaultValue = "1") String order) {
         try {
             Tutor tutor = this.tutorService.getTutorByUser(this.userService.getUserById(this.userService.verifyToken(token)));

@@ -14,6 +14,7 @@ import org.springframework.stereotype.Repository;
 
 import javax.transaction.Transactional;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 @Repository
@@ -139,7 +140,7 @@ public class PatientRepository {
         try {
             Criteria criteria = session.createCriteria(Patient.class)
                     .add(Restrictions.eq("organization", organization));
-            if (regex != null) {
+            if (!Objects.equals(regex, "")) {
                 Criterion name = Restrictions.like("name", regex, MatchMode.ANYWHERE).ignoreCase();
                 Criterion surname = Restrictions.like("surname", regex, MatchMode.ANYWHERE).ignoreCase();
                 Criterion secondName = Restrictions.like("secondName", regex, MatchMode.ANYWHERE).ignoreCase();
