@@ -320,12 +320,12 @@ public class AdminController {
 
 
             if (image != null) {
-//                    String orgName = game.getName() + "." + FilenameUtils.getExtension(file.getOriginalFilename());
-                String orgName = UUID.randomUUID() + "." + FilenameUtils.getExtension(file.getOriginalFilename());
-                Path filepath = Paths.get("/app/images", orgName);
-                if(new  File(filepath.toString()).exists()){
-                    System.out.println("File exists");
-                    new File(filepath.toString()).delete();
+                String orgName = UUID.randomUUID() + "." + FilenameUtils.getExtension(image.getOriginalFilename());
+                if(game.getImage() != null){
+//                new File("/app/images/" + tutor.getImage().replace(site_url + "images/", "")).delete();
+                    new File("/app/images/" + game.getImage()).delete();
+                    System.out.println("Old image was deleted");
+
                 }
                 File filesd = new File("/app/images", orgName);
                 FileUtils.writeByteArrayToFile(filesd, file.getBytes());
