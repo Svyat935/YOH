@@ -321,7 +321,7 @@ public class AdminController {
 
             if (image != null) {
                 System.out.println(1);
-                String orgName = UUID.randomUUID() + "." + FilenameUtils.getExtension(file.getOriginalFilename());
+                String orgName = UUID.randomUUID() + "." + FilenameUtils.getExtension(image.getOriginalFilename());
                 System.out.println(2);
                 if(game.getImage() != null){
                     System.out.println(3);
@@ -333,7 +333,7 @@ public class AdminController {
                 System.out.println(5);
                 File filesd = new File("/app/images", orgName);
                 System.out.println(6);
-                FileUtils.writeByteArrayToFile(filesd, file.getBytes());
+                FileUtils.writeByteArrayToFile(filesd, image.getBytes());
                 System.out.println(7);
                 game.setImage(orgName);
                 System.out.println(8);
