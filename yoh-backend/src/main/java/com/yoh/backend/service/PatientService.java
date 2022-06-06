@@ -60,7 +60,7 @@ public class PatientService {
     }
 
     public List<Patient> getAllPatientsByOrganizationFilteredPaginated(Organization organization, String regex, String order, int start, int limit) {
-        return patientRepository.getAllPatientsByOrganizationFilteredPaginated(organization, order, regex, start, limit);
+        return patientRepository.getAllPatientsByOrganizationFilteredPaginated(organization, regex, order, start, limit);
     }
 
     public List<Patient> getAllPatientsByOrganization(Organization organization){
