@@ -63,7 +63,7 @@ public class GameController {
         //TODO Переделать пагинацию
         try{
             User user = this.userService.getUserById(this.userService.verifyToken(token));
-            if (user.getRole() != 0 || user.getRole() != 3)
+            if (user.getRole() == 1 || user.getRole() == 2)
                 throw new IllegalArgumentException("This user doesn't have permission");
             JsonObject response = new JsonObject();
             ArrayList<UUID> UUIDList = new ArrayList<>();
