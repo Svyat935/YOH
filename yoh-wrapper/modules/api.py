@@ -176,7 +176,7 @@ def additional_fields_route():
     send_url = 'http://yoh-backend:8080/patient/games/statistics/additional_fields'
     result = get(send_url, headers=headers).json()
 
-    return make_response(json.dumps(result.get('jsonObject', {}).get('result')))
+    return make_response(result)
 
 
 @api_bp.route('/statistic_pagination', methods=['GET'])
