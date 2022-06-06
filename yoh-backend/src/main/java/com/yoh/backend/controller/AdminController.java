@@ -322,6 +322,8 @@ public class AdminController {
             if (image != null) {
                 String orgName = UUID.randomUUID() + "." + FilenameUtils.getExtension(image.getOriginalFilename());
                 if(game.getImage() != null){
+                    System.out.println("SSSSSSSSSSSSSSSSSSS");
+                    System.out.println(String.format("game.getImage(): (%s)", game.getImage()));
 //                new File("/app/images/" + tutor.getImage().replace(site_url + "images/", "")).delete();
                     new File("/app/images/" + game.getImage()).delete();
                     System.out.println("Old image was deleted");
