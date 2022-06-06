@@ -320,22 +320,37 @@ public class AdminController {
 
 
             if (image != null) {
-                String orgName = UUID.randomUUID() + "." + FilenameUtils.getExtension(image.getOriginalFilename());
+                System.out.println(1);
+                String orgName = UUID.randomUUID() + "." + FilenameUtils.getExtension(file.getOriginalFilename());
+                System.out.println(2);
                 if(game.getImage() != null){
-                    System.out.println("SSSSSSSSSSSSSSSSSSS");
-                    System.out.println(String.format("game.getImage(): (%s)", game.getImage()));
+                    System.out.println(3);
 //                new File("/app/images/" + tutor.getImage().replace(site_url + "images/", "")).delete();
                     new File("/app/images/" + game.getImage()).delete();
+                    System.out.println(4);
                     System.out.println("Old image was deleted");
-
                 }
+                System.out.println(5);
                 File filesd = new File("/app/images", orgName);
+                System.out.println(6);
                 FileUtils.writeByteArrayToFile(filesd, file.getBytes());
-                game.setImage(site_url + "images/" + orgName);
+                System.out.println(7);
+                game.setImage(orgName);
+                System.out.println(8);
+//                String orgName = UUID.randomUUID() + "." + FilenameUtils.getExtension(image.getOriginalFilename());
+//                if(game.getImage() != null){
+//                    System.out.println("SSSSSSSSSSSSSSSSSSS");
+//                    System.out.println(String.format("game.getImage(): (%s)", game.getImage()));
+////                new File("/app/images/" + tutor.getImage().replace(site_url + "images/", "")).delete();
+//                    new File("/app/images/" + game.getImage()).delete();
+//                    System.out.println("Old image was deleted");
+//
+//                }
+//                File filesd = new File("/app/images", orgName);
+//                FileUtils.writeByteArrayToFile(filesd, file.getBytes());
+//                game.setImage(orgName);
             }
-            System.out.println(8);
             this.gameService.createGame(game);
-            System.out.println(9);
 
             JsonObject response = new JsonObject();
             response.put("message", "games successfully uploaded");
