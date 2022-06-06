@@ -140,12 +140,16 @@ public class PatientRepository {
         try {
             Criteria criteria = session.createCriteria(Patient.class)
                     .add(Restrictions.eq("organization", organization));
+            System.out.println("SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS");
+            System.out.println(criteria.list());
             if (!Objects.equals(regex, "")) {
                 Criterion name = Restrictions.like("name", regex, MatchMode.ANYWHERE).ignoreCase();
                 Criterion surname = Restrictions.like("surname", regex, MatchMode.ANYWHERE).ignoreCase();
                 Criterion secondName = Restrictions.like("secondName", regex, MatchMode.ANYWHERE).ignoreCase();
                 criteria.add(Restrictions.or(name, surname, secondName));
             }
+            System.out.println("SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS");
+            System.out.println(criteria.list());
 //            switch (order) {
 //                case "1" -> criteria.addOrder(Order.asc("surname"));
 //                case "-1" -> criteria.addOrder(Order.desc("surname"));
