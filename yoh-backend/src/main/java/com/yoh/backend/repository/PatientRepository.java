@@ -139,37 +139,37 @@ public class PatientRepository {
         try {
             Criteria criteria = session.createCriteria(Patient.class)
                     .add(Restrictions.eq("organization", organization));
-            if (!regex.equals("")) {
-                Criterion name = Restrictions.like("name", regex, MatchMode.ANYWHERE).ignoreCase();
-                Criterion surname = Restrictions.like("surname", regex, MatchMode.ANYWHERE).ignoreCase();
-                Criterion secondName = Restrictions.like("secondName", regex, MatchMode.ANYWHERE).ignoreCase();
-                criteria.add(Restrictions.or(name, surname, secondName));
-            }
-            switch (order) {
-                case "1" -> criteria.addOrder(Order.asc("surname"));
-                case "-1" -> criteria.addOrder(Order.desc("surname"));
-
-//              Фио
-                case "2" -> {
-                    criteria.addOrder(Order.asc("surname"));
-                    criteria.addOrder(Order.asc("name"));
-                    criteria.addOrder(Order.asc("secondName"));
-                }
-                case "-2" -> {
-                    criteria.addOrder(Order.desc("surname"));
-                    criteria.addOrder(Order.desc("name"));
-                    criteria.addOrder(Order.desc("secondName"));
-                }
-                case "3" -> criteria.addOrder(Order.asc("birthDate"));
-                case "-3" -> criteria.addOrder(Order.desc("birthDate"));
-            }
-            System.out.println("SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS");
-            System.out.println(criteria.list());
-            criteria.setFirstResult(start);
-            System.out.println(criteria.list());
-            criteria.setMaxResults(limit);
-            System.out.println(criteria.list());
-            System.out.println("SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS");
+//            if (!regex.equals("")) {
+//                Criterion name = Restrictions.like("name", regex, MatchMode.ANYWHERE).ignoreCase();
+//                Criterion surname = Restrictions.like("surname", regex, MatchMode.ANYWHERE).ignoreCase();
+//                Criterion secondName = Restrictions.like("secondName", regex, MatchMode.ANYWHERE).ignoreCase();
+//                criteria.add(Restrictions.or(name, surname, secondName));
+//            }
+//            switch (order) {
+//                case "1" -> criteria.addOrder(Order.asc("surname"));
+//                case "-1" -> criteria.addOrder(Order.desc("surname"));
+//
+////              Фио
+//                case "2" -> {
+//                    criteria.addOrder(Order.asc("surname"));
+//                    criteria.addOrder(Order.asc("name"));
+//                    criteria.addOrder(Order.asc("secondName"));
+//                }
+//                case "-2" -> {
+//                    criteria.addOrder(Order.desc("surname"));
+//                    criteria.addOrder(Order.desc("name"));
+//                    criteria.addOrder(Order.desc("secondName"));
+//                }
+//                case "3" -> criteria.addOrder(Order.asc("birthDate"));
+//                case "-3" -> criteria.addOrder(Order.desc("birthDate"));
+//            }
+//            System.out.println("SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS");
+//            System.out.println(criteria.list());
+//            criteria.setFirstResult(start);
+//            System.out.println(criteria.list());
+//            criteria.setMaxResults(limit);
+//            System.out.println(criteria.list());
+//            System.out.println("SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS");
             return criteria.list();
         }
         finally {
