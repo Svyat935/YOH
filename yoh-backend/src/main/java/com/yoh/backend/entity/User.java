@@ -24,7 +24,6 @@ public class User {
         this.role = role;
     }
 
-
     @Id
     @GeneratedValue
     private UUID id;

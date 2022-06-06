@@ -5,10 +5,7 @@ import io.swagger.models.auth.In;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.criterion.MatchMode;
-import org.hibernate.criterion.Order;
-import org.hibernate.criterion.Projections;
-import org.hibernate.criterion.Restrictions;
+import org.hibernate.criterion.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -112,6 +109,22 @@ public class UserRepository {
             session.beginTransaction();
             session.delete(user);
             session.getTransaction().commit();
+        }
+        finally {
+            session.close();
+        }
+    }
+
+    public User getUserByCredential(String credential) {
+        Session session = sessionFactory.openSession();
+        try {
+            Criteria criteria = session.createCriteria(User.class);
+            Criterion login = Restrictions.eq("login", credential);
+            Criterion email = Restrictions.eq("email", credential);
+            criteria.add(Restrictions.or(login, email));
+            List<User> users = criteria.list();
+            return users.isEmpty() ? null : users.get(0);
+
         }
         finally {
             session.close();

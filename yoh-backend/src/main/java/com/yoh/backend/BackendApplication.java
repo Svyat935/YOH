@@ -32,6 +32,11 @@ import java.util.ArrayList;
 @EnableAutoConfiguration
 public class BackendApplication {
 
+    public static void main(String[] args) {
+        SpringApplication.run(BackendApplication.class, args);
+
+    }
+
     @Value("${INIT_ADMIN_LOGIN}")
     private String login;
 
@@ -43,11 +48,6 @@ public class BackendApplication {
 
     @Value("${GAMES_FOLDER}")
     private String games_folder;
-
-    public static void main(String[] args) {
-        SpringApplication.run(BackendApplication.class, args);
-
-    }
 
     @Bean
     public CommandLineRunner init(AdminService adminService, UserService userService, OrganizationRepository organizationRepository) {

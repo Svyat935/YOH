@@ -1,21 +1,17 @@
 package com.yoh.backend.controller;
 
-import antlr.StringUtils;
 import at.favre.lib.crypto.bcrypt.BCrypt;
 import com.github.cliftonlabs.json_simple.JsonObject;
 import com.yoh.backend.entity.*;
-import com.yoh.backend.enums.GameStatus;
+import com.yoh.backend.enums.GameActiveStatus;
 import com.yoh.backend.enums.Gender;
 import com.yoh.backend.request.*;
 //import com.yoh.backend.response.JSONResponse;
 import com.yoh.backend.response.UserInfoResponse;
 import com.yoh.backend.service.*;
-import com.yoh.backend.util.ImageUtility;
 import net.lingala.zip4j.ZipFile;
-import net.lingala.zip4j.model.UnzipParameters;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
-import org.aspectj.weaver.ast.Or;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
@@ -23,17 +19,14 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 import java.io.*;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.zip.*;
-import net.lingala.zip4j.*;
 
 
 @RestController
@@ -307,10 +300,10 @@ public class AdminController {
             Game game;
             if (this.gameService.checkGameByName(name)){
                 game = this.gameService.getGameByName(name);
-                game.setGameStatus(GameStatus.ACTIVE);
+                game.setGameStatus(GameActiveStatus.ACTIVE);
             }
             else {
-                game = new Game(UUID.randomUUID() ,name, type, description, null, LocalDateTime.now(), useStatistic, GameStatus.ACTIVE);
+                game = new Game(UUID.randomUUID() ,name, type, description, null, LocalDateTime.now(), useStatistic, GameActiveStatus.ACTIVE);
             }
 
             String url = "/app/games/" + game.getId().toString();

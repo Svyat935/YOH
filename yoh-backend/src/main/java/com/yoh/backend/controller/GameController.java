@@ -1,17 +1,13 @@
 package com.yoh.backend.controller;
 
-import com.github.cliftonlabs.json_simple.JsonArray;
 import com.github.cliftonlabs.json_simple.JsonObject;
 import com.yoh.backend.entity.*;
 import com.yoh.backend.enums.GamePatientStatus;
-import com.yoh.backend.enums.GameStatus;
-import com.yoh.backend.request.AddGamesRequest;
+import com.yoh.backend.enums.GameActiveStatus;
 import com.yoh.backend.request.EditGameRequest;
-import com.yoh.backend.request.EditPatientInfoRequest;
 import com.yoh.backend.request.GameToRemove;
 //import com.yoh.backend.response.JsonObject;
 import com.yoh.backend.service.*;
-import com.yoh.backend.util.ImageUtility;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,7 +16,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/games")
@@ -237,7 +232,7 @@ public class GameController {
                 this.gamePatientService.saveGamePatient(gamePatient);
             }
 
-            game.setGameStatus(GameStatus.DELETED);
+            game.setGameStatus(GameActiveStatus.DELETED);
             game.setUrl(null);
             this.gameService.updateGame(game);
             //Удаление из папки
@@ -265,7 +260,7 @@ public class GameController {
                 this.gamePatientService.saveGamePatient(gamePatient);
             }
 
-            game.setGameStatus(GameStatus.DISABLED);
+            game.setGameStatus(GameActiveStatus.DISABLED);
             this.gameService.updateGame(game);
 //            this.gamePatientService.deactivateGame(game);
             return "Game was deactivated";
@@ -281,7 +276,7 @@ public class GameController {
         try {
             Admin admin = this.adminService.getAdminByUser(this.userService.getUserById(this.userService.verifyToken(token)));
             Game game = this.gameService.getGameById(UUID.fromString(gameToRemove.getGame_id()));
-            game.setGameStatus(GameStatus.ACTIVE);
+            game.setGameStatus(GameActiveStatus.ACTIVE);
             this.gameService.updateGame(game);
             return "Game was deactivated";
         }

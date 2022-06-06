@@ -2,11 +2,10 @@ package com.yoh.backend.controller;
 
 import com.github.cliftonlabs.json_simple.JsonObject;
 import com.yoh.backend.entity.*;
+import com.yoh.backend.enums.GameActiveStatus;
 import com.yoh.backend.enums.GamePatientStatus;
 import com.yoh.backend.request.*;
-import com.yoh.backend.response.*;
 import com.yoh.backend.service.*;
-import com.yoh.backend.util.ImageUtility;
 import com.yoh.backend.enums.Status;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
@@ -16,10 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
-import java.awt.*;
 import java.io.File;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.List;
@@ -614,7 +610,7 @@ public class TutorController {
         try {
             Tutor tutor = this.tutorService.getTutorByUser(this.userService.getUserById(this.userService.verifyToken(token)));
             Game game = this.gameService.getGameById(UUID.fromString(gameToPatient.getGame_id()));
-            if (!game.getGameStatus().equals(com.yoh.backend.enums.GameStatus.ACTIVE))
+            if (!game.getGameStatus().equals(GameActiveStatus.ACTIVE))
                 throw new IllegalArgumentException("Game is not active");
             Patient patient = this.patientService.getPatientById(UUID.fromString(gameToPatient.getPatient_id()));
             GamePatient gamePatient;

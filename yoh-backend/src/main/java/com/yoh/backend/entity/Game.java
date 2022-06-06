@@ -1,12 +1,9 @@
 package com.yoh.backend.entity;
 
-import com.yoh.backend.enums.GameStatus;
-import org.hibernate.annotations.LazyCollection;
-import org.hibernate.annotations.LazyCollectionOption;
+import com.yoh.backend.enums.GameActiveStatus;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -14,7 +11,7 @@ import java.util.UUID;
 public class Game {
     public Game() {}
 
-    public Game(UUID id, String name, String type, String description, String url, LocalDateTime dateAdding, boolean useStatistic, GameStatus gameStatus) {
+    public Game(UUID id, String name, String type, String description, String url, LocalDateTime dateAdding, boolean useStatistic, GameActiveStatus gameActiveStatus) {
         this.id = id;
         this.name = name;
         this.type = type;
@@ -22,7 +19,7 @@ public class Game {
         this.url = url;
         this.dateAdding = dateAdding;
         this.useStatistic = useStatistic;
-        this.gameStatus = gameStatus;
+        this.gameActiveStatus = gameActiveStatus;
     }
 
 
@@ -129,14 +126,14 @@ public class Game {
 
 
     @Column(name = "gameStatus", nullable = false)
-    private GameStatus gameStatus;
+    private GameActiveStatus gameActiveStatus;
 
-    public GameStatus getGameStatus() {
-        return gameStatus;
+    public GameActiveStatus getGameStatus() {
+        return gameActiveStatus;
     }
 
-    public void setGameStatus(GameStatus gameStatus) {
-        this.gameStatus = gameStatus;
+    public void setGameStatus(GameActiveStatus gameActiveStatus) {
+        this.gameActiveStatus = gameActiveStatus;
     }
 
     //    @OneToMany(mappedBy = "game")

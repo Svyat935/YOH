@@ -71,7 +71,7 @@ public class UserService {
     }
 
     public User getUser(String credentials, String password) throws IllegalArgumentException{
-        User user = userRepository.getUserByLogin(credentials);
+        User user = userRepository.getUserByCredential(credentials);
         if (user != null) {
             boolean status = BCrypt.verifyer()
                     .verify(password.toCharArray(), user.getPassword())
@@ -80,17 +80,6 @@ public class UserService {
                 return user;
             }
         }
-
-        user = userRepository.getUserByEmail(credentials);
-        if (user != null) {
-            boolean status = BCrypt.verifyer()
-                    .verify(password.toCharArray(), user.getPassword())
-                    .verified;
-            if (status) {
-                return user;
-            }
-        }
-
         throw new IllegalArgumentException(
                 String.format("Sorry, but User with this credentials (%s, %s) wasn't found.",
                         credentials, password)

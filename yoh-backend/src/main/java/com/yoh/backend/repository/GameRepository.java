@@ -1,7 +1,7 @@
 package com.yoh.backend.repository;
 
 import com.yoh.backend.entity.Game;
-import com.yoh.backend.enums.GameStatus;
+import com.yoh.backend.enums.GameActiveStatus;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -82,7 +82,7 @@ public class GameRepository {
         Session session = sessionFactory.openSession();
         try {
             Criteria criteria = session.createCriteria(Game.class)
-                    .add(Restrictions.eq("gameStatus", GameStatus.ACTIVE));
+                    .add(Restrictions.eq("gameStatus", GameActiveStatus.ACTIVE));
             if (!regex.equals(""))
                 criteria.add(Restrictions.like("name", regex, MatchMode.ANYWHERE).ignoreCase());
             if (!typeRegex.equals(""))
