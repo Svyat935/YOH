@@ -11,6 +11,8 @@ import com.yoh.backend.response.BaseResponse;
 import com.yoh.backend.service.*;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -28,8 +30,13 @@ public class AuthController {
     private SessionFactory sessionFactory;
 
     @GetMapping
-    public BaseResponse testing() {
-        return new BaseResponse("Test is successes.", 200);
+    public ResponseEntity<JsonObject> testing() {
+        JsonObject response = new JsonObject();
+        response.put("previous", false);
+        response.put("next", false);
+        response.put("count", 0);
+        response.put("size", 0);
+        return new ResponseEntity<>(response, HttpStatus.FORBIDDEN);
     }
 
     @PostMapping("/registration")

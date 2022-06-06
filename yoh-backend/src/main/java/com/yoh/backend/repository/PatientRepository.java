@@ -163,8 +163,13 @@ public class PatientRepository {
                 case "3" -> criteria.addOrder(Order.asc("birthDate"));
                 case "-3" -> criteria.addOrder(Order.desc("birthDate"));
             }
+            System.out.println("SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS");
+            System.out.println(criteria.list());
             criteria.setFirstResult(start);
+            System.out.println(criteria.list());
             criteria.setMaxResults(limit);
+            System.out.println(criteria.list());
+            System.out.println("SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS");
             return criteria.list();
         }
         finally {
