@@ -125,14 +125,14 @@ public class Game {
     }
 
 
-    @Column(name = "gameStatus", nullable = false)
+    @Column(name = "gameActiveStatus", nullable = false)
     private GameActiveStatus gameActiveStatus;
 
-    public GameActiveStatus getGameStatus() {
+    public GameActiveStatus getGameActiveStatus() {
         return gameActiveStatus;
     }
 
-    public void setGameStatus(GameActiveStatus gameActiveStatus) {
+    public void setActiveGameStatus(GameActiveStatus gameActiveStatus) {
         this.gameActiveStatus = gameActiveStatus;
     }
 

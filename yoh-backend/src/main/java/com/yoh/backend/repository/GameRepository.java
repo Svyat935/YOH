@@ -82,7 +82,7 @@ public class GameRepository {
         Session session = sessionFactory.openSession();
         try {
             Criteria criteria = session.createCriteria(Game.class)
-                    .add(Restrictions.eq("gameStatus", GameActiveStatus.ACTIVE));
+                    .add(Restrictions.eq("gameActiveStatus", GameActiveStatus.ACTIVE));
             if (!regex.equals(""))
                 criteria.add(Restrictions.like("name", regex, MatchMode.ANYWHERE).ignoreCase());
             if (!typeRegex.equals(""))

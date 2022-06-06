@@ -201,7 +201,7 @@ public class GameController {
             response.put("url", game.getUrl());
             response.put("image", game.getImage());
             response.put("useStatistics", game.getUseStatistic());
-            response.put("gameStatus", game.getGameStatus());
+            response.put("gameStatus", game.getGameActiveStatus());
             JsonObject jsonObject = new JsonObject();
             jsonObject.put("gameInfo", response);
             return jsonObject;
@@ -232,7 +232,7 @@ public class GameController {
                 this.gamePatientService.saveGamePatient(gamePatient);
             }
 
-            game.setGameStatus(GameActiveStatus.DELETED);
+            game.setActiveGameStatus(GameActiveStatus.DELETED);
             game.setUrl(null);
             this.gameService.updateGame(game);
             //Удаление из папки
@@ -246,7 +246,7 @@ public class GameController {
         }
     }
 
-    @DeleteMapping(path = "/deactivate")
+    @DeleteMapping(path = "/disable")
     public String deactivateGame(@RequestHeader("token") String token,
                              @Valid @RequestBody GameToRemove gameToRemove) {
         try {
@@ -260,10 +260,10 @@ public class GameController {
                 this.gamePatientService.saveGamePatient(gamePatient);
             }
 
-            game.setGameStatus(GameActiveStatus.DISABLED);
+            game.setActiveGameStatus(GameActiveStatus.DISABLED);
             this.gameService.updateGame(game);
 //            this.gamePatientService.deactivateGame(game);
-            return "Game was deactivated";
+            return "Game was DISABLED";
         }
         catch (IllegalArgumentException e) {
             return e.getMessage();
@@ -276,9 +276,9 @@ public class GameController {
         try {
             Admin admin = this.adminService.getAdminByUser(this.userService.getUserById(this.userService.verifyToken(token)));
             Game game = this.gameService.getGameById(UUID.fromString(gameToRemove.getGame_id()));
-            game.setGameStatus(GameActiveStatus.ACTIVE);
+            game.setActiveGameStatus(GameActiveStatus.ACTIVE);
             this.gameService.updateGame(game);
-            return "Game was deactivated";
+            return "Game was activated";
         }
         catch (IllegalArgumentException e) {
             return e.getMessage();
