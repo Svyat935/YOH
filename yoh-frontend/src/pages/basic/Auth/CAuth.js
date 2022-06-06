@@ -22,16 +22,8 @@ export function CAuth() {
     const authorize = async (credentials, password) => {
         let response = await requestAuth(credentials, password);
 
-        if (response === null){
-            return undefined;
-        }
-
-        if (response.code === 401){
-            return null;
-        }
-
-        let role = response["jsonObject"]["role"],
-            token = response["jsonObject"]["token"];
+        let role = response["role"],
+            token = response["token"];
 
         if (role === null){
             return -1;

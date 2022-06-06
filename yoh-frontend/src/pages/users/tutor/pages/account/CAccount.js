@@ -58,7 +58,6 @@ export function CAccount() {
            let accountInfo = await requestAccountInfo();
 
            if (accountInfo !== null){
-               accountInfo = accountInfo["jsonObject"];
                setAccountInfo(accountInfo);
            }
 

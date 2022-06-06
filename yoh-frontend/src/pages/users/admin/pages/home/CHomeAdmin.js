@@ -45,12 +45,12 @@ export function CHomeAdmin() {
             let responseGames = await requestGames();
 
             if (responseUsers !== null){
-                responseUsers = responseUsers["jsonObject"]["results"];
+                responseUsers = responseUsers["results"];
                 if (responseUsers !== undefined) setUsers(responseUsers);
             }
 
             if (responseGames !== null){
-                responseGames = responseGames["jsonObject"]["results"];
+                responseGames = responseGames["results"];
                 if (responseGames !== undefined) setGames(responseGames);
             }
 

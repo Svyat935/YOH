@@ -36,7 +36,7 @@ export function CPatients() {
             let responseAttachedPatients = await requestAttachedPatients();
 
             if (responseAttachedPatients !== null) {
-                responseAttachedPatients = responseAttachedPatients["jsonObject"]["results"];
+                responseAttachedPatients = responseAttachedPatients["results"];
                 if (responseAttachedPatients !== undefined) setAttachedPatients(responseAttachedPatients);
                 else setAttachedPatients([]);
             }

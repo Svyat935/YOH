@@ -107,7 +107,6 @@ export function VUsersAdmin(props) {
                         async () => {
                             let userInfo = await props.getInfoUser(user["id"]);
                             if (userInfo !== null) {
-                                userInfo = userInfo["jsonObject"];
                                 setUserInfo(userInfo);
                             }
 

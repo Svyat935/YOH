@@ -53,7 +53,7 @@ export function CVector() {
             let responseGames = await requestGetGames();
 
             if (responseGames !== null) {
-                responseGames = responseGames["jsonObject"]["results"];
+                responseGames = responseGames["results"];
                 setGames(responseGames);
             }
 
