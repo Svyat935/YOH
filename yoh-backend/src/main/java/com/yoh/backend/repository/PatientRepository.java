@@ -142,11 +142,16 @@ public class PatientRepository {
                     .add(Restrictions.eq("organization", organization));
             System.out.println("SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS");
             System.out.println(criteria.list());
-            if (!Objects.equals(regex, "")) {
+            System.out.println(String.format("Regex: (%s)", regex));
+            if (!regex.isEmpty()) {
+                System.out.println("if");
                 Criterion name = Restrictions.like("name", regex, MatchMode.ANYWHERE).ignoreCase();
                 Criterion surname = Restrictions.like("surname", regex, MatchMode.ANYWHERE).ignoreCase();
                 Criterion secondName = Restrictions.like("secondName", regex, MatchMode.ANYWHERE).ignoreCase();
                 criteria.add(Restrictions.or(name, surname, secondName));
+            }
+            else {
+                System.out.println("else");
             }
             System.out.println("SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS");
             System.out.println(criteria.list());
