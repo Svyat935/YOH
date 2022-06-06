@@ -53,12 +53,11 @@ export function CHomePatient() {
             let responseGames = await requestGames();
 
             if (responseGames !== null){
-                responseGames = responseGames["jsonObject"]["results"];
+                responseGames = responseGames["results"];
                 setGames(responseGames);
             }
 
             let responseAccount = await requestAccountInfo();
-            responseAccount = responseAccount['jsonObject'];
             setAccount(responseAccount);
 
             if (load === true) setLoad(false);

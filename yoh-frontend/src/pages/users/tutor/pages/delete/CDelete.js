@@ -59,7 +59,7 @@ export function CDelete() {
         if (context.token){
             setUserId(context.info.patient["id"]);
             let gamesResponse = await requestGetGamesForUser(context.info.patient["id"]);
-            gamesResponse = gamesResponse["jsonObject"]["results"];
+            gamesResponse = gamesResponse["results"];
             if (gamesResponse) setGames(gamesResponse);
             else setGames([]);
 

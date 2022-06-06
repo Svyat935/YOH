@@ -88,21 +88,20 @@ export function CDetailInfo() {
             let responseUser = await requestGetInfoForUser(context.info.patient["id"]);
 
             if (responseUser !== null) {
-                responseUser = responseUser["jsonObject"];
+                responseUser = responseUser;
                 setUser(responseUser);
             }
 
             let responseGames = await requestGetGamesForUser(context.info.patient["id"]);
 
             if (responseGames !== null){
-                responseGames = responseGames["jsonObject"]["results"];
+                responseGames = responseGames["results"];
                 setGames(responseGames);
             }
 
             let responseStatus = await requestGetStatisticsForUser(context.info.patient["id"]);
 
             if (responseStatus !== null){
-                responseStatus = responseStatus['jsonObject'];
                 setStatus(responseStatus);
             }
 

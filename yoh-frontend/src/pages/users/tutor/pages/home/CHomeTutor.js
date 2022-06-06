@@ -61,19 +61,18 @@ export function CHomeTutor() {
 
             let usersFirst;
             if (response !== null){
-                usersFirst = response["jsonObject"]["results"];
+                usersFirst = response["results"];
 
                 let stat = [];
                 for (let user of usersFirst){
                     let statistics = await requestGetStatisticsForUser(user["id"]);
-                    stat.push({statistics: statistics["jsonObject"], user: user});
+                    stat.push({statistics: statistics, user: user});
                 }
                 setStatus(stat);
                 setUsers(usersFirst);
             }
 
             let responseAccount = await requestAccountInfo();
-            responseAccount = responseAccount['jsonObject'];
             setAccount(responseAccount);
 
             if (load === true) setLoad(false);

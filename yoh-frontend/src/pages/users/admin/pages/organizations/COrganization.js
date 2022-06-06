@@ -47,7 +47,7 @@ export function COrganization() {
             let responseOrganizations = await requestOrganization();
 
             if (responseOrganizations !== null){
-                responseOrganizations = responseOrganizations["jsonObject"]["results"];
+                responseOrganizations = responseOrganizations["results"];
                 if (responseOrganizations !== undefined) setOrganizations(responseOrganizations);
                 else setOrganizations([]);
             }

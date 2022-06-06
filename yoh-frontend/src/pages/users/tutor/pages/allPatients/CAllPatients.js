@@ -81,12 +81,12 @@ export function CAllPatients() {
             let responseAttachedPatients = await requestAttachedPatients(0, 100);
 
             if (responsePatients !== null) {
-                responsePatients = responsePatients["jsonObject"]["results"];
+                responsePatients = responsePatients["results"];
                 if (responsePatients !== undefined) setPatients(responsePatients);
             }
 
             if (responseAttachedPatients !== null) {
-                responseAttachedPatients = responseAttachedPatients["jsonObject"]["results"];
+                responseAttachedPatients = responseAttachedPatients["results"];
                 if (responseAttachedPatients !== undefined) setAttachedPatients(responseAttachedPatients);
                 else setAttachedPatients([]);
             }

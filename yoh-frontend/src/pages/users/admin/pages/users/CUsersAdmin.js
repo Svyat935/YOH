@@ -189,18 +189,17 @@ export function CUsersAdmin() {
             let responseOrganizations = await requestGetAllOrganizations();
 
             if (responseUsers !== null){
-                responseUsers = responseUsers["jsonObject"];
                 setSize(responseUsers["size"]);
 
                 responseUsers = responseUsers["results"];
                 for (let user of responseUsers){
                     if (user["role"] === 1){
                         let image = await requestGetImagePatient(user["id"]);
-                        if (image["jsonObject"]["image"]) user["image"] = image["jsonObject"]["image"];
+                        if (image["image"]) user["image"] = image["image"];
                         else user["image"] = null;
                     } else if (user["role"] === 3){
                         let image = await requestGetImageTutor(user["id"]);
-                        if (image["jsonObject"]["image"]) user["image"] = image["jsonObject"]["image"];
+                        if (image["image"]) user["image"] = image["image"];
                         else user["image"] = null;
                     }
                 }
@@ -208,7 +207,7 @@ export function CUsersAdmin() {
             }
 
             if (responseOrganizations !== null){
-                responseOrganizations = responseOrganizations["jsonObject"]["results"];
+                responseOrganizations = responseOrganizations["results"];
                 if (responseUsers !== undefined) setOrganizations(responseOrganizations);
             }
 

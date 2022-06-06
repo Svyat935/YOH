@@ -70,11 +70,9 @@ export function CAccount() {
            let statistics = await requestStatistics();
 
            if (accountInfo !== null){
-               accountInfo = accountInfo["jsonObject"];
                setAccountInfo(accountInfo);
            }
            if (statistics !== null){
-               statistics = statistics["jsonObject"];
                setStatistics(statistics);
            }
 

@@ -80,7 +80,7 @@ export function CComponents() {
             let responseGames = await requestGames();
 
             if (responseGames !== null){
-                responseGames = responseGames["jsonObject"]["results"];
+                responseGames = responseGames["results"];
                 if (responseGames !== undefined) setGames(responseGames);
                 if (responseGames.length === 0) setGames([]);
             }
