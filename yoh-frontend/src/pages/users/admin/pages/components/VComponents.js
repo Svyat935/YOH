@@ -65,6 +65,9 @@ export function VComponents(props) {
 
         if (games.length > 0) {
             games.forEach((game) => {
+                let image = game["image"] !== null ? "https://mobile.itkostroma.ru/images/" + game["image"]
+                    : gameStub;
+
                 view.push(
                     <InfoBlock ikey={game["id"]} text={game["name"]} onClick={
                         () => {
@@ -74,7 +77,7 @@ export function VComponents(props) {
                         }
                     }>
                         <div style={{width: "100%"}}>
-                            <img style={{width: "100%", borderRadius: 40}} src={gameStub} alt={'game'}/>
+                            <img style={{width: "100%", borderRadius: 40}} src={image} alt={'game'}/>
                         </div>
                     </InfoBlock>
                 )
@@ -203,7 +206,8 @@ export function VComponents(props) {
             fDescription = document.getElementById("description"),
             fFile = document.getElementById("file"),
             fType = document.getElementById("type"),
-            fStatistics = document.getElementById("useStatistics");
+            fStatistics = document.getElementById("useStatistics"),
+            fImage = document.getElementById("image");
         let valid_style = "red 1px solid"
         let none_style = "none"
         let valid_status = true;
@@ -239,6 +243,7 @@ export function VComponents(props) {
             formData.append("description", fDescription.value);
             formData.append("type", fType.value);
             formData.append("file", fFile.files[0]);
+            formData.append("image", fImage.files[0]);
             formData.append("useStatistic", fStatistics.value);
             let response = await props.sendGames(formData);
             // //TODO: Validate.
@@ -333,6 +338,10 @@ export function VComponents(props) {
                     {borderRadius: 40, border: "none", padding: "5px 15px", marginBottom: 15}
                 } required/>
                 <p id={"file-validate"} style={{height: "5px", marginBottom: 0, color: "#800000"}}/>
+                <label>Изображение: </label>
+                <input id={"image"} type={"file"} style={
+                    {borderRadius: 40, border: "none", padding: "5px 15px", marginBottom: 15}
+                } required/>
             </div>
         )
     }
