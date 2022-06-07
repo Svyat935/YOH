@@ -251,7 +251,7 @@ export function VUsersAdmin(props) {
 
         if (validStatus) {
             let response = await props.createUser(fLogin.value, fEmail.value, fPassword.value);
-            if (response["message"] !== undefined) {
+            if (response["message"] !== "User was created") {
                 let message = response["message"];
                 validStatus = false;
 
