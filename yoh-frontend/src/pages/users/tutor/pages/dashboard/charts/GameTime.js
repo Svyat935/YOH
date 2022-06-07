@@ -55,25 +55,9 @@ export class GameTime extends Component {
         };
     }
 
-    shouldComponentUpdate(nextProps, nextState) {
-        let date_range = [];
-        nextProps.dateRange.forEach((datePart) => {
-            let start_date = new Date(datePart['daterange'][0]).getTime(),
-                end_date = new Date(datePart['daterange'][1]).getTime();
-
-            date_range.push(
-                {
-                    x: datePart['level_name'],
-                    y: [start_date, end_date]
-                }
-            )
-        })
-        return this.current !== JSON.stringify(date_range);
-    }
-
     componentDidUpdate(prevProps, prevState, snapshot) {
         let date_range = [];
-        prevProps.dateRange.forEach((datePart) => {
+        this.props.dateRange.forEach((datePart) => {
             let start_date = new Date(datePart['daterange'][0]).getTime(),
                 end_date = new Date(datePart['daterange'][1]).getTime();
 
