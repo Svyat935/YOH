@@ -69,9 +69,9 @@ export class GameTime extends Component {
             )
         })
 
+        console.log(JSON.parse(this.current), date_range);
         if (this.current !== JSON.stringify(date_range)) {
             this.current = JSON.stringify(date_range);
-            console.log(JSON.parse(this.current), date_range);
             this.setState({
                 options:{...prevState.options},
                 series: [{data: date_range}]
