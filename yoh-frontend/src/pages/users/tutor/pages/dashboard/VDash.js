@@ -6,6 +6,7 @@ import {ClickStat} from "./charts/ClicksStat";
 import {GameTime} from "./charts/GameTime";
 
 export function VDash (props) {
+    console.log(props.timelines);
 
     return (
         <div id="wrapper">
