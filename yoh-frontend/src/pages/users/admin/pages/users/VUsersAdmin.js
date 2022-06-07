@@ -251,8 +251,8 @@ export function VUsersAdmin(props) {
 
         if (validStatus) {
             let response = await props.createUser(fLogin.value, fEmail.value, fPassword.value);
-            if (response.code === 401) {
-                let message = response['jsonObject']["message"];
+            if (response["message"] !== undefined) {
+                let message = response["message"];
                 validStatus = false;
 
                 if (message.indexOf('email') !== -1) {
@@ -423,7 +423,7 @@ export function VUsersAdmin(props) {
                     let id = null;
                     if (currentUserLogin !== null) {
                         let users = await props.getUser(currentUserLogin);
-                        users = users['jsonObject']['results'];
+                        users = users['results'];
                         id = users[0]["id"];
                     } else {
                         id = userForChanging["id"];
@@ -440,7 +440,7 @@ export function VUsersAdmin(props) {
                     let id = null;
                     if (currentUserLogin !== null) {
                         let users = await props.getUser(currentUserLogin);
-                        users = users['jsonObject']['results'];
+                        users = users['results'];
                         id = users[0]["id"];
                     } else {
                         id = userForChanging["id"];
