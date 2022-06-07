@@ -128,7 +128,7 @@ export function VVector(props) {
                 <ButtonB text={"Показать игру"} onClick={() => {
                     let url = "https://" + game["url"] + "?" +
                         "token=" + props.context.token + "&" +
-                        "use_statistics=" + game["useStatistics"];
+                        "use_statistics=" + game["useStatistic"];
                     let patient = props.context.info.patient;
                     props.context.addInfo({url: url, patient: patient});
                     window.open("/user/tutor/game/", "_blank");

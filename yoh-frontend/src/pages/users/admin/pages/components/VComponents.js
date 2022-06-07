@@ -254,7 +254,7 @@ export function VComponents(props) {
             <ButtonB text={"Посмотреть игру"} onClick={() => {
                 let url = "https://" + gameForChanging["url"] + "?" +
                     "token=" + props.context.token + "&" +
-                    "use_statistics=" + gameForChanging["useStatistics"];
+                    "use_statistics=" + gameForChanging["useStatistic"];
                 props.context.addInfo(url);
                 router("/user/admin/game/");}
             }/>
