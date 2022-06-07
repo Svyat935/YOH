@@ -1,19 +1,12 @@
 import React, {useContext, useState} from "react";
 import {InfoBlock} from "../../../../../components/infoBlock/InfoBlock";
-import profileStub from "../../../../../assets/profileStub.jpg";
 import {ButtonB} from "../../../../../components/buttons/ButtonB/ButtonB";
-import {Back} from "../../../../../components/back/Back";
 import {AdminNav} from "../../../../../components/navigate/NavPanel/Admin/AdminNav";
-import Modal from "react-bootstrap/Modal";
-import {Container} from "react-bootstrap";
-import Row from "react-bootstrap/Row";
-import Col from "react-bootstrap/Col";
-import {FilterBlock} from "../../../../../components/filterBlock/FilterBlock";
 import {ButtonA} from "../../../../../components/buttons/ButtonA/ButtonA";
-import {SearchInput} from "../../../../../components/searchInput/SearchInput";
 import gameStub from "../../../../../assets/gameStub.jpg";
 import {useNavigate} from "react-router-dom";
 import {CheckBox} from "../../../../../components/checkbox/CheckBox";
+import {SearchFrame} from "../../../../../frame/SearchFrame/SearchFrame";
 
 export function VComponents(props) {
     const filterList = [
@@ -29,22 +22,26 @@ export function VComponents(props) {
                 props.refresh();
             }
         },
-        {"text": "По дате (возрастание)", "value": 2, "onClick": () => {
+        {
+            "text": "По дате (возрастание)", "value": 2, "onClick": () => {
                 props.setOrder(2);
                 props.refresh();
             }
         },
-        {"text": "По дате (убывание)", "value": -2, "onClick": () => {
+        {
+            "text": "По дате (убывание)", "value": -2, "onClick": () => {
                 props.setOrder(-2);
                 props.refresh();
             }
         },
-        {"text": "По типу (возрастание)", "value": 3, "onClick": () => {
+        {
+            "text": "По типу (возрастание)", "value": 3, "onClick": () => {
                 props.setOrder(3);
                 props.refresh();
             }
         },
-        {"text": "По типу (убывание)", "value": -3, "onClick": () => {
+        {
+            "text": "По типу (убывание)", "value": -3, "onClick": () => {
                 props.setOrder(-3);
                 props.refresh();
             }
@@ -53,10 +50,8 @@ export function VComponents(props) {
     const router = useNavigate();
     const [show, setShow] = useState(false);
     //TODO: replace the int type with something better.
-    //Note: Adding Game - 0, Removing Game - 1, Confirm Removing - 2, Changing Game - 3, Look At Game - 4.
+    //Note: Adding Game - 0, Removing Game - 1, Confirm Removing - 2, Changing Game - 3, Look Choice - 4.
     const [buttonStatus, setButtonStatus] = useState(0);
-
-    const [gameForRemoving, setRemovingGame] = useState(null);
     const [gameForChanging, setChangingGame] = useState(null);
 
     const createBasicViewGames = () => {
@@ -71,7 +66,7 @@ export function VComponents(props) {
                 view.push(
                     <InfoBlock ikey={game["id"]} text={game["name"]} onClick={
                         () => {
-                            setButtonStatus(3);
+                            setButtonStatus(4);
                             setChangingGame(game);
                             setShow(true);
                         }
@@ -99,108 +94,6 @@ export function VComponents(props) {
         return view;
     }
 
-    const createRemovingViewGames = () => {
-        let games = props.games,
-            view = [];
-        if (games.length > 0) {
-            games.forEach((game) => {
-                view.push(
-                    <div style={
-                        {
-                            borderRadius: 40,
-                            color: "#FFFFFF",
-                            background: "#6A6DCD",
-                            display: "flex",
-                            justifyContent: "space-between",
-                            alignItems: "center",
-                            marginBottom: "20px"
-                        }
-                    }>
-                        <p>Name: {game["name"]}; Description: {game["description"]}</p>
-                        <ButtonB text={"Удалить"} fontSize={"medium"} onClick={
-                            () => {
-                                setRemovingGame(game);
-                                setButtonStatus(2);
-                            }
-                        }/>
-                    </div>
-                )
-            })
-        } else {
-            view.push(
-                <div style={
-                    {
-                        height: 387,
-                        display: "flex",
-                        justifyContent: "center",
-                        alignItems: "center"
-                    }
-                }>
-                    <h3>Игры в системе отсутствуют.</h3>
-                </div>
-            )
-        }
-
-        return (
-            <div style={{display: "flex", flexDirection: "column"}}>
-                {view}
-            </div>
-        );
-    }
-
-    const createShowViewGames = () => {
-        let games = props.games,
-            view = [];
-
-        if (games.length > 0) {
-            games.forEach((game) => {
-                view.push(
-                    <div style={
-                        {
-                            borderRadius: 40,
-                            color: "#FFFFFF",
-                            background: "#6A6DCD",
-                            display: "flex",
-                            justifyContent: "space-between",
-                            alignItems: "center",
-                            marginBottom: "20px"
-                        }
-                    }>
-                        <p><b>Name:</b> {game["name"]}; <b>Description:</b> {game["description"]}</p>
-                        <ButtonB text={"Посмотреть"} fontSize={"medium"} onClick={
-                            () => {
-                                let url = "https://" + game["url"] + "?" +
-                                    "token=" + props.context.token + "&" +
-                                    "use_statistics=" + game["useStatistics"];
-                                props.context.addInfo(url);
-                                router("/user/admin/game/");
-                            }
-                        }/>
-                    </div>
-                )
-            })
-        } else {
-            view.push(
-                <div style={
-                    {
-                        height: 387,
-                        display: "flex",
-                        justifyContent: "center",
-                        alignItems: "center"
-                    }
-                }>
-                    <h3>Игры в системе отсутствуют.</h3>
-                </div>
-            )
-        }
-
-        return (
-            <div style={{display: "flex", flexDirection: "column"}}>
-                {view}
-            </div>
-        );
-    }
-
     const addGame = async () => {
         let fName = document.getElementById("name"),
             fDescription = document.getElementById("description"),
@@ -217,27 +110,27 @@ export function VComponents(props) {
         fType.style.border = none_style;
         fFile.style.border = none_style;
 
-        if (!fName.value){
+        if (!fName.value) {
             fName.style.border = valid_style;
             valid_status = false;
         }
 
-        if (!fDescription.value){
+        if (!fDescription.value) {
             fDescription.style.border = valid_style;
             valid_status = false;
         }
 
-        if (!fType.value){
+        if (!fType.value) {
             fType.style.border = valid_style;
             valid_status = false;
         }
 
-        if (!fFile.files[0]){
+        if (!fFile.files[0]) {
             fFile.style.border = valid_style;
             valid_status = false;
         }
 
-        if (valid_status){
+        if (valid_status) {
             let formData = new FormData();
             formData.append("name", fName.value);
             formData.append("description", fDescription.value);
@@ -254,7 +147,7 @@ export function VComponents(props) {
 
     const removeGame = () => {
         //TODO: Validate.
-        let response = props.removeGame(gameForRemoving["id"]);
+        let response = props.removeGame(gameForChanging["id"]);
         if (response !== null) {
             props.refresh();
             setShow(false);
@@ -352,121 +245,102 @@ export function VComponents(props) {
         props.refresh();
     }
 
+    const chooseAction = (
+        <div style={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center"
+        }}>
+            <ButtonB text={"Посмотреть игру"} onClick={() => {
+                let url = "https://" + gameForChanging["url"] + "?" +
+                    "token=" + props.context.token + "&" +
+                    "use_statistics=" + gameForChanging["useStatistics"];
+                props.context.addInfo(url);
+                router("/user/admin/game/");}
+            }/>
+            <ButtonB text={"Изменить игру"} onClick={() => {
+                setButtonStatus(3);
+            }}/>
+            <ButtonB text={"Удалить"} onClick={() => {
+                setButtonStatus(2);
+            }}/>
+        </div>
+    )
+
+    const buttons = (
+        <>
+            <ButtonA width={300} text={"Добавить +"} onClick={() => {
+                setButtonStatus(0);
+                setShow(true);
+            }}/>
+        </>
+    )
+
+    const paginationButtons = () => {
+        let view = [];
+
+        if (props.start) view.push(
+            <ButtonA width={300} text={"Предыдущая страница"} onClick={() => {
+                props.setStart(props.start - 9);
+                props.refresh();
+            }}/>
+        )
+        if (props.games.length === 10) view.push(
+            <ButtonA width={300} text={"Следующая страница"} onClick={() => {
+                props.setStart(props.start + 9);
+                props.refresh();
+            }}/>
+        )
+        return view;
+    }
+
+    const modalTitle = () => {
+        if (buttonStatus === 0) return "Добавление Игры";
+        else if (buttonStatus === 1 || buttonStatus === 2) return "Удаление игры";
+        else if (buttonStatus === 3) return "Изменение игры";
+        else if (buttonStatus === 4) return "Выбор действия";
+    }
+
+    const modalBody = () => {
+        if (buttonStatus === 0) return createGamesView();
+        else if (buttonStatus === 2)
+            return "Вы уверен что хотите удалить игру с таким названием: '" + gameForChanging["name"] + "' ?";
+        else if (buttonStatus === 3) return changingView();
+        else if (buttonStatus === 4) return chooseAction;
+    }
+
+    const modalFooter = () => {
+        let view = [<ButtonB text={"Отмена"} onClick={() => setShow(false)}/>];
+
+        if (buttonStatus === 0) view.push(
+            <ButtonB text={"Добавить"} onClick={addGame}/>
+        );
+        else if (buttonStatus === 2) view.push(
+            <ButtonB text={"Удалить"} onClick={removeGame}/>
+        );
+        else if (buttonStatus === 3) view.push(
+            <ButtonB text={"Изменить"} onClick={changeGame}/>
+        );
+
+        return view;
+    }
+
     return (
-        <Back navPanel={<AdminNav context={props.context}/>}>
-            <Modal
-                show={show}
-                backdrop={true}
-                keyboard={true}
-                onHide={() => setShow(false)}
-            >
-                <Modal.Header closeButton>
-                    <Modal.Title>{
-                        buttonStatus === 0 ? "Добавление Игры" :
-                            buttonStatus === 1 || buttonStatus === 2 ? "Удаление Игры" :
-                                buttonStatus === 3 ? "Изменение Игры" : "Просмотр Игры"
-                    }</Modal.Title>
-                </Modal.Header>
-                <Modal.Body>
-                    {
-                        buttonStatus === 0 ?
-                            createGamesView() : buttonStatus === 1 ?
-                            createRemovingViewGames() : buttonStatus === 2 ?
-                                "Вы уверен что хотите удалить игру с таким названием: '" + gameForRemoving["name"] + "' ?" :
-                                buttonStatus === 3 ? changingView() : createShowViewGames()
-                    }
-                </Modal.Body>
-                <Modal.Footer>
-                    <div style={
-                        {
-                            height: "25%",
-                            width: "100%",
-                            display: "flex",
-                            justifyContent: "space-between"
-                        }
-                    }>
-                        <ButtonB text={"Отмена"} onClick={() => setShow(false)}/>
-                        {
-                            buttonStatus === 0 ?
-                                <ButtonB text={"Добавить"} onClick={addGame}/> :
-                                buttonStatus === 2 ?
-                                    <ButtonB text={"Удалить"} onClick={removeGame}/> :
-                                    buttonStatus === 3 ?
-                                        <ButtonB text={"Изменить"} onClick={changeGame}/> : null
-                        }
-                    </div>
-                </Modal.Footer>
-            </Modal>
-            <Container style={{marginTop: 20}}>
-                <Row>
-                    <h1 style={{marginBottom: 20}}>Список компонентов: </h1>
-                    <Col md={4} style={
-                        {
-                            display: "flex",
-                            justifyContent: "flex-start",
-                            alignItems: "center",
-                            flexDirection: "column"
-                        }
-                    }>
-                        <FilterBlock filters={filterList}/>
-                        <ButtonA width={300} text={"Посмотреть θ"} onClick={() => {
-                            setButtonStatus(4);
-                            setShow(true);
-                        }}/>
-                        <ButtonA width={300} text={"Добавить +"} onClick={() => {
-                            setButtonStatus(0);
-                            setShow(true);
-                        }}/>
-                        <ButtonA width={300} text={"Удалить -"} onClick={() => {
-                            setButtonStatus(1);
-                            setShow(true);
-                        }}/>
-                    </Col>
-                    <Col md={8}>
-                        <SearchInput
-                            id={"searchInput"}
-                            onKeyDown={(e) => {
-                                if (e.key === "Enter") {
-                                    searchGame()
-                                }
-                            }}
-                            onBlur={searchGame}
-                            onClick={searchGame}
-                        />
-                        <Container>
-                            <Row>
-                                <Col style={
-                                    {
-                                        display: "flex",
-                                        flexDirection: "row",
-                                        flexWrap: "wrap",
-                                        justifyContent: "space-evenly"
-                                    }
-                                }>
-                                    {createBasicViewGames()}
-                                </Col>
-                            </Row>
-                            <Row style={
-                                {
-                                    display: "flex",
-                                    flexDirection: "row",
-                                    justifyContent: "space-around",
-                                    marginTop: 20
-                                }
-                            }>
-                                {props.start ? <ButtonA width={300} text={"Предыдущая страница"} onClick={() => {
-                                    props.setStart(props.start - 9);
-                                    props.refresh();
-                                }}/> : null}
-                                {props.games.length === 10 ? <ButtonA width={300} text={"Следующая страница"} onClick={() => {
-                                    props.setStart(props.start + 9);
-                                    props.refresh();
-                                }}/>: null}
-                            </Row>
-                        </Container>
-                    </Col>
-                </Row>
-            </Container>
-        </Back>
+        <SearchFrame
+            navPanel={<AdminNav context={props.context}/>}
+            filterList={filterList}
+            modalShow={show}
+            modalOnHide={() => setShow(false)}
+            modalTitle={modalTitle()}
+            modalBody={modalBody()}
+            modalFooter={modalFooter()}
+            title={"Список компонентов"}
+            buttons={buttons}
+            searchInputOnKeyDown={searchGame}
+            searchInputOnBlur={searchGame}
+            searchInputOnClick={searchGame}
+            content={createBasicViewGames()}
+            contentFooter={paginationButtons()}
+        />
     )
 }
