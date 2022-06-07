@@ -23,9 +23,7 @@ export function VHomeAdmin(props) {
             users.forEach((user) => {
                 view.push(
                     <InfoBlock ikey={user["id"]} text={user["login"]} onClick={() => router("/user/admin/users/")}>
-                        <div style={{width: "100%"}}>
-                            <img style={{width: "100%"}} src={profileStub} alt={'profile'}/>
-                        </div>
+                        <img style={{width: "100%", height: "100%", borderRadius: 40, objectFit: "cover"}} src={profileStub} alt={'profile'}/>
                     </InfoBlock>
                 )
             })
@@ -42,9 +40,7 @@ export function VHomeAdmin(props) {
             games.forEach((game) => {
                 view.push(
                     <InfoBlock ikey={game["id"]} text={game["name"]} onClick={() => router("/user/admin/components/")}>
-                        <div style={{width: "100%"}}>
-                            <img style={{width: "100%", borderRadius: 40}} src={gameStub} alt={'game'}/>
-                        </div>
+                        <img style={{width: "100%", height: "100%", borderRadius: 40, objectFit: "cover"}} src={gameStub} alt={'game'}/>
                     </InfoBlock>
                 )
             })

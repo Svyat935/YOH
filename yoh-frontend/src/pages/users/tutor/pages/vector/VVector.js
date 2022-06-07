@@ -58,33 +58,12 @@ export function VVector(props) {
     //TODO: replace the int type with something better.
     //Note: Choose action - 0; Confirm Add Game - 1;
     const [buttonStatus, setButtonStatus] = useState(0);
-    const [filterStatus, setFilterStatus] = useState(0);
 
     const [game, setGame] = useState(null);
 
     const createBasicViewGames = () => {
         let games = props.games.slice(0, 9),
             view = [];
-
-        if (filterStatus === 1) {
-            games = games.sort((a, b) => {
-                if (a["name"] > b["name"]) return 1;
-                else if (a["name"] < b["name"]) return -1;
-                else return 0;
-            });
-        } else if (filterStatus === 2) {
-            games = games.sort((a, b) => {
-                if (a["dateAdding"] > b["dateAdding"]) return 1;
-                else if (a["dateAdding"] < b["dateAdding"]) return -1;
-                else return 0;
-            })
-        } else if (filterStatus === 3){
-            games = games.sort((a, b) => {
-                if (a["description"] > b["description"]) return 1;
-                else if (a["description"] < b["description"]) return -1;
-                else return 0;
-            })
-        }
 
         if (games.length > 0) {
             games.forEach((game) => {
@@ -99,9 +78,8 @@ export function VVector(props) {
                             setShow(true);
                         }
                     }>
-                        <div style={{width: "100%"}}>
-                            <img style={{width: "100%", borderRadius: 40}} src={image} alt={'game'}/>
-                        </div>
+                        <img style={{width: "100%", height: "100%", borderRadius: 40, objectFit: "cover"}}
+                             src={image} alt={'game'}/>
                     </InfoBlock>
                 )
             })

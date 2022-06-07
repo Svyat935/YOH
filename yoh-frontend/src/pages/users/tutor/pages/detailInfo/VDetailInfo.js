@@ -52,9 +52,8 @@ export function VDetailInfo(props) {
                                 setGameForDelete(game);
                                 setShow(true);
                             }}>
-                            <div style={{width: "100%"}}>
-                                <img style={{width: "100%", borderRadius: 40}} src={image} alt={'game'}/>
-                            </div>
+                            <img style={{width: "100%", height: "100%", borderRadius: 40, objectFit: "cover"}}
+                                 src={image} alt={'game'}/>
                         </InfoBlock>
                     )
                 })
@@ -164,7 +163,7 @@ export function VDetailInfo(props) {
                         }
                         >
                             <div style={{width: "100%"}}>
-                                <img style={{width: "100%", borderRadius: 40}} src={
+                                <img style={{width: "100%", height: "100%", borderRadius: 40, objectFit: "cover"}} src={
                                     props.user["image"] ? "https://mobile.itkostroma.ru/images/" + props.user["image"] :
                                         profileStub
                                 } alt={'game'}/>

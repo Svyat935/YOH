@@ -115,9 +115,7 @@ export function VUsersAdmin(props) {
                             setShow(true);
                         }
                     } ikey={user["id"]} text={user["login"]} addText={role}>
-                        <div style={{width: "100%"}}>
-                            <img style={{width: "100%", borderRadius: 40}} src={image} alt={'profile'}/>
-                        </div>
+                        <img style={{width: "100%", height: "100%", borderRadius: 40, objectFit: "cover"}} src={image} alt={'profile'}/>
                     </InfoBlock>
                 )
             })

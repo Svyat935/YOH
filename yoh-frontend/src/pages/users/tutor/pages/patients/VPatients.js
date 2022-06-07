@@ -60,9 +60,8 @@ export function VPatients(props) {
                         }
                     }>
                         <InfoBlockStatic key={patient["id"]} text={fio}>
-                            <div style={{width: "100%"}}>
-                                <img style={{width: "100%", borderRadius: 40}} src={imageSrc} alt={'profile'}/>
-                            </div>
+                            <img style={{width: "100%", height: "100%", borderRadius: 40, objectFit: "cover"}}
+                                 src={imageSrc} alt={'profile'}/>
                         </InfoBlockStatic>
                         <div>
                             <h3 style={{marginBottom: 30, padding: 10}}>Всего игр: {all ? all: 0}</h3>

@@ -27,9 +27,8 @@ export function VHomeTutor(props) {
                         user["surname"] && user["name"] ?
                             user["surname"] + " " + user["name"] : "Отсутствует ФИО"
                     } onClick={() => router("/user/tutor/patients/")}>
-                        <div style={{width: "100%"}}>
-                            <img style={{width: "100%", borderRadius: 40}} src={imageSrc} alt={'profile'}/>
-                        </div>
+                        <img style={{width: "100%", height: "100%", borderRadius: 40, objectFit: "cover"}}
+                             src={imageSrc} alt={'profile'}/>
                     </InfoBlock>
                 )
             })
