@@ -88,6 +88,9 @@ export function VVector(props) {
 
         if (games.length > 0) {
             games.forEach((game) => {
+                let image = game["image"] !== null ? "https://mobile.itkostroma.ru/images/" + game["image"]
+                    : gameStub;
+
                 view.push(
                     <InfoBlock key={game["id"]} text={game["name"]} onClick={
                         () => {
@@ -97,7 +100,7 @@ export function VVector(props) {
                         }
                     }>
                         <div style={{width: "100%"}}>
-                            <img style={{width: "100%", borderRadius: 40}} src={gameStub} alt={'game'}/>
+                            <img style={{width: "100%", borderRadius: 40}} src={image} alt={'game'}/>
                         </div>
                     </InfoBlock>
                 )

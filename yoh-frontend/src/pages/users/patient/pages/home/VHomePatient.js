@@ -53,6 +53,9 @@ export function VHomePatient(props) {
         if (games.length > 0) {
 
             games.forEach((game) => {
+                let image = game["image"] !== null ? "https://mobile.itkostroma.ru/images/" + game["image"]
+                    : gameStub;
+
                 view.push(
                     <InfoBlock key={game["id"]} text={game["name"]} onClick={() => {
                         props.context.addInfo(
@@ -65,7 +68,7 @@ export function VHomePatient(props) {
                         router("/user/patient/game");
                     }}>
                         <div style={{width: "100%"}}>
-                            <img style={{width: "100%", borderRadius: 40}} src={gameStub} alt={'game'}/>
+                            <img style={{width: "100%", borderRadius: 40}} src={image} alt={'game'}/>
                         </div>
                     </InfoBlock>
                 )
