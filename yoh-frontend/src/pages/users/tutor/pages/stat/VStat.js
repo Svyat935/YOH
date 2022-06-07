@@ -36,20 +36,23 @@ export function VStat(props) {
                                 onClick={() => router("/user/tutor/detail")}/>}
               navPanel={<TutorNav context={props.context}/>}>
             <Container>
-                <Row>
-                    <h3>Пациент: {fio}</h3>
-                    <h3>Игра: {props.context.token ? props.context.info.gameName : null}</h3>
-                    <h3>Попытка номер: {props.indexAttempt}</h3>
-                </Row>
-                <Row>
+                {
+                    props.currentAttempt !== undefined ?
+                        <>
+                    <Row>
+                        <h3>Пациент: {fio}</h3>
+                        <h3>Игра: {props.context.token ? props.context.info.gameName : null}</h3>
+                        <h3>Попытка номер: {props.indexAttempt}</h3>
+                    </Row>
+                    <Row>
                     <div style={
-                        {
-                            display: "flex",
-                            justifyContent: "space-around",
-                        }
-                    }>
-                        {
-                            0 < props.currentAttempt ?
+                    {
+                        display: "flex",
+                        justifyContent: "space-around",
+                    }
+                }>
+                    {
+                        0 < props.currentAttempt ?
                             <ButtonA text={"Предыдущая"} onClick={
                                 () => {
                                     props.setCurrentAttempt(props.currentAttempt - 1);
@@ -57,12 +60,12 @@ export function VStat(props) {
                                     props.refresh();
                                 }
                             }/> : null
-                        }
-                        {
-                            props.attempts > 2 ? createPagination() : null
-                        }
-                        {
-                            props.attempts.length-1 > props.currentAttempt ?
+                    }
+                    {
+                        props.attempts > 2 ? createPagination() : null
+                    }
+                    {
+                        props.attempts.length - 1 > props.currentAttempt ?
                             <ButtonA text={"Следующая"} onClick={
                                 () => {
                                     props.setCurrentAttempt(props.currentAttempt + 1);
@@ -70,10 +73,10 @@ export function VStat(props) {
                                     props.refresh();
                                 }
                             }/> : null
-                        }
+                    }
                     </div>
-                </Row>
-                <Row>
+                    </Row>
+                    <Row>
                     {
                         <VDash
                             allTime={props.allTime}
@@ -82,7 +85,12 @@ export function VStat(props) {
                             timelines={props.timelines}
                         />
                     }
-                </Row>
+                    </Row>
+                    </> :
+                        <Row style={{display: "flex", justifyContent: "center"}}>
+                            <h1>...Ожидание запуска игры наблюдаемым...</h1>
+                        </Row>
+                }
             </Container>
         </Back>
     )

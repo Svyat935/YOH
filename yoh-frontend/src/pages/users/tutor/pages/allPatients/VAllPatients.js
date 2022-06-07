@@ -118,7 +118,7 @@ export function VAllPatients(props) {
                             props.refresh();
                             setShow(false);
                         }}/>
-                        {/*<ButtonB text={"Убрать из под наблюдения"} onClick={async () => {*/}
+                        {/*<ButtonAStat text={"Убрать из под наблюдения"} onClick={async () => {*/}
                         {/*    await props.detach(currentPatient["id"]);*/}
                         {/*    props.refresh();*/}
                         {/*    setShow(false);*/}

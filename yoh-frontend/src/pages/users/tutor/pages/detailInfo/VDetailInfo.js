@@ -162,12 +162,10 @@ export function VDetailInfo(props) {
                                 "Отсутствуют данные"
                         }
                         >
-                            <div style={{width: "100%"}}>
-                                <img style={{width: "100%", height: "100%", borderRadius: 40, objectFit: "cover"}} src={
-                                    props.user["image"] ? "https://mobile.itkostroma.ru/images/" + props.user["image"] :
-                                        profileStub
-                                } alt={'game'}/>
-                            </div>
+                            <img style={{width: "100%", height: "100%", borderRadius: 40, objectFit: "cover"}} src={
+                                props.user["image"] ? "https://mobile.itkostroma.ru/images/" + props.user["image"] :
+                                    profileStub
+                            } alt={'game'}/>
                         </InfoBlockStatic>
                         <p>Телефон: {props.user["numberPhone"] ? props.user["numberPhone"] : "Отсутствует"}</p>
                         <p>Эл.почта: {props.user["email"] ? props.user["email"] : "Отсутствует"}</p>

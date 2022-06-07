@@ -7,10 +7,12 @@ import {LoadPage} from "../../../../../components/loadpage/LoadPage";
 import {ButtonA} from "../../../../../components/buttons/ButtonA/ButtonA";
 import {useNavigate} from "react-router-dom";
 
-//TODO: Fix Alert!
+//TODO: Think how we can it make better.
 window.addEventListener("message", (event) => {
     if (event.data === "it is end game"){
-        alert( "получено: " + event.data );
+        alert("Игра была завершена!");
+        let router = useNavigate();
+        router("/user/patient/");
     }
 });
 

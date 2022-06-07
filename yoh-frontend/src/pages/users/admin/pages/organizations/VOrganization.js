@@ -8,7 +8,11 @@ import {ButtonB} from "../../../../../components/buttons/ButtonB/ButtonB";
 
 export function VOrganization(props) {
     let filterList = [
-        
+        {
+            "text": "По алфавиту (возрастание)", "defaultChecked": true, "value": 1, "onClick": () => {
+                props.refresh();
+            }
+        },
     ]
     const [show, setShow] = useState(false);
 

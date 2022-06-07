@@ -16,6 +16,7 @@ import {InputPhone} from "../../../../../components/inputPhone/InputPhone";
 import {InputBirthday} from "../../../../../components/inputBirthday/InputBirthday";
 import {InputOrganization} from "../../../../../components/InputOrganization/InputOrganization";
 import {SearchFrame} from "../../../../../frame/SearchFrame/SearchFrame";
+import {Pagination} from "../../../../../components/pagination/Pagination";
 
 export function VUsersAdmin(props) {
     const filterList = [
@@ -601,6 +602,13 @@ export function VUsersAdmin(props) {
     )
 
     const paginationButtons = () => {
+        // return <Pagination
+        //     count={props.size}
+        //     start={props.start}
+        //     limit={props.limit}
+        //     setStart={props.setStart}
+        //     refresh={props.refresh}
+        // />
         let view = [];
         if (props.start)
             view.push(
@@ -609,21 +617,6 @@ export function VUsersAdmin(props) {
                     props.refresh();
                 }}/>
             )
-
-        // if (props.size > props.limit){
-        //     for (let index = 0; index < props.size; index + props.limit){
-        //         if (index === 0){
-        //             view.push(
-        //                 <ButtonA width={56} text={1} onClick={() => {
-        //                     props.setStart(0);
-        //                     props.refresh();
-        //                 }}/>
-        //             )
-        //         }else{
-        //             if (props.start + props.limit * 3)
-        //         }
-        //     }
-        // }
 
         if (props.users.length === 10) {
             view.push(

@@ -56,6 +56,20 @@ export function CComponents() {
         });
     }
 
+    const requestChangeImage = async (game_id, body) => {
+        return await fetch("/admins/upload/games/image/gameID=" + encodeURIComponent(game_id), {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'token': context.token
+            },
+            body: JSON.stringify(body)
+        }).then((response) => {
+            if (response.status === 200) return response.json()
+            else return null;
+        });
+    }
+
     const requestChangeGame = async (body) => {
         /*
         game_id: required
