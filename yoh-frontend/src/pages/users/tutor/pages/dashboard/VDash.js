@@ -1,4 +1,4 @@
-import React, {Component} from "react";
+import React from "react";
 import "./Dash.css";
 import {TransitTime} from "./charts/TransitTime";
 import {ResponseAnalysis} from "./charts/ResponseAnalysis";
@@ -6,7 +6,6 @@ import {ClickStat} from "./charts/ClicksStat";
 import {GameTime} from "./charts/GameTime";
 
 export function VDash (props) {
-    console.log(props.timelines);
 
     return (
         <div id="wrapper">

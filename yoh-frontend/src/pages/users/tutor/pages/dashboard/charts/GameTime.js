@@ -56,6 +56,7 @@ export class GameTime extends Component {
     }
 
     componentDidUpdate(prevProps, prevState, snapshot) {
+        console.log(prevProps.dateRange);
         let date_range = [];
         prevProps.dateRange.forEach((datePart) => {
             let start_date = new Date(datePart['daterange'][0]).getTime(),
