@@ -5,7 +5,8 @@ import {LoadPage} from "../../../../../components/loadpage/LoadPage";
 
 export function CStat() {
     const context = useContext(UserContext);
-    const [_, rerun] = useState(new class{});
+    const [_, rerun] = useState(new class {
+    });
     const [attempts, setAttempts] = useState([]);
     const [indexAttempt, setIndexAttempt] = useState(0);
     const [currentAttempt, setCurrentAttempt] = useState([]);
@@ -86,17 +87,16 @@ export function CStat() {
     }
 
     useEffect(async () => {
-        if (context.token){
+        if (context.token) {
             let attempt;
-            if (attempts.length === 0){
+            if (attempts.length === 0) {
                 let responseAttempts = await requestGetAttemptsGames(context.info.gamePatientId);
                 let attempts = responseAttempts["attempts"];
                 setAttempts(attempts);
-                attempt = attempts[0];
-                setCurrentAttempt(0);
-                setIndexAttempt(1);
-                //.slice(-1)[0];
-            }else{
+                attempt = attempts.slice(-1)[0];
+                setCurrentAttempt(attempts.length - 1);
+                setIndexAttempt(attempts.length);
+            } else {
                 attempt = attempts[currentAttempt];
             }
 
@@ -120,7 +120,8 @@ export function CStat() {
         <LoadPage status={load}>
             <VStat
                 context={context}
-                refresh={() => rerun(new class{})}
+                refresh={() => rerun(new class {
+                })}
                 allTime={allTime}
                 clicks={clicks}
                 answers={answers}
