@@ -42,13 +42,20 @@
         }
         return cookies
     }
+    function delete_cookie(name) {
+      document.cookie = document.cookie +'=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+    }
     function waitCookie () {
-        if (read_cookies(document.cookie)['EndGame'] == 'true') {
+        let cookie_name = 'EndGame';
+        let event_message = 'it is end game';
+
+        if (read_cookies(document.cookie)[cookie_name] == 'true') {
             if ('endGame' in window) {
-                endGame.postMessage('it is end game');
+                endGame.postMessage(event_message);
             }
-            parent.postMessage("it is end game", "*");
+            parent.postMessage(event_message, "*");
             console.log('Отправлено сообщение о закрытии игры!');
+            delete_cookie(cookie_name);
         }
         else {
             setTimeout(waitCookie, 1000);
