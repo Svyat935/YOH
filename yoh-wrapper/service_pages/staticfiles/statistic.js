@@ -21,10 +21,10 @@ class StatRecord {
 	}
 
 	async getAddFields() {
-		let response = await fetch('/api/additional_fields').then((response) => {
-			return response.json();
+		let response = await fetch('/api/additional_fields').then((resp) => {
+			return resp.json();
 		});
-		this.additional_fields = JSON.parse(response);
+		this.additional_fields = response;
 	}
 
 	getTime() {
