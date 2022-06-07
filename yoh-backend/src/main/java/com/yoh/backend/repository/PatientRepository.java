@@ -117,8 +117,9 @@ public class PatientRepository {
         Session session = sessionFactory.openSession();
         try {
             Criteria criteria = session.createCriteria(Patient.class)
-                    .add(Restrictions.eq("organization", organization))
-                    .add(Restrictions.ne("tutor", tutor));
+                    .add(Restrictions.eq("organization", organization));
+            Criterion tutorCriterion = Restrictions.ne("tutor", tutor);
+            criteria.add(Restrictions.or(tutorCriterion, Restrictions.isNull("tutor")));
             if (!regex.equals("")) {
                 Criterion name = Restrictions.like("name", regex, MatchMode.ANYWHERE).ignoreCase();
                 Criterion surname = Restrictions.like("surname", regex, MatchMode.ANYWHERE).ignoreCase();
@@ -137,8 +138,9 @@ public class PatientRepository {
         Session session = sessionFactory.openSession();
         try {
             Criteria criteria = session.createCriteria(Patient.class)
-                    .add(Restrictions.eq("organization", organization))
-                    .add(Restrictions.ne("tutor", tutor));
+                    .add(Restrictions.eq("organization", organization));
+            Criterion tutorCriterion = Restrictions.ne("tutor", tutor);
+            criteria.add(Restrictions.or(tutorCriterion, Restrictions.isNull("tutor")));
             if (!regex.isEmpty()) {
                 System.out.println("if");
                 Criterion name = Restrictions.like("name", regex, MatchMode.ANYWHERE).ignoreCase();
