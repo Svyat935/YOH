@@ -75,7 +75,10 @@ export class GameTime extends Component {
                 options: {...nextState.options},
                 series: [{data: date_range}]
             });
+            return true;
         }
+
+        return false;
     }
 
     render() {
