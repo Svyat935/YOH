@@ -37,7 +37,7 @@ export function VStat(props) {
               navPanel={<TutorNav context={props.context}/>}>
             <Container>
                 {
-                    props.currentAttempt !== undefined ?
+                    JSON.stringify(props.attempts) !== '[]' ?
                         <>
                     <Row>
                         <h3>Пациент: {fio}</h3>

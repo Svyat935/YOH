@@ -100,17 +100,19 @@ export function CStat() {
                 attempt = attempts[currentAttempt];
             }
 
-            let responseAllTime = await requestGetAllTime(attempt);
-            if (responseAllTime !== null) setAllTime(responseAllTime);
+            if (attempt !== undefined){
+                let responseAllTime = await requestGetAllTime(attempt);
+                if (responseAllTime !== null) setAllTime(responseAllTime);
 
-            let responseClicks = await requestGetClicks(attempt);
-            if (responseClicks !== null) setClicks(responseClicks);
+                let responseClicks = await requestGetClicks(attempt);
+                if (responseClicks !== null) setClicks(responseClicks);
 
-            let responseAnswers = await requestGetAnswers(attempt);
-            if (responseAnswers !== null) setAnswers(responseAnswers);
+                let responseAnswers = await requestGetAnswers(attempt);
+                if (responseAnswers !== null) setAnswers(responseAnswers);
 
-            let responseTimeline = await requestGetTimeLine(attempt);
-            if (responseTimeline !== null) setTimelines(responseTimeline);
+                let responseTimeline = await requestGetTimeLine(attempt);
+                if (responseTimeline !== null) setTimelines(responseTimeline);
+            }
 
             if (load === true) setLoad(false);
         }
