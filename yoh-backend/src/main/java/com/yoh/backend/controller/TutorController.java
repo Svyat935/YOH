@@ -247,88 +247,6 @@ public class TutorController {
 //            }
             response.put("results", patientInfoList);
             return response;
-
-//            Tutor tutor = this.tutorService.getTutorByUser(this.userService.getUserById(this.userService.verifyToken(token)));
-//            Organization organization = this.tutorService.getTutorByUser(this.userService.getUserById(this.userService.verifyToken(token))).getOrganization();
-//            ArrayList<JsonObject> patientList = new ArrayList<JsonObject>();
-//            JsonObject response = new JsonObject();
-//            List<Patient> patientsFilteredUnpaginatedList = patientService.getAllPatientsByOrganizationFiltered(organization, regex, order);
-//
-//            patientsFilteredUnpaginatedList = patientsFilteredUnpaginatedList.stream()
-//                    .filter(i -> (i.getTutor() == null) || (!i.getTutor().getId().equals(tutor.getId()))).collect(Collectors.toList());
-//
-//            if (patientsFilteredUnpaginatedList.size() == 0) {
-//                response.put("previous", false);
-//                response.put("next", false);
-//                response.put("count", 0);
-//                response.put("size", 0);
-//                response.put("results", new ArrayList<>());
-//                return response);
-//            }
-//
-//            //Pagination
-//            if (start >= patientsFilteredUnpaginatedList.size())
-//                throw new IllegalArgumentException(
-//                        String.format("No element at that index (%s)", start)
-//                );
-//            int lastIndex;
-//            if (start + limit > patientsFilteredUnpaginatedList.size()){
-//                lastIndex = patientsFilteredUnpaginatedList.size();
-//                response.put("next", false);
-//            }
-//            else {
-//                lastIndex = start + limit;
-//                response.put("next", true);
-//            }
-//            if (start == 0) response.put("previous", false);
-//            else response.put("previous", true);
-//            List<Patient> patientsFilteredList = new ArrayList<>();
-//            for (int i = start; i < lastIndex; i++){
-//                patientsFilteredList.add(patientsFilteredUnpaginatedList.get(i));
-//            }
-//            response.put("count", patientsFilteredList.size());
-//            response.put("size", patientsFilteredUnpaginatedList.size());
-//
-////            if (!patientsFilteredList.isEmpty()) {
-//            for (Patient patient : patientsFilteredList){
-//                JsonObject patientInfo = new JsonObject();
-//                patientInfo.put("id", patient.getId().toString());
-//                patientInfo.put("name", patient.getName());
-//                patientInfo.put("surname", patient.getSurname());
-//                if (patient.getOrganization() != null){
-//                    patientInfo.put("organization", patient.getOrganization().getId().toString());
-//                }
-//                else {
-//                    patientInfo.put("organization", null);
-//                }
-//                if (tutor != null) {
-//                    JsonObject tutorInfo = new JsonObject();
-//                    tutorInfo.put("id", tutor.getId().toString());
-//                    tutorInfo.put("name", tutor.getName());
-//                    tutorInfo.put("surname", tutor.getSurname());
-//                    tutorInfo.put("secondName", tutor.getSecondName());
-//                    if (tutor.getOrganization() != null){
-//                        tutorInfo.put("organization", tutor.getOrganization().getId().toString());
-//                    }
-//                    else {
-//                        tutorInfo.put("organization", null);
-//                    }
-//                    tutorInfo.put("organizationString", tutor.getOrganizationString());
-//                    tutorInfo.put("login", tutor.getUser().getLogin());
-//                    tutorInfo.put("email", tutor.getUser().getEmail());
-//                    patientInfo.put("tutor", tutorInfo);
-//                }
-//                else patientInfo.put("tutor", null);
-//                patientInfo.put("image", patient.getImage());
-//                patientInfo.put("organizationString", patient.getOrganizationString());
-//                patientInfo.put("login", patient.getUser().getLogin());
-//                patientInfo.put("email", patient.getUser().getEmail());
-//                patientInfo.put("dateRegistration", patient.getUser().getDateRegistration().toString());
-//                patientList.add(patientInfo);
-//            }
-////            }
-//            response.put("results", patientList);
-//            return response);
         }
         catch (IllegalArgumentException e){
             JsonObject exceptionResponse = new JsonObject();
@@ -362,36 +280,11 @@ public class TutorController {
                 response.put("organization", patient.getOrganization().getName());
             else
                 response.put("organization", null);
-//            response.put("organization", patient.getOrganizationString());
             response.put("birthDate", patient.getBirthDate());
             response.put("numberPhone", patient.getNumberPhone());
             response.put("address", patient.getAddress());
             response.put("login", patient.getUser().getLogin());
             response.put("email", patient.getUser().getEmail());
-//            if (patient.getGames() != null){
-//            List<GamePatient> patientGames = this.gamePatientService.getAllGamePatientsByPatientOrdered(patient, "1");
-//            if (patientGames.size() != 0){
-//                ArrayList<JsonObject> gamesArray = new ArrayList<>();
-////                for (Game game: patient.getGames()){
-//                for (GamePatient gamePatient: patientGames){
-//                    JsonObject gamesInfo = new JsonObject();
-//                    GameStatus gameStatus = this.gameStatusService.getGameStatusByGamePatient(gamePatient);
-//                    gamesInfo.put("gamePatientID", gamePatient.getId().toString());
-//                    gamesInfo.put("id", gamePatient.getGame().getId().toString());
-//                    gamesInfo.put("name", gamePatient.getGame().getName());
-//                    gamesInfo.put("type", gamePatient.getGame().getType());
-//                    gamesInfo.put("description", gamePatient.getGame().getDescription());
-//                    gamesInfo.put("url", gamePatient.getGame().getUrl());
-//                    gamesInfo.put("image", gamePatient.getGame().getImage());
-//                    gamesInfo.put("assignmentDate", gameStatus.getAssignmentDate());
-//                    gamesInfo.put("assignedBy", gameStatus.getTutor().getId().toString());
-//                    gamesInfo.put("status", gameStatus.getStatus().toString());
-//                    gamesInfo.put("active", gamePatient.getGamePatientStatus().toString());
-//                    gamesArray.add(gamesInfo);
-//                }
-//                response.put("games", gamesArray);
-//            }
-//            else response.put("games", null);
             Tutor tutor = patient.getTutor();
             if (tutor != null) {
                 JsonObject tutorInfo = new JsonObject();

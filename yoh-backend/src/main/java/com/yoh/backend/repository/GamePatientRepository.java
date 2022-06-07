@@ -157,6 +157,7 @@ public class GamePatientRepository {
                 Criteria criteriaRegex = criteria.createCriteria("game");
                 criteriaRegex.add(Restrictions.like("name", regex, MatchMode.ANYWHERE).ignoreCase());
             }
+            criteria.setProjection(Projections.rowCount());
             return (int)(long) criteria.uniqueResult();
         }
         finally {
