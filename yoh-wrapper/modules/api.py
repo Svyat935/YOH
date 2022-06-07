@@ -324,5 +324,5 @@ def leave_game_event_route():
     resp = make_response(json.dumps({'message': 'Success'}), 200)
     # samesite='None', secure=True нужен для кросс-доменных сохранений cookie
     # Без этих флагов сохранение куки не работает, так как интерфейс находится в другом домене, а игра запущена в iframe
-    resp.set_cookie('EndGame', 'true', expires=datetime.now() + timedelta(seconds=10), samesite='None', secure=True)
+    resp.set_cookie('EndGame', 'true', samesite='None', secure=True)
     return resp
