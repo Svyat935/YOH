@@ -52,20 +52,20 @@ export class ClickStat extends Component {
     }
 
     componentDidUpdate(prevProps, prevState, snapshot) {
-        if (this.current !== JSON.stringify([prevProps.clicks, prevProps.missclicks])) {
-            this.current = JSON.stringify([prevProps.clicks, prevProps.missclicks]);
+        if (this.current !== JSON.stringify([this.props.clicks, this.props.missclicks])) {
+            this.current = JSON.stringify([this.props.clicks, this.props.missclicks]);
             this.setState(
                 {
                     options:{
                         ...prevState.options,
-                        labels: prevProps.labels,
+                        labels: this.props.labels,
                     },
                     series: [{
                         name: "Клики",
-                        data: prevProps.clicks,
+                        data: this.props.clicks,
                     }, {
                         name: "Миссклики",
-                        data: prevProps.missclicks,
+                        data: this.props.missclicks,
                     }],
                 }
             )

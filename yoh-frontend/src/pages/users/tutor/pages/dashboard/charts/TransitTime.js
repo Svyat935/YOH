@@ -85,16 +85,16 @@ export class TransitTime extends Component {
     }
 
     componentDidUpdate(prevProps, prevState, snapshot){
-        let title = prevProps.title !== null ? this.toDate(prevProps.title) : "Не завершена";
+        let title = this.props.title !== null ? this.toDate(this.props.title) : "Не завершена";
 
-        if (this.current !== prevProps.data){
-            this.current = prevProps.data;
+        if (this.current !== this.props.data){
+            this.current = this.props.data;
             this.setState(
                 {
                     options:{
                         ...prevState.options,
                         xaxis: {
-                            categories: prevProps.labels
+                            categories: this.props.labels
                         },
                         title: {
                             ...prevState.title,
@@ -103,7 +103,7 @@ export class TransitTime extends Component {
                     },
                     series: [{
                         name: 'Время прохождения',
-                        data: prevProps.data
+                        data: this.props.data
                     }],
                 }
             )

@@ -55,22 +55,22 @@ export class ResponseAnalysis extends Component {
     }
 
     componentDidUpdate(prevProps, prevState, snapshot) {
-        if (this.current !== JSON.stringify([prevProps.correct, prevProps.incorrect])){
-            this.current = JSON.stringify([prevProps.correct, prevProps.incorrect]);
+        if (this.current !== JSON.stringify([this.props.correct, this.props.incorrect])){
+            this.current = JSON.stringify([this.props.correct, this.props.incorrect]);
             this.setState(
                 {
                     options:{
                         ...prevState.options,
-                        labels: prevProps.labels,
+                        labels: this.props.labels,
                     },
                     series: [
                         {
                             name: "Правильные ответы",
-                            data: prevProps.correct,
+                            data: this.props.correct,
                         },
                         {
                             name: "Неправильные ответы",
-                            data: prevProps.incorrect,
+                            data: this.props.incorrect,
                         }
                     ],
                 }
