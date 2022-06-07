@@ -140,9 +140,6 @@ public class PatientRepository {
         try {
             Criteria criteria = session.createCriteria(Patient.class)
                     .add(Restrictions.eq("organization", organization));
-            System.out.println("SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS");
-            System.out.println(criteria.list());
-            System.out.println(String.format("Regex: (%s)", regex));
             if (!regex.isEmpty()) {
                 System.out.println("if");
                 Criterion name = Restrictions.like("name", regex, MatchMode.ANYWHERE).ignoreCase();
@@ -150,11 +147,6 @@ public class PatientRepository {
                 Criterion secondName = Restrictions.like("secondName", regex, MatchMode.ANYWHERE).ignoreCase();
                 criteria.add(Restrictions.or(name, surname, secondName));
             }
-            else {
-                System.out.println("else");
-            }
-            System.out.println("SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS");
-            System.out.println(criteria.list());
             switch (order) {
                 case "1" -> criteria.addOrder(Order.asc("surname"));
                 case "-1" -> criteria.addOrder(Order.desc("surname"));
@@ -173,13 +165,6 @@ public class PatientRepository {
                 case "3" -> criteria.addOrder(Order.asc("birthDate"));
                 case "-3" -> criteria.addOrder(Order.desc("birthDate"));
             }
-            System.out.println("SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS");
-            System.out.println(criteria.list());
-            criteria.setFirstResult(start);
-            System.out.println(criteria.list());
-            criteria.setMaxResults(limit);
-            System.out.println(criteria.list());
-            System.out.println("SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS");
             return criteria.list();
         }
         finally {
