@@ -55,12 +55,12 @@ public class PatientService {
         return patientRepository.getAllPatientsByOrganization(organization, order, regex);
     }
 
-    public int getAllPatientsByOrganizationFilteredCount(Organization organization, String regex) {
-        return patientRepository.getAllPatientsByOrganizationFilteredCount(organization, regex);
+    public int getAllPatientsByOrganizationFilteredCount(Organization organization, String regex, Tutor tutor) {
+        return patientRepository.getAllPatientsByOrganizationFilteredCount(organization, regex, tutor);
     }
 
-    public List<Patient> getAllPatientsByOrganizationFilteredPaginated(Organization organization, String regex, String order, int start, int limit) {
-        return patientRepository.getAllPatientsByOrganizationFilteredPaginated(organization, regex, order, start, limit);
+    public List<Patient> getAllPatientsByOrganizationFilteredPaginated(Organization organization, String regex, String order, int start, int limit, Tutor tutor) {
+        return patientRepository.getAllPatientsByOrganizationFilteredPaginated(organization, regex, order, start, limit, tutor);
     }
 
     public List<Patient> getAllPatientsByOrganization(Organization organization){

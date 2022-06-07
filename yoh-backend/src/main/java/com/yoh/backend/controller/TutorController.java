@@ -181,7 +181,7 @@ public class TutorController {
             Organization organization = this.tutorService.getTutorByUser(this.userService.getUserById(this.userService.verifyToken(token))).getOrganization();
             ArrayList<JsonObject> patientInfoList = new ArrayList<JsonObject>();
             JsonObject response = new JsonObject();
-            int listCount = this.patientService.getAllPatientsByOrganizationFilteredCount(organization, regex);
+            int listCount = this.patientService.getAllPatientsByOrganizationFilteredCount(organization, regex, tutor);
             if (listCount == 0) {
                 response.put("previous", false);
                 response.put("next", false);
@@ -193,7 +193,7 @@ public class TutorController {
             if (start >= listCount)
                 throw new IllegalArgumentException(String.format("No element at that index (%s)", start));
 
-            List<Patient> patientList = this.patientService.getAllPatientsByOrganizationFilteredPaginated(organization, regex, order, start, limit);
+            List<Patient> patientList = this.patientService.getAllPatientsByOrganizationFilteredPaginated(organization, regex, order, start, limit, tutor);
             if (start == 0)
                 response.put("previous", false);
             else response.put("previous", true);

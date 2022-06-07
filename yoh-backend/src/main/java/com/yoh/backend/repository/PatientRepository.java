@@ -1,9 +1,6 @@
 package com.yoh.backend.repository;
 
-import com.yoh.backend.entity.Game;
-import com.yoh.backend.entity.Organization;
-import com.yoh.backend.entity.Patient;
-import com.yoh.backend.entity.User;
+import com.yoh.backend.entity.*;
 import org.aspectj.weaver.ast.Or;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
@@ -116,11 +113,12 @@ public class PatientRepository {
         }
     }
 
-    public int getAllPatientsByOrganizationFilteredCount(Organization organization, String regex) {
+    public int getAllPatientsByOrganizationFilteredCount(Organization organization, String regex, Tutor tutor) {
         Session session = sessionFactory.openSession();
         try {
             Criteria criteria = session.createCriteria(Patient.class)
-                    .add(Restrictions.eq("organization", organization));
+                    .add(Restrictions.eq("organization", organization))
+                    .add(Restrictions.ne("tutor", tutor));
             if (!regex.equals("")) {
                 Criterion name = Restrictions.like("name", regex, MatchMode.ANYWHERE).ignoreCase();
                 Criterion surname = Restrictions.like("surname", regex, MatchMode.ANYWHERE).ignoreCase();
@@ -135,11 +133,12 @@ public class PatientRepository {
         }
     }
 
-    public List<Patient> getAllPatientsByOrganizationFilteredPaginated(Organization organization, String regex, String order, int start, int limit) {
+    public List<Patient> getAllPatientsByOrganizationFilteredPaginated(Organization organization, String regex, String order, int start, int limit, Tutor tutor) {
         Session session = sessionFactory.openSession();
         try {
             Criteria criteria = session.createCriteria(Patient.class)
-                    .add(Restrictions.eq("organization", organization));
+                    .add(Restrictions.eq("organization", organization))
+                    .add(Restrictions.ne("tutor", tutor));
             if (!regex.isEmpty()) {
                 System.out.println("if");
                 Criterion name = Restrictions.like("name", regex, MatchMode.ANYWHERE).ignoreCase();
