@@ -1,5 +1,6 @@
 package com.yoh.backend.entity;
 
+import com.yoh.backend.enums.GameActiveStatus;
 import com.yoh.backend.enums.GamePatientStatus;
 import com.yoh.backend.enums.Status;
 
@@ -12,12 +13,13 @@ import java.util.UUID;
 public class GamePatient {
     public GamePatient() {}
 
-    public GamePatient(Game game, Patient patient, Tutor tutor, LocalDateTime assignmentDate, GamePatientStatus gamePatientStatus){
+    public GamePatient(Game game, Patient patient, Tutor tutor, LocalDateTime assignmentDate, GamePatientStatus gamePatientStatus, Status status){
         this.game = game;
         this.patient = patient;
         this.tutor = tutor;
         this.assignmentDate = assignmentDate;
         this.gamePatientStatus = gamePatientStatus;
+        this.status = status;
     }
 
     @Id

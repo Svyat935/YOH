@@ -623,7 +623,7 @@ public class TutorController {
                 this.gamePatientService.saveGamePatient(gamePatient);
             }
             catch (IllegalArgumentException ds){
-                gamePatient = new GamePatient(game, patient, tutor, LocalDateTime.now(), GamePatientStatus.ACTIVE);
+                gamePatient = new GamePatient(game, patient, tutor, LocalDateTime.now(), GamePatientStatus.ACTIVE, Status.ASSIGNED);
                 this.gamePatientService.createGamePatient(gamePatient);
             }
 //            GameStatus gameStatus;
@@ -675,7 +675,7 @@ public class TutorController {
                     this.gamePatientService.saveGamePatient(gamePatient);
                 }
                 catch (IllegalArgumentException ds){
-                    gamePatient = new GamePatient(game, patient, tutor, LocalDateTime.now(), GamePatientStatus.ACTIVE);
+                    gamePatient = new GamePatient(game, patient, tutor, LocalDateTime.now(), GamePatientStatus.ACTIVE, Status.ASSIGNED);
                     this.gamePatientService.createGamePatient(gamePatient);
                 }
 //                try {
