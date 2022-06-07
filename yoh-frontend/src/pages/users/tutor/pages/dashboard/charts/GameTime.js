@@ -34,7 +34,7 @@ export class GameTime extends Component {
                         datetimeUTC: false,
                     }
                 },
-                colors: ['#00D8B6','#008FFB',  '#FEB019', '#FF4560', '#775DD0'],
+                colors: ['#00D8B6', '#008FFB', '#FEB019', '#FF4560', '#775DD0'],
                 title: {
                     text: 'Игровое время',
                     style: {
@@ -55,10 +55,9 @@ export class GameTime extends Component {
         };
     }
 
-    componentDidUpdate(prevProps, prevState, snapshot) {
-        console.log(prevProps.dateRange);
+    shouldComponentUpdate(nextProps, nextState) {
         let date_range = [];
-        prevProps.dateRange.forEach((datePart) => {
+        nextProps.dateRange.forEach((datePart) => {
             let start_date = new Date(datePart['daterange'][0]).getTime(),
                 end_date = new Date(datePart['daterange'][1]).getTime();
 
@@ -73,7 +72,7 @@ export class GameTime extends Component {
         if (this.current !== JSON.stringify(date_range)) {
             this.current = JSON.stringify(date_range);
             this.setState({
-                options:{...prevState.options},
+                options: {...nextState.options},
                 series: [{data: date_range}]
             });
         }
