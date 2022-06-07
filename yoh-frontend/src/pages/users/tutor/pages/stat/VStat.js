@@ -87,8 +87,8 @@ export function VStat(props) {
                     }
                     </Row>
                     </> :
-                        <Row style={{display: "flex", justifyContent: "center"}}>
-                            <h1>...Ожидание запуска игры наблюдаемым...</h1>
+                        <Row style={{display: "flex", justifyContent: "center", height: "350px", alignItems: "center"}}>
+                            <h1 style={{textAlign: "center"}}>...Ожидание запуска игры наблюдаемым...</h1>
                         </Row>
                 }
             </Container>
