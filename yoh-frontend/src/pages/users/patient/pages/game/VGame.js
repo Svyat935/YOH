@@ -7,13 +7,13 @@ import {LoadPage} from "../../../../../components/loadpage/LoadPage";
 import {ButtonA} from "../../../../../components/buttons/ButtonA/ButtonA";
 import {useNavigate} from "react-router-dom";
 
-window.addEventListener("message", (event) => {alert( "получено: " + event.data )});
-
 export function VGame() {
     let context = useContext(UserContext);
     const [src, setSrc] = useState(null);
     const [load, setLoad] = useState(true);
     const router = useNavigate();
+
+    window.addEventListener("message", (event) => {alert( "получено: " + event.data )});
 
     useEffect(() => {
         if (context.token) {
