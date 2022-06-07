@@ -176,6 +176,8 @@ def additional_fields_route():
     send_url = 'http://yoh-backend:8080/patient/games/statistics/additional_fields'
     result = get(send_url, headers=headers).json()
 
+    result = result['result'] if result['result'] else '{}'
+
     return make_response(result)
 
 
