@@ -78,18 +78,6 @@ export function VAccount(props) {
                     padding: "0 10px"
                 }
             }>
-                <label>Имя: </label>
-                <input id={"name"} type={"text"} style={
-                    {borderRadius: 40, border: "none", padding: "5px 15px", marginBottom: 10}
-                } required defaultValue={userInfo["name"] ? userInfo["name"] : null}/>
-                <label>Фамилия: </label>
-                <input id={"surname"} type={"text"} style={
-                    {borderRadius: 40, border: "none", padding: "5px 15px", marginBottom: 10}
-                } required defaultValue={userInfo["surname"] ? userInfo["surname"] : null}/>
-                <label>Отчество: </label>
-                <input id={"secondName"} type={"text"} style={
-                    {borderRadius: 40, border: "none", padding: "5px 15px", marginBottom: 10}
-                } required defaultValue={userInfo["secondName"] ? userInfo["secondName"] : null}/>
                 <label>День рождения: </label>
                 <InputBirthday defaultValue={userInfo["birthDate"] ? userInfo["birthDate"].slice(0, 10) : null}/>
                 <label>Пол: </label>
