@@ -25,8 +25,8 @@ export function CAuth() {
         let role = response["role"],
             token = response["token"];
 
-        if (role === null){
-            return -1;
+        if (role === undefined){
+            return null;
         } else {
             userContext.login(token, role);
             return role;

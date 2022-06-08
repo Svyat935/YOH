@@ -24,19 +24,25 @@ export function VOrganization(props) {
             fAddress = document.getElementById("address"),
             fWebsite = document.getElementById("website");
         let vEmail = document.getElementById("email-validate"),
-            vPhone = document.getElementById("phone-validete");
+            vPhone = document.getElementById("phone-validate"),
+            vName = document.getElementById("name-validate");
         const validStyle = "1px red solid";
 
         fName.style.border = "none";
 
-        if (!fName.value) {
+        if (!fName.value.trim()) {
             fName.style.border = validStyle;
+            validStatus = false;
+        }else if (fName.value.trim().length < 6){
+            fName.style.border = validStyle;
+            vName.textContent = "Название организации должен иметь больше 5 символов";
+            vName.style.marginBottom = "20px";
             validStatus = false;
         }
 
         if (validStatus) {
             let body = {};
-            body["name"] = fName.value;
+            body["name"] = fName.value.trim();
             if (fEmail.value) body["email"] = fEmail.value;
             if (fPhone.value) body["phone"] = fPhone.value;
             if (fAddress.value) body["address"] = fAddress.value;
@@ -78,6 +84,7 @@ export function VOrganization(props) {
             <input id={"name"} type={"text"} style={
                 {borderRadius: 40, border: "none", padding: "5px 15px", marginBottom: 10}
             } required/>
+            <p id={"name-validate"} style={{height: "5px", marginBottom: 0, color: "#800000"}}/>
 
             <label>Электронная почта: </label>
             <input id={"email"} type={"email"} style={

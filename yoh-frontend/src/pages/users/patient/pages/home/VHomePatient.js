@@ -53,24 +53,27 @@ export function VHomePatient(props) {
         if (games.length > 0) {
 
             games.forEach((game) => {
-                let image = game["image"] !== null ? "https://mobile.itkostroma.ru/images/" + game["image"]
-                    : gameStub;
+                if (game["status"] !== "DONE") {
 
-                view.push(
-                    <InfoBlock key={game["id"]} text={game["name"]} onClick={() => {
-                        props.context.addInfo(
-                            {
-                                "url": "https://" + game["url"] + "?" +
-                                    "token=" + props.context.token + "&" +
-                                    "use_statistics=" + game["useStatistics"]
-                            }
-                        );
-                        router("/user/patient/game");
-                    }}>
-                        <img style={{width: "100%", height: "100%", borderRadius: 40, objectFit: "cover"}}
-                             src={image} alt={'game'}/>
-                    </InfoBlock>
-                )
+                    let image = game["image"] !== null ? "https://mobile.itkostroma.ru/images/" + game["image"]
+                        : gameStub;
+
+                    view.push(
+                        <InfoBlock key={game["id"]} text={game["name"]} onClick={() => {
+                            props.context.addInfo(
+                                {
+                                    "url": "https://" + game["url"] + "?" +
+                                        "token=" + props.context.token + "&" +
+                                        "use_statistics=" + game["useStatistics"]
+                                }
+                            );
+                            router("/user/patient/game");
+                        }}>
+                            <img style={{width: "100%", height: "100%", borderRadius: 40, objectFit: "cover"}}
+                                 src={image} alt={'game'}/>
+                        </InfoBlock>
+                    )
+                }
             })
         } else {
             view.push(

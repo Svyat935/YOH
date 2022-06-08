@@ -116,7 +116,8 @@ export function VUsersAdmin(props) {
                             setShow(true);
                         }
                     } ikey={user["id"]} text={user["login"]} addText={role}>
-                        <img style={{width: "100%", height: "100%", borderRadius: 40, objectFit: "cover"}} src={image} alt={'profile'}/>
+                        <img style={{width: "100%", height: "100%", borderRadius: 40, objectFit: "cover"}} src={image}
+                             alt={'profile'}/>
                     </InfoBlock>
                 )
             })
@@ -164,16 +165,26 @@ export function VUsersAdmin(props) {
         let vPassword = document.getElementById("password-validate");
         let validStatus = true;
 
-        if (!fPassword.value) {
+        if (!fPassword.value.trim()) {
             fPassword.style.border = validStyle;
             validStatus = false;
         }
-        if (!fConfirmPassword.value) {
+        if (!fConfirmPassword.value.trim()) {
             fConfirmPassword.style.border = validStyle;
             validStatus = false;
         }
 
-        if (fPassword.value !== fConfirmPassword.value) {
+        if (fPassword.value.includes(" ")) {
+            fPassword.style.border = validStyle;
+            vPassword.textContent = "В пароле не должны присутствовать пробелы.";
+            vPassword.style.marginBottom = "20px";
+            validStatus = false;
+        } else if (fPassword.value.length < 6) {
+            fPassword.style.border = validStyle;
+            vPassword.textContent = "Пароль должен иметь минимум 6 символов.";
+            vPassword.style.marginBottom = "20px";
+            validStatus = false;
+        }else if (fPassword.value !== fConfirmPassword.value) {
             fPassword.style.border = validStyle;
             fConfirmPassword.style.border = validStyle;
             vPassword.textContent = "Пароли не совпадают."
@@ -234,13 +245,25 @@ export function VUsersAdmin(props) {
         }
 
 
+        if (fLogin.value.trim().length < 6) {
+            fLogin.style.border = validStyle;
+            vLogin.textContent = "Логин должен минимум 6 символов"
+            vLogin.style.marginBottom = "20px";
+            validStatus = false;
+        }
         if (fEmail.value && validateEmail(fEmail.value) === null) {
             fEmail.style.border = validStyle;
             vEmail.textContent = "Электронная почта имеет неправильный формат.";
             vEmail.style.marginBottom = "20px";
             validStatus = false;
         }
-        if (fPassword.value !== fConfirmPassword.value) {
+        if (fPassword.value.trim().length < 6) {
+            fPassword.style.border = validStyle;
+            fConfirmPassword.style.border = validStyle;
+            vPassword.textContent = "Пароль должен иметь минимум 6 символов."
+            vPassword.style.marginBottom = "20px";
+            validStatus = false;
+        } else if (fPassword.value !== fConfirmPassword.value) {
             fPassword.style.border = validStyle;
             fConfirmPassword.style.border = validStyle;
             vPassword.textContent = "Пароли не совпадают."
@@ -284,24 +307,24 @@ export function VUsersAdmin(props) {
         let user = props.users.filter(user => user.login === currentUserLogin)[0];
         if (!user) user = userForChanging;
 
-        if (!fName.value) {
+        if (!fName.value.trim()) {
             fName.style.border = validStyle;
             validStatus = false;
         }
-        if (!fSurname.value) {
+        if (!fSurname.value.trim()) {
             fSurname.style.border = validStyle;
             validStatus = false;
         }
-        if (!fSecondName.value) {
+        if (!fSecondName.value.trim()) {
             fSecondName.style.border = validStyle;
             validStatus = false;
         }
 
         if (validStatus) {
             let body = {};
-            body["name"] = fName.value;
-            body["surname"] = fSurname.value;
-            body["secondName"] = fSecondName.value;
+            body["name"] = fName.value.trim();
+            body["surname"] = fSurname.value.trim();
+            body["secondName"] = fSecondName.value.trim();
             body["id"] = user.id;
             body["organization"] = fOrganization.value;
 
@@ -334,15 +357,15 @@ export function VUsersAdmin(props) {
         let user = props.users.filter(user => user.login === currentUserLogin)[0];
         if (!user) user = userForChanging;
 
-        if (!fName.value) {
+        if (!fName.value.trim()) {
             fName.style.border = validStyle;
             validStatus = false;
         }
-        if (!fSurname.value) {
+        if (!fSurname.value.trim()) {
             fSurname.style.border = validStyle;
             validStatus = false;
         }
-        if (!fSecondName.value) {
+        if (!fSecondName.value.trim()) {
             fSecondName.style.border = validStyle;
             validStatus = false;
         }
@@ -353,11 +376,11 @@ export function VUsersAdmin(props) {
 
         if (validStatus) {
             let body = {};
-            body["name"] = fName.value;
-            body["surname"] = fSurname.value;
-            body["secondName"] = fSecondName.value;
+            body["name"] = fName.value.trim();
+            body["surname"] = fSurname.value.trim();
+            body["secondName"] = fSecondName.value.trim();
             body["id"] = user.id;
-            if (fPhone.value) body["numberPhone"] = fPhone.value;
+            if (fPhone.value && fPhone.value !== "+7(___)___-__-__") body["numberPhone"] = fPhone.value;
             if (fAddress.value) body["address"] = fAddress.value;
             if (fBirthday.value) body["birthDate"] = fBirthday.value;
             if (fOrganization.value) body["organization"] = fOrganization.value;
@@ -533,29 +556,17 @@ export function VUsersAdmin(props) {
             <label>Имя: </label>
             <input id={"name"} type={"text"} style={
                 {borderRadius: 40, border: "none", padding: "5px 15px", marginBottom: 10}
-            } required/>
-            <p id={"name-before"} style={{margin: "5px 0", textDecoration: "underline"}}>
-                Имя: {userInfo["name"]}
-            </p>
+            } required defaultValue={userInfo["name"] ? userInfo["name"] : null}/>
             <label>Фамилия: </label>
             <input id={"surname"} type={"text"} style={
                 {borderRadius: 40, border: "none", padding: "5px 15px", marginBottom: 10}
-            } required/>
-            <p id={"surname-before"} style={{margin: "5px 0", textDecoration: "underline"}}>
-                Фамилия: {userInfo["surname"]}
-            </p>
+            } required defaultValue={userInfo["surname"] ? userInfo["surname"] : null}/>
             <label>Отчество: </label>
             <input id={"secondName"} type={"text"} style={
                 {borderRadius: 40, border: "none", padding: "5px 15px", marginBottom: 10}
-            } required/>
-            <p id={"secondName-before"} style={{margin: "5px 0", textDecoration: "underline"}}>
-                Отчество: {userInfo["secondName"]}
-            </p>
+            } required defaultValue={userInfo["secondName"] ? userInfo["secondName"] : null}/>
             <label>Организация: </label>
-            <InputOrganization organizations={props.organizations}/>
-            <p id={"inputOrganization-before"} style={{margin: "5px 0", textDecoration: "underline"}}>
-                Организация: {userInfo["organizationString"]}
-            </p>
+            <InputOrganization defaultValue={userInfo["organizationString"]} organizations={props.organizations}/>
         </div>
     )
 

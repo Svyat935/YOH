@@ -109,17 +109,17 @@ export function VComponents(props) {
         fType.style.border = none_style;
         fFile.style.border = none_style;
 
-        if (!fName.value) {
+        if (!fName.value.trim()) {
             fName.style.border = valid_style;
             valid_status = false;
         }
 
-        if (!fDescription.value) {
+        if (!fDescription.value.trim()) {
             fDescription.style.border = valid_style;
             valid_status = false;
         }
 
-        if (!fType.value) {
+        if (!fType.value.trim()) {
             fType.style.border = valid_style;
             valid_status = false;
         }
@@ -131,9 +131,9 @@ export function VComponents(props) {
 
         if (valid_status) {
             let formData = new FormData();
-            formData.append("name", fName.value);
-            formData.append("description", fDescription.value);
-            formData.append("type", fType.value);
+            formData.append("name", fName.value.trim());
+            formData.append("description", fDescription.value.trim());
+            formData.append("type", fType.value.trim());
             formData.append("file", fFile.files[0]);
             formData.append("image", fImage.files[0]);
             formData.append("useStatistic", fStatistics.value);

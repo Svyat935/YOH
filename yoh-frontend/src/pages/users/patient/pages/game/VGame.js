@@ -7,20 +7,19 @@ import {LoadPage} from "../../../../../components/loadpage/LoadPage";
 import {ButtonA} from "../../../../../components/buttons/ButtonA/ButtonA";
 import {useNavigate} from "react-router-dom";
 
-//TODO: Think how we can it make better.
-window.addEventListener("message", (event) => {
-    if (event.data === "it is end game"){
-        alert("Игра была завершена!");
-        let router = useNavigate();
-        router("/user/patient/");
-    }
-});
 
 export function VGame() {
     let context = useContext(UserContext);
     const [src, setSrc] = useState(null);
     const [load, setLoad] = useState(true);
     const router = useNavigate();
+
+    //TODO: Think how we can it make better.
+    window.addEventListener("message", (event) => {
+        if (event.data === "it is end game"){
+            router("/user/patient/");
+        }
+    });
 
     useEffect(() => {
         if (context.token) {
