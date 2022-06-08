@@ -541,7 +541,7 @@ export function VUsersAdmin(props) {
                 {borderRadius: 40, border: "none", padding: "5px 15px", marginBottom: 10}
             } defaultValue={userInfo["address"] ? userInfo["address"] : null}/>
             <label>Организация: </label>
-            <InputOrganization organizations={props.organizations} defaultValue={userInfo["organizationString"]}/>
+            <InputOrganization organizations={props.organizations} defaultValue={userInfo["organization"]}/>
         </div>
     )
 
