@@ -51,7 +51,7 @@
 
         if (read_cookies(document.cookie)[cookie_name] == 'true') {
             if ('endGame' in window) {
-                endGame.postMessage(event_message);
+                endGame.postMessage(event_message, "*");
             }
             parent.postMessage(event_message, "*");
             console.log('Отправлено сообщение о закрытии игры!');
