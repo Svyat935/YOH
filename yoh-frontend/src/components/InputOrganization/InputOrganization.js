@@ -8,7 +8,7 @@ export function InputOrganization(props) {
 
         orgs.forEach((org) => {
             view.push(
-                <option value={org.id}>{org.name}</option>
+                <option selected={org.id === props.defaultValue} value={org.id}>{org.name}</option>
             )
         })
 
@@ -16,7 +16,7 @@ export function InputOrganization(props) {
     }
 
     return (
-        <select defaultValue={props.defaultValue} id={"input-organizations"} className={"input-organizations"}>
+        <select id={"input-organizations"} className={"input-organizations"}>
             {createOptions()}
         </select>
     )
