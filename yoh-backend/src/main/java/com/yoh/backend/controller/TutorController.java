@@ -404,7 +404,7 @@ public class TutorController {
         try {
             Tutor tutor = this.tutorService.getTutorByUser(this.userService.getUserById(this.userService.verifyToken(token)));
             Patient patient = this.patientService.getPatientById(UUID.fromString(patientToTutor.getPatient()));
-            if (patient.getTutor().getId() == tutor.getId()){
+            if (!patient.getTutor().getId().equals(tutor.getId())){
                 patient.setTutor(null);
                 this.patientService.updatePatient(patient);
             }

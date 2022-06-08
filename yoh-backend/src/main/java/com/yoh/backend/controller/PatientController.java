@@ -493,8 +493,6 @@ public class PatientController {
                                       @RequestHeader("game") String gameID,
                                       @Valid @RequestBody StatisticToSend data) {
         try {
-            System.out.println("1231232131231231232");
-            System.out.println(data);
             Patient patient = this.patientService.getPatientByUser(this.userService.getUserById(this.userService.verifyToken(token)));
             Game game = this.gameService.getGameById(UUID.fromString(gameID));
             GamePatient gamePatient = this.gamePatientService.getGamePatientByGameAndPatient(game, patient);
@@ -505,37 +503,6 @@ public class PatientController {
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("M/d/yyyy, h:m:s a");
             LocalDateTime dateStart = LocalDateTime.parse(data.getDate_start(), formatter);
             LocalDateTime dateEnd = LocalDateTime.parse(data.getDate_end(), formatter);
-
-//            System.out.println("");
-//
-//            System.out.println();
-//            System.out.println();
-//            System.out.println();
-//            System.out.println();
-//            System.out.println();
-//            System.out.println();
-//            System.out.println();
-//            System.out.println();
-//
-//            System.out.println(data.getLevel());
-//            System.out.println(data.getLevel());
-//            System.out.println(dateStart);
-//            System.out.println(dateEnd);
-//            System.out.println(data.getType());
-//            System.out.println(data.getClicks());
-//            System.out.println(data.getMissclicks());
-//            System.out.println(data.getDetails());
-//
-//
-//            System.out.println();
-//            System.out.println();
-//            System.out.println();
-//            System.out.println();
-//            System.out.println();
-//            System.out.println();
-//            System.out.println();
-//            System.out.println();
-
             GameStatistic gameStatistic = new GameStatistic(
                     startedGame,
                     data.getLevel(),
@@ -560,91 +527,6 @@ public class PatientController {
             return exceptionResponse;
         }
     }
-
-//    @PostMapping(path = "/games/statistics/send_statistic")
-//    public JsonObject sendStatistic(@RequestHeader("token") String token,
-//                                      @RequestHeader("game") String gameID,
-//                                      @Valid @RequestBody JsonObject data) {
-//        try {
-//            System.out.println("1231232131231231232");
-//            System.out.println(data);
-//            Patient patient = this.patientService.getPatientByUser(this.userService.getUserById(this.userService.verifyToken(token)));
-//            Game game = this.gameService.getGameById(UUID.fromString(gameID));
-//            GamePatient gamePatient = this.gamePatientService.getGamePatientByGameAndPatient(game, patient);
-//            StartedGame startedGame = this.startedGameService.getUnfinishedStartedGameByGamePatient(gamePatient);
-//            if (startedGame == null) throw new IllegalArgumentException("Sorry, but StartedGame was not found.");
-//            startedGame.setDetails(data.get("additional_fields").toString());
-//
-//            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("M/d/yyyy, h:m:s a");
-//            LocalDateTime dateStart = LocalDateTime.parse(data.get("date_start").toString(), formatter);
-//            LocalDateTime dateEnd = LocalDateTime.parse(data.get("date_end").toString(), formatter);
-//
-////            GameStatistic gameStatistic = new GameStatistic(
-////                    startedGame,
-////                    statisticToSend.getLevel(),
-////                    statisticToSend.getLevel_name(),
-////                    dateStart,
-////                    dateEnd,
-////                    statisticToSend.getType(),
-////                    statisticToSend.getClicks(),
-////                    statisticToSend.getMissclicks(),
-////                    statisticToSend.getDetails()
-////            );
-//            System.out.println(data.get("level_name").toString());
-//            System.out.println("");
-//
-//            System.out.println();
-//            System.out.println();
-//            System.out.println();
-//            System.out.println();
-//            System.out.println();
-//            System.out.println();
-//            System.out.println();
-//            System.out.println();
-//
-//            System.out.println(data.get("level"));
-//            System.out.println(data.get("level_name"));
-//            System.out.println(dateStart);
-//            System.out.println(dateEnd);
-//            System.out.println(data.get("type"));
-//            System.out.println(data.get("clicks"));
-//            System.out.println(data.get("missclicks"));
-//            System.out.println(data.get("details"));
-//
-//
-//            System.out.println();
-//            System.out.println();
-//            System.out.println();
-//            System.out.println();
-//            System.out.println();
-//            System.out.println();
-//            System.out.println();
-//            System.out.println();
-//
-//            GameStatistic gameStatistic = new GameStatistic(
-//                    startedGame,
-//                    (Integer) data.get("level"),
-//                    data.get("level_name").toString(),
-//                    dateStart,
-//                    dateEnd,
-//                    (Integer) data.get("type"),
-//                    (Integer) data.get("clicks"),
-//                    (Integer) data.get("missclicks"),
-//                    data.get("details").toString()
-//            );
-//            this.startedGameService.saveStartedGame(startedGame);
-//            this.gameStatisticService.saveGameStatistic(gameStatistic);
-//
-//            JsonObject response = new JsonObject();
-//            response.put("result", "OK");
-//            return response);
-//        }
-//        catch (IllegalArgumentException e){
-//            JsonObject exceptionResponse = new JsonObject();
-//            exceptionResponse.put("message", e.getMessage());
-//            return exceptionResponse);
-//        }
-//    }
 
 
     @GetMapping(path = "/games/status")
@@ -694,17 +576,7 @@ public class PatientController {
             int assigned = 0;
             int failed = 0;
             int started = 0;
-//            List<GameStatus> gameStatusList = patient.getGameStatuses();
-//            for (GameStatus gameStatus: gameStatusList) {
-//                switch (gameStatus.getStatus()){
-//                    case DONE -> done++;
-//                    case ASSIGNED -> assigned++;
-//                    case FAILED -> failed++;
-//                    case STARTED -> started++;
-//                }
-//            }
             for (GamePatient gamePatient: this.gamePatientService.getAllActiveGamePatientsByPatient(patient)){
-//                GameStatus gameStatus = this.gameStatusService.getGameStatusByGamePatient(gamePatient);
                 switch (gamePatient.getStatus()){
                     case DONE -> done++;
                     case ASSIGNED -> assigned++;
@@ -768,23 +640,6 @@ public class PatientController {
         }
     }
 
-//    @GetMapping(path = "/tests/status")
-//    public JsonObject getStatusOfTest(@RequestHeader("token") String token,
-//                                        @RequestParam String testID) {
-//        try {
-//            Patient patient = this.patientService.getPatientByUser(this.userService.getUserById(this.userService.verifyToken(token)));
-////            TestStatus testStatus = this.testStatusService.getTestStatusByTestAndPatient(this.testService.getTestById(UUID.fromString(testID)), patient);
-//            Result result = this.re
-//            JsonObject response = new JsonObject();
-//            response.put("testStatus", testStatus.getStatus());
-//            return response;
-//        }
-//        catch (IllegalArgumentException e){
-//            JsonObject exceptionResponse = new JsonObject();
-//            exceptionResponse.put("message", e.getMessage());
-//            return exceptionResponse;
-//        }
-//    }
 
     @PutMapping(path = "/tests/status/update")
     public JsonObject updateStatusOfTest(@RequestHeader("token") String token,
