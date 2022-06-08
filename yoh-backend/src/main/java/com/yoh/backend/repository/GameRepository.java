@@ -83,7 +83,7 @@ public class GameRepository {
         Session session = sessionFactory.openSession();
         try {
             Criteria criteria = session.createCriteria(Game.class)
-                    .add(Restrictions.eq("gameActiveStatus", GameActiveStatus.ACTIVE));
+                    .add(Restrictions.eq("gameActiveStatus", 0));
             if (!regex.equals(""))
                 criteria.add(Restrictions.like("name", regex, MatchMode.ANYWHERE).ignoreCase());
             if (!typeRegex.equals(""))
@@ -130,7 +130,7 @@ public class GameRepository {
         try{
             Criteria criteria = session.createCriteria(Game.class);
             if (showDeleted == null || showDeleted == Boolean.FALSE)
-                criteria.add(Restrictions.like("gameActiveStatus", GameActiveStatus.ACTIVE));
+                criteria.add(Restrictions.like("gameActiveStatus", 0));
             if (!regex.equals(""))
                 criteria.add(Restrictions.like("name", regex, MatchMode.ANYWHERE).ignoreCase());
             if (!typeRegex.equals(""))
@@ -154,7 +154,7 @@ public class GameRepository {
         try{
             Criteria criteria = session.createCriteria(Game.class);
             if (showDeleted == null || showDeleted == Boolean.FALSE)
-                criteria.add(Restrictions.like("gameActiveStatus", GameActiveStatus.ACTIVE));
+                criteria.add(Restrictions.like("gameActiveStatus", 0));
             if (!regex.equals(""))
                 criteria.add(Restrictions.like("name", regex, MatchMode.ANYWHERE).ignoreCase());
             if (!typeRegex.equals(""))
