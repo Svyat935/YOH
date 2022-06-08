@@ -105,45 +105,6 @@ public class AdminController {
             }
             response.put("results", responseList);
             return response;
-//            List<User> userList = this.userService.getAllUsersByAdmin(Integer.parseInt(role), regex, order);
-//            if (userList.size() == 0) {
-////                JsonObject response = new JsonObject();
-//                response.put("previous", false);
-//                response.put("next", false);
-//                response.put("count", 0);
-//                response.put("size", 0);
-//                response.put("results", new ArrayList<>());
-//                return new JSONResponse(200, response);
-//            }
-//            //Pagination
-//            if (start >= userList.size())
-//                throw new IllegalArgumentException(
-//                        String.format("No element at that index (%s)", start)
-//                );
-//            int lastIndex;
-//            if (start + limit > userList.size()){
-//                lastIndex = userList.size();
-//                response.put("next", false);
-//            }
-//            else {
-//                lastIndex = start + limit;
-//                response.put("next", true);
-//            }
-//            if (start == 0) response.put("previous", false);
-//            else response.put("previous", true);
-//            List<User> paginatedUserList = new ArrayList<>();
-//            for (int i = start; i < lastIndex; i++){
-//                paginatedUserList.add(userList.get(i));
-//            }
-//            response.put("count", paginatedUserList.size());
-//            response.put("size", paginatedUserList.size());
-//
-//            for (User user: paginatedUserList) {
-//                responseList.add(new UserInfoResponse(user));
-//            }
-//            response.put("userList", this.userService.getAllUsers());
-//            response.put("results", responseList);
-//            return new JSONResponse(200, response);
         }
         catch (IllegalArgumentException e){
             JsonObject exceptionResponse = new JsonObject();
@@ -182,7 +143,6 @@ public class AdminController {
                     if (patient.getBirthDate() != null)
                         response.put("birthDate", patient.getBirthDate().toString());
                     else response.put("birthDate", null);
-//            response.put("birthDate", patient.getBirthDate());
                     response.put("numberPhone", patient.getNumberPhone());
                     response.put("address", patient.getAddress());
                     response.put("login", patient.getUser().getLogin());
@@ -320,35 +280,15 @@ public class AdminController {
 
 
             if (image != null) {
-                System.out.println(1);
                 String orgName = UUID.randomUUID() + "." + FilenameUtils.getExtension(image.getOriginalFilename());
-                System.out.println(2);
                 if(game.getImage() != null){
-                    System.out.println(3);
-//                new File("/app/images/" + tutor.getImage().replace(site_url + "images/", "")).delete();
                     new File("/app/images/" + game.getImage()).delete();
                     System.out.println(4);
                     System.out.println("Old image was deleted");
                 }
-                System.out.println(5);
                 File filesd = new File("/app/images", orgName);
-                System.out.println(6);
                 FileUtils.writeByteArrayToFile(filesd, image.getBytes());
-                System.out.println(7);
                 game.setImage(orgName);
-                System.out.println(8);
-//                String orgName = UUID.randomUUID() + "." + FilenameUtils.getExtension(image.getOriginalFilename());
-//                if(game.getImage() != null){
-//                    System.out.println("SSSSSSSSSSSSSSSSSSS");
-//                    System.out.println(String.format("game.getImage(): (%s)", game.getImage()));
-////                new File("/app/images/" + tutor.getImage().replace(site_url + "images/", "")).delete();
-//                    new File("/app/images/" + game.getImage()).delete();
-//                    System.out.println("Old image was deleted");
-//
-//                }
-//                File filesd = new File("/app/images", orgName);
-//                FileUtils.writeByteArrayToFile(filesd, file.getBytes());
-//                game.setImage(orgName);
             }
             this.gameService.createGame(game);
 
@@ -370,15 +310,8 @@ public class AdminController {
         try {
             Admin admin = this.adminService.getAdminByUser(this.userService.getUserById(this.userService.verifyToken(token)));
             Game game = this.gameService.getGameById(UUID.fromString(gameID));
-
-//            String orgName = game.getName() + "." + FilenameUtils.getExtension(file.getOriginalFilename());
             String orgName = UUID.randomUUID() + "." + FilenameUtils.getExtension(file.getOriginalFilename());
 
-//            Path filepath = Paths.get("/app/images", orgName);
-//            if(new  File(filepath.toString()).exists()){
-//                System.out.println("File exists");
-//                new File(filepath.toString()).delete();
-//            }
             if(game.getImage() != null){
                 new File("/app/images/" + game.getImage()).delete();
                 System.out.println("Old image was deleted");
@@ -491,47 +424,6 @@ public class AdminController {
             response.put("size", listCount);
             response.put("results", organizationList);
             return response;
-
-//            Admin admin = this.adminService.getAdminByUser(this.userService.getUserById(this.userService.verifyToken(token)));
-//            List<Organization> organizationList = this.organizationService.getAllOrganizationsFilteredOrdered(regex, order);
-//            JsonObject response = new JsonObject();
-//
-//            if (organizationList.size() == 0) {
-////                JsonObject response = new JsonObject();
-//                response.put("previous", false);
-//                response.put("next", false);
-//                response.put("count", 0);
-//                response.put("size", 0);
-//                response.put("results", new ArrayList<>());
-//                return new JSONResponse(200, response);
-//            }
-//            //Pagination
-//            List<Organization> paginatedOrganizationList = new ArrayList<>();
-//            if (start >= organizationList.size())
-//                throw new IllegalArgumentException(
-//                        String.format("No element at that index (%s)", start)
-//                );
-//            int lastIndex;
-//            if (start + limit > organizationList.size()){
-//                lastIndex = organizationList.size();
-//                response.put("next", false);
-//            }
-//            else {
-//                lastIndex = start + limit;
-//                response.put("next", true);
-//            }
-//            if (start == 0) response.put("previous", false);
-//            else response.put("previous", true);
-//
-//            for (int i = start; i < lastIndex; i++){
-//                paginatedOrganizationList.add(organizationList.get(i));
-//            }
-//            response.put("count", paginatedOrganizationList.size());
-//            response.put("size", organizationList.size());
-//
-////            response.put("userList", this.userService.getAllUsers());
-//            response.put("results", paginatedOrganizationList);
-//            return new JSONResponse(200, response);
         }
         catch (IllegalArgumentException e){
             JsonObject exceptionResponse = new JsonObject();
