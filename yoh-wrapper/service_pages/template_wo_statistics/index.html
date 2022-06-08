@@ -49,12 +49,12 @@
         let cookie_name = 'EndGame';
 
         if (read_cookies(document.cookie)[cookie_name] == 'true') {
+            delete_cookie(cookie_name);
             if ('endGame' in window) {
                 endGame.postMessage('it is end game');
             }
             parent.postMessage('it is end game', "*");
             console.log('Отправлено сообщение о закрытии игры!');
-            delete_cookie(cookie_name);
         }
         else {
             setTimeout(waitCookie, 1000);
