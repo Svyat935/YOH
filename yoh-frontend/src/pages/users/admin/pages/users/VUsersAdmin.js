@@ -498,51 +498,27 @@ export function VUsersAdmin(props) {
             <label>Имя: </label>
             <input id={"name"} type={"text"} style={
                 {borderRadius: 40, border: "none", padding: "5px 15px", marginBottom: 10}
-            } required/>
-            <p id={"name-before"} style={{margin: "5px 0", textDecoration: "underline"}}>
-                Имя: {userInfo["name"]}
-            </p>
+            } required defaultValue={userInfo["name"] ? userInfo["name"] : null}/>
             <label>Фамилия: </label>
             <input id={"surname"} type={"text"} style={
                 {borderRadius: 40, border: "none", padding: "5px 15px", marginBottom: 10}
-            } required/>
-            <p id={"surname-before"} style={{margin: "5px 0", textDecoration: "underline"}}>
-                Фамилия: {userInfo["surname"]}
-            </p>
+            } required defaultValue={userInfo["surname"] ? userInfo["surname"] : null}/>
             <label>Отчество: </label>
             <input id={"secondName"} type={"text"} style={
                 {borderRadius: 40, border: "none", padding: "5px 15px", marginBottom: 10}
-            } required/>
-            <p id={"secondName-before"} style={{margin: "5px 0", textDecoration: "underline"}}>
-                Отчество: {userInfo["secondName"]}
-            </p>
+            } required defaultValue={userInfo["secondName"] ? userInfo["secondName"] : null}/>
             <label>День рождения: </label>
-            <InputBirthday/>
-            <p id={"birthday-before"} style={{margin: "5px 0", textDecoration: "underline"}}>
-                День рождения: {userInfo["birthDate"] ? userInfo["birthDate"].slice(0, 10) : null}
-            </p>
+            <InputBirthday defaultValue={userInfo["birthDate"] ? userInfo["birthDate"].slice(0, 10) : null}/>
             <label>Пол: </label>
-            <InputGender/>
-            <p id={"inputGender-before"} style={{margin: "5px 0", textDecoration: "underline"}}>
-                Пол: {userInfo["gender"]}
-            </p>
+            <InputGender defaultValue={userInfo["gender"]}/>
             <label>Телефон: </label>
-            <InputPhone id={"phone"}/>
-            <p id={"inputPhone-before"} style={{margin: "5px 0", textDecoration: "underline"}}>
-                Телефон: {userInfo["numberPhone"]}
-            </p>
+            <InputPhone id={"phone"} defaultValue={userInfo["numberPhone"]}/>
             <label>Адрес: </label>
             <input id={"address"} type={"text"} style={
                 {borderRadius: 40, border: "none", padding: "5px 15px", marginBottom: 10}
-            }/>
-            <p id={"address-before"} style={{margin: "5px 0", textDecoration: "underline"}}>
-                Адрес: {userInfo["address"]}
-            </p>
+            } defaultValue={userInfo["address"] ? userInfo["address"] : null}/>
             <label>Организация: </label>
-            <InputOrganization organizations={props.organizations}/>
-            <p id={"inputOrganization-before"} style={{margin: "5px 0", textDecoration: "underline"}}>
-                Организация: {userInfo["organizationString"]}
-            </p>
+            <InputOrganization organizations={props.organizations} defaultValue={userInfo["organizationString"]}/>
         </div>
     )
 

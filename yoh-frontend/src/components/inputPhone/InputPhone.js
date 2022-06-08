@@ -14,6 +14,7 @@ export function InputPhone(props) {
             id={props.id}
             className="tel"
             style={props.style}
+            defaultValue={props.defaultValue ? props.defaultValue : null}
             placeholder={"+7(000)000-00-00"}
             />
     )

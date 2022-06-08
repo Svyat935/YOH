@@ -65,24 +65,15 @@ export function VAccount(props) {
                 <label>Имя: </label>
                 <input id={"name"} type={"text"} style={
                     {borderRadius: 40, border: "none", padding: "5px 15px", marginBottom: 10}
-                } required/>
-                <p id={"name-before"} style={{margin: "5px 0", textDecoration: "underline"}}>
-                    Имя: {userInfo["name"]}
-                </p>
+                } required defaultValue={userInfo["name"] ? userInfo["name"] : null}/>
                 <label>Фамилия: </label>
                 <input id={"surname"} type={"text"} style={
                     {borderRadius: 40, border: "none", padding: "5px 15px", marginBottom: 10}
-                } required/>
-                <p id={"surname-before"} style={{margin: "5px 0", textDecoration: "underline"}}>
-                    Фамилия: {userInfo["surname"]}
-                </p>
+                } required defaultValue={userInfo["surname"] ? userInfo["surname"] : null}/>
                 <label>Отчество: </label>
                 <input id={"secondName"} type={"text"} style={
                     {borderRadius: 40, border: "none", padding: "5px 15px", marginBottom: 10}
-                } required/>
-                <p id={"secondName-before"} style={{margin: "5px 0", textDecoration: "underline"}}>
-                    Отчество: {userInfo["secondName"]}
-                </p>
+                } required defaultValue={userInfo["secondName"] ? userInfo["secondName"] : null}/>
             </div>
         )
     }

@@ -1,11 +1,11 @@
 import React from "react";
 import "./InputGender.css";
 
-export function InputGender() {
+export function InputGender(props) {
     return (
         <select id={"gender-input"} className={"gender-input"}>
-            <option selected={true} value={"Мужской"}>Мужчина</option>
-            <option value={"Женский"}>Женщина</option>
+            <option selected={!props.defaultValue || props.defaultValue === "Мужской"} value={"Мужской"}>Мужчина</option>
+            <option selected={props.defaultValue && props.defaultValue === "Женский"} value={"Женский"}>Женщина</option>
         </select>
     )
 }

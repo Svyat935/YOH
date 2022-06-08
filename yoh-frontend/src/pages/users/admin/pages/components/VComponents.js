@@ -183,14 +183,12 @@ export function VComponents(props) {
                 <label>Новое Название: </label>
                 <input id={"name"} type={"text"} style={
                     {borderRadius: 40, border: "none", padding: "5px 15px", marginBottom: 10}
-                } required/>
-                <p>Текущее название: {gameForChanging["name"]}</p>
+                } required defaultValue={gameForChanging["name"] ? gameForChanging["name"] : null}/>
                 <p id={"name-validate"} style={{height: "5px", marginBottom: 0, color: "#800000"}}/>
                 <label>Описание: </label>
                 <input id={"description"} type={"email"} style={
                     {borderRadius: 40, border: "none", padding: "5px 15px", marginBottom: 10}
-                } required/>
-                <p>Текущее описание: {gameForChanging["description"]}</p>
+                } required defaultValue={gameForChanging["description"] ? gameForChanging["description"] : null}/>
                 <p id={"description-validate"} style={{height: "5px", marginBottom: 0, color: "#800000"}}/>
             </div>
         )
