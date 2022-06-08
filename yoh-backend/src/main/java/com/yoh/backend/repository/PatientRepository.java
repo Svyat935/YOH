@@ -113,13 +113,14 @@ public class PatientRepository {
         }
     }
 
-    public int getAllPatientsByOrganizationFilteredCount(Organization organization, String regex, Tutor tutor) {
+    public int getAllPatientsByOrganizationFilteredCount(Organization organization, String regex) {
         Session session = sessionFactory.openSession();
         try {
             Criteria criteria = session.createCriteria(Patient.class)
-                    .add(Restrictions.eq("organization", organization));
-            Criterion tutorCriterion = Restrictions.ne("tutor", tutor);
-            criteria.add(Restrictions.or(tutorCriterion, Restrictions.isNull("tutor")));
+                    .add(Restrictions.eq("organization", organization))
+                    .add(Restrictions.isNull("tutor"));
+//            Criterion tutorCriterion = Restrictions.ne("tutor", tutor);
+//            criteria.add(Restrictions.or(tutorCriterion, Restrictions.isNull("tutor")));
             if (!regex.equals("")) {
                 Criterion name = Restrictions.like("name", regex, MatchMode.ANYWHERE).ignoreCase();
                 Criterion surname = Restrictions.like("surname", regex, MatchMode.ANYWHERE).ignoreCase();
@@ -134,13 +135,14 @@ public class PatientRepository {
         }
     }
 
-    public List<Patient> getAllPatientsByOrganizationFilteredPaginated(Organization organization, String regex, String order, int start, int limit, Tutor tutor) {
+    public List<Patient> getAllPatientsByOrganizationFilteredPaginated(Organization organization, String regex, String order, int start, int limit) {
         Session session = sessionFactory.openSession();
         try {
             Criteria criteria = session.createCriteria(Patient.class)
-                    .add(Restrictions.eq("organization", organization));
-            Criterion tutorCriterion = Restrictions.ne("tutor", tutor);
-            criteria.add(Restrictions.or(tutorCriterion, Restrictions.isNull("tutor")));
+                    .add(Restrictions.eq("organization", organization))
+                    .add(Restrictions.isNull("tutor"));
+//            Criterion tutorCriterion = Restrictions.ne("tutor", tutor);
+//            criteria.add(Restrictions.or(tutorCriterion, Restrictions.isNull("tutor")));
             if (!regex.isEmpty()) {
                 System.out.println("if");
                 Criterion name = Restrictions.like("name", regex, MatchMode.ANYWHERE).ignoreCase();
@@ -166,6 +168,8 @@ public class PatientRepository {
                 case "3" -> criteria.addOrder(Order.asc("birthDate"));
                 case "-3" -> criteria.addOrder(Order.desc("birthDate"));
             }
+            criteria.setFirstResult(start);
+            criteria.setMaxResults(limit);
             return criteria.list();
         }
         finally {
