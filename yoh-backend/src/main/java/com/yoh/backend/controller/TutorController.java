@@ -173,7 +173,7 @@ public class TutorController {
                                        @RequestParam(value = "order", required = false, defaultValue = "1") String order) {
         try {
             Tutor tutor = this.tutorService.getTutorByUser(this.userService.getUserById(this.userService.verifyToken(token)));
-            Organization organization = this.tutorService.getTutorByUser(this.userService.getUserById(this.userService.verifyToken(token))).getOrganization();
+            Organization organization = tutor.getOrganization();
             ArrayList<JsonObject> patientInfoList = new ArrayList<JsonObject>();
             JsonObject response = new JsonObject();
             int listCount = this.patientService.getAllPatientsByOrganizationFilteredCount(organization, regex);
@@ -210,25 +210,6 @@ public class TutorController {
                 else {
                     patientInfo.put("organization", null);
                 }
-                if (tutor != null) {
-                    JsonObject tutorInfo = new JsonObject();
-                    tutorInfo.put("id", tutor.getId().toString());
-                    tutorInfo.put("name", tutor.getName());
-                    tutorInfo.put("surname", tutor.getSurname());
-                    tutorInfo.put("secondName", tutor.getSecondName());
-                    if (tutor.getOrganization() != null) {
-                        tutorInfo.put("organization", tutor.getOrganization().getId().toString());
-                        tutorInfo.put("organizationString", tutor.getOrganization().getName());
-                    }
-                    else {
-                        tutorInfo.put("organization", null);
-                        tutorInfo.put("organizationString", null);
-                    }
-                    tutorInfo.put("login", tutor.getUser().getLogin());
-                    tutorInfo.put("email", tutor.getUser().getEmail());
-                    patientInfo.put("tutor", tutorInfo);
-                }
-                else patientInfo.put("tutor", null);
                 patientInfo.put("image", patient.getImage());
                 if (patient.getOrganization() != null)
                     patientInfo.put("organizationString", patient.getOrganization().getName());
