@@ -16,7 +16,7 @@ export function InputOrganization(props) {
     }
 
     return (
-        <select value={props.defaultValue} id={"input-organizations"} className={"input-organizations"}>
+        <select defaultValue={props.defaultValue} id={"input-organizations"} className={"input-organizations"}>
             {createOptions()}
         </select>
     )
