@@ -51,12 +51,12 @@ public class GameService {
         );
     }
 
-    public int getAllActiveGamesFilteredCount(String typeRegex, String regex, List<UUID> UUIDList) throws IllegalArgumentException{
-        return gameRepository.getAllActiveGamesFilteredCount(typeRegex, regex, UUIDList);
+    public int getAllActiveGamesFilteredCount(String typeRegex, String regex, List<UUID> UUIDList, Boolean showDeleted) throws IllegalArgumentException{
+        return gameRepository.getAllActiveGamesFilteredCount(typeRegex, regex, UUIDList, showDeleted);
     }
 
-    public List<Game> getAllActiveGamesFiltered(String order, String typeRegex, String regex, List<UUID> UUIDList, int start, int limit) throws IllegalArgumentException{
-        return gameRepository.getAllActiveGamesFiltered(order, typeRegex, regex, UUIDList, start, limit);
+    public List<Game> getAllActiveGamesFiltered(String order, String typeRegex, String regex, List<UUID> UUIDList, int start, int limit, Boolean showDeleted) throws IllegalArgumentException{
+        return gameRepository.getAllActiveGamesFiltered(order, typeRegex, regex, UUIDList, start, limit, showDeleted);
     }
 
     public List<Game> getAllGames() {

@@ -38,12 +38,13 @@ public class GameController {
 
     @GetMapping(path = "/all")
     public JsonObject allGames(@RequestHeader("token") String token,
-                                 @RequestParam(value = "regex", required = false, defaultValue = "") String regex,
-                                 @RequestParam(value = "typeRegex", required = false, defaultValue = "") String typeRegex,
-                                 @RequestParam(value = "limit", required = true) Integer limit,
-                                 @RequestParam(value = "start", required = true) Integer start,
-                                 @RequestParam(value = "order", required = false, defaultValue = "1") String order,
-                                 @RequestParam(value = "patientID", required = false) String patientID) {
+                               @RequestParam(value = "regex", required = false, defaultValue = "") String regex,
+                               @RequestParam(value = "typeRegex", required = false, defaultValue = "") String typeRegex,
+                               @RequestParam(value = "limit", required = true) Integer limit,
+                               @RequestParam(value = "start", required = true) Integer start,
+                               @RequestParam(value = "showDeleted", required = false) Boolean showDeleted,
+                               @RequestParam(value = "order", required = false, defaultValue = "1") String order,
+                               @RequestParam(value = "patientID", required = false) String patientID) {
         try{
             User user = this.userService.getUserById(this.userService.verifyToken(token));
 //            if (user.getRole() == 1 || user.getRole() == 2)
@@ -52,7 +53,7 @@ public class GameController {
             JsonObject response = new JsonObject();
             ArrayList<UUID> UUIDList = new ArrayList<>();
             if (patientID != null) this.gamePatientService.getAllGamesByPatient(this.patientService.getPatientById(UUID.fromString(patientID))).forEach(i -> UUIDList.add(i.getId()));
-            int listCount = this.gameService.getAllActiveGamesFilteredCount(typeRegex, regex, UUIDList);
+            int listCount = this.gameService.getAllActiveGamesFilteredCount(typeRegex, regex, UUIDList, showDeleted);
             if (listCount == 0) {
                 response.put("previous", false);
                 response.put("next", false);
@@ -63,7 +64,7 @@ public class GameController {
             }
             if (start >= listCount)
                 throw new IllegalArgumentException(String.format("No element at that index (%s)", start));
-            List<Game> gameList = this.gameService.getAllActiveGamesFiltered(order, typeRegex, regex, UUIDList, start, limit);
+            List<Game> gameList = this.gameService.getAllActiveGamesFiltered(order, typeRegex, regex, UUIDList, start, limit, showDeleted);
             if (start == 0)
                 response.put("previous", false);
             else response.put("previous", true);
