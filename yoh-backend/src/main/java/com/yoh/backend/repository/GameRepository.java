@@ -125,10 +125,12 @@ public class GameRepository {
         }
     }
 
-    public int getAllActiveGamesFilteredCount(String typeRegex, String regex, List<UUID> UUIDList){
+    public int getAllActiveGamesFilteredCount(String typeRegex, String regex, List<UUID> UUIDList, Boolean showDeleted){
         Session session = sessionFactory.openSession();
         try{
             Criteria criteria = session.createCriteria(Game.class);
+            if (showDeleted == null || showDeleted == Boolean.FALSE)
+                criteria.add(Restrictions.like("gameActiveStatus", GameActiveStatus.ACTIVE));
             if (!regex.equals(""))
                 criteria.add(Restrictions.like("name", regex, MatchMode.ANYWHERE).ignoreCase());
             if (!typeRegex.equals(""))
@@ -147,10 +149,12 @@ public class GameRepository {
         }
     }
 
-    public List<Game> getAllActiveGamesFiltered(String order, String typeRegex, String regex, List<UUID> UUIDList, int start, int limit){
+    public List<Game> getAllActiveGamesFiltered(String order, String typeRegex, String regex, List<UUID> UUIDList, int start, int limit, Boolean showDeleted){
         Session session = sessionFactory.openSession();
         try{
             Criteria criteria = session.createCriteria(Game.class);
+            if (showDeleted == null || showDeleted == Boolean.FALSE)
+                criteria.add(Restrictions.like("gameActiveStatus", GameActiveStatus.ACTIVE));
             if (!regex.equals(""))
                 criteria.add(Restrictions.like("name", regex, MatchMode.ANYWHERE).ignoreCase());
             if (!typeRegex.equals(""))
