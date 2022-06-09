@@ -182,7 +182,7 @@ def additional_fields_route():
 
 
 @api_bp.route('/additional_fields', methods=['POST'])
-def additional_fields_route():
+def additional_fields_post_route():
     """
     Метод принудительной отправки дополнительных полей для игры
     """
