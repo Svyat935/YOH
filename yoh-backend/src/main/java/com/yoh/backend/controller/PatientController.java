@@ -16,6 +16,8 @@ import org.apache.commons.io.FilenameUtils;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -67,12 +69,6 @@ public class PatientController {
     @Autowired
     private TestStatisticService testStatisticService;
 
-//    @Autowired
-//    private GameStatusService gameStatusService;
-//
-//    @Autowired
-//    private TestStatusService testStatusService;
-
     @Autowired
     private GamePatientService gamePatientService;
 
@@ -80,12 +76,12 @@ public class PatientController {
     private StartedGameService startedGameService;
 
     @GetMapping(path = "/games/getting")
-    public JsonObject getAllGames(@RequestHeader("token") String token,
-                                    @RequestParam(value = "limit", required = true) Integer limit,
-                                    @RequestParam(value = "start", required = true) Integer start,
-                                    @RequestParam(value = "regex", required = false, defaultValue = "") String regex,
-                                    @RequestParam(value = "typeRegex", required = false, defaultValue = "") String typeRegex,
-                                    @RequestParam(value = "order", required = false, defaultValue = "") String order) {
+    public ResponseEntity<JsonObject> getAllGames(@RequestHeader("token") String token,
+                                                  @RequestParam(value = "limit", required = true) Integer limit,
+                                                  @RequestParam(value = "start", required = true) Integer start,
+                                                  @RequestParam(value = "regex", required = false, defaultValue = "") String regex,
+                                                  @RequestParam(value = "typeRegex", required = false, defaultValue = "") String typeRegex,
+                                                  @RequestParam(value = "order", required = false, defaultValue = "") String order) {
         try {
             Patient patient = this.patientService.getPatientByUser(this.userService.getUserById(this.userService.verifyToken(token)));
             ArrayList<JsonObject> gamesArray = new ArrayList<>();
@@ -97,7 +93,7 @@ public class PatientController {
                 response.put("count", 0);
                 response.put("size", 0);
                 response.put("results", new ArrayList<>());
-                return response;
+                return new ResponseEntity<>(response, HttpStatus.OK);
             }
 
             if (start >= listCount)
@@ -117,7 +113,6 @@ public class PatientController {
             response.put("size", listCount);
             for (GamePatient gamePatient: gamePatientList) {
                 JsonObject gamesInfo = new JsonObject();
-//                GameStatus gameStatus = this.gameStatusService.getGameStatusByGamePatient(gamePatient);
                 gamesInfo.put("id", gamePatient.getGame().getId().toString());
                 gamesInfo.put("name", gamePatient.getGame().getName());
                 gamesInfo.put("type", gamePatient.getGame().getType());
@@ -132,99 +127,18 @@ public class PatientController {
                 gamesArray.add(gamesInfo);
             }
             response.put("results", gamesArray);
-            return response;
+            return new ResponseEntity<>(response, HttpStatus.OK);
         }
         catch (IllegalArgumentException e){
             JsonObject exceptionResponse = new JsonObject();
             exceptionResponse.put("message", e.getMessage());
-            return exceptionResponse;
+            return new ResponseEntity<>(exceptionResponse, HttpStatus.BAD_REQUEST);
         }
     }
 
-//    @PostMapping(path = "/games/statistics/sending")
-//    public JsonObject sendGameStatistic(@RequestHeader("token") String token,
-//                                          @RequestHeader("game") String gameID,
-//                                          @Valid @RequestBody StatisticArray statisticArray) {
-//        try {
-//            Patient patient = this.patientService.getPatientByUser(this.userService.getUserById(this.userService.verifyToken(token)));
-//            Game game = this.gameService.getGameById(UUID.fromString(gameID));
-//            GamePatient gamePatient = this.gamePatientService.getGamePatientByGameAndPatient(game, patient);
-//            if (!gamePatient.getGamePatientStatus().equals(GamePatientStatus.ACTIVE))
-//                throw new Exception("Game is not Active for this account");
-//            for (JsonObject statisticToSend: statisticArray.getRecords()){
-//                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("M/d/yyyy, h:m:s a");
-//                LocalDateTime dateAction = LocalDateTime.parse(statisticToSend.get("DateAction").toString(), formatter);
-//                com.google.gson.JsonObject jsonObject;
-//
-//                String detailsString;
-//                if (statisticToSend.containsKey("Details")){
-//                    jsonObject = new JsonParser().parse(statisticToSend.get("Details").toString()).getAsJsonObject();
-//                }
-//                else jsonObject = null;
-//
-//                Short AnswerNumber;
-//                if (statisticToSend.get("AnswerNumber") != null)
-//                    AnswerNumber = Short.valueOf(statisticToSend.get("AnswerNumber").toString());
-//                else
-//                    AnswerNumber = null;
-//
-//                LocalDateTime dateStart;
-//                if (statisticToSend.get("DateStart") != null)
-//                    dateStart = LocalDateTime.parse(statisticToSend.get("DateStart").toString(), formatter);
-//                else
-//                    dateStart = null;
-//
-//                Integer clicks;
-//                if (statisticToSend.get("Clicks") != null)
-//                    clicks = Integer.valueOf(statisticToSend.get("Clicks").toString());
-//                else clicks = null;
-//
-//                Integer missClicks;
-//                if (statisticToSend.get("MissClicks") != null)
-//                    missClicks = Integer.valueOf(statisticToSend.get("MissClicks").toString());
-//                else missClicks = null;
-//
-//
-//                if (jsonObject != null) {
-//                    detailsString = jsonObject.toString();
-//                }
-//                else detailsString = null;
-//
-//                Short type = Short.valueOf(statisticToSend.get("Type").toString());
-//                //Ставим статус завершения при типе 2
-//                if (type == 2){
-//                    GameStatus gameStatus = this.gameStatusService.getGameStatusByGamePatient(gamePatient);
-//                    gameStatus.setStatus(Status.DONE);
-//                    this.gameStatusService.updateGameStatus(gameStatus);
-//                }
-//
-//                GameStatistic statistic = new GameStatistic(
-//                        gamePatient,
-//                        type,
-//                        dateAction,
-//                        AnswerNumber,
-//                        dateStart,
-//                        clicks,
-//                        missClicks,
-//                        detailsString);
-//                this.gameStatisticService.createGameStatistic(statistic);
-//                this.patientService.updatePatient(patient);
-//            }
-//            JsonObject response = new JsonObject();
-//            response.put("message", "GameStatistic was added");
-//            return response);
-//        }
-//        catch (Exception e){
-//            System.out.println(e.getMessage());
-//            JsonObject exceptionResponse = new JsonObject();
-//            exceptionResponse.put("message", e.getMessage());
-//            return exceptionResponse);
-//        }
-//    }
-
 
     @GetMapping(path = "/games/statistics/test")
-    public JsonObject sad(@RequestHeader("token") String token, @RequestHeader("game") String gameID) {
+    public ResponseEntity<JsonObject> sad(@RequestHeader("token") String token, @RequestHeader("game") String gameID) {
         try {
             Patient patient = this.patientService.getPatientByUser(this.userService.getUserById(this.userService.verifyToken(token)));
             Game game = this.gameService.getGameById(UUID.fromString(gameID));
@@ -233,18 +147,18 @@ public class PatientController {
             JsonObject response = new JsonObject();
             response.put("result", this.gameStatisticService.sdasdasds(gamePatient));
             response.put("class", this.gameStatisticService.sdasdasds(gamePatient).getClass());
-            return response;
+            return new ResponseEntity<>(response, HttpStatus.OK);
         }
         catch (IllegalArgumentException e){
             JsonObject exceptionResponse = new JsonObject();
             exceptionResponse.put("message", e.getMessage());
-            return exceptionResponse;
+            return new ResponseEntity<>(exceptionResponse, HttpStatus.BAD_REQUEST);
         }
     }
 
 
     @GetMapping(path = "/games/statistics/additional_fields")
-    public JsonObject getAdditionalFields(@RequestHeader("token") String token,
+    public ResponseEntity<JsonObject> getAdditionalFields(@RequestHeader("token") String token,
                                             @RequestHeader("game") String gameID) {
         try {
             Patient patient = this.patientService.getPatientByUser(this.userService.getUserById(this.userService.verifyToken(token)));
@@ -254,17 +168,17 @@ public class PatientController {
             String details = this.startedGameService.getLatestDetailsByGamePatient(gamePatient);
             JsonObject response = new JsonObject();
             response.put("result", details);
-            return response;
+            return new ResponseEntity<>(response, HttpStatus.OK);
         }
         catch (IllegalArgumentException e){
             JsonObject exceptionResponse = new JsonObject();
             exceptionResponse.put("message", e.getMessage());
-            return exceptionResponse;
+            return new ResponseEntity<>(exceptionResponse, HttpStatus.BAD_REQUEST);
         }
     }
 
     @PostMapping(path = "/games/statistics/additional_fields")
-    public JsonObject setAdditionalFields(@RequestHeader("token") String token,
+    public ResponseEntity<JsonObject> setAdditionalFields(@RequestHeader("token") String token,
                                           @RequestHeader("game") String gameID,
                                           @Valid @RequestBody JsonRequest data) {
         try {
@@ -278,50 +192,18 @@ public class PatientController {
             this.startedGameService.saveStartedGame(startedGame);
             JsonObject response = new JsonObject();
             response.put("result", "OK");
-            return response;
+            return new ResponseEntity<>(response, HttpStatus.OK);
         }
         catch (IllegalArgumentException e){
             JsonObject exceptionResponse = new JsonObject();
             exceptionResponse.put("message", e.getMessage());
-            return exceptionResponse;
+            return new ResponseEntity<>(exceptionResponse, HttpStatus.BAD_REQUEST);
         }
     }
 
 
-//    @PostMapping(path = "/games/statistics/game_start")
-//    public JsonObject addGameStart(@RequestHeader("token") String token,
-//                                     @RequestHeader("game") String gameID,
-//                                     @Valid @RequestBody GameStartRequest data) {
-//        try {
-//            Patient patient = this.patientService.getPatientByUser(this.userService.getUserById(this.userService.verifyToken(token)));
-//            Game game = this.gameService.getGameById(UUID.fromString(gameID));
-//            GamePatient gamePatient = this.gamePatientService.getGamePatientByGameAndPatient(game, patient);
-//            if (gamePatient == null) throw new IllegalArgumentException("Sorry, but GamePatient was not found.");
-//
-//            LocalDateTime dateStart = LocalDateTime.parse(data.getDate_start());
-//
-////            String detailsString;
-////            if (data.getDetails() != null) {
-////                detailsString = data.getDetails().toString();
-////            }
-////            else detailsString = null;
-//
-//            StartedGame startedGame = new StartedGame(gamePatient, dateStart, null, data.getDetails());
-//            this.startedGameService.saveStartedGame(startedGame);
-//
-//            JsonObject response = new JsonObject();
-//            response.put("result", "OK");
-//            return response);
-//        }
-//        catch (IllegalArgumentException e){
-//            JsonObject exceptionResponse = new JsonObject();
-//            exceptionResponse.put("message", e.getMessage());
-//            return exceptionResponse);
-//        }
-//    }
-
     @PostMapping(path = "/games/statistics/game_start")
-    public JsonObject addGameStart(@RequestHeader("token") String token,
+    public ResponseEntity<JsonObject> addGameStart(@RequestHeader("token") String token,
                                      @RequestHeader("game") String gameID,
                                      @Valid @RequestBody GameStartRequest data) {
         try {
@@ -331,13 +213,7 @@ public class PatientController {
             if (gamePatient == null) throw new IllegalArgumentException("Sorry, but GamePatient was not found.");
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("M/d/yyyy, h:m:s a");
             LocalDateTime dateStart = LocalDateTime.parse(data.getDate_start(), formatter);
-//            LocalDateTime dateStart = LocalDateTime.parse(data.get("date_start").toString());
 
-//            String detailsString;
-//            if (data.getDetails() != null) {
-//                detailsString = data.getDetails().toString();
-//            }
-//            else detailsString = null;
 
             StartedGame startedGame = new StartedGame(gamePatient, dateStart, null, data.getDetails());
             this.startedGameService.saveStartedGame(startedGame);
@@ -347,60 +223,21 @@ public class PatientController {
                 this.gamePatientService.saveGamePatient(gamePatient);
             }
 
-//            GameStatus gameStatus = this.gameStatusService.getGameStatusByGamePatient(gamePatient);
-//            if (gameStatus.getStatus() != Status.DONE){
-//                gameStatus.setStatus(Status.STARTED);
-//                this.gameStatusService.updateGameStatus(gameStatus);
-//            }
-
             JsonObject response = new JsonObject();
             response.put("result", "OK");
-            return response;
+            return new ResponseEntity<>(response, HttpStatus.OK);
         }
         catch (Exception e){
             e.printStackTrace();
             JsonObject exceptionResponse = new JsonObject();
             exceptionResponse.put("message", e.getMessage());
-            return exceptionResponse;
+            return new ResponseEntity<>(exceptionResponse, HttpStatus.BAD_REQUEST);
         }
     }
 
-//    @PostMapping(path = "/games/statistics/game_start")
-//    public JsonObject addGameStart(@RequestHeader("token") String token,
-//                                     @RequestHeader("game") String gameID,
-//                                     @Valid @RequestBody JsonObject data) {
-//        try {
-//            Patient patient = this.patientService.getPatientByUser(this.userService.getUserById(this.userService.verifyToken(token)));
-//            Game game = this.gameService.getGameById(UUID.fromString(gameID));
-//            GamePatient gamePatient = this.gamePatientService.getGamePatientByGameAndPatient(game, patient);
-//            if (gamePatient == null) throw new IllegalArgumentException("Sorry, but GamePatient was not found.");
-//            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("M/d/yyyy, h:m:s a");
-//            LocalDateTime dateStart = LocalDateTime.parse(data.get("date_start").toString(), formatter);
-////            LocalDateTime dateStart = LocalDateTime.parse(data.get("date_start").toString());
-//
-////            String detailsString;
-////            if (data.getDetails() != null) {
-////                detailsString = data.getDetails().toString();
-////            }
-////            else detailsString = null;
-//
-//            StartedGame startedGame = new StartedGame(gamePatient, dateStart, null, data.get("details").toString());
-//            this.startedGameService.saveStartedGame(startedGame);
-//
-//            JsonObject response = new JsonObject();
-//            response.put("result", "OK");
-//            return response);
-//        }
-//        catch (Exception e){
-//            e.printStackTrace();
-//            JsonObject exceptionResponse = new JsonObject();
-//            exceptionResponse.put("message", e.getMessage());
-//            return exceptionResponse);
-//        }
-//    }
 
     @PostMapping(path = "/games/statistics/game_end")
-    public JsonObject addGameEnd(@RequestHeader("token") String token,
+    public ResponseEntity<JsonObject> addGameEnd(@RequestHeader("token") String token,
                                    @RequestHeader("game") String gameID,
                                    @Valid @RequestBody GameEndRequest data) {
         try {
@@ -414,8 +251,6 @@ public class PatientController {
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("M/d/yyyy, h:m:s a");
             LocalDateTime dateEnd = LocalDateTime.parse(data.getDate_end(), formatter);
 
-//            LocalDateTime dateEnd = LocalDateTime.parse(data.getDate_end());
-
             startedGame.setDateEnd(dateEnd);
             startedGame.setDetails(data.getDetails());
             this.startedGameService.saveStartedGame(startedGame);
@@ -424,72 +259,21 @@ public class PatientController {
                 gamePatient.setStatus(Status.DONE);
                 this.gamePatientService.saveGamePatient(gamePatient);
             }
-//            GameStatus gameStatus = this.gameStatusService.getGameStatusByGamePatient(gamePatient);
-//            if (gameStatus.getStatus() != Status.DONE){
-//                gameStatus.setStatus(Status.DONE);
-//                this.gameStatusService.updateGameStatus(gameStatus);
-//            }
 
             JsonObject response = new JsonObject();
             response.put("result", "OK");
-            return response;
+            return new ResponseEntity<>(response, HttpStatus.OK);
         }
         catch (IllegalArgumentException e){
             JsonObject exceptionResponse = new JsonObject();
             exceptionResponse.put("message", e.getMessage());
-            return exceptionResponse;
+            return new ResponseEntity<>(exceptionResponse, HttpStatus.BAD_REQUEST);
         }
     }
 
-//    @PostMapping(path = "/games/statistics/game_end")
-//    public JsonObject addGameEnd(@RequestHeader("token") String token,
-//                                   @RequestHeader("game") String gameID,
-//                                   @Valid @RequestBody JSONObject data) {
-//        try {
-//            System.out.println();
-//            System.out.println();
-//            System.out.println();
-//            System.out.println();
-//            System.out.println();
-//            System.out.println(data);
-//            System.out.println(data.get("date_end"));
-//            System.out.println(data.get("details"));
-//            System.out.println();
-//            System.out.println();
-//            System.out.println();
-//            System.out.println();
-//            System.out.println();
-//
-//            Patient patient = this.patientService.getPatientByUser(this.userService.getUserById(this.userService.verifyToken(token)));
-//            Game game = this.gameService.getGameById(UUID.fromString(gameID));
-//            GamePatient gamePatient = this.gamePatientService.getGamePatientByGameAndPatient(game, patient);
-//            if (gamePatient == null) throw new IllegalArgumentException("Sorry, but GamePatient was not found.");
-//            StartedGame startedGame = this.startedGameService.getUnfinishedStartedGameByGamePatient(gamePatient);
-//            if (startedGame == null) throw new IllegalArgumentException("Sorry, but StartedGame was not found.");
-//
-//            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("M/d/yyyy, h:m:s a");
-//            LocalDateTime dateEnd = LocalDateTime.parse(data.get("date_end").toString(), formatter);
-//
-////            LocalDateTime dateEnd = LocalDateTime.parse(data.getDate_end());
-//
-//            startedGame.setDateEnd(dateEnd);
-//            startedGame.setDetails(data.get("details").toString());
-//            this.startedGameService.saveStartedGame(startedGame);
-//
-//            JsonObject response = new JsonObject();
-//            response.put("result", "OK");
-//            return response);
-//        }
-//        catch (IllegalArgumentException e){
-//            JsonObject exceptionResponse = new JsonObject();
-//            exceptionResponse.put("message", e.getMessage());
-//            return exceptionResponse);
-//        }
-//    }
-
 
     @PostMapping(path = "/games/statistics/send_statistic")
-    public JsonObject sendStatistic(@RequestHeader("token") String token,
+    public ResponseEntity<JsonObject> sendStatistic(@RequestHeader("token") String token,
                                       @RequestHeader("game") String gameID,
                                       @Valid @RequestBody StatisticToSend data) {
         try {
@@ -519,18 +303,18 @@ public class PatientController {
 
             JsonObject response = new JsonObject();
             response.put("result", "OK");
-            return response;
+            return new ResponseEntity<>(response, HttpStatus.OK);
         }
         catch (IllegalArgumentException e){
             JsonObject exceptionResponse = new JsonObject();
             exceptionResponse.put("message", e.getMessage());
-            return exceptionResponse;
+            return new ResponseEntity<>(exceptionResponse, HttpStatus.BAD_REQUEST);
         }
     }
 
 
     @GetMapping(path = "/games/status")
-    public JsonObject getStatusOfGame(@RequestHeader("token") String token,
+    public ResponseEntity<JsonObject> getStatusOfGame(@RequestHeader("token") String token,
                                         @RequestParam String gameID) {
         try {
             Patient patient = this.patientService.getPatientByUser(this.userService.getUserById(this.userService.verifyToken(token)));
@@ -541,34 +325,33 @@ public class PatientController {
 //            GameStatus gameStatus = this.gameStatusService.getGameStatusByGamePatient(gamePatient);
             JsonObject response = new JsonObject();
             response.put("gameStatus", gamePatient.getStatus());
-            return response;
+            return new ResponseEntity<>(response, HttpStatus.OK);
         }
         catch (IllegalArgumentException e){
             JsonObject exceptionResponse = new JsonObject();
             exceptionResponse.put("message", e.getMessage());
-            return exceptionResponse;
+            return new ResponseEntity<>(exceptionResponse, HttpStatus.BAD_REQUEST);
         }
     }
 
     @PutMapping(path = "/games/status/update")
-    public JsonObject updateStatusOfGame(@RequestHeader("token") String token,
+    public ResponseEntity<JsonObject> updateStatusOfGame(@RequestHeader("token") String token,
                                            @Valid @RequestBody StatusRequest statusRequest) {
-        // TODO Сделать это когда-нибудь
         try {
             Patient patient = this.patientService.getPatientByUser(this.userService.getUserById(this.userService.verifyToken(token)));
             JsonObject response = new JsonObject();
-            response.put("message", "Status of the game was updated");
-            return response;
+            response.put("message", "Statuses are set automatically");
+            return new ResponseEntity<>(response, HttpStatus.METHOD_NOT_ALLOWED);
         }
         catch (IllegalArgumentException e){
             JsonObject exceptionResponse = new JsonObject();
             exceptionResponse.put("message", e.getMessage());
-            return exceptionResponse;
+            return new ResponseEntity<>(exceptionResponse, HttpStatus.BAD_REQUEST);
         }
     }
 
     @GetMapping(path = "/games/status/statistic")
-    public JsonObject getStatusesStatistic(@RequestHeader("token") String token) {
+    public ResponseEntity<JsonObject> getStatusesStatistic(@RequestHeader("token") String token) {
         try {
             Patient patient = this.patientService.getPatientByUser(this.userService.getUserById(this.userService.verifyToken(token)));
             JsonObject response = new JsonObject();
@@ -589,79 +372,67 @@ public class PatientController {
             response.put("Assigned", assigned);
             response.put("Failed", failed);
             response.put("Started", started);
-            return response;
+            return new ResponseEntity<>(response, HttpStatus.OK);
         }
         catch (IllegalArgumentException e){
             JsonObject exceptionResponse = new JsonObject();
             exceptionResponse.put("message", e.getMessage());
-            return exceptionResponse;
+            return new ResponseEntity<>(exceptionResponse, HttpStatus.BAD_REQUEST);
         }
     }
 
     @GetMapping(path = "/tests/getting")
-    public JsonObject getAllTests(@RequestHeader("token") String token) {
-        // TODO Уточнить как тесты возвращаться будут
+    public ResponseEntity<JsonObject> getAllTests(@RequestHeader("token") String token) {
         try {
             Patient patient = this.patientService.getPatientByUser(this.userService.getUserById(this.userService.verifyToken(token)));
             JsonObject response = new JsonObject();
             response.put("message", "Stub");
-            return response;
+            return new ResponseEntity<>(response, HttpStatus.OK);
         }
         catch (IllegalArgumentException e){
             JsonObject exceptionResponse = new JsonObject();
             exceptionResponse.put("message", e.getMessage());
-            return exceptionResponse;
+            return new ResponseEntity<>(exceptionResponse, HttpStatus.BAD_REQUEST);
         }
     }
 
     @PostMapping(path = "/tests/statistics/sending")
-    public JsonObject sendStatisticOfGame(@RequestHeader("token") String token,
+    public ResponseEntity<JsonObject> sendStatisticOfGame(@RequestHeader("token") String token,
                                             @Valid @RequestBody TestStatisticToSend testStatisticToSend) {
         try {
-            Patient patient = this.patientService.getPatientByUser(this.userService.getUserById(this.userService.verifyToken(token)));
-            TestStatistic statistic = new TestStatistic(
-                    this.testService.getTestById(UUID.fromString(testStatisticToSend.getTest_id())),
-                    patient,
-                    testStatisticToSend.getType(),
-                    testStatisticToSend.getDateAction(),
-                    testStatisticToSend.getMessage()
-            );
-            this.testStatisticService.createTestStatistic(statistic);
-            patient.getTestStatistics().add(statistic);
-            this.patientService.updatePatient(patient);
             JsonObject response = new JsonObject();
-            response.put("message", "TestStatistic was added");
-            return response;
+            response.put("message", "In work");
+            return new ResponseEntity<>(response, HttpStatus.METHOD_NOT_ALLOWED);
         }
         catch (IllegalArgumentException e){
             JsonObject exceptionResponse = new JsonObject();
             exceptionResponse.put("message", e.getMessage());
-            return exceptionResponse;
+            return new ResponseEntity<>(exceptionResponse, HttpStatus.BAD_REQUEST);
         }
     }
 
 
     @PutMapping(path = "/tests/status/update")
-    public JsonObject updateStatusOfTest(@RequestHeader("token") String token,
+    public ResponseEntity<JsonObject> updateStatusOfTest(@RequestHeader("token") String token,
                                            @Valid @RequestBody StatusRequest statusRequest) {
         try {
-            // TODO Сделать это когда-нибудь
             Patient patient = this.patientService.getPatientByUser(this.userService.getUserById(this.userService.verifyToken(token)));
             JsonObject response = new JsonObject();
             response.put("message", "Status of the test was updated");
-            return response;
+            return new ResponseEntity<>(response, HttpStatus.OK);
         }
         catch (IllegalArgumentException e){
             JsonObject exceptionResponse = new JsonObject();
             exceptionResponse.put("message", e.getMessage());
-            return exceptionResponse;
+            return new ResponseEntity<>(exceptionResponse, HttpStatus.BAD_REQUEST);
         }
     }
 
     @GetMapping(path = "/account")
-    public JsonObject getAccountInfo(@RequestHeader("token") String token) {
+    public ResponseEntity<JsonObject> getAccountInfo(@RequestHeader("token") String token) {
         try {
             Patient patient = this.patientService.getPatientByUser(this.userService.getUserById(this.userService.verifyToken(token)));
+            if (patient == null) throw new IllegalArgumentException("Patient not found");
             JsonObject response = new JsonObject();
 
             response.put("id", patient.getId().toString());
@@ -683,7 +454,6 @@ public class PatientController {
             if (patient.getBirthDate() != null)
                 response.put("birthDate", patient.getBirthDate().toString());
             else response.put("birthDate", null);
-//            response.put("birthDate", patient.getBirthDate());
             response.put("numberPhone", patient.getNumberPhone());
             response.put("address", patient.getAddress());
             response.put("login", patient.getUser().getLogin());
@@ -709,28 +479,21 @@ public class PatientController {
                 tutorInfo.put("email", tutor.getUser().getEmail());
                 response.put("tutor", tutorInfo);
             }
-            return response;
+            return new ResponseEntity<>(response, HttpStatus.OK);
         }
         catch (IllegalArgumentException e){
             JsonObject exceptionResponse = new JsonObject();
             exceptionResponse.put("message", e.getMessage());
-            return exceptionResponse;
+            return new ResponseEntity<>(exceptionResponse, HttpStatus.BAD_REQUEST);
         }
     }
 
     @PostMapping(path = "/account/image/add")
-    public JsonObject uploadPatientImage(@RequestHeader("token") String token,
+    public ResponseEntity<JsonObject> uploadPatientImage(@RequestHeader("token") String token,
                                            @RequestParam("image") MultipartFile file) {
         try {
             Patient patient = this.patientService.getPatientByUser(this.userService.getUserById(this.userService.verifyToken(token)));
-
             String orgName = UUID.randomUUID() + "." + FilenameUtils.getExtension(file.getOriginalFilename());
-//            String orgName = patient.getId().toString() + "." + FilenameUtils.getExtension(file.getOriginalFilename());
-//            Path filepath = Paths.get("/app/images", orgName);
-//            if(new  File(filepath.toString()).exists()){
-//                System.out.println("File exists");
-//                new File(filepath.toString()).delete();
-//            }
             if(patient.getImage() != null){
                 new File("/app/images/" + patient.getImage()).delete();
                 System.out.println("Old image was deleted");
@@ -741,89 +504,75 @@ public class PatientController {
 //            String url = orgName;
             patient.setImage(orgName);
             this.patientService.updatePatient(patient);
-            System.out.println(patient.getImage());
             JsonObject response = new JsonObject();
             response.put("message", "Patient account image was added");
             response.put("image", orgName);
-            System.out.println();
-            System.out.println(patient.getImage());
-            System.out.println();
-            return response;
+            return new ResponseEntity<>(response, HttpStatus.OK);
         }
         catch (Exception e){
-            e.printStackTrace();
-//            System.out.println(e.getMessage());
             JsonObject exceptionResponse = new JsonObject();
             exceptionResponse.put("message", e.getMessage());
-            return exceptionResponse;
+            return new ResponseEntity<>(exceptionResponse, HttpStatus.BAD_REQUEST);
         }
     }
 
-//    @PutMapping(path = "/account/image/edit")
-//    public JsonObject updatePatientImage(@RequestHeader("token") String token,
-//                                           @RequestParam("image") MultipartFile file) {
-//        try {
-//            Patient patient = this.patientService.getPatientByUser(this.userService.getUserById(this.userService.verifyToken(token)));
-//            byte[] imageBytes = ImageUtility.compressImage(file.getBytes());
-//            patient.setImage(imageBytes);
-//            this.patientService.updatePatient(patient);
-//            JsonObject response = new JsonObject();
-//            response.put("message", "Patient account image was edited");
-//            return response);
-//        }
-//        catch (Exception e){
-//            JsonObject exceptionResponse = new JsonObject();
-//            exceptionResponse.put("message", e.getMessage());
-//            return exceptionResponse);
-//        }
-//    }
 
     @DeleteMapping(path = "/account/image/delete")
-    public JsonObject deletePatientImage(@RequestHeader("token") String token) {
+    public ResponseEntity<JsonObject> deletePatientImage(@RequestHeader("token") String token) {
         try {
             Patient patient = this.patientService.getPatientByUser(this.userService.getUserById(this.userService.verifyToken(token)));
-//            byte[] imageBytes = null;
-//            patient.setImage(imageBytes);
-            patient.setImage(null);
-            this.patientService.updatePatient(patient);
-            JsonObject response = new JsonObject();
-            response.put("message", "Patient account image was deleted");
-            return response;
+            if (patient == null) throw new IllegalArgumentException("Patient was not found");
+            if(patient.getImage() != null){
+                new File("/app/images/" + patient.getImage()).delete();
+                System.out.println("Old image was deleted");
+                patient.setImage(null);
+                this.patientService.updatePatient(patient);
+                JsonObject response = new JsonObject();
+                response.put("message", "Patient account image was deleted");
+                return new ResponseEntity<>(response, HttpStatus.OK);
+            }
+            else {
+                JsonObject response = new JsonObject();
+                response.put("message", "Patient image is already deleted");
+                return new ResponseEntity<>(response, HttpStatus.OK);
+            }
         }
         catch (Exception e){
             JsonObject exceptionResponse = new JsonObject();
             exceptionResponse.put("message", e.getMessage());
-            return exceptionResponse;
+            return new ResponseEntity<>(exceptionResponse, HttpStatus.BAD_REQUEST);
         }
     }
 
     @GetMapping(path = "/account/image")
-    public JsonObject getPatientImage(@RequestHeader("token") String token) {
+    public ResponseEntity<JsonObject> getPatientImage(@RequestHeader("token") String token) {
         try {
             Patient patient = this.patientService.getPatientByUser(this.userService.getUserById(this.userService.verifyToken(token)));
+            if (patient == null) throw new IllegalArgumentException("Patient not found");
             if (patient.getImage() != null) {
                 JsonObject response = new JsonObject();
                 response.put("image", patient.getImage());
-                return response;
+                return new ResponseEntity<>(response, HttpStatus.OK);
             }
             else {
                 JsonObject response = new JsonObject();
                 response.put("message", "Patient does not have an image");
-                return response;
+                return new ResponseEntity<>(response, HttpStatus.OK);
             }
         }
-        catch (Exception e){
+        catch (IllegalArgumentException e){
             JsonObject exceptionResponse = new JsonObject();
             exceptionResponse.put("message", e.getMessage());
-            return exceptionResponse;
+            return new ResponseEntity<>(exceptionResponse, HttpStatus.BAD_REQUEST);
         }
     }
 
     @PutMapping(path = "/account/changing")
-    public JsonObject editAccountOfPatient(@RequestHeader("token") String token,
+    public ResponseEntity<JsonObject> editAccountOfPatient(@RequestHeader("token") String token,
                                              @Valid @RequestBody EditPatientInfoRequest editPatientInfoRequest) {
         try {
             Patient patient = this.patientService.getPatientByUser(this.userService.getUserById(this.userService.verifyToken(token)));
+            if (patient == null) throw new IllegalArgumentException("Patient not found");
             if (editPatientInfoRequest.getName() != null){
                 patient.setName(editPatientInfoRequest.getName());
             }
@@ -836,9 +585,6 @@ public class PatientController {
             if (editPatientInfoRequest.getGender() != null){
                 patient.setGender(Gender.valueOf(editPatientInfoRequest.getGender()));
             }
-//            if (editPatientInfoRequest.getOrganization() != null){
-//                patient.setOrganization(this.organizationService.getOrganizationById(UUID.fromString(editPatientInfoRequest.getOrganization())));
-//            }
             if (editPatientInfoRequest.getBirthDate() != null){
                 patient.setBirthDate(new SimpleDateFormat("yyyy-MM-dd").parse(editPatientInfoRequest.getBirthDate()));
             }
@@ -851,12 +597,12 @@ public class PatientController {
             this.patientService.updatePatient(patient);
             JsonObject response = new JsonObject();
             response.put("message", "Patient account was edited");
-            return response;
+            return new ResponseEntity<>(response, HttpStatus.OK);
         }
         catch (Exception e){
             JsonObject exceptionResponse = new JsonObject();
             exceptionResponse.put("message", e.getMessage());
-            return exceptionResponse;
+            return new ResponseEntity<>(exceptionResponse, HttpStatus.BAD_REQUEST);
         }
     }
 }

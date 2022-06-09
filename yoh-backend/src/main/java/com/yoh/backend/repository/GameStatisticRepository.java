@@ -3,6 +3,7 @@ package com.yoh.backend.repository;
 import com.yoh.backend.entity.Game;
 import com.yoh.backend.entity.GamePatient;
 import com.yoh.backend.entity.GameStatistic;
+import com.yoh.backend.entity.StartedGame;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -53,6 +54,19 @@ public class GameStatisticRepository {
                     ")::::text[];", gamePatient.getId());
 //            List<?> result = session.createSQLQuery(sql).list();
             return session.createSQLQuery(sql).list();
+        }
+        finally {
+            session.close();
+        }
+    }
+
+    public GameStatistic getGameStatisticByStartedGame(StartedGame startedGame){
+        Session session = sessionFactory.openSession();
+        try {
+            Criteria criteria = session.createCriteria(GameStatistic.class)
+                    .add(Restrictions.eq("gamePatient", startedGame));
+            List<GameStatistic> gameStatisticsList = criteria.list();
+            return gameStatisticsList.isEmpty() ? null : gameStatisticsList.get(0);
         }
         finally {
             session.close();

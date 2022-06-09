@@ -9,6 +9,8 @@ import com.yoh.backend.request.GameToRemove;
 //import com.yoh.backend.response.JsonObject;
 import com.yoh.backend.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -37,14 +39,14 @@ public class GameController {
     private PatientService patientService;
 
     @GetMapping(path = "/all")
-    public JsonObject allGames(@RequestHeader("token") String token,
-                               @RequestParam(value = "regex", required = false, defaultValue = "") String regex,
-                               @RequestParam(value = "typeRegex", required = false, defaultValue = "") String typeRegex,
-                               @RequestParam(value = "limit", required = true) Integer limit,
-                               @RequestParam(value = "start", required = true) Integer start,
-                               @RequestParam(value = "showDeleted", required = false) Boolean showDeleted,
-                               @RequestParam(value = "order", required = false, defaultValue = "1") String order,
-                               @RequestParam(value = "patientID", required = false) String patientID) {
+    public ResponseEntity<JsonObject> allGames(@RequestHeader("token") String token,
+                                               @RequestParam(value = "regex", required = false, defaultValue = "") String regex,
+                                               @RequestParam(value = "typeRegex", required = false, defaultValue = "") String typeRegex,
+                                               @RequestParam(value = "limit", required = true) Integer limit,
+                                               @RequestParam(value = "start", required = true) Integer start,
+                                               @RequestParam(value = "showDeleted", required = false) Boolean showDeleted,
+                                               @RequestParam(value = "order", required = false, defaultValue = "1") String order,
+                                               @RequestParam(value = "patientID", required = false) String patientID) {
         try{
             User user = this.userService.getUserById(this.userService.verifyToken(token));
 //            if (user.getRole() == 1 || user.getRole() == 2)
@@ -61,7 +63,7 @@ public class GameController {
                 response.put("count", 0);
                 response.put("size", 0);
                 response.put("results", new ArrayList<>());
-                return response;
+                return new ResponseEntity<>(response, HttpStatus.OK);
             }
             if (start >= listCount)
                 throw new IllegalArgumentException(String.format("No element at that index (%s)", start));
@@ -75,16 +77,16 @@ public class GameController {
             response.put("count", gameList.size());
             response.put("size", listCount);
             response.put("results", gameList);
-            return response;
+            return new ResponseEntity<>(response, HttpStatus.OK);
         }catch (Exception e){
             JsonObject exceptionResponse = new JsonObject();
             exceptionResponse.put("message", e.getMessage());
-            return exceptionResponse;
+            return new ResponseEntity<>(exceptionResponse, HttpStatus.BAD_REQUEST);
         }
     }
 
     @GetMapping(path = "/get")
-    public JsonObject getGame(@RequestHeader("token") String token,
+    public ResponseEntity<JsonObject> getGame(@RequestHeader("token") String token,
                                 @RequestParam String gameID) {
         try{
             User user = this.userService.getUserById(this.userService.verifyToken(token));
@@ -100,19 +102,24 @@ public class GameController {
             response.put("gameStatus", game.getGameActiveStatus());
             JsonObject jsonObject = new JsonObject();
             jsonObject.put("gameInfo", response);
-            return jsonObject;
+            return new ResponseEntity<>(jsonObject, HttpStatus.OK);
         }catch (IllegalArgumentException e){
             JsonObject exceptionResponse = new JsonObject();
             exceptionResponse.put("message", e.getMessage());
-            return exceptionResponse;
+            return new ResponseEntity<>(exceptionResponse, HttpStatus.BAD_REQUEST);
         }
     }
 
     @DeleteMapping(path = "/removing")
-    public String removeGame(@RequestHeader("token") String token,
+    public ResponseEntity<JsonObject> removeGame(@RequestHeader("token") String token,
                                    @Valid @RequestBody GameToRemove gameToRemove) {
         try {
-            Admin admin = this.adminService.getAdminByUser(this.userService.getUserById(this.userService.verifyToken(token)));
+            User userVerification = this.userService.getUserById(this.userService.verifyToken(token));
+            if (userVerification.getRole() != 0) {
+                JsonObject forbiddenResponse = new JsonObject();
+                forbiddenResponse.put("message", "Only admin is allowed");
+                return new ResponseEntity<>(forbiddenResponse, HttpStatus.FORBIDDEN);
+            }
             Game game = this.gameService.getGameById(UUID.fromString(gameToRemove.getGame_id()));
 
             String gameUrl = "/app/games/" + game.getId().toString();
@@ -122,7 +129,6 @@ public class GameController {
 
             List<GamePatient> gamePatientList = this.gamePatientService.getAllGamePatientsByGame(game);
 
-            //TODO цикл сохранения
             for (GamePatient gamePatient: gamePatientList){
                 gamePatient.setGamePatientStatus(GamePatientStatus.DELETED);
                 this.gamePatientService.saveGamePatient(gamePatient);
@@ -131,22 +137,30 @@ public class GameController {
             game.setActiveGameStatus(GameActiveStatus.DELETED);
             game.setUrl(null);
             this.gameService.updateGame(game);
+            JsonObject response = new JsonObject();
+            response.put("message", "Game was deleted");
+            return new ResponseEntity<>(response, HttpStatus.OK);
             //Удаление из папки
 //            this.gamePatientService.deactivateGame(game);
 
-
-            return "Game was deleted";
         }
         catch (IllegalArgumentException e) {
-            return e.getMessage();
+            JsonObject exceptionResponse = new JsonObject();
+            exceptionResponse.put("message", e.getMessage());
+            return new ResponseEntity<>(exceptionResponse, HttpStatus.BAD_REQUEST);
         }
     }
 
     @DeleteMapping(path = "/disable")
-    public String deactivateGame(@RequestHeader("token") String token,
+    public ResponseEntity<JsonObject> deactivateGame(@RequestHeader("token") String token,
                              @Valid @RequestBody GameToRemove gameToRemove) {
         try {
-            Admin admin = this.adminService.getAdminByUser(this.userService.getUserById(this.userService.verifyToken(token)));
+            User userVerification = this.userService.getUserById(this.userService.verifyToken(token));
+            if (userVerification.getRole() != 0) {
+                JsonObject forbiddenResponse = new JsonObject();
+                forbiddenResponse.put("message", "Only admin is allowed");
+                return new ResponseEntity<>(forbiddenResponse, HttpStatus.FORBIDDEN);
+            }
             Game game = this.gameService.getGameById(UUID.fromString(gameToRemove.getGame_id()));
 
             //TODO перенести в сервис
@@ -158,34 +172,52 @@ public class GameController {
 
             game.setActiveGameStatus(GameActiveStatus.DISABLED);
             this.gameService.updateGame(game);
-//            this.gamePatientService.deactivateGame(game);
-            return "Game was DISABLED";
+            JsonObject response = new JsonObject();
+            response.put("message", "Game was DISABLED");
+            return new ResponseEntity<>(response, HttpStatus.OK);
         }
         catch (IllegalArgumentException e) {
-            return e.getMessage();
+            JsonObject exceptionResponse = new JsonObject();
+            exceptionResponse.put("message", e.getMessage());
+            return new ResponseEntity<>(exceptionResponse, HttpStatus.BAD_REQUEST);
         }
     }
 
     @PutMapping(path = "/activate")
-    public String activateGame(@RequestHeader("token") String token,
+    public ResponseEntity<JsonObject> activateGame(@RequestHeader("token") String token,
                                  @Valid @RequestBody GameToRemove gameToRemove) {
         try {
-            Admin admin = this.adminService.getAdminByUser(this.userService.getUserById(this.userService.verifyToken(token)));
+            User userVerification = this.userService.getUserById(this.userService.verifyToken(token));
+            if (userVerification.getRole() != 0) {
+                JsonObject forbiddenResponse = new JsonObject();
+                forbiddenResponse.put("message", "Only admin is allowed");
+                return new ResponseEntity<>(forbiddenResponse, HttpStatus.FORBIDDEN);
+            }
             Game game = this.gameService.getGameById(UUID.fromString(gameToRemove.getGame_id()));
             game.setActiveGameStatus(GameActiveStatus.ACTIVE);
             this.gameService.updateGame(game);
-            return "Game was activated";
+//            return "Game was activated";
+            JsonObject response = new JsonObject();
+            response.put("message", "Game was activated");
+            return new ResponseEntity<>(response, HttpStatus.OK);
         }
         catch (IllegalArgumentException e) {
-            return e.getMessage();
+            JsonObject exceptionResponse = new JsonObject();
+            exceptionResponse.put("message", e.getMessage());
+            return new ResponseEntity<>(exceptionResponse, HttpStatus.BAD_REQUEST);
         }
     }
 
     @PutMapping(path = "/changing")
-    public JsonObject changeGame(@RequestHeader("token") String token,
+    public ResponseEntity<JsonObject> changeGame(@RequestHeader("token") String token,
                                    @Valid @RequestBody EditGameRequest editGameRequest) {
         try {
-            Admin admin = this.adminService.getAdminByUser(this.userService.getUserById(this.userService.verifyToken(token)));
+            User userVerification = this.userService.getUserById(this.userService.verifyToken(token));
+            if (userVerification.getRole() != 0) {
+                JsonObject forbiddenResponse = new JsonObject();
+                forbiddenResponse.put("message", "Only admin is allowed");
+                return new ResponseEntity<>(forbiddenResponse, HttpStatus.FORBIDDEN);
+            }
             Game game = this.gameService.getGameById(UUID.fromString(editGameRequest.getGame_id()));
             if (editGameRequest.getName() != null)
                 game.setName(editGameRequest.getName());
@@ -196,12 +228,12 @@ public class GameController {
             gameService.updateGame(game);
             JsonObject response = new JsonObject();
             response.put("status", "OK");
-            return response;
+            return new ResponseEntity<>(response, HttpStatus.OK);
         }
         catch (IllegalArgumentException e) {
             JsonObject exceptionResponse = new JsonObject();
             exceptionResponse.put("message", e.getMessage());
-            return exceptionResponse;
+            return new ResponseEntity<>(exceptionResponse, HttpStatus.BAD_REQUEST);
         }
     }
 }

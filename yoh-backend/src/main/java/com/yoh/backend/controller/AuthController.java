@@ -40,22 +40,22 @@ public class AuthController {
     }
 
     @PostMapping("/registration")
-    public JsonObject createUser(@Valid @RequestBody UserForCreatingRequest userRequest) {
+    public ResponseEntity<JsonObject> createUser(@Valid @RequestBody UserForCreatingRequest userRequest) {
         User user = new User(userRequest.getLogin(), userRequest.getEmail(), userRequest.getPassword(), LocalDateTime.now(), 4);
         try {
             this.userService.createUser(user);
             JsonObject response = new JsonObject();
             response.put("message", "User was created");
-            return response;
+            return new ResponseEntity<>(response, HttpStatus.OK);
         } catch (IllegalArgumentException e) {
             JsonObject exceptionResponse = new JsonObject();
             exceptionResponse.put("message", e.getMessage());
-            return exceptionResponse;
+            return new ResponseEntity<>(exceptionResponse, HttpStatus.BAD_REQUEST);
         }
     }
 
     @PostMapping("/authorization")
-    public JsonObject authorizeUser(@Valid @RequestBody UserForAuthorize userRequest) {
+    public ResponseEntity<JsonObject> authorizeUser(@Valid @RequestBody UserForAuthorize userRequest) {
         try {
             JsonObject response = new JsonObject();
             User user = this.userService.getUser(userRequest.getCredentials(), userRequest.getPassword());
@@ -63,7 +63,6 @@ public class AuthController {
             String token = this.userService.generateToken(user.getId());
             response.put("token", token);
             response.put("role", role);
-            //TODO опитимизация
             String roleString = "NotAssigned";
             if (role != null){
                 roleString = role == 0 ? "Admin" :
@@ -72,11 +71,11 @@ public class AuthController {
                                         role == 3 ? "Tutor" : "Not assigned";
             }
             response.put("roleString", roleString);
-            return response;
+            return new ResponseEntity<>(response, HttpStatus.OK);
         } catch (IllegalArgumentException e) {
             JsonObject exceptionResponse = new JsonObject();
             exceptionResponse.put("message", e.getMessage());
-            return exceptionResponse;
+            return new ResponseEntity<>(exceptionResponse, HttpStatus.UNAUTHORIZED);
         }
     }
 }

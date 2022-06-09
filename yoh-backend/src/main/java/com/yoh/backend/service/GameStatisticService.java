@@ -2,6 +2,7 @@ package com.yoh.backend.service;
 
 import com.yoh.backend.entity.GamePatient;
 import com.yoh.backend.entity.GameStatistic;
+import com.yoh.backend.entity.StartedGame;
 import com.yoh.backend.repository.GameStatisticRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -16,6 +17,10 @@ public class GameStatisticService {
 
     public void saveGameStatistic(GameStatistic gameStatistic) throws IllegalArgumentException{
         gameStatisticRepository.saveGameStatistic(gameStatistic);
+    }
+
+    public GameStatistic getGameStatisticByStartedGame(StartedGame startedGame) {
+        return gameStatisticRepository.getGameStatisticByStartedGame(startedGame);
     }
 
     public List<?> sdasdasds(GamePatient gamePatient) throws IllegalArgumentException{

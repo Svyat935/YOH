@@ -7,6 +7,8 @@ import com.yoh.backend.repository.StartedGameRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class StartedGameService {
     @Autowired
@@ -26,5 +28,9 @@ public class StartedGameService {
 
     public StartedGame getUnfinishedStartedGameByGamePatient(GamePatient gamePatient) {
         return startedGameRepository.getUnfinishedStartedGameByGamePatient(gamePatient);
+    }
+
+    public List<StartedGame> getStartedGamesByGamePatient(GamePatient gamePatient) {
+        return  startedGameRepository.getStartedGamesByGamePatient(gamePatient);
     }
 }

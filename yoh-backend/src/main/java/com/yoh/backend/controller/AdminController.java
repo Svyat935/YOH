@@ -14,6 +14,8 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -66,14 +68,20 @@ public class AdminController {
     private GameService gameService;
 
     @GetMapping(path = "/users/all")
-    public JsonObject getUsers(@RequestHeader("token") String token,
-                                 @RequestParam(value = "limit", required = true) Integer limit,
-                                 @RequestParam(value = "start", required = true) Integer start,
-                                 @RequestParam(value = "role", required = false, defaultValue = "-1") String role,
-                                 @RequestParam(value = "regex", required = false, defaultValue = "") String regex,
-                                 @RequestParam(value = "order", required = false, defaultValue = "") String order) {
+    public ResponseEntity<JsonObject> getUsers(@RequestHeader("token") String token,
+                                               @RequestParam(value = "limit", required = true) Integer limit,
+                                               @RequestParam(value = "start", required = true) Integer start,
+                                               @RequestParam(value = "role", required = false, defaultValue = "-1") String role,
+                                               @RequestParam(value = "regex", required = false, defaultValue = "") String regex,
+                                               @RequestParam(value = "order", required = false, defaultValue = "") String order) {
         try {
-            Admin admin = this.adminService.getAdminByUser(this.userService.getUserById(this.userService.verifyToken(token)));
+//            Admin admin = this.adminService.getAdminByUser(this.userService.getUserById(this.userService.verifyToken(token)));
+            User userVerification = this.userService.getUserById(this.userService.verifyToken(token));
+            if (userVerification.getRole() != 0) {
+                JsonObject forbiddenResponse = new JsonObject();
+                forbiddenResponse.put("message", "Only admin is allowed");
+                return new ResponseEntity<>(forbiddenResponse, HttpStatus.FORBIDDEN);
+            }
             JsonObject response = new JsonObject();
             List<UserInfoResponse> responseList = new ArrayList<>();
             int listCount = this.userService.getAllUsersByAdminCount(Integer.parseInt(role), regex);
@@ -83,7 +91,7 @@ public class AdminController {
                 response.put("count", 0);
                 response.put("size", 0);
                 response.put("results", new ArrayList<>());
-                return response;
+                return new ResponseEntity<>(response, HttpStatus.OK);
             }
             if (start >= listCount)
                 throw new IllegalArgumentException(String.format("No element at that index (%s)", start));
@@ -104,27 +112,32 @@ public class AdminController {
                 responseList.add(new UserInfoResponse(user));
             }
             response.put("results", responseList);
-            return response;
+            return new ResponseEntity<>(response, HttpStatus.OK);
         }
         catch (IllegalArgumentException e){
             JsonObject exceptionResponse = new JsonObject();
             exceptionResponse.put("message", e.getMessage());
-            return exceptionResponse;
+            return new ResponseEntity<>(exceptionResponse, HttpStatus.BAD_REQUEST);
         }
     }
 
     @GetMapping(path = "/users/get")
-    public JsonObject getUserInfo(@RequestHeader("token") String token,
+    public ResponseEntity<JsonObject> getUserInfo(@RequestHeader("token") String token,
                                     @RequestParam String id) {
         try {
-            Admin admin = this.adminService.getAdminByUser(this.userService.getUserById(this.userService.verifyToken(token)));
+//            Admin admin = this.adminService.getAdminByUser(this.userService.getUserById(this.userService.verifyToken(token)));
+            User userVerification = this.userService.getUserById(this.userService.verifyToken(token));
+            if (userVerification.getRole() != 0) {
+                JsonObject forbiddenResponse = new JsonObject();
+                forbiddenResponse.put("message", "Only admin is allowed");
+                return new ResponseEntity<>(forbiddenResponse, HttpStatus.FORBIDDEN);
+            }
             User user = this.userService.getUserById(UUID.fromString(id));
             switch (user.getRole()) {
                 case 1 -> {
                     //patient
                     Patient patient = this.patientService.getPatientByUser(user);
                     JsonObject response = new JsonObject();
-
                     response.put("id", patient.getId().toString());
                     response.put("name", patient.getName());
                     response.put("surname", patient.getSurname());
@@ -167,7 +180,7 @@ public class AdminController {
                         tutorInfo.put("email", tutor.getUser().getEmail());
                         response.put("tutor", tutorInfo);
                     }
-                    return response;
+                    return new ResponseEntity<>(response, HttpStatus.OK);
                 }
                 case 3 -> {
                     //tutor
@@ -187,66 +200,77 @@ public class AdminController {
                     }
                     response.put("login", tutor.getUser().getLogin());
                     response.put("email", tutor.getUser().getEmail());
-                    return response;
+                    return new ResponseEntity<>(response, HttpStatus.OK);
                 }
             }
             JsonObject genericResponse = new JsonObject();
             genericResponse.put("message", "User was not founded");
-            return genericResponse;
+            return new ResponseEntity<>(genericResponse, HttpStatus.BAD_REQUEST);
         }
         catch (IllegalArgumentException e){
             JsonObject exceptionResponse = new JsonObject();
             exceptionResponse.put("message", e.getMessage());
-            return exceptionResponse;
+            return new ResponseEntity<>(exceptionResponse, HttpStatus.BAD_REQUEST);
         }
     }
 
     @GetMapping(path = "/users/tutor/image")
-    public JsonObject getTutorImage(@RequestHeader("token") String token,
+    public ResponseEntity<JsonObject> getTutorImage(@RequestHeader("token") String token,
                                       @RequestParam String userID) {
         try {
-            Admin admin = this.adminService.getAdminByUser(this.userService.getUserById(this.userService.verifyToken(token)));
+//            Admin admin = this.adminService.getAdminByUser(this.userService.getUserById(this.userService.verifyToken(token)));
+            User userVerification = this.userService.getUserById(this.userService.verifyToken(token));
+            if (userVerification.getRole() != 0) {
+                JsonObject forbiddenResponse = new JsonObject();
+                forbiddenResponse.put("message", "Only admin is allowed");
+                return new ResponseEntity<>(forbiddenResponse, HttpStatus.FORBIDDEN);
+            }
             Tutor tutor = this.tutorService.getTutorByUser(this.userService.getUserById(UUID.fromString(userID)));
             if (tutor.getImage() != null) {
                 JsonObject response = new JsonObject();
                 response.put("image", tutor.getImage());
-                return response;
+                return new ResponseEntity<>(response, HttpStatus.OK);
             }
             JsonObject response = new JsonObject();
             response.put("message", "Tutor does not have an image");
-            return response;
+            return new ResponseEntity<>(response, HttpStatus.OK);
         }
         catch (IllegalArgumentException e){
             JsonObject exceptionResponse = new JsonObject();
             exceptionResponse.put("message", e.getMessage());
-            return exceptionResponse;
+            return new ResponseEntity<>(exceptionResponse, HttpStatus.BAD_REQUEST);
         }
     }
 
     @GetMapping(path = "/users/patient/image")
-    public JsonObject getPatientImage(@RequestHeader("token") String token,
+    public ResponseEntity<JsonObject> getPatientImage(@RequestHeader("token") String token,
                                       @RequestParam String userID) {
         try {
-            Admin admin = this.adminService.getAdminByUser(this.userService.getUserById(this.userService.verifyToken(token)));
+            User userVerification = this.userService.getUserById(this.userService.verifyToken(token));
+            if (userVerification.getRole() != 0) {
+                JsonObject forbiddenResponse = new JsonObject();
+                forbiddenResponse.put("message", "Only admin is allowed");
+                return new ResponseEntity<>(forbiddenResponse, HttpStatus.FORBIDDEN);
+            }
             Patient patient = this.patientService.getPatientByUser(this.userService.getUserById(UUID.fromString(userID)));
             if (patient.getImage() != null) {
                 JsonObject response = new JsonObject();
                 response.put("image", patient.getImage());
-                return response;
+                return new ResponseEntity<>(response, HttpStatus.OK);
             }
             JsonObject response = new JsonObject();
             response.put("message", "Patient does not have an image");
-            return response;
+            return new ResponseEntity<>(response, HttpStatus.OK);
         }
         catch (IllegalArgumentException e){
             JsonObject exceptionResponse = new JsonObject();
             exceptionResponse.put("message", e.getMessage());
-            return exceptionResponse;
+            return new ResponseEntity<>(exceptionResponse, HttpStatus.BAD_REQUEST);
         }
     }
 
     @PostMapping(path = "/upload/games")
-    public JsonObject uploadGames(@RequestHeader("token") String token,
+    public ResponseEntity<JsonObject> uploadGames(@RequestHeader("token") String token,
                                     @RequestParam MultipartFile file,
                                     @RequestParam String type,
                                     @RequestParam String name,
@@ -256,8 +280,12 @@ public class AdminController {
     ) {
         try {
 //            Admin admin = this.adminService.getAdminByUser(this.userService.getUserById(this.userService.verifyToken(token)));
-            User user = this.userService.getUserById(this.userService.verifyToken(token));
-            if (user.getRole() != 0) throw new IllegalArgumentException("This user does not have access");
+            User userVerification = this.userService.getUserById(this.userService.verifyToken(token));
+            if (userVerification.getRole() != 0) {
+                JsonObject forbiddenResponse = new JsonObject();
+                forbiddenResponse.put("message", "Only admin is allowed");
+                return new ResponseEntity<>(forbiddenResponse, HttpStatus.FORBIDDEN);
+            }
             Game game;
             if (this.gameService.checkGameByName(name)){
                 game = this.gameService.getGameByName(name);
@@ -307,23 +335,27 @@ public class AdminController {
 
             JsonObject response = new JsonObject();
             response.put("message", "games successfully uploaded");
-            return response;
+            return new ResponseEntity<>(response, HttpStatus.OK);
         }
         catch (Exception e){
             JsonObject exceptionResponse = new JsonObject();
             exceptionResponse.put("message", e.getMessage());
-            return exceptionResponse;
+            return new ResponseEntity<>(exceptionResponse, HttpStatus.BAD_REQUEST);
         }
     }
 
     @PostMapping(path = "/upload/games/image")
-    public JsonObject uploadTutorImage(@RequestHeader("token") String token,
+    public ResponseEntity<JsonObject> uploadTutorImage(@RequestHeader("token") String token,
                                          @RequestParam String gameID,
                                          @RequestParam MultipartFile file){
         try {
 //            Admin admin = this.adminService.getAdminByUser(this.userService.getUserById(this.userService.verifyToken(token)));
-            User user = this.userService.getUserById(this.userService.verifyToken(token));
-            if (user.getRole() != 0) throw new IllegalArgumentException("This user does not have access");
+            User userVerification = this.userService.getUserById(this.userService.verifyToken(token));
+            if (userVerification.getRole() != 0) {
+                JsonObject forbiddenResponse = new JsonObject();
+                forbiddenResponse.put("message", "Only admin is allowed");
+                return new ResponseEntity<>(forbiddenResponse, HttpStatus.FORBIDDEN);
+            }
             Game game = this.gameService.getGameById(UUID.fromString(gameID));
             String orgName = UUID.randomUUID() + "." + FilenameUtils.getExtension(file.getOriginalFilename());
 
@@ -334,29 +366,31 @@ public class AdminController {
             }
             File filesd = new File("/app/images", orgName);
             FileUtils.writeByteArrayToFile(filesd, file.getBytes());
-//            String url = site_url + "images/" + orgName;
             game.setImage(orgName);
 
             this.gameService.updateGame(game);
             JsonObject response = new JsonObject();
             response.put("message", "Game image was edited");
             response.put("image", orgName);
-            return response;
+            return new ResponseEntity<>(response, HttpStatus.OK);
         }
         catch (Exception e){
             JsonObject exceptionResponse = new JsonObject();
             exceptionResponse.put("message", e.getMessage());
-            return exceptionResponse;
+            return new ResponseEntity<>(exceptionResponse, HttpStatus.BAD_REQUEST);
         }
     }
 
     @PostMapping(path = "/user/password/edit")
-    public JsonObject changePassword(@RequestHeader("token") String token,
+    public ResponseEntity<JsonObject> changePassword(@RequestHeader("token") String token,
                                        @Valid @RequestBody ChangePasswordRequest changePasswordRequest){
         try {
-//            Admin admin = this.adminService.getAdminByUser(this.userService.getUserById(this.userService.verifyToken(token)));
             User userVerification = this.userService.getUserById(this.userService.verifyToken(token));
-            if (userVerification.getRole() != 0) throw new IllegalArgumentException("This user does not have access");
+            if (userVerification.getRole() != 0) {
+                JsonObject forbiddenResponse = new JsonObject();
+                forbiddenResponse.put("message", "Only admin is allowed");
+                return new ResponseEntity<>(forbiddenResponse, HttpStatus.FORBIDDEN);
+            }
             User user = this.userService.getUserById(UUID.fromString(changePasswordRequest.getUser_id()));
             String password = changePasswordRequest.getPassword();
             String hashString = BCrypt.withDefaults().hashToString(13, password.toCharArray());
@@ -364,46 +398,53 @@ public class AdminController {
             this.userService.saveUser(user);
             JsonObject response = new JsonObject();
             response.put("message", "Password was changed");
-            return response;
+            return new ResponseEntity<>(response, HttpStatus.OK);
         }
         catch (IllegalArgumentException e){
             JsonObject exceptionResponse = new JsonObject();
             exceptionResponse.put("message", e.getMessage());
-            return exceptionResponse;
+            return new ResponseEntity<>(exceptionResponse, HttpStatus.BAD_REQUEST);
         }
     }
 
     @PostMapping(path = "/user/email/edit")
-    public JsonObject changePassword(@RequestHeader("token") String token,
+    public ResponseEntity<JsonObject> changePassword(@RequestHeader("token") String token,
                                        @Valid @RequestBody ChangeEmailRequest changeEmailRequest){
         try {
 //            Admin admin = this.adminService.getAdminByUser(this.userService.getUserById(this.userService.verifyToken(token)));
             User userVerification = this.userService.getUserById(this.userService.verifyToken(token));
-            if (userVerification.getRole() != 0) throw new IllegalArgumentException("This user does not have access");
+            if (userVerification.getRole() != 0) {
+                JsonObject forbiddenResponse = new JsonObject();
+                forbiddenResponse.put("message", "Only admin is allowed");
+                return new ResponseEntity<>(forbiddenResponse, HttpStatus.FORBIDDEN);
+            }
             User user = this.userService.getUserById(UUID.fromString(changeEmailRequest.getUser_id()));
             user.setEmail(changeEmailRequest.getEmail());
             this.userService.saveUser(user);
             JsonObject response = new JsonObject();
             response.put("message", "Email was changed");
-            return response;
+            return new ResponseEntity<>(response, HttpStatus.OK);
         }
         catch (IllegalArgumentException e){
             JsonObject exceptionResponse = new JsonObject();
             exceptionResponse.put("message", e.getMessage());
-            return exceptionResponse;
+            return new ResponseEntity<>(exceptionResponse, HttpStatus.BAD_REQUEST);
         }
     }
 
     @GetMapping(path = "/organizations/all")
-    public JsonObject getOrganizations(@RequestHeader("token") String token,
+    public ResponseEntity<JsonObject> getOrganizations(@RequestHeader("token") String token,
                                          @RequestParam(value = "limit", required = true) Integer limit,
                                          @RequestParam(value = "start", required = true) Integer start,
                                          @RequestParam(value = "regex", required = false, defaultValue = "") String regex,
                                          @RequestParam(value = "order", required = false, defaultValue = "1") String order) {
         try {
-//            Admin admin = this.adminService.getAdminByUser(this.userService.getUserById(this.userService.verifyToken(token)));
             User userVerification = this.userService.getUserById(this.userService.verifyToken(token));
-            if (userVerification.getRole() != 0) throw new IllegalArgumentException("This user does not have access");
+            if (userVerification.getRole() != 0) {
+                JsonObject forbiddenResponse = new JsonObject();
+                forbiddenResponse.put("message", "Only admin is allowed");
+                return new ResponseEntity<>(forbiddenResponse, HttpStatus.FORBIDDEN);
+            }
             JsonObject response = new JsonObject();
             int listCount = this.organizationService.getAllOrganizationsFilteredCount(regex);
 
@@ -413,7 +454,7 @@ public class AdminController {
                 response.put("count", 0);
                 response.put("size", 0);
                 response.put("results", new ArrayList<>());
-                return response;
+                return new ResponseEntity<>(response, HttpStatus.OK);
             }
 
             if (start >= listCount)
@@ -431,42 +472,48 @@ public class AdminController {
             response.put("count", organizationList.size());
             response.put("size", listCount);
             response.put("results", organizationList);
-            return response;
+            return new ResponseEntity<>(response, HttpStatus.OK);
         }
         catch (IllegalArgumentException e){
             JsonObject exceptionResponse = new JsonObject();
             exceptionResponse.put("message", e.getMessage());
-            return exceptionResponse;
+            return new ResponseEntity<>(exceptionResponse, HttpStatus.BAD_REQUEST);
         }
     }
 
     @PostMapping("/organizations/add")
-    public JsonObject createOrganization(@RequestHeader("token") String token,
+    public ResponseEntity<JsonObject> createOrganization(@RequestHeader("token") String token,
                                            @Valid @RequestBody OrganizationForAdding organizationForAdding) {
         try {
-//            Admin admin = this.adminService.getAdminByUser(this.userService.getUserById(this.userService.verifyToken(token)));
             User userVerification = this.userService.getUserById(this.userService.verifyToken(token));
-            if (userVerification.getRole() != 0) throw new IllegalArgumentException("This user does not have access");
+            if (userVerification.getRole() != 0) {
+                JsonObject forbiddenResponse = new JsonObject();
+                forbiddenResponse.put("message", "Only admin is allowed");
+                return new ResponseEntity<>(forbiddenResponse, HttpStatus.FORBIDDEN);
+            }
             Organization organization = new Organization(organizationForAdding.getName(), organizationForAdding.getAddress(), organizationForAdding.getPhone(),
                     organizationForAdding.getEmail(), organizationForAdding.getWebsite(), LocalDateTime.now());
             this.organizationService.createOrganization(organization);
             JsonObject response = new JsonObject();
             response.put("message", "Organization was created");
-            return response;
+            return new ResponseEntity<>(response, HttpStatus.OK);
         } catch (IllegalArgumentException e) {
             JsonObject exceptionResponse = new JsonObject();
             exceptionResponse.put("message", e.getMessage());
-            return exceptionResponse;
+            return new ResponseEntity<>(exceptionResponse, HttpStatus.BAD_REQUEST);
         }
     }
 
     @DeleteMapping("/organizations/delete")
-    public JsonObject deleteOrganization(@RequestHeader("token") String token,
+    public ResponseEntity<JsonObject> deleteOrganization(@RequestHeader("token") String token,
                                            @Valid @RequestBody OrganizationToDelete organizationToDelete) {
         try {
-//            Admin admin = this.adminService.getAdminByUser(this.userService.getUserById(this.userService.verifyToken(token)));
             User userVerification = this.userService.getUserById(this.userService.verifyToken(token));
-            if (userVerification.getRole() != 0) throw new IllegalArgumentException("This user does not have access");
+            if (userVerification.getRole() != 0) {
+                JsonObject forbiddenResponse = new JsonObject();
+                forbiddenResponse.put("message", "Only admin is allowed");
+                return new ResponseEntity<>(forbiddenResponse, HttpStatus.FORBIDDEN);
+            }
             Organization organization = this.organizationService.getOrganizationById(UUID.fromString(organizationToDelete.getOrganization()));
 
             //TODO улучшить
@@ -489,22 +536,25 @@ public class AdminController {
             this.organizationService.deleteOrganization(organization);
             JsonObject response = new JsonObject();
             response.put("message", "Organization was deleted");
-            return response;
+            return new ResponseEntity<>(response, HttpStatus.OK);
 
         } catch (IllegalArgumentException e) {
             JsonObject exceptionResponse = new JsonObject();
             exceptionResponse.put("message", e.getMessage());
-            return exceptionResponse;
+            return new ResponseEntity<>(exceptionResponse, HttpStatus.BAD_REQUEST);
         }
     }
 
     @PostMapping("/assign/role")
-    public JsonObject assignRoleUser(@RequestHeader("token") String token,
+    public ResponseEntity<JsonObject> assignRoleUser(@RequestHeader("token") String token,
                                        @Valid @RequestBody RoleForAssign roleForAssign) {
         try {
-//            Admin admin = this.adminService.getAdminByUser(this.userService.getUserById(this.userService.verifyToken(token)));
             User userVerification = this.userService.getUserById(this.userService.verifyToken(token));
-            if (userVerification.getRole() != 0) throw new IllegalArgumentException("This user does not have access");
+            if (userVerification.getRole() != 0) {
+                JsonObject forbiddenResponse = new JsonObject();
+                forbiddenResponse.put("message", "Only admin is allowed");
+                return new ResponseEntity<>(forbiddenResponse, HttpStatus.FORBIDDEN);
+            }
             User userForAssign = this.userService.getUserById(UUID.fromString(roleForAssign.getUser()));
             //TODO: Delete organization
             Organization testOrganization = this.organizationService.getOrganizationByName("TestOrganization");
@@ -517,7 +567,7 @@ public class AdminController {
                     this.adminService.createAdmin(user_admin);
                     JsonObject response = new JsonObject();
                     response.put("message", "Admin was assigned");
-                    return response;
+                    return new ResponseEntity<>(response, HttpStatus.OK);
                 }
                 case 1 -> {
                     userForAssign.setRole(role);
@@ -528,7 +578,7 @@ public class AdminController {
                     this.patientService.createPatient(patient);
                     JsonObject response = new JsonObject();
                     response.put("message", "Patient was assigned");
-                    return response;
+                    return new ResponseEntity<>(response, HttpStatus.OK);
                 }
                 case 2 -> {
                     userForAssign.setRole(role);
@@ -539,7 +589,7 @@ public class AdminController {
                     this.researcherService.createResearcher(researcher);
                     JsonObject response = new JsonObject();
                     response.put("message", "Researcher was assigned");
-                    return response;
+                    return new ResponseEntity<>(response, HttpStatus.OK);
                 }
                 case 3 -> {
                     userForAssign.setRole(role);
@@ -550,26 +600,31 @@ public class AdminController {
                     this.tutorService.createTutor(tutor);
                     JsonObject response = new JsonObject();
                     response.put("message", "Tutor was assigned");
-                    return response;
+                    return new ResponseEntity<>(response, HttpStatus.OK);
+                }
+                default -> {
+                    JsonObject defaultResponse = new JsonObject();
+                    defaultResponse.put("message", "No such role");
+                    return new ResponseEntity<>(defaultResponse, HttpStatus.BAD_REQUEST);
                 }
             }
         } catch (IllegalArgumentException e) {
             JsonObject exceptionResponse = new JsonObject();
             exceptionResponse.put("message", e.getMessage());
-            return exceptionResponse;
+            return new ResponseEntity<>(exceptionResponse, HttpStatus.BAD_REQUEST);
         }
-        JsonObject defaultResponse = new JsonObject();
-        defaultResponse.put("message", "No such role");
-        return defaultResponse;
     }
 
     @PostMapping("/assign/organization")
-    public JsonObject assignOrganization(@RequestHeader("token") String token,
+    public ResponseEntity<JsonObject> assignOrganization(@RequestHeader("token") String token,
                                            @Valid @RequestBody OrganizationForAssign organizationForAssign) {
         try {
-//            Admin admin = this.adminService.getAdminByUser(this.userService.getUserById(this.userService.verifyToken(token)));
             User userVerification = this.userService.getUserById(this.userService.verifyToken(token));
-            if (userVerification.getRole() != 0) throw new IllegalArgumentException("This user does not have access");
+            if (userVerification.getRole() != 0) {
+                JsonObject forbiddenResponse = new JsonObject();
+                forbiddenResponse.put("message", "Only admin is allowed");
+                return new ResponseEntity<>(forbiddenResponse, HttpStatus.FORBIDDEN);
+            }
             User userForAssign = this.userService.getUserById(UUID.fromString(organizationForAssign.getUser()));
             Organization newOrganization = this.organizationService.getOrganizationById(UUID.fromString(organizationForAssign.getOrganization()));
 
@@ -597,27 +652,30 @@ public class AdminController {
                 default -> {
                     JsonObject exceptionResponse = new JsonObject();
                     exceptionResponse.put("message", String.format("User %s was not founded in roles", userForAssign.getId()));
-                    return exceptionResponse;
+                    return new ResponseEntity<>(exceptionResponse, HttpStatus.BAD_REQUEST);
                 }
             }
             JsonObject response = new JsonObject();
             response.put("message", "Organization was assigned");
-            return response;
+            return new ResponseEntity<>(response, HttpStatus.OK);
         } catch (IllegalArgumentException e) {
             JsonObject exceptionResponse = new JsonObject();
             exceptionResponse.put("message", e.getMessage());
-            return exceptionResponse;
+            return new ResponseEntity<>(exceptionResponse, HttpStatus.BAD_REQUEST);
         }
 
     }
 
     @PutMapping(path = "/users/patient/editing")
-    public JsonObject editAccountOfPatient(@RequestHeader("token") String token,
+    public ResponseEntity<JsonObject> editAccountOfPatient(@RequestHeader("token") String token,
                                              @Valid @RequestBody EditPatientInfoByAdminRequest editPatientInfoByAdminRequest) {
         try {
-//            Admin admin = this.adminService.getAdminByUser(this.userService.getUserById(this.userService.verifyToken(token)));
             User userVerification = this.userService.getUserById(this.userService.verifyToken(token));
-            if (userVerification.getRole() != 0) throw new IllegalArgumentException("This user does not have access");
+            if (userVerification.getRole() != 0) {
+                JsonObject forbiddenResponse = new JsonObject();
+                forbiddenResponse.put("message", "Only admin is allowed");
+                return new ResponseEntity<>(forbiddenResponse, HttpStatus.FORBIDDEN);
+            }
             Patient patient = this.patientService.getPatientByUser(this.userService.getUserById(UUID.fromString(editPatientInfoByAdminRequest.getId())));
             if (editPatientInfoByAdminRequest.getName() != null){
                 patient.setName(editPatientInfoByAdminRequest.getName());
@@ -647,22 +705,25 @@ public class AdminController {
             this.patientService.updatePatient(patient);
             JsonObject response = new JsonObject();
             response.put("message", "Patient account was edited");
-            return response;
+            return new ResponseEntity<>(response, HttpStatus.OK);
         }
         catch (Exception e){
             JsonObject exceptionResponse = new JsonObject();
             exceptionResponse.put("message", e.getMessage());
-            return exceptionResponse;
+            return new ResponseEntity<>(exceptionResponse, HttpStatus.BAD_REQUEST);
         }
     }
 
     @PutMapping(path = "/users/tutor/editing")
-    public JsonObject editAccountOfTutor(@RequestHeader("token") String token,
+    public ResponseEntity<JsonObject> editAccountOfTutor(@RequestHeader("token") String token,
                                            @Valid @RequestBody EditTutorInfoByAdminRequest editTutorInfoByAdminRequest) {
         try {
-//            Admin admin = this.adminService.getAdminByUser(this.userService.getUserById(this.userService.verifyToken(token)));
             User userVerification = this.userService.getUserById(this.userService.verifyToken(token));
-            if (userVerification.getRole() != 0) throw new IllegalArgumentException("This user does not have access");
+            if (userVerification.getRole() != 0) {
+                JsonObject forbiddenResponse = new JsonObject();
+                forbiddenResponse.put("message", "Only admin is allowed");
+                return new ResponseEntity<>(forbiddenResponse, HttpStatus.FORBIDDEN);
+            }
             Tutor tutor = this.tutorService.getTutorByUser(this.userService.getUserById(UUID.fromString(editTutorInfoByAdminRequest.getId())));
             if (editTutorInfoByAdminRequest.getName() != null) {
                 tutor.setName(editTutorInfoByAdminRequest.getName());
@@ -683,12 +744,12 @@ public class AdminController {
             this.tutorService.updateTutor(tutor);
             JsonObject response = new JsonObject();
             response.put("message", "Tutor account was edited");
-            return response;
+            return new ResponseEntity<>(response, HttpStatus.OK);
         }
         catch (IllegalArgumentException e){
             JsonObject exceptionResponse = new JsonObject();
             exceptionResponse.put("message", e.getMessage());
-            return exceptionResponse;
+            return new ResponseEntity<>(exceptionResponse, HttpStatus.BAD_REQUEST);
         }
     }
 }

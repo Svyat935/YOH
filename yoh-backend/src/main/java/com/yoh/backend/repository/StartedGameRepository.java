@@ -79,4 +79,16 @@ public class StartedGameRepository {
             session.close();
         }
     }
+
+    public List<StartedGame> getStartedGamesByGamePatient(GamePatient gamePatient) {
+        Session session = sessionFactory.openSession();
+        try {
+            Criteria criteria = session.createCriteria(StartedGame.class)
+                    .add(Restrictions.eq("gamePatient", gamePatient));
+            return criteria.list();
+        }
+        finally {
+            session.close();
+        }
+    }
 }
