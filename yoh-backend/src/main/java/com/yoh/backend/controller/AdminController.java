@@ -633,6 +633,7 @@ public class AdminController {
             }
             if (editPatientInfoByAdminRequest.getOrganization() != null){
                 patient.setOrganization(this.organizationService.getOrganizationById(UUID.fromString(editPatientInfoByAdminRequest.getOrganization())));
+                patient.setTutor(null);
             }
             if (editPatientInfoByAdminRequest.getBirthDate() != null){
                 patient.setBirthDate(new SimpleDateFormat("yyyy-MM-dd").parse(editPatientInfoByAdminRequest.getBirthDate()));
@@ -674,6 +675,10 @@ public class AdminController {
             }
             if (editTutorInfoByAdminRequest.getOrganization() != null) {
                 tutor.setOrganization(this.organizationService.getOrganizationById(UUID.fromString(editTutorInfoByAdminRequest.getOrganization())));
+                for (Patient patient: tutor.getPatients()){
+                    patient.setTutor(null);
+                    this.patientService.updatePatient(patient);
+                }
             }
             this.tutorService.updateTutor(tutor);
             JsonObject response = new JsonObject();
