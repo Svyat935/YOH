@@ -54,6 +54,9 @@ class StatRecord {
 			};
 			fetch('/api/statistics', {method: 'POST', body: JSON.stringify(params_to_send)});
 		}
+		else {
+			this.sendAddFields();
+		}
 		this.current_level = params['answer_number'];
 		this.current_level_time_start = this.getTime();
 		this.clearClicks();
