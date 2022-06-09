@@ -15,7 +15,8 @@ export function CAuth() {
             })
         }).then((response) => {
             if (response.status === 200) { return response.json(); }
-            else {return null;}
+            else if (response.status === 401) { return response.json(); }
+            else { return null; }
         });
     }
 

@@ -53,7 +53,7 @@ export function VHomeTutor(props) {
             })
         }else{
             view.push(
-                <div>
+                <div style={{display: "flex", justifyContent: "center"}}>
                     <h3>Отсутвуют назначенные пользователи.</h3>
                 </div>
             )
@@ -74,13 +74,19 @@ export function VHomeTutor(props) {
                     <h3 style={{marginTop: 20}}>Последняя активность пользователей:</h3>
                     {
                         props.users.length > 0 ?
-                            <Slider max={5}>
+                            <div style={
+                                {
+                                    width: "100%",
+                                    display: "flex",
+                                    justifyContent: "space-around",
+                                }
+                            }>
                                 {createViewUsers()}
-                            </Slider> :
+                            </div> :
                         <div style={
                             {
                                 height: 387,
-                                width: 936,
+                                width: "100%",
                                 display: "flex",
                                 justifyContent: "center",
                                 alignItems: "center"
@@ -102,7 +108,7 @@ export function VHomeTutor(props) {
                             borderRadius: 40,
                         }
                     }>
-                        <h3 style={{margin: "20px 50px"}}>Отслеживание успехов</h3>
+                        <h3 style={{margin: "20px 50px"}}>Отслеживание успехов:</h3>
                         <div style={
                             {
                                 padding: "10px 20px 30px 20px"

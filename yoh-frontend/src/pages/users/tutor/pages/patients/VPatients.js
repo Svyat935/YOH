@@ -14,15 +14,16 @@ import {useNavigate} from "react-router-dom";
 import {ProgressBarCircular} from "../../../../../components/progressBarCircular/progressBarCircular";
 import {InfoBlockStatic} from "../../../../../components/infoBlockStatic/InfoBlockStatic";
 import {InfoBlockStat} from "../../../../../components/InfoBlockStat/InfoBlockStat";
+import {BsSortAlphaUp, BsSortAlphaDown} from "react-icons/bs";
 
 export function VPatients(props) {
     const filterList = [
-        {"text": "По алфавиту (возрастание)", "value": 1, "defaultChecked": true, "onClick": () => {
+        {"text": "По алфавиту", "icon": <BsSortAlphaDown size={"1.3em"}/>, "value": 1, "defaultChecked": true, "onClick": () => {
                 props.setOrder(1);
                 props.refresh();
             }
         },
-        {"text": "По алфавиту (убывание)", "value": -1, "onClick": () => {
+        {"text": "По алфавиту", "icon": <BsSortAlphaUp size={"1.3em"}/>, "value": -1, "onClick": () => {
                 props.setOrder(-1);
                 props.refresh();
             }

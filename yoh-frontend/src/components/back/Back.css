@@ -45,12 +45,12 @@
     background: #2F2F2F;
     width: 100%;
     height: 80px;
-    position: relative;
+    position: absolute;
     left: 0;
-    bottom: 0;
+    bottom: -200px;
     z-index: 1;
     text-align: center;
-    margin-top: 200px;
+    /*margin-top: 200px;*/
 }
 
 #footer p{
@@ -63,4 +63,10 @@
 
 body {
     overflow-x: hidden;
+    position: relative;
+    min-height: 100%;
+}
+
+html{
+    height: 100%;
 }

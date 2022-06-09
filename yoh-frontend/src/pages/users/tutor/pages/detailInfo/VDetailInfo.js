@@ -157,8 +157,8 @@ export function VDetailInfo(props) {
                         }
                     }>
                         <InfoBlockStatic title={
-                            props.user["name"] && props.user["surname"] ?
-                                props.user["surname"] + " " + props.user["name"] :
+                            props.user["name"] && props.user["surname"] && props.user["secondName"]?
+                                props.user["surname"] + " " + props.user["name"] + " " + props.user['secondName'] :
                                 "Отсутствуют данные"
                         }
                         >
@@ -167,8 +167,11 @@ export function VDetailInfo(props) {
                                     profileStub
                             } alt={'game'}/>
                         </InfoBlockStatic>
+                        <p>Пол: {props.user["gender"] ? props.user["gender"] : null}</p>
                         <p>Телефон: {props.user["numberPhone"] ? props.user["numberPhone"] : "Отсутствует"}</p>
                         <p>Эл.почта: {props.user["email"] ? props.user["email"] : "Отсутствует"}</p>
+                        <p>Дата Рождения: {props.user["birthDate"] ? props.user["birthDate"].slice(0, 10) : "Не указана"}</p>
+                        <p>Адрес: {props.user["address"] ? props.user["address"] : "Не указан"}</p>
                         <ButtonA width={300} text={"Добавить игру"} onClick={() => {
                             router("/user/tutor/vector/");
                         }}/>

@@ -34,12 +34,12 @@ export function VHomePatient(props) {
                 props.refresh();
             }
         },
-        {"text": "По статусу (возрастание)", "value": 3, "onClick": () => {
+        {"text": "По статусу прохождения", "icon": <BsSortNumericDown size={"1.3em"}/>, "value": 3, "onClick": () => {
                 setFilterStatus(3);
                 props.refresh();
             }
         },
-        {"text": "По статусу (убывание)", "value": -3, "onClick": () => {
+        {"text": "По статусу прохождения", "icon": <BsSortNumericUp size={"1.3em"}/>, "value": -3, "onClick": () => {
                 setFilterStatus(-3);
                 props.refresh();
             }
@@ -58,9 +58,10 @@ export function VHomePatient(props) {
 
                     let image = game["image"] !== null ? "https://mobile.itkostroma.ru/images/" + game["image"]
                         : gameStub;
+                    let status = game["status"] === "ASSIGNED" ? "Назначена" : "В состоянии прохождения";
 
                     view.push(
-                        <InfoBlock key={game["id"]} text={game["name"]} onClick={() => {
+                        <InfoBlock key={game["id"]} text={game["name"]} addText={"Статус: " + status} onClick={() => {
                             props.context.addInfo(
                                 {
                                     "url": "https://" + game["url"] + "?" +

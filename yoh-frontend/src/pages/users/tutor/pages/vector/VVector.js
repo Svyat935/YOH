@@ -13,41 +13,42 @@ import {ButtonA} from "../../../../../components/buttons/ButtonA/ButtonA";
 import {SearchInput} from "../../../../../components/searchInput/SearchInput";
 import {UserContext} from "../../../../../context/userContext";
 import {TutorNav} from "../../../../../components/navigate/NavPanel/Tutor/TutorNav";
+import {BsSortAlphaUp, BsSortAlphaDown, BsSortNumericDown, BsSortNumericUp} from "react-icons/bs";
 
 export function VVector(props) {
     const filterList = [
         {
-            "text": "По алфавиту (возрастание)", "defaultChecked": true, "value": 1, "onClick": () => {
+            "text": "По алфавиту", "icon": <BsSortAlphaDown size={"1.3em"}/>, "defaultChecked": true, "value": 1, "onClick": () => {
                 props.setOrder(1)
                 props.refresh();
             }
         },
         {
-            "text": "По алфавиту (убывание)", "value": -1, "onClick": () => {
+            "text": "По алфавиту", "icon": <BsSortAlphaUp size={"1.3em"}/>, "value": -1, "onClick": () => {
                 props.setOrder(-1)
                 props.refresh();
             }
         },
         {
-            "text": "По дате (возрастание)", "value": 2, "onClick": () => {
+            "text": "По дате добавления", "icon": <BsSortNumericDown size={"1.3em"}/>, "value": 2, "onClick": () => {
                 props.setOrder(2)
                 props.refresh();
             }
         },
         {
-            "text": "По дате (убывание)", "value": -2, "onClick": () => {
+            "text": "По дате добавления", "icon": <BsSortNumericUp size={"1.3em"}/>, "value": -2, "onClick": () => {
                 props.setOrder(-2)
                 props.refresh();
             }
         },
         {
-            "text": "По типу (возрастание)", "value": 3, "onClick": () => {
+            "text": "По типу", "icon": <BsSortAlphaDown size={"1.3em"}/>, "value": 3, "onClick": () => {
                 props.setOrder(3)
                 props.refresh();
             }
         },
         {
-            "text": "По типу (убывание)", "value": -3, "onClick": () => {
+            "text": "По типу", "icon": <BsSortAlphaUp size={"1.3em"}/>, "value": -3, "onClick": () => {
                 props.setOrder(-3)
                 props.refresh();
             }
@@ -71,7 +72,11 @@ export function VVector(props) {
                     : gameStub;
 
                 view.push(
-                    <InfoBlock key={game["id"]} text={game["name"]} onClick={
+                    <InfoBlock
+                        key={game["id"]}
+                        text={game["name"]}
+                        addText={"Тип: " + game["type"]}
+                        onClick={
                         () => {
                             setButtonStatus(0);
                             setGame(game);
@@ -102,23 +107,33 @@ export function VVector(props) {
 
     const chooseActionView = () => {
         return (
-            <div style={{
-                display: "flex",
-                justifyContent: "center"
-            }}>
-                <ButtonB text={"Показать игру"} onClick={() => {
-                    let url = "https://" + game["url"] + "?" +
-                        "token=" + props.context.token + "&" +
-                        "use_statistics=" + game["useStatistic"];
-                    let patient = props.context.info.patient;
-                    props.context.addInfo({url: url, patient: patient});
-                    window.open("/user/tutor/game/", "_blank");
-                    setShow(false);
-                }}/>
-                <ButtonB text={"Добавить игру"} onClick={() => {
-                    setButtonStatus(1);
-                }}/>
-            </div>
+            <>
+                <div>
+                    <p><b>Название</b>: {game ? game["name"]: null}</p>
+                    <p><b>Тип</b>: {game ? game["type"] : null}</p>
+                    <p><b>Описание</b>: {game ? game["description"] : null}</p>
+                </div>
+                <div style={{width: "100%", height: "1px", border: "1px solid #FFFFFF"}}/>
+                <div style={{
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    flexDirection: "column"
+                }}>
+                    <ButtonB width={"75%"} text={"Показать игру"} onClick={() => {
+                        let url = "https://" + game["url"] + "?" +
+                            "token=" + props.context.token + "&" +
+                            "use_statistics=" + game["useStatistic"];
+                        let patient = props.context.info.patient;
+                        props.context.addInfo({url: url, patient: patient});
+                        window.open("/user/tutor/game/", "_blank");
+                        setShow(false);
+                    }}/>
+                    <ButtonB width={"75%"} text={"Добавить игру"} onClick={() => {
+                        setButtonStatus(1);
+                    }}/>
+                </div>
+            </>
         )
     }
 
