@@ -50,6 +50,7 @@ public class GameController {
 //            if (user.getRole() == 1 || user.getRole() == 2)
             if (user.getRole() != 0 && user.getRole() != 3)
                 throw new IllegalArgumentException("This user doesn't have permission");
+            if (user.getRole() != 0) showDeleted = null;
             JsonObject response = new JsonObject();
             ArrayList<UUID> UUIDList = new ArrayList<>();
             if (patientID != null) this.gamePatientService.getAllGamesByPatient(this.patientService.getPatientById(UUID.fromString(patientID))).forEach(i -> UUIDList.add(i.getId()));

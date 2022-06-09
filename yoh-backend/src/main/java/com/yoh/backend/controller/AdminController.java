@@ -255,8 +255,9 @@ public class AdminController {
                                     @RequestParam(value = "image", required = false) MultipartFile image
     ) {
         try {
-            Admin admin = this.adminService.getAdminByUser(this.userService.getUserById(this.userService.verifyToken(token)));
-
+//            Admin admin = this.adminService.getAdminByUser(this.userService.getUserById(this.userService.verifyToken(token)));
+            User user = this.userService.getUserById(this.userService.verifyToken(token));
+            if (user.getRole() != 0) throw new IllegalArgumentException("This user does not have access");
             Game game;
             if (this.gameService.checkGameByName(name)){
                 game = this.gameService.getGameByName(name);
@@ -267,11 +268,23 @@ public class AdminController {
             }
 
             String url = "/app/games/" + game.getId().toString();
-//                String sd = wrapper+ "/" +game.getId().toString()+"/";
             //Unzip
             File tempFile = File.createTempFile("prefix-", "-suffix");
-//            tempFile.deleteOnExit();
             file.transferTo(tempFile);
+
+            ZipInputStream zip = new ZipInputStream(new FileInputStream(tempFile));
+            ZipEntry entry = null;
+            boolean found = false;
+            while((entry = zip.getNextEntry()) != null){
+                if(entry.getName().contains("index.html")) found = true;
+            }
+            if (!found){
+                zip.close();
+                tempFile.delete();
+                throw new IllegalArgumentException("Archive does not contains index.html");
+            }
+            zip.close();
+
             ZipFile zipFile = new ZipFile(tempFile);
             zipFile.extractAll(url);
             tempFile.delete();
@@ -308,7 +321,9 @@ public class AdminController {
                                          @RequestParam String gameID,
                                          @RequestParam MultipartFile file){
         try {
-            Admin admin = this.adminService.getAdminByUser(this.userService.getUserById(this.userService.verifyToken(token)));
+//            Admin admin = this.adminService.getAdminByUser(this.userService.getUserById(this.userService.verifyToken(token)));
+            User user = this.userService.getUserById(this.userService.verifyToken(token));
+            if (user.getRole() != 0) throw new IllegalArgumentException("This user does not have access");
             Game game = this.gameService.getGameById(UUID.fromString(gameID));
             String orgName = UUID.randomUUID() + "." + FilenameUtils.getExtension(file.getOriginalFilename());
 
@@ -335,24 +350,13 @@ public class AdminController {
         }
     }
 
-    public static File newFile(File destinationDir, ZipEntry zipEntry) throws IOException {
-        File destFile = new File(destinationDir, zipEntry.getName());
-
-        String destDirPath = destinationDir.getCanonicalPath();
-        String destFilePath = destFile.getCanonicalPath();
-
-        if (!destFilePath.startsWith(destDirPath + File.separator)) {
-            throw new IOException("Entry is outside of the target dir: " + zipEntry.getName());
-        }
-
-        return destFile;
-    }
-
     @PostMapping(path = "/user/password/edit")
     public JsonObject changePassword(@RequestHeader("token") String token,
                                        @Valid @RequestBody ChangePasswordRequest changePasswordRequest){
         try {
-            Admin admin = this.adminService.getAdminByUser(this.userService.getUserById(this.userService.verifyToken(token)));
+//            Admin admin = this.adminService.getAdminByUser(this.userService.getUserById(this.userService.verifyToken(token)));
+            User userVerification = this.userService.getUserById(this.userService.verifyToken(token));
+            if (userVerification.getRole() != 0) throw new IllegalArgumentException("This user does not have access");
             User user = this.userService.getUserById(UUID.fromString(changePasswordRequest.getUser_id()));
             String password = changePasswordRequest.getPassword();
             String hashString = BCrypt.withDefaults().hashToString(13, password.toCharArray());
@@ -373,7 +377,9 @@ public class AdminController {
     public JsonObject changePassword(@RequestHeader("token") String token,
                                        @Valid @RequestBody ChangeEmailRequest changeEmailRequest){
         try {
-            Admin admin = this.adminService.getAdminByUser(this.userService.getUserById(this.userService.verifyToken(token)));
+//            Admin admin = this.adminService.getAdminByUser(this.userService.getUserById(this.userService.verifyToken(token)));
+            User userVerification = this.userService.getUserById(this.userService.verifyToken(token));
+            if (userVerification.getRole() != 0) throw new IllegalArgumentException("This user does not have access");
             User user = this.userService.getUserById(UUID.fromString(changeEmailRequest.getUser_id()));
             user.setEmail(changeEmailRequest.getEmail());
             this.userService.saveUser(user);
@@ -395,7 +401,9 @@ public class AdminController {
                                          @RequestParam(value = "regex", required = false, defaultValue = "") String regex,
                                          @RequestParam(value = "order", required = false, defaultValue = "1") String order) {
         try {
-            Admin admin = this.adminService.getAdminByUser(this.userService.getUserById(this.userService.verifyToken(token)));
+//            Admin admin = this.adminService.getAdminByUser(this.userService.getUserById(this.userService.verifyToken(token)));
+            User userVerification = this.userService.getUserById(this.userService.verifyToken(token));
+            if (userVerification.getRole() != 0) throw new IllegalArgumentException("This user does not have access");
             JsonObject response = new JsonObject();
             int listCount = this.organizationService.getAllOrganizationsFilteredCount(regex);
 
@@ -436,7 +444,9 @@ public class AdminController {
     public JsonObject createOrganization(@RequestHeader("token") String token,
                                            @Valid @RequestBody OrganizationForAdding organizationForAdding) {
         try {
-            Admin admin = this.adminService.getAdminByUser(this.userService.getUserById(this.userService.verifyToken(token)));
+//            Admin admin = this.adminService.getAdminByUser(this.userService.getUserById(this.userService.verifyToken(token)));
+            User userVerification = this.userService.getUserById(this.userService.verifyToken(token));
+            if (userVerification.getRole() != 0) throw new IllegalArgumentException("This user does not have access");
             Organization organization = new Organization(organizationForAdding.getName(), organizationForAdding.getAddress(), organizationForAdding.getPhone(),
                     organizationForAdding.getEmail(), organizationForAdding.getWebsite(), LocalDateTime.now());
             this.organizationService.createOrganization(organization);
@@ -454,7 +464,9 @@ public class AdminController {
     public JsonObject deleteOrganization(@RequestHeader("token") String token,
                                            @Valid @RequestBody OrganizationToDelete organizationToDelete) {
         try {
-            Admin admin = this.adminService.getAdminByUser(this.userService.getUserById(this.userService.verifyToken(token)));
+//            Admin admin = this.adminService.getAdminByUser(this.userService.getUserById(this.userService.verifyToken(token)));
+            User userVerification = this.userService.getUserById(this.userService.verifyToken(token));
+            if (userVerification.getRole() != 0) throw new IllegalArgumentException("This user does not have access");
             Organization organization = this.organizationService.getOrganizationById(UUID.fromString(organizationToDelete.getOrganization()));
 
             //TODO улучшить
@@ -490,7 +502,9 @@ public class AdminController {
     public JsonObject assignRoleUser(@RequestHeader("token") String token,
                                        @Valid @RequestBody RoleForAssign roleForAssign) {
         try {
-            Admin admin = this.adminService.getAdminByUser(this.userService.getUserById(this.userService.verifyToken(token)));
+//            Admin admin = this.adminService.getAdminByUser(this.userService.getUserById(this.userService.verifyToken(token)));
+            User userVerification = this.userService.getUserById(this.userService.verifyToken(token));
+            if (userVerification.getRole() != 0) throw new IllegalArgumentException("This user does not have access");
             User userForAssign = this.userService.getUserById(UUID.fromString(roleForAssign.getUser()));
             //TODO: Delete organization
             Organization testOrganization = this.organizationService.getOrganizationByName("TestOrganization");
@@ -553,7 +567,9 @@ public class AdminController {
     public JsonObject assignOrganization(@RequestHeader("token") String token,
                                            @Valid @RequestBody OrganizationForAssign organizationForAssign) {
         try {
-            Admin admin = this.adminService.getAdminByUser(this.userService.getUserById(this.userService.verifyToken(token)));
+//            Admin admin = this.adminService.getAdminByUser(this.userService.getUserById(this.userService.verifyToken(token)));
+            User userVerification = this.userService.getUserById(this.userService.verifyToken(token));
+            if (userVerification.getRole() != 0) throw new IllegalArgumentException("This user does not have access");
             User userForAssign = this.userService.getUserById(UUID.fromString(organizationForAssign.getUser()));
             Organization newOrganization = this.organizationService.getOrganizationById(UUID.fromString(organizationForAssign.getOrganization()));
 
@@ -561,6 +577,7 @@ public class AdminController {
                 case 1 -> {
                     Patient patient = patientService.getPatientByUser(userForAssign);
                     patient.setOrganization(newOrganization);
+                    patient.setTutor(null);
                     this.patientService.updatePatient(patient);
                 }
                 case 2 -> {
@@ -571,6 +588,10 @@ public class AdminController {
                 case 3 -> {
                     Tutor tutor = tutorService.getTutorByUser(userForAssign);
                     tutor.setOrganization(newOrganization);
+                    for (Patient patient: tutor.getPatients()){
+                        patient.setTutor(null);
+                        this.patientService.updatePatient(patient);
+                    }
                     this.tutorService.updateTutor(tutor);
                 }
                 default -> {
@@ -594,7 +615,9 @@ public class AdminController {
     public JsonObject editAccountOfPatient(@RequestHeader("token") String token,
                                              @Valid @RequestBody EditPatientInfoByAdminRequest editPatientInfoByAdminRequest) {
         try {
-            Admin admin = this.adminService.getAdminByUser(this.userService.getUserById(this.userService.verifyToken(token)));
+//            Admin admin = this.adminService.getAdminByUser(this.userService.getUserById(this.userService.verifyToken(token)));
+            User userVerification = this.userService.getUserById(this.userService.verifyToken(token));
+            if (userVerification.getRole() != 0) throw new IllegalArgumentException("This user does not have access");
             Patient patient = this.patientService.getPatientByUser(this.userService.getUserById(UUID.fromString(editPatientInfoByAdminRequest.getId())));
             if (editPatientInfoByAdminRequest.getName() != null){
                 patient.setName(editPatientInfoByAdminRequest.getName());
@@ -636,7 +659,9 @@ public class AdminController {
     public JsonObject editAccountOfTutor(@RequestHeader("token") String token,
                                            @Valid @RequestBody EditTutorInfoByAdminRequest editTutorInfoByAdminRequest) {
         try {
-            Admin admin = this.adminService.getAdminByUser(this.userService.getUserById(this.userService.verifyToken(token)));
+//            Admin admin = this.adminService.getAdminByUser(this.userService.getUserById(this.userService.verifyToken(token)));
+            User userVerification = this.userService.getUserById(this.userService.verifyToken(token));
+            if (userVerification.getRole() != 0) throw new IllegalArgumentException("This user does not have access");
             Tutor tutor = this.tutorService.getTutorByUser(this.userService.getUserById(UUID.fromString(editTutorInfoByAdminRequest.getId())));
             if (editTutorInfoByAdminRequest.getName() != null) {
                 tutor.setName(editTutorInfoByAdminRequest.getName());
