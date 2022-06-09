@@ -204,7 +204,7 @@ def additional_fields_post_route():
     data['details'] = json.dumps(data.get('details')) if data.get('details') else '{}'
     result = post(send_url, json=data, headers=headers)
 
-    return result
+    return make_response(json.dumps({'message': 'Success'}))
 
 
 @api_bp.route('/statistic_pagination', methods=['GET'])
