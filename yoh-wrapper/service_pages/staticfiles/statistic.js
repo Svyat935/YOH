@@ -82,12 +82,21 @@ class StatRecord {
 		params['date_end'] = this.getTime();
 		params['details'] = this.additional_fields;
 		fetch('/api/game_end', {method: 'POST', body: JSON.stringify(params)});
-		// this.sendLeaveGame();
+	}
+
+	sendAddFields(params) {
+		if (!params) {
+			params = {};
+		}
+		params['details'] = this.additional_fields;
+		fetch('/api/additional_fields', {method: 'POST', body: JSON.stringify(params)});
 	}
 
 	sendMissClick(params) {
-		this.count_missclicks++;
-		this.count_clicks--;
+		if (Number.isInteger(this.current_level)) {
+			this.count_missclicks++;
+			this.count_clicks--;
+		}
 	}
 
 	sendAnswer(params) {

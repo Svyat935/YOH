@@ -181,6 +181,32 @@ def additional_fields_route():
     return make_response(result)
 
 
+@api_bp.route('/additional_fields', methods=['POST'])
+def additional_fields_route():
+    """
+    Метод принудительной отправки дополнительных полей для игры
+    """
+    token = session.get('user')
+    game = session.get('current_game')
+    if not token or not game:
+        game, token = url_parse(request.referrer)
+        if not token or not game:
+            abort(401)
+
+    headers = {
+        'Content-Type': 'application/json',
+        'token': token,
+        'game': game
+    }
+    send_url = 'http://yoh-backend:8080/patient/games/statistics/additional_fields'
+
+    data = json.loads(request.data)
+    data['details'] = json.dumps(data.get('details')) if data.get('details') else '{}'
+    result = post(send_url, json=data, headers=headers)
+
+    return result
+
+
 @api_bp.route('/statistic_pagination', methods=['GET'])
 def statistic_pagination_route():
     """
