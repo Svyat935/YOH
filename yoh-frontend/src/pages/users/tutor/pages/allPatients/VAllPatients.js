@@ -6,7 +6,7 @@ import React, {useState} from "react";
 import Modal from "react-bootstrap/Modal";
 import {ButtonB} from "../../../../../components/buttons/ButtonB/ButtonB";
 import Col from "react-bootstrap/Col";
-import {FilterBlock} from "../../../../../components/filterBlock/FilterBlock";
+import {SortBlock} from "../../../../../components/sortBlock/SortBlock";
 import {ButtonA} from "../../../../../components/buttons/ButtonA/ButtonA";
 import {SearchInput} from "../../../../../components/searchInput/SearchInput";
 import {InfoBlock} from "../../../../../components/infoBlock/InfoBlock";
@@ -149,7 +149,7 @@ export function VAllPatients(props) {
                             flexDirection: "column"
                         }
                     }>
-                        <FilterBlock filters={filterList}/>
+                        <SortBlock sorts={filterList}/>
 
                     </Col>
                     <Col md={8}>

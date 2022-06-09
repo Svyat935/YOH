@@ -1,0 +1,14 @@
+.sort-block{
+    background: #F5F5F5;
+    box-shadow: -10px 10px 30px rgba(0, 0, 0, 0.32);
+    border-radius: 40px;
+    width: 300px;
+    padding: 20px 30px 50px 30px;
+    margin: 20px;
+}
+
+.sort-one input[type=radio]{
+    margin-top: 15px;
+    margin-right: 10px;
+    border: none;
+}

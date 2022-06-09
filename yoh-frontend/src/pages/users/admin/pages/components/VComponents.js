@@ -7,41 +7,43 @@ import gameStub from "../../../../../assets/gameStub.jpg";
 import {useNavigate} from "react-router-dom";
 import {CheckBox} from "../../../../../components/checkbox/CheckBox";
 import {SearchFrame} from "../../../../../frame/SearchFrame/SearchFrame";
+import {InputGameType} from "../../../../../components/InputGameType/InputGameType";
+import {BsSortAlphaUp, BsSortAlphaDown, BsSortNumericDown, BsSortNumericUp} from "react-icons/bs";
 
 export function VComponents(props) {
     const filterList = [
         {
-            "text": "По алфавиту (возрастание)", "value": 1, "defaultChecked": true, "onClick": () => {
+            "text": "По алфавиту", "icon": <BsSortAlphaDown size={"1.3em"}/>, "value": 1, "defaultChecked": true, "onClick": () => {
                 props.setOrder(1);
                 props.refresh();
             }
         },
         {
-            "text": "По алфавиту (убывание)", "value": -1, "onClick": () => {
+            "text": "По алфавиту", "icon": <BsSortAlphaUp size={"1.3em"}/>, "value": -1, "onClick": () => {
                 props.setOrder(-1);
                 props.refresh();
             }
         },
         {
-            "text": "По дате (возрастание)", "value": 2, "onClick": () => {
+            "text": "По дате добавления", "icon": <BsSortNumericDown size={"1.3em"}/>, "value": 2, "onClick": () => {
                 props.setOrder(2);
                 props.refresh();
             }
         },
         {
-            "text": "По дате (убывание)", "value": -2, "onClick": () => {
+            "text": "По дате добавления", "icon": <BsSortNumericUp size={"1.3em"}/>, "value": -2, "onClick": () => {
                 props.setOrder(-2);
                 props.refresh();
             }
         },
         {
-            "text": "По типу (возрастание)", "value": 3, "onClick": () => {
+            "text": "По типу", "icon": <BsSortAlphaDown size={"1.3em"}/>, "value": 3, "onClick": () => {
                 props.setOrder(3);
                 props.refresh();
             }
         },
         {
-            "text": "По типу (убывание)", "value": -3, "onClick": () => {
+            "text": "По типу", "icon": <BsSortAlphaUp size={"1.3em"}/>, "value": -3, "onClick": () => {
                 props.setOrder(-3);
                 props.refresh();
             }
@@ -64,7 +66,11 @@ export function VComponents(props) {
                     : gameStub;
 
                 view.push(
-                    <InfoBlock ikey={game["id"]} text={game["name"]} onClick={
+                    <InfoBlock trash={game["gameActiveStatus"] === "DELETED"}
+                               ikey={game["id"]}
+                               text={game["name"]}
+                               addText={"Тип: " + game["type"]}
+                               onClick={
                         () => {
                             setButtonStatus(4);
                             setChangingGame(game);
@@ -97,7 +103,7 @@ export function VComponents(props) {
         let fName = document.getElementById("name"),
             fDescription = document.getElementById("description"),
             fFile = document.getElementById("file"),
-            fType = document.getElementById("type"),
+            fType = document.getElementById("input-game-type"),
             fStatistics = document.getElementById("useStatistics"),
             fImage = document.getElementById("image");
         let valid_style = "red 1px solid"
@@ -186,8 +192,8 @@ export function VComponents(props) {
                 } required defaultValue={gameForChanging["name"] ? gameForChanging["name"] : null}/>
                 <p id={"name-validate"} style={{height: "5px", marginBottom: 0, color: "#800000"}}/>
                 <label>Описание: </label>
-                <input id={"description"} type={"email"} style={
-                    {borderRadius: 40, border: "none", padding: "5px 15px", marginBottom: 10}
+                <textarea id={"description"} maxLength={320} rows={7} style={
+                    {resize: "none", borderRadius: 40, border: "none", padding: "10px 20px", marginBottom: 10, width: "100%"}
                 } required defaultValue={gameForChanging["description"] ? gameForChanging["description"] : null}/>
                 <p id={"description-validate"} style={{height: "5px", marginBottom: 0, color: "#800000"}}/>
             </div>
@@ -210,14 +216,12 @@ export function VComponents(props) {
                 } required/>
                 <p id={"name-validate"} style={{height: "5px", marginBottom: 0, color: "#800000"}}/>
                 <label>Описание: </label>
-                <input id={"description"} type={"text"} style={
-                    {borderRadius: 40, border: "none", padding: "5px 15px", marginBottom: 10, width: "100%"}
+                <textarea id={"description"} maxLength={320} rows={7} style={
+                    {resize: "none", borderRadius: 40, border: "none", padding: "10px 20px", marginBottom: 10, width: "100%"}
                 } required/>
                 <p id={"description-validate"} style={{height: "5px", marginBottom: 0, color: "#800000"}}/>
                 <label>Тип: </label>
-                <input id={"type"} type={"text"} style={
-                    {borderRadius: 40, border: "none", padding: "5px 15px", marginBottom: 10, width: "100%"}
-                } required/>
+                <InputGameType/>
                 <p id={"type-validate"} style={{height: "5px", marginBottom: 0, color: "#800000"}}/>
                 <label>Используется рекомендуемый класс для отправки статистики: </label>
                 <CheckBox id={"useStatistics"} style={
@@ -248,19 +252,29 @@ export function VComponents(props) {
             flexDirection: "column",
             alignItems: "center"
         }}>
-            <ButtonB text={"Посмотреть игру"} onClick={() => {
-                let url = "https://" + gameForChanging["url"] + "?" +
-                    "token=" + props.context.token + "&" +
-                    "use_statistics=" + gameForChanging["useStatistic"];
-                props.context.addInfo(url);
-                router("/user/admin/game/");}
-            }/>
-            <ButtonB text={"Изменить игру"} onClick={() => {
-                setButtonStatus(3);
-            }}/>
-            <ButtonB text={"Удалить"} onClick={() => {
+            <div>
+                <p><b>Название</b>: {gameForChanging ? gameForChanging["name"]: null}</p>
+                <p><b>Тип</b>: {gameForChanging ? gameForChanging["type"] : null}</p>
+                <p><b>Описание</b>: {gameForChanging ? gameForChanging["description"] : null}</p>
+            </div>
+            {   gameForChanging && gameForChanging["gameActiveStatus"] !== "DELETED" ?
+                <>
+                    <div style={{height: 1, width: "100%", border: "#FFFFFF 1px solid"}}/>
+                    <ButtonB width={"75%"} text={"Посмотреть игру"} onClick={() => {
+                        let url = "https://" + gameForChanging["url"] + "?" +
+                            "token=" + props.context.token + "&" +
+                            "use_statistics=" + gameForChanging["useStatistic"];
+                        props.context.addInfo(url);
+                        router("/user/admin/game/");}
+                    }/>
+                    <ButtonB width={"75%"} text={"Изменить игру"} onClick={() => {
+                        setButtonStatus(3);
+                    }}/>
+                    <ButtonB width={"75%"} text={"Удалить"} onClick={() => {
                 setButtonStatus(2);
             }}/>
+                </> : null
+            }
         </div>
     )
 
@@ -333,6 +347,12 @@ export function VComponents(props) {
             modalFooter={modalFooter()}
             title={"Список компонентов"}
             buttons={buttons}
+            switch={
+                {
+                    title: "Удаленные игры",
+                    onClick: () => {props.setShowDeleted(!props.showDeleted); props.refresh();}
+                }
+            }
             searchInputOnKeyDown={searchGame}
             searchInputOnBlur={searchGame}
             searchInputOnClick={searchGame}

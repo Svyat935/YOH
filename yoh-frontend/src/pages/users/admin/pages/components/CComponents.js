@@ -11,6 +11,7 @@ export function CComponents() {
     const [regex, setRegex] = useState("");
     const [start, setStart] = useState(0);
     const [limit, setLimit] = useState(10);
+    const [showDeleted, setShowDeleted] = useState(false);
     const [_, rerun] = useState(new class{});
     const [load, setLoad] = useState(true);
 
@@ -19,7 +20,8 @@ export function CComponents() {
             "regex=" + encodeURIComponent(regex) + "&" +
             "start=" + encodeURIComponent(start) + "&" +
             "limit=" + encodeURIComponent(limit) + "&" +
-            "order=" + encodeURIComponent(order), {
+            "order=" + encodeURIComponent(order) + "&" +
+            "showDeleted=" + encodeURIComponent(showDeleted), {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -110,6 +112,8 @@ export function CComponents() {
             sendGames={requestSendGames}
             removeGame={requestRemoveGame}
             changeGame={requestChangeGame}
+            showDeleted={showDeleted}
+            setShowDeleted={setShowDeleted}
             setRegex={setRegex}
             setStart={setStart}
             setOrder={setOrder}

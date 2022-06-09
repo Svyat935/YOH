@@ -4,11 +4,12 @@ import {ButtonB} from "../../components/buttons/ButtonB/ButtonB";
 import {Container} from "react-bootstrap";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
-import {FilterBlock} from "../../components/filterBlock/FilterBlock";
+import {SortBlock} from "../../components/sortBlock/SortBlock";
 import {ButtonA} from "../../components/buttons/ButtonA/ButtonA";
 import {SearchInput} from "../../components/searchInput/SearchInput";
 import {Back} from "../../components/back/Back";
 import React from "react";
+import {SwitchInput} from "../../components/switch/SwitchInput";
 
 export function SearchFrame(props) {
     return (
@@ -49,7 +50,21 @@ export function SearchFrame(props) {
                             flexDirection: "column"
                         }
                     }>
-                        {props.filterList ? <FilterBlock filters={props.filterList}/> : null}
+                        {props.filterList ? <SortBlock sorts={props.filterList}/> : null}
+                        {
+                            props.switch ?
+                            <div style={
+                                {
+                                    display: "flex",
+                                    justifyContent: "space-evenly",
+                                    alignItems: "center",
+                                    width: 300
+                                }
+                            }>
+                                <span>{props.switch.title}</span>
+                                <SwitchInput options={props.switch}/>
+                            </div> : null
+                        }
                         {props.buttons}
                     </Col>
                     <Col md={8}>

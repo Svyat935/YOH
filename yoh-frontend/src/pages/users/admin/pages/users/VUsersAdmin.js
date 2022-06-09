@@ -4,7 +4,7 @@ import {Container} from "react-bootstrap";
 import Col from "react-bootstrap/Col";
 import Row from "react-bootstrap/Row";
 import React, {useEffect, useState} from "react";
-import {FilterBlock} from "../../../../../components/filterBlock/FilterBlock";
+import {SortBlock} from "../../../../../components/sortBlock/SortBlock";
 import {SearchInput} from "../../../../../components/searchInput/SearchInput";
 import {InfoBlock} from "../../../../../components/infoBlock/InfoBlock";
 import profileStub from "../../../../../assets/profileStub.jpg";
@@ -17,32 +17,33 @@ import {InputBirthday} from "../../../../../components/inputBirthday/InputBirthd
 import {InputOrganization} from "../../../../../components/InputOrganization/InputOrganization";
 import {SearchFrame} from "../../../../../frame/SearchFrame/SearchFrame";
 import {Pagination} from "../../../../../components/pagination/Pagination";
+import {BsSortAlphaUp, BsSortAlphaDown, BsSortNumericDown, BsSortNumericUp} from "react-icons/bs";
 
 export function VUsersAdmin(props) {
     const filterList = [
         {
-            "text": "По алфавиту (возрастание)", "defaultChecked": true, "value": 1, "onClick": () => {
+            "text": "По алфавиту", "icon": <BsSortAlphaDown size={"1.3em"}/>, "defaultChecked": true, "value": 1, "onClick": () => {
                 props.setRole(-1);
                 props.setOrder(1);
                 props.refresh();
             }
         },
         {
-            "text": "По алфавиту (убывание)", "value": -1, "onClick": () => {
+            "text": "По алфавиту", "icon": <BsSortAlphaUp size={"1.3em"}/>, "value": -1, "onClick": () => {
                 props.setRole(-1);
                 props.setOrder(-1);
                 props.refresh();
             }
         },
         {
-            "text": "По дате (возрастание)", "value": 2, "onClick": () => {
+            "text": "По дате регистрации", "icon": <BsSortNumericDown size={"1.3em"}/>, "value": 2, "onClick": () => {
                 props.setRole(-1);
                 props.setOrder(2);
                 props.refresh();
             }
         },
         {
-            "text": "По дате (убывание)", "value": -2, "onClick": () => {
+            "text": "По дате регистрации", "icon": <BsSortNumericUp size={"1.3em"}/>, "value": -2, "onClick": () => {
                 props.setRole(-1);
                 props.setOrder(-2);
                 props.refresh();

@@ -8,7 +8,7 @@ import Modal from "react-bootstrap/Modal";
 import {Container} from "react-bootstrap";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
-import {FilterBlock} from "../../../../../components/filterBlock/FilterBlock";
+import {SortBlock} from "../../../../../components/sortBlock/SortBlock";
 import {ButtonA} from "../../../../../components/buttons/ButtonA/ButtonA";
 import {SearchInput} from "../../../../../components/searchInput/SearchInput";
 import {UserContext} from "../../../../../context/userContext";
@@ -178,7 +178,7 @@ export function VVector(props) {
                             flexDirection: "column"
                         }
                     }>
-                        <FilterBlock filters={filterList}/>
+                        <SortBlock sorts={filterList}/>
                         <ButtonA width={300} text={"Вернуться"} onClick={() => {
                             router("/user/tutor/detail")
                         }}/>

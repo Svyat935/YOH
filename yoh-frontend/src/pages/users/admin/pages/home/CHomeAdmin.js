@@ -12,7 +12,7 @@ export function CHomeAdmin() {
     const requestUsers = async () => {
         return await fetch("/admins/users/all?" +
             "start=" + encodeURIComponent(0) + "&" +
-            "limit=" + encodeURIComponent(100), {
+            "limit=" + encodeURIComponent(5), {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',

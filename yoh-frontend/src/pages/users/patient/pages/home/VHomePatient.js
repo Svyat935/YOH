@@ -5,30 +5,31 @@ import Row from "react-bootstrap/Row";
 import {Back} from "../../../../../components/back/Back";
 import {InfoBlock} from "../../../../../components/infoBlock/InfoBlock";
 import gameStub from "../../../../../assets/gameStub.jpg";
-import {FilterBlock} from "../../../../../components/filterBlock/FilterBlock";
+import {SortBlock} from "../../../../../components/sortBlock/SortBlock";
 import {ButtonA} from "../../../../../components/buttons/ButtonA/ButtonA";
 import {SearchInput} from "../../../../../components/searchInput/SearchInput";
 import {PatientNav} from "../../../../../components/navigate/NavPanel/Patient/PatientNav";
 import {useNavigate} from "react-router-dom";
+import {BsSortAlphaUp, BsSortAlphaDown, BsSortNumericDown, BsSortNumericUp} from "react-icons/bs";
 
 export function VHomePatient(props) {
     let filterList =[
-        {"text": "По названию (возрастание)", "defaultChecked": true, "value": 1, "onClick": () => {
+        {"text": "По названию", "icon": <BsSortAlphaDown size={"1.3em"}/>, "defaultChecked": true, "value": 1, "onClick": () => {
                 setFilterStatus(1);
                 props.refresh();
             }
         },
-        {"text": "По названию (убывание)", "value": -1, "onClick": () => {
+        {"text": "По названию", "icon": <BsSortAlphaUp size={"1.3em"}/>, "value": -1, "onClick": () => {
                 setFilterStatus(-1);
                 props.refresh();
             }
         },
-        {"text": "По типу (возрастание)", "value": 2, "onClick": () => {
+        {"text": "По типу игры", "icon": <BsSortAlphaDown size={"1.3em"}/>, "value": 2, "onClick": () => {
                 setFilterStatus(2);
                 props.refresh();
             }
         },
-        {"text": "По типу (убывание)", "value": -2, "onClick": () => {
+        {"text": "По типу игры", "icon": <BsSortAlphaUp size={"1.3em"}/>, "value": -2, "onClick": () => {
                 setFilterStatus(-2);
                 props.refresh();
             }
@@ -115,7 +116,7 @@ export function VHomePatient(props) {
                             flexDirection: "column"
                         }
                     }>
-                        <FilterBlock filters={filterList}/>
+                        <SortBlock sorts={filterList}/>
                     </Col>
                     <Col md={8}>
                         <SearchInput

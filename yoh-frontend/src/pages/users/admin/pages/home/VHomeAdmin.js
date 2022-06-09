@@ -59,9 +59,16 @@ export function VHomeAdmin(props) {
                             <h3 style={{marginTop: 20}}>Последние зарегистрированные пользователи:</h3>
                             {
                                 props.users.length !== 0 ?
-                                    <Slider max={4}>
+                                    <div style={
+                                        {
+                                            width: "100%",
+                                            display: "flex",
+                                            justifyContent: "space-around",
+                                        }
+                                    }>
                                         {createViewUsers()}
-                                    </Slider> :
+                                        {props.users.length === 5 ? <RightArrow onClick={() => router("/user/admin/users/")}/> : null}
+                                    </div> :
                                     <div style={
                                         {
                                             height: 387,
@@ -79,9 +86,16 @@ export function VHomeAdmin(props) {
                             <h3 style={{marginTop: 20}}>Последние игры в системе:</h3>
                             {
                                 props.games.length !== 0 ?
-                                    <Slider max={4}>
+                                    <div style={
+                                        {
+                                            width: "100%",
+                                            display: "flex",
+                                            justifyContent: "space-around",
+                                        }
+                                    }>
                                         {createViewGames()}
-                                    </Slider> :
+                                        {props.games.length === 5 ? <RightArrow onClick={() => router("/user/admin/components/")}/> : null}
+                                    </div> :
                                     <div style={
                                         {
                                             height: 387,

@@ -5,11 +5,12 @@ import {InfoLine} from "../../../../../components/infoLine/InfoLine";
 import {ButtonA} from "../../../../../components/buttons/ButtonA/ButtonA";
 import {InputPhone} from "../../../../../components/inputPhone/InputPhone";
 import {ButtonB} from "../../../../../components/buttons/ButtonB/ButtonB";
+import {BsSortAlphaDown} from "react-icons/bs";
 
 export function VOrganization(props) {
     let filterList = [
         {
-            "text": "По алфавиту (возрастание)", "defaultChecked": true, "value": 1, "onClick": () => {
+            "text": "По алфавиту", "icon": <BsSortAlphaDown size={"1.3em"}/>, "defaultChecked": true, "value": 1, "onClick": () => {
                 props.refresh();
             }
         },
