@@ -1,19 +1,20 @@
 package com.yoh.backend.request;
 
 import com.github.cliftonlabs.json_simple.JsonObject;
+import org.springframework.lang.Nullable;
 
 import javax.validation.constraints.NotNull;
 import java.util.List;
 
 public class JsonRequest {
     @NotNull
-    private JsonObject jsonObject;
+    private String details;
 
-    public void setJsonObject(JsonObject jsonObject) {
-        this.jsonObject = jsonObject;
+    public String getDetails() {
+        return details;
     }
 
-    public JsonObject getJsonObject() {
-        return jsonObject;
+    public void setDetails(String details) {
+        this.details = details;
     }
 }

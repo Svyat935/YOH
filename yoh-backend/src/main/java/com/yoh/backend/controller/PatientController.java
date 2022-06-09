@@ -265,8 +265,8 @@ public class PatientController {
 
     @PostMapping(path = "/games/statistics/additional_fields")
     public JsonObject setAdditionalFields(@RequestHeader("token") String token,
-                                            @RequestHeader("game") String gameID,
-                                            @Valid @RequestBody JsonRequest data) {
+                                          @RequestHeader("game") String gameID,
+                                          @Valid @RequestBody JsonRequest data) {
         try {
             Patient patient = this.patientService.getPatientByUser(this.userService.getUserById(this.userService.verifyToken(token)));
             Game game = this.gameService.getGameById(UUID.fromString(gameID));
@@ -274,7 +274,7 @@ public class PatientController {
             if (gamePatient == null) throw new IllegalArgumentException("Sorry, but GamePatient was not found.");
             StartedGame startedGame = this.startedGameService.getLatestStartedGameByGamePatient(gamePatient);
             if (startedGame == null) throw new IllegalArgumentException("Sorry, but StartedGame was not found.");
-            startedGame.setDetails(data.getJsonObject().toString());
+            startedGame.setDetails(data.getDetails());
             this.startedGameService.saveStartedGame(startedGame);
             JsonObject response = new JsonObject();
             response.put("result", "OK");
