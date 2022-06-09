@@ -51,19 +51,25 @@ export function VUsersAdmin(props) {
         },
         {
             "text": "Без роли", "value": 3, "onClick": () => {
+                props.setStart(0);
                 props.setRole(4);
+                props.setOrder(1);
                 props.refresh();
             }
         },
         {
             "text": "Тьютор", "value": 4, "onClick": () => {
+                props.setStart(0);
                 props.setRole(3);
+                props.setOrder(1);
                 props.refresh();
             }
         },
         {
             "text": "Наблюдаемый", "value": 5, "onClick": () => {
+                props.setStart(0);
                 props.setRole(1);
+                props.setOrder(1);
                 props.refresh();
             }
         },
