@@ -44,6 +44,7 @@ export function VGame() {
                     <iframe
                         src={src}
                         style={{width: "95vw", height: "82vh"}}
+                        allowFullScreen={true}
                         onLoad={() => setLoad(false)}
                     />
                 </LoadPage>
