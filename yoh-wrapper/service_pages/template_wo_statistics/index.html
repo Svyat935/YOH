@@ -34,6 +34,9 @@
             allowfullscreen></iframe>
 </body>
 <script>
+    var cookie_name = 'EndGame';
+
+
     function read_cookies() {
         let cookies = {}
         for (let item of document.cookie.split(";")) {
@@ -43,12 +46,14 @@
         }
         return cookies
     }
+
+
     function delete_cookie(name) {
       document.cookie += name + '=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;';
     }
-    function waitCookie () {
-        let cookie_name = 'EndGame';
 
+
+    function waitCookie () {
         if (read_cookies(document.cookie)[cookie_name] == 'true') {
             delete_cookie(cookie_name);
             if ('endGame' in window) {
@@ -62,6 +67,7 @@
         }
     }
 
+    delete_cookie(cookie_name);
     waitCookie();
 </script>
 </html>
