@@ -49,7 +49,10 @@ def game_route(game):
     use_statistics = request.args.get('use_statistics')
     if str(use_statistics).lower() == 'false':
         url = f'/games/{game}/?token={request.args["token"]}'
-        return make_response(render_template_wo_statistics(url))
+        resp = make_response(render_template_wo_statistics(url))
+        # resp.set_cookie('EndGame', '', expires=0, samesite=None, secure=True)
+        resp.headers.add('Set-Cookie', 'EndGame=false; SameSite=None; Secure=true; Path=/')
+        return resp
 
     try:
         template = render_template(f'{game}/index.html')
@@ -59,5 +62,7 @@ def game_route(game):
     session['current_game'] = game
 
     resp = make_response(template)
+    # resp.set_cookie('EndGame', '', expires=0, samesite=None, secure=True)
+    resp.headers.add('Set-Cookie', 'EndGame=false; SameSite=None; Secure=true; Path=/')
 
     return resp
