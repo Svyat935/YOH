@@ -47,14 +47,14 @@ services:
       - 5050:5050
     command: gunicorn main:"create_flask_app()" -b 0.0.0.0:5050 --reload --log-level debug --workers=9
 
-#  yoh-frontend:
-#    build: ./yoh-frontend
-#    container_name: yoh-frontend
-#    image: yoh-frontend
-#    restart: on-failure
-#    links:
-#      - yoh-backend
-#    depends_on:
-#      - yoh-backend
-#    ports:
-#      - 3000:3000
+  yoh-frontend:
+    build:
+      context: ./yoh-frontend
+      dockerfile: Dockerfile
+    container_name: yoh-frontend
+    image: yoh-frontend
+    restart: on-failure
+    links:
+      - yoh-backend
+    ports:
+      - 3000:3000
