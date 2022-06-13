@@ -37,6 +37,39 @@ public class Admin {
         this.user = user;
     }
 
+    @Column(name = "surname", length = 128, nullable = true)
+    private String surname;
+
+    public String getSurname(){
+        return this.surname;
+    }
+
+    public void setSurname(String surname){
+        this.surname = surname;
+    }
+
+    @Column(name = "name", length = 128, nullable = true)
+    private String name;
+
+    public String getName(){
+        return this.name;
+    }
+
+    public void setName(String name){
+        this.name = name;
+    }
+
+    @Column(name = "secondName", length = 128, nullable = true)
+    private String secondName;
+
+    public String getSecondName(){
+        return this.secondName;
+    }
+
+    public void setSecondName(String secondName){
+        this.secondName = secondName;
+    }
+
     @Override
     public String toString() {
         return "Admin{" +

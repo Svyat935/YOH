@@ -22,6 +22,7 @@ import javax.servlet.MultipartConfigElement;
 import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 
@@ -30,6 +31,11 @@ import java.util.ArrayList;
 @ComponentScan
 @EnableAutoConfiguration
 public class BackendApplication {
+
+    public static void main(String[] args) {
+        SpringApplication.run(BackendApplication.class, args);
+
+    }
 
     @Value("${INIT_ADMIN_LOGIN}")
     private String login;
@@ -43,11 +49,6 @@ public class BackendApplication {
     @Value("${GAMES_FOLDER}")
     private String games_folder;
 
-    public static void main(String[] args) {
-        SpringApplication.run(BackendApplication.class, args);
-
-    }
-
     @Bean
     public CommandLineRunner init(AdminService adminService, UserService userService, OrganizationRepository organizationRepository) {
         return (args) -> {
@@ -59,7 +60,8 @@ public class BackendApplication {
                     null,
                     null,
                     null,
-                    null
+                    null,
+                    LocalDateTime.now()
             );
             try {
                 userService.createUser(user);

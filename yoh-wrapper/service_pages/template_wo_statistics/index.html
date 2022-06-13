@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        html {
+            overflow: auto;
+        }
+
+        html,
+        body,
+        div,
+        iframe {
+            margin: 0px;
+            padding: 0px;
+            height: 100%;
+            border: none;
+        }
+
+        iframe {
+            display: block;
+            width: 100%;
+            border: none;
+            overflow-y: auto;
+            overflow-x: hidden;
+        }
+    </style>
+</head>
+<body>
+    <iframe src="{{ url }}"
+            width="100%"
+            height="100%"
+            allowfullscreen></iframe>
+</body>
+<script>
+    var cookie_name = 'EndGame';
+
+
+    function read_cookies() {
+        let cookies = {}
+        for (let item of document.cookie.split(";")) {
+            let match = item.match(/^\s*([^]*?)="?([^]*?)"?\s*$/)
+            if (match)
+                cookies[match[1]] = decodeURIComponent(match[2])
+        }
+        return cookies
+    }
+
+
+    function delete_cookie(name) {
+      document.cookie += name + '=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+    }
+
+
+    function waitCookie () {
+        if (read_cookies(document.cookie)[cookie_name] == 'true') {
+            delete_cookie(cookie_name);
+            if ('endGame' in window) {
+                endGame.postMessage('it is end game');
+            }
+            parent.postMessage('it is end game', "*");
+            console.log('Отправлено сообщение о закрытии игры!');
+        }
+        else {
+            setTimeout(waitCookie, 500);
+        }
+    }
+
+    delete_cookie(cookie_name);
+    waitCookie();
+</script>
+</html>

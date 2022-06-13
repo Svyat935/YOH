@@ -6,6 +6,9 @@ import com.yoh.backend.entity.User;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.criterion.MatchMode;
+import org.hibernate.criterion.Order;
+import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -77,12 +80,67 @@ public class OrganizationRepository {
     }
 
     public List<Organization> getAllOrganizations() {
-        //TODO подогнать под общий вид
         Session session = sessionFactory.openSession();
         try {
             Criteria criteria = session.createCriteria(Organization.class);
             List<Organization> organizations = criteria.list();
             return organizations;
+        }
+        finally {
+            session.close();
+        }
+    }
+
+    public List<Organization> getAllOrganizationsOrdered(String order, String regex) {
+        Session session = sessionFactory.openSession();
+        try {
+            Criteria criteria = session.createCriteria(Organization.class);
+            if (!regex.equals(""))
+                criteria.add(Restrictions.like("name", regex, MatchMode.ANYWHERE).ignoreCase());
+
+            switch (order) {
+                case "1" -> criteria.addOrder(Order.asc("name"));
+                case "-1" -> criteria.addOrder(Order.desc("name"));
+                case "2" -> criteria.addOrder(Order.asc("dateRegistration"));
+                case "-2" -> criteria.addOrder(Order.desc("dateRegistration"));
+            }
+            return criteria.list();
+        }
+        finally {
+            session.close();
+        }
+    }
+
+    public List<Organization> getAllOrganizationsOrderedPaginated(String order, String regex, int start, int limit) {
+        Session session = sessionFactory.openSession();
+        try {
+            Criteria criteria = session.createCriteria(Organization.class);
+            if (!regex.equals(""))
+                criteria.add(Restrictions.like("name", regex, MatchMode.ANYWHERE).ignoreCase());
+
+            switch (order) {
+                case "1" -> criteria.addOrder(Order.asc("name"));
+                case "-1" -> criteria.addOrder(Order.desc("name"));
+                case "2" -> criteria.addOrder(Order.asc("dateRegistration"));
+                case "-2" -> criteria.addOrder(Order.desc("dateRegistration"));
+            }
+            criteria.setFirstResult(start);
+            criteria.setMaxResults(limit);
+            return criteria.list();
+        }
+        finally {
+            session.close();
+        }
+    }
+
+    public int getAllOrganizationsCount(String regex) {
+        Session session = sessionFactory.openSession();
+        try {
+            Criteria criteria = session.createCriteria(Organization.class);
+            if (!regex.equals(""))
+                criteria.add(Restrictions.like("name", regex, MatchMode.ANYWHERE).ignoreCase());
+            criteria.setProjection(Projections.rowCount());
+            return (int)(long)criteria.uniqueResult();
         }
         finally {
             session.close();

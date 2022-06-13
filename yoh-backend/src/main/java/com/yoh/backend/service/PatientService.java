@@ -51,26 +51,20 @@ public class PatientService {
         );
     }
 
-    public List<Patient> getAllPatientsByOrganizationFiltered(Organization organization, String regex){
-        List<Patient> patientListUnfiltered = patientRepository.getAllPatientsByOrganization(organization);
-        if (!regex.equals("")){
-            return patientListUnfiltered
-                    .stream()
-                    .filter(i -> (i.getSurname() != null && i.getSurname().toLowerCase().contains(regex.toLowerCase()))
-                            || (i.getName() != null && i.getName().toLowerCase().contains(regex.toLowerCase()))
-                            || (i.getSecondName() != null && i.getSecondName().toLowerCase().contains(regex.toLowerCase())))
-                    .collect(Collectors.toList());
-        }
-        else return patientListUnfiltered;
+    public List<Patient> getAllPatientsByOrganizationFiltered(Organization organization, String regex, String order) {
+        return patientRepository.getAllPatientsByOrganization(organization, order, regex);
+    }
 
-//        Patient[] patientsArray = patientListUnfiltered.toArray(new Patient[0]);
-//        List<Patient> sdsd = Stream.iterate(0, )
-//        return java.util.Arrays.stream(patientsArray, start, lastIndex)
-//                .collect(Collectors.toList());
+    public int getAllPatientsByOrganizationFilteredCount(Organization organization, String regex) {
+        return patientRepository.getAllPatientsByOrganizationFilteredCount(organization, regex);
+    }
+
+    public List<Patient> getAllPatientsByOrganizationFilteredPaginated(Organization organization, String regex, String order, int start, int limit) {
+        return patientRepository.getAllPatientsByOrganizationFilteredPaginated(organization, regex, order, start, limit);
     }
 
     public List<Patient> getAllPatientsByOrganization(Organization organization){
-        return patientRepository.getAllPatientsByOrganization(organization);
+        return patientRepository.getAllPatientsByOrganization(organization, "", "");
     }
 
 }

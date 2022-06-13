@@ -1,10 +1,10 @@
 import {Back} from "../../../../../components/back/Back";
-import {AdminNav} from "../../../../../components/navigate/Admin/AdminNav";
+import {AdminNav} from "../../../../../components/navigate/NavPanel/Admin/AdminNav";
 import {Container} from "react-bootstrap";
 import Col from "react-bootstrap/Col";
 import Row from "react-bootstrap/Row";
-import React, {useState} from "react";
-import {FilterBlock} from "../../../../../components/filterBlock/FilterBlock";
+import React, {useEffect, useState} from "react";
+import {SortBlock} from "../../../../../components/sortBlock/SortBlock";
 import {SearchInput} from "../../../../../components/searchInput/SearchInput";
 import {InfoBlock} from "../../../../../components/infoBlock/InfoBlock";
 import profileStub from "../../../../../assets/profileStub.jpg";
@@ -15,15 +15,65 @@ import {InputGender} from "../../../../../components/inputGender/InputGender";
 import {InputPhone} from "../../../../../components/inputPhone/InputPhone";
 import {InputBirthday} from "../../../../../components/inputBirthday/InputBirthday";
 import {InputOrganization} from "../../../../../components/InputOrganization/InputOrganization";
+import {SearchFrame} from "../../../../../frame/SearchFrame/SearchFrame";
+import {Pagination} from "../../../../../components/pagination/Pagination";
+import {BsSortAlphaUp, BsSortAlphaDown, BsSortNumericDown, BsSortNumericUp} from "react-icons/bs";
 
 export function VUsersAdmin(props) {
     const filterList = [
-        {"text": "По алфавиту", "value": 1},
-        {"text": "По дате", "value": 2},
-        {"text": "Пилигрим", "value": 3},
-        {"text": "Тьютор", "value": 4},
-        {"text": "Пациент", "value": 5},
-        {"text": "Исследователь", "value": 6},
+        {
+            "text": "По алфавиту", "icon": <BsSortAlphaDown size={"1.3em"}/>, "defaultChecked": true, "value": 1, "onClick": () => {
+                props.setRole(-1);
+                props.setOrder(1);
+                props.refresh();
+            }
+        },
+        {
+            "text": "По алфавиту", "icon": <BsSortAlphaUp size={"1.3em"}/>, "value": -1, "onClick": () => {
+                props.setRole(-1);
+                props.setOrder(-1);
+                props.refresh();
+            }
+        },
+        {
+            "text": "По дате регистрации", "icon": <BsSortNumericDown size={"1.3em"}/>, "value": 2, "onClick": () => {
+                props.setRole(-1);
+                props.setOrder(2);
+                props.refresh();
+            }
+        },
+        {
+            "text": "По дате регистрации", "icon": <BsSortNumericUp size={"1.3em"}/>, "value": -2, "onClick": () => {
+                props.setRole(-1);
+                props.setOrder(-2);
+                props.refresh();
+            }
+        },
+        {
+            "text": "Без роли", "value": 3, "onClick": () => {
+                props.setStart(0);
+                props.setRole(4);
+                props.setOrder(1);
+                props.refresh();
+            }
+        },
+        {
+            "text": "Тьютор", "value": 4, "onClick": () => {
+                props.setStart(0);
+                props.setRole(3);
+                props.setOrder(1);
+                props.refresh();
+            }
+        },
+        {
+            "text": "Наблюдаемый", "value": 5, "onClick": () => {
+                props.setStart(0);
+                props.setRole(1);
+                props.setOrder(1);
+                props.refresh();
+            }
+        },
+        // {"text": "Исследователь", "value": 6, "onClick": null},
     ]
     const [show, setShow] = useState(false);
     //TODO: replace the int type with something better.
@@ -31,8 +81,8 @@ export function VUsersAdmin(props) {
     //Choose role - 4, Add Info - 5
     //TODO: And I think we can remove some the states.
     const [buttonStatus, setButtonStatus] = useState(0);
-    const [userForRemoving, setRemovingUser] = useState(null);
-    const [userForChanging, setChangingUser] = useState(null);
+    const [password, setPassword] = useState(null);
+    const [userForChanging, setChangingUser] = useState({});
     const [userInfo, setUserInfo] = useState({});
     const [currentUserLogin, setCurrentUserLogin] = useState(null);
     const [role, setRole] = useState(null);
@@ -44,26 +94,27 @@ export function VUsersAdmin(props) {
         setRole(null);
         setCurrentUserLogin(null);
         setUserInfo({});
-        setChangingUser(null);
-        setRemovingUser(null);
-        setButtonStatus(0);
+        setChangingUser({});
+        setPassword(null);
     }
 
     const createBasicViewUsers = () => {
-        let users = props.users,
+        let users = props.users.slice(0, 9),
             view = [];
+
         if (users.length > 0) {
             users.forEach((user) => {
-                let role = user["role"] === 0 ? "Администратор":
+                let role = user["role"] === 0 ? "Администратор" :
                     user["role"] === 1 ? "Наблюдаемый" :
                         user["role"] === 2 ? "Исследователь" :
                             user["role"] === 3 ? "Тьютор" : "Без Роли"
+                let image = user["image"] ? "https://mobile.itkostroma.ru/images/" + user["image"] :
+                    profileStub;
                 view.push(
                     <InfoBlock onClick={
                         async () => {
                             let userInfo = await props.getInfoUser(user["id"]);
-                            if (userInfo !== null){
-                                userInfo = userInfo["jsonObject"];
+                            if (userInfo !== null) {
                                 setUserInfo(userInfo);
                             }
 
@@ -71,10 +122,9 @@ export function VUsersAdmin(props) {
                             setButtonStatus(3);
                             setShow(true);
                         }
-                    } key={user["id"]} text={user["login"]} addText={role}>
-                        <div>
-                            <img style={{width: "100%"}} src={profileStub} alt={'profile'}/>
-                        </div>
+                    } ikey={user["id"]} text={user["login"]} addText={role}>
+                        <img style={{width: "100%", height: "100%", borderRadius: 40, objectFit: "cover"}} src={image}
+                             alt={'profile'}/>
                     </InfoBlock>
                 )
             })
@@ -95,47 +145,64 @@ export function VUsersAdmin(props) {
         return view;
     }
 
-    const createRemovingViewUsers = () => {
-        let users = props.users,
-            view = [];
+    const createUserPasswordView = (
+        <div style={
+            {
+                display: "flex",
+                flexDirection: "column",
+                padding: "0 10px"
+            }
+        }>
+            <label>Пароль: </label>
+            <input id={"password"} type={"password"} style={
+                {borderRadius: 40, border: "none", padding: "5px 15px", marginBottom: 15}
+            } required/>
+            <p id={"password-validate"} style={{height: "5px", marginBottom: 0, color: "#800000"}}/>
+            <label>Подтвердить пароль: </label>
+            <input id={"confirmPassword"} type={"password"} style={
+                {borderRadius: 40, border: "none", padding: "5px 15px", marginBottom: 15}
+            } required/>
+            <p id={"confirmPassword-validate"} style={{height: "5px", marginBottom: 0, color: "#800000"}}/>
+        </div>
+    )
 
-        if (users.length > 0) {
-            users.forEach((user) => {
-                view.push(
-                    <div style={
-                        {
-                            borderRadius: 40,
-                            color: "#FFFFFF",
-                            background: "#6A6DCD",
-                            display: "flex",
-                            justifyContent: "space-between",
-                            alignItems: "center",
-                            marginBottom: "20px"
-                        }
-                    }>
-                        <p>Login: {user["login"]}; Email: {user["email"]}</p>
-                        <ButtonB text={"Удалить"} fontSize={"medium"} onClick={
-                            () => {
-                                setRemovingUser(user);
-                                setButtonStatus(2);
-                            }
-                        }/>
-                    </div>
-                )
-            })
-        } else {
-            view.push(
-                <div style={{display: "flex", justifyContent: "center", alignItems: "center"}}>
-                    <h3>Пользователей в системе отсутствует.</h3>
-                </div>
-            )
+    const changeUserPassword = () => {
+        let fPassword = document.getElementById("password"),
+            fConfirmPassword = document.getElementById("confirmPassword");
+        let vPassword = document.getElementById("password-validate");
+        let validStatus = true;
+
+        if (!fPassword.value.trim()) {
+            fPassword.style.border = validStyle;
+            validStatus = false;
+        }
+        if (!fConfirmPassword.value.trim()) {
+            fConfirmPassword.style.border = validStyle;
+            validStatus = false;
         }
 
-        return (
-            <div style={{display: "flex", flexDirection: "column"}}>
-                {view}
-            </div>
-        );
+        if (fPassword.value.includes(" ")) {
+            fPassword.style.border = validStyle;
+            vPassword.textContent = "В пароле не должны присутствовать пробелы.";
+            vPassword.style.marginBottom = "20px";
+            validStatus = false;
+        } else if (fPassword.value.length < 6) {
+            fPassword.style.border = validStyle;
+            vPassword.textContent = "Пароль должен иметь минимум 6 символов.";
+            vPassword.style.marginBottom = "20px";
+            validStatus = false;
+        }else if (fPassword.value !== fConfirmPassword.value) {
+            fPassword.style.border = validStyle;
+            fConfirmPassword.style.border = validStyle;
+            vPassword.textContent = "Пароли не совпадают."
+            vPassword.style.marginBottom = "20px";
+            validStatus = false;
+        }
+
+        if (validStatus) {
+            setPassword(fPassword.value);
+            setButtonStatus(2);
+        }
     }
 
     const validateEmail = (email) => {
@@ -185,13 +252,25 @@ export function VUsersAdmin(props) {
         }
 
 
+        if (fLogin.value.trim().length < 6) {
+            fLogin.style.border = validStyle;
+            vLogin.textContent = "Логин должен минимум 6 символов"
+            vLogin.style.marginBottom = "20px";
+            validStatus = false;
+        }
         if (fEmail.value && validateEmail(fEmail.value) === null) {
             fEmail.style.border = validStyle;
             vEmail.textContent = "Электронная почта имеет неправильный формат.";
             vEmail.style.marginBottom = "20px";
             validStatus = false;
         }
-        if (fPassword.value !== fConfirmPassword.value) {
+        if (fPassword.value.trim().length < 6) {
+            fPassword.style.border = validStyle;
+            fConfirmPassword.style.border = validStyle;
+            vPassword.textContent = "Пароль должен иметь минимум 6 символов."
+            vPassword.style.marginBottom = "20px";
+            validStatus = false;
+        } else if (fPassword.value !== fConfirmPassword.value) {
             fPassword.style.border = validStyle;
             fConfirmPassword.style.border = validStyle;
             vPassword.textContent = "Пароли не совпадают."
@@ -199,10 +278,10 @@ export function VUsersAdmin(props) {
             validStatus = false;
         }
 
-        if (validStatus === true) {
+        if (validStatus) {
             let response = await props.createUser(fLogin.value, fEmail.value, fPassword.value);
-            if (response.code === 401) {
-                let message = response['jsonObject']["message"];
+            if (response["message"] !== "User was created") {
+                let message = response["message"];
                 validStatus = false;
 
                 if (message.indexOf('email') !== -1) {
@@ -219,7 +298,7 @@ export function VUsersAdmin(props) {
             }
         }
 
-        if (validStatus === true) {
+        if (validStatus) {
             props.refresh();
             setCurrentUserLogin(fLogin.value);
             setButtonStatus(4);
@@ -235,30 +314,30 @@ export function VUsersAdmin(props) {
         let user = props.users.filter(user => user.login === currentUserLogin)[0];
         if (!user) user = userForChanging;
 
-        if (!fName.value){
+        if (!fName.value.trim()) {
             fName.style.border = validStyle;
             validStatus = false;
         }
-        if (!fSurname.value){
+        if (!fSurname.value.trim()) {
             fSurname.style.border = validStyle;
             validStatus = false;
         }
-        if (!fSecondName.value){
+        if (!fSecondName.value.trim()) {
             fSecondName.style.border = validStyle;
             validStatus = false;
         }
 
         if (validStatus) {
             let body = {};
-            body["name"] = fName.value;
-            body["surname"] = fSurname.value;
-            body["secondName"] = fSecondName.value;
+            body["name"] = fName.value.trim();
+            body["surname"] = fSurname.value.trim();
+            body["secondName"] = fSecondName.value.trim();
             body["id"] = user.id;
             body["organization"] = fOrganization.value;
 
             let response = await props.editTutorInfo(body);
 
-            if (response){
+            if (response) {
                 if (response.code === 401) {
                     console.log(response);
                     validStatus = false;
@@ -266,7 +345,7 @@ export function VUsersAdmin(props) {
             }
         }
 
-        if (validStatus){
+        if (validStatus) {
             props.refresh();
             clearAll();
         }
@@ -285,26 +364,30 @@ export function VUsersAdmin(props) {
         let user = props.users.filter(user => user.login === currentUserLogin)[0];
         if (!user) user = userForChanging;
 
-        if (!fName.value){
+        if (!fName.value.trim()) {
             fName.style.border = validStyle;
             validStatus = false;
         }
-        if (!fSurname.value){
+        if (!fSurname.value.trim()) {
             fSurname.style.border = validStyle;
             validStatus = false;
         }
-        if (!fSecondName.value){
+        if (!fSecondName.value.trim()) {
             fSecondName.style.border = validStyle;
             validStatus = false;
         }
+        if (fPhone.value !== "+7(___)___-__-__" && fPhone.value.includes("_")) {
+            fPhone.style.border = validStyle;
+            validStatus = false;
+        }
 
-        if (validStatus){
+        if (validStatus) {
             let body = {};
-            body["name"] = fName.value;
-            body["surname"] = fSurname.value;
-            body["secondName"] = fSecondName.value;
+            body["name"] = fName.value.trim();
+            body["surname"] = fSurname.value.trim();
+            body["secondName"] = fSecondName.value.trim();
             body["id"] = user.id;
-            if (fPhone.value) body["numberPhone"] = fPhone.value;
+            if (fPhone.value && fPhone.value !== "+7(___)___-__-__") body["numberPhone"] = fPhone.value;
             if (fAddress.value) body["address"] = fAddress.value;
             if (fBirthday.value) body["birthDate"] = fBirthday.value;
             if (fOrganization.value) body["organization"] = fOrganization.value;
@@ -312,7 +395,7 @@ export function VUsersAdmin(props) {
 
             let response = await props.editPatientInfo(body);
 
-            if (response){
+            if (response) {
                 if (response.code === 401) {
                     console.log(response);
                     validStatus = false;
@@ -320,330 +403,304 @@ export function VUsersAdmin(props) {
             }
         }
 
-        if (validStatus){
+        if (validStatus) {
             props.refresh();
             clearAll();
         }
     }
 
-    const removeUser = () => {
-        //TODO: When we're adding a route.
-        alert("Remove!");
-        clearAll();
-    }
-
-    const chooseChangeAction = () => {
-        return (
-            <div style={
-                {
-                    display: "flex",
-                    flexDirection: "column",
-                    alignItems: "center"
-                }
-            }>
-                <h3>Выберите действие: </h3>
-                <ButtonB text={"Изменить роль"} onClick={
+    const chooseChangeAction = (
+        <div style={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center"
+        }}>
+            <h3>Выберите действие: </h3>
+            {
+                userForChanging["role"] === 4 ? <ButtonB width={"70%"} text={"Изменить роль"} onClick={
                     () => {
-                        setButtonStatus(4);
+                        setButtonStatus(4)
                     }
-                }/>
-                <ButtonB text={"Изменить данные"} onClick={
+                }
+                /> : null
+            }
+            {
+                userForChanging["role"] !== 4 ? <ButtonB width={"70%"} text={"Изменить данные"} onClick={
                     () => {
                         setRole(userForChanging["role"]);
                         setButtonStatus(5);
                     }
-                }/>
-            </div>
-        )
-    }
+                }/> : null
+            }
+            <ButtonB width={"70%"} text={"Изменить пароль"} onClick={() => {
+                setButtonStatus(1);
+            }}/>
+        </div>
+    )
 
-    const changingRoleView = () => {
-        return (
-            <div style={
-                {
-                    display: "flex",
-                    flexDirection: "column",
-                    alignItems: "center"
-                }
-            }>
-                <h3>Выберите роль: </h3>
-                <ButtonB text={"Пациент"} onClick={
-                    async () => {
-                        let id = null;
-                        if (currentUserLogin !== null){
-                            let user = props.users.filter(
-                                (user_) => user_.login === currentUserLogin
-                            )[0];
-                            id = user["id"];
-                        }else{
-                            id = userForChanging["id"];
-                        }
-
-                        await props.assignRole(1, id);
-                        props.refresh();
-                        setRole(1);
-                        setButtonStatus(5);
+    const changingRoleView = (
+        <div style={
+            {
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center"
+            }
+        }>
+            <h3>Выберите роль: </h3>
+            <ButtonB text={"Наблюдаемый"} onClick={
+                async () => {
+                    let id = null;
+                    if (currentUserLogin !== null) {
+                        let users = await props.getUser(currentUserLogin);
+                        users = users['results'];
+                        id = users[0]["id"];
+                    } else {
+                        id = userForChanging["id"];
                     }
-                }/>
-                <ButtonB text={"Тьютор"} onClick={
-                    async () => {
-                        let id = null;
-                        if (currentUserLogin !== null){
-                            let user = props.users.filter(
-                                (user_) => user_.login === currentUserLogin
-                            )[0];
-                            id = user["id"];
-                        }else{
-                            id = userForChanging["id"];
-                        }
 
-                        await props.assignRole(3, id);
-                        props.refresh();
-                        setRole(3);
-                        setButtonStatus(5);
+                    await props.assignRole(1, id);
+                    props.refresh();
+                    setRole(1);
+                    setButtonStatus(5);
+                }
+            }/>
+            <ButtonB text={"Тьютор"} onClick={
+                async () => {
+                    let id = null;
+                    if (currentUserLogin !== null) {
+                        let users = await props.getUser(currentUserLogin);
+                        users = users['results'];
+                        id = users[0]["id"];
+                    } else {
+                        id = userForChanging["id"];
                     }
-                }/>
-                {/*<ButtonB text={"Исследователь"} onClick={*/}
-                {/*    async () => {*/}
-                {/*        await props.assignRole(2, userForChanging["id"]);*/}
-                {/*        setRole(2);*/}
-                {/*        setButtonStatus(5);*/}
-                {/*    }*/}
-                {/*}/>*/}
-            </div>
-        )
-    }
 
-    const createUserView = () => {
-        return (
-            <div style={
-                {
-                    display: "flex",
-                    flexDirection: "column",
-                    padding: "0 10px"
+                    await props.assignRole(3, id);
+                    props.refresh();
+                    setRole(3);
+                    setButtonStatus(5);
                 }
-            }>
-                <label>Логин: </label>
-                <input id={"login"} type={"text"} style={
-                    {borderRadius: 40, border: "none", padding: "5px 15px", marginBottom: 10}
-                } required/>
-                <p id={"login-validate"} style={{height: "5px", marginBottom: 0, color: "#800000"}}/>
-                <label>Электронная почта: </label>
-                <input id={"email"} type={"email"} style={
-                    {borderRadius: 40, border: "none", padding: "5px 15px", marginBottom: 10}
-                } required/>
-                <p id={"email-validate"} style={{height: "5px", marginBottom: 0, color: "#800000"}}/>
-                <label>Пароль: </label>
-                <input id={"password"} type={"password"} style={
-                    {borderRadius: 40, border: "none", padding: "5px 15px", marginBottom: 15}
-                } required/>
-                <p id={"password-validate"} style={{height: "5px", marginBottom: 0, color: "#800000"}}/>
-                <label>Подтвердить пароль: </label>
-                <input id={"confirmPassword"} type={"password"} style={
-                    {borderRadius: 40, border: "none", padding: "5px 15px", marginBottom: 15}
-                } required/>
-                <p id={"confirmPassword-validate"}
-                   style={{height: "5px", marginBottom: 0, color: "#800000"}}/>
-            </div>
-        )
-    }
+            }/>
+        </div>
+    )
 
-    const fillPatientInfoView = () => {
-        return (
-            <div style={
-                {
-                    display: "flex",
-                    flexDirection: "column",
-                    padding: "0 10px"
-                }
-            }>
-                <label>Имя: </label>
-                <input id={"name"} type={"text"} style={
-                    {borderRadius: 40, border: "none", padding: "5px 15px", marginBottom: 10}
-                } required/>
-                <p id={"name-before"} style={{margin: "5px 0", textDecoration: "underline"}}>
-                    Имя: {userInfo["name"]}
-                </p>
-                <label>Фамилия: </label>
-                <input id={"surname"} type={"text"} style={
-                    {borderRadius: 40, border: "none", padding: "5px 15px", marginBottom: 10}
-                } required/>
-                <p id={"surname-before"} style={{margin: "5px 0", textDecoration: "underline"}}>
-                    Фамилия: {userInfo["surname"]}
-                </p>
-                <label>Отчество: </label>
-                <input id={"secondName"} type={"text"} style={
-                    {borderRadius: 40, border: "none", padding: "5px 15px", marginBottom: 10}
-                } required/>
-                <p id={"secondName-before"} style={{margin: "5px 0", textDecoration: "underline"}}>
-                    Отчество: {userInfo["secondName"]}
-                </p>
-                <label>День рождения: </label>
-                <InputBirthday/>
-                <p id={"birthday-before"} style={{margin: "5px 0", textDecoration: "underline"}}>
-                    День рождения: {userInfo["birthDate"] ? userInfo["birthDate"].slice(0, 10) : null}
-                </p>
-                <label>Пол: </label>
-                <InputGender/>
-                <p id={"inputGender-before"} style={{margin: "5px 0", textDecoration: "underline"}}>
-                    Пол: {userInfo["gender"]}
-                </p>
-                <label>Телефон: </label>
-                <InputPhone id={"phone"}/>
-                <p id={"inputPhone-before"} style={{margin: "5px 0", textDecoration: "underline"}}>
-                    Телефон: {userInfo["phone"]}
-                </p>
-                <label>Адрес: </label>
-                <input id={"address"} type={"text"} style={
-                    {borderRadius: 40, border: "none", padding: "5px 15px", marginBottom: 10}
-                }/>
-                <p id={"address-before"} style={{margin: "5px 0", textDecoration: "underline"}}>
-                    Адрес: {userInfo["address"]}
-                </p>
-                <label>Организация: </label>
-                <InputOrganization organizations={props.organizations}/>
-                <p id={"inputOrganization-before"} style={{margin: "5px 0", textDecoration: "underline"}}>
-                    Организация: {userInfo["organizationString"]}
-                </p>
-            </div>
-        )
-    }
 
-    const fillTutorInfoView = () => {
-        return (
-            <div style={
-                {
-                    display: "flex",
-                    flexDirection: "column",
-                    padding: "0 10px"
-                }
-            }>
-                <label>Имя: </label>
-                <input id={"name"} type={"text"} style={
-                    {borderRadius: 40, border: "none", padding: "5px 15px", marginBottom: 10}
-                } required/>
-                <p id={"name-before"} style={{margin: "5px 0", textDecoration: "underline"}}>
-                    Имя: {userInfo["name"]}
-                </p>
-                <label>Фамилия: </label>
-                <input id={"surname"} type={"text"} style={
-                    {borderRadius: 40, border: "none", padding: "5px 15px", marginBottom: 10}
-                } required/>
-                <p id={"surname-before"} style={{margin: "5px 0", textDecoration: "underline"}}>
-                    Фамилия: {userInfo["surname"]}
-                </p>
-                <label>Отчество: </label>
-                <input id={"secondName"} type={"text"} style={
-                    {borderRadius: 40, border: "none", padding: "5px 15px", marginBottom: 10}
-                } required/>
-                <p id={"secondName-before"} style={{margin: "5px 0", textDecoration: "underline"}}>
-                    Отчество: {userInfo["secondName"]}
-                </p>
-                <label>Организация: </label>
-                <InputOrganization organizations={props.organizations}/>
-                <p id={"inputOrganization-before"} style={{margin: "5px 0", textDecoration: "underline"}}>
-                    Организация: {userInfo["organizationString"]}
-                </p>
-            </div>
-        )
-    }
+    const createUserView = (
+        <div style={
+            {
+                display: "flex",
+                flexDirection: "column",
+                padding: "0 10px"
+            }
+        }>
+            <label>Логин: </label>
+            <input id={"login"} type={"text"} style={
+                {borderRadius: 40, border: "none", padding: "5px 15px", marginBottom: 10}
+            } required/>
+            <p id={"login-validate"} style={{height: "5px", marginBottom: 0, color: "#800000"}}/>
+            <label>Электронная почта: </label>
+            <input id={"email"} type={"email"} style={
+                {borderRadius: 40, border: "none", padding: "5px 15px", marginBottom: 10}
+            } required/>
+            <p id={"email-validate"} style={{height: "5px", marginBottom: 0, color: "#800000"}}/>
+            <label>Пароль: </label>
+            <input id={"password"} type={"password"} style={
+                {borderRadius: 40, border: "none", padding: "5px 15px", marginBottom: 15}
+            } required/>
+            <p id={"password-validate"} style={{height: "5px", marginBottom: 0, color: "#800000"}}/>
+            <label>Подтвердить пароль: </label>
+            <input id={"confirmPassword"} type={"password"} style={
+                {borderRadius: 40, border: "none", padding: "5px 15px", marginBottom: 15}
+            } required/>
+            <p id={"confirmPassword-validate"}
+               style={{height: "5px", marginBottom: 0, color: "#800000"}}/>
+        </div>
+    )
+
+    const fillPatientInfoView = (
+        <div style={
+            {
+                display: "flex",
+                flexDirection: "column",
+                padding: "0 10px"
+            }
+        }>
+            <label>Имя: </label>
+            <input id={"name"} type={"text"} style={
+                {borderRadius: 40, border: "none", padding: "5px 15px", marginBottom: 10}
+            } required defaultValue={userInfo["name"] ? userInfo["name"] : null}/>
+            <label>Фамилия: </label>
+            <input id={"surname"} type={"text"} style={
+                {borderRadius: 40, border: "none", padding: "5px 15px", marginBottom: 10}
+            } required defaultValue={userInfo["surname"] ? userInfo["surname"] : null}/>
+            <label>Отчество: </label>
+            <input id={"secondName"} type={"text"} style={
+                {borderRadius: 40, border: "none", padding: "5px 15px", marginBottom: 10}
+            } required defaultValue={userInfo["secondName"] ? userInfo["secondName"] : null}/>
+            <label>День рождения: </label>
+            <InputBirthday defaultValue={userInfo["birthDate"] ? userInfo["birthDate"].slice(0, 10) : null}/>
+            <label>Пол: </label>
+            <InputGender defaultValue={userInfo["gender"]}/>
+            <label>Телефон: </label>
+            <InputPhone id={"phone"} defaultValue={userInfo["numberPhone"]}/>
+            <label>Адрес: </label>
+            <input id={"address"} type={"text"} style={
+                {borderRadius: 40, border: "none", padding: "5px 15px", marginBottom: 10}
+            } defaultValue={userInfo["address"] ? userInfo["address"] : null}/>
+            <label>Организация: </label>
+            <InputOrganization organizations={props.organizations} defaultValue={userInfo["organization"]}/>
+        </div>
+    )
+
+    const fillTutorInfoView = (
+        <div style={
+            {
+                display: "flex",
+                flexDirection: "column",
+                padding: "0 10px"
+            }
+        }>
+            <label>Имя: </label>
+            <input id={"name"} type={"text"} style={
+                {borderRadius: 40, border: "none", padding: "5px 15px", marginBottom: 10}
+            } required defaultValue={userInfo["name"] ? userInfo["name"] : null}/>
+            <label>Фамилия: </label>
+            <input id={"surname"} type={"text"} style={
+                {borderRadius: 40, border: "none", padding: "5px 15px", marginBottom: 10}
+            } required defaultValue={userInfo["surname"] ? userInfo["surname"] : null}/>
+            <label>Отчество: </label>
+            <input id={"secondName"} type={"text"} style={
+                {borderRadius: 40, border: "none", padding: "5px 15px", marginBottom: 10}
+            } required defaultValue={userInfo["secondName"] ? userInfo["secondName"] : null}/>
+            <label>Организация: </label>
+            <InputOrganization defaultValue={userInfo["organizationString"]} organizations={props.organizations}/>
+        </div>
+    )
 
     const fillUser = () => {
-        return role === 1 ? fillPatientInfoView() :
-            role === 3 ? fillTutorInfoView() : null;
+        return role === 1 ? fillPatientInfoView :
+            role === 3 ? fillTutorInfoView : null;
     }
 
-    return (
-        <Back navPanel={<AdminNav/>}>
-            <Modal
-                show={show}
-                backdrop={true}
-                keyboard={true}
-                onHide={clearAll}
-            >
-                <Modal.Header closeButton>
-                    <Modal.Title>{
-                        buttonStatus === 0 || buttonStatus === 4 ? "Добавление пользователя" :
-                            buttonStatus === 1 || buttonStatus === 2 ? "Удаление пользователя" :
-                                buttonStatus === 3 || buttonStatus === 5 ? "Изменение пользователя" : "???"
-                    }</Modal.Title>
-                </Modal.Header>
-                <Modal.Body>
-                    {
-                        buttonStatus === 0 ?
-                            createUserView() : buttonStatus === 1 ?
-                                createRemovingViewUsers() : buttonStatus === 2 ?
-                                "Вы уверен что хотите удалить пользователя c Логиным:" + userForRemoving["login"] + "?" :
-                                buttonStatus === 3 ? chooseChangeAction() :
-                                    buttonStatus === 4 ? changingRoleView() :
-                                        buttonStatus === 5 ? fillUser() : null
-                    }
-                </Modal.Body>
-                <Modal.Footer>
-                    <div style={
-                        {
-                            height: "25%",
-                            width: "100%",
-                            display: "flex",
-                            justifyContent: "space-between"
-                        }
-                    }>
-                        <ButtonB text={"Отмена"} onClick={clearAll}/>
-                        {
-                            buttonStatus === 0 ?
-                                <ButtonB text={"Добавить"} onClick={addUser}/> :
-                                    buttonStatus === 2 ?
-                                        <ButtonB text={"Удалить"} onClick={removeUser}/> :
-                                        buttonStatus === 5 ?
-                                            <ButtonB text={"Добавить информацию"}
-                                                     onClick={
-                                                         () => role === 1 ?
-                                                             addInfoForPatient() : addInfoForTutor()}
-                                            /> : null
-                        }
-                    </div>
-                </Modal.Footer>
-            </Modal>
-            <Container style={{marginTop: 20}}>
-                <Row>
-                    <h1 style={{marginBottom: 20}}>Список пользователей</h1>
-                    <Col md={4} style={
-                        {
-                            display: "flex",
-                            justifyContent: "flex-start",
-                            alignItems: "center",
-                            flexDirection: "column"
-                        }
-                    }>
-                        <FilterBlock filters={filterList}/>
-                        <ButtonA width={300} text={"Добавить +"} onClick={() => {
-                            setButtonStatus(0);
-                            setShow(true);
-                        }}/>
-                        <ButtonA width={300} text={"Удалить -"} onClick={() => {
-                            setButtonStatus(1);
-                            setShow(true);
-                        }}/>
-                    </Col>
-                    <Col md={8}>
-                        <SearchInput onClick={() => console.log("onClick is waiting")}/>
-                        <Container>
-                            <Row>
-                                <Col style={
-                                    {
-                                        display: "flex",
-                                        flexDirection: "row",
-                                        flexWrap: "wrap",
-                                        justifyContent: "space-evenly"
-                                    }
-                                }>
-                                    {createBasicViewUsers()}
-                                </Col>
-                            </Row>
-                        </Container>
-                    </Col>
-                </Row>
-            </Container>
-        </Back>
+    const searchUser = () => {
+        let searchValue = document.getElementById("searchInput").value;
+        props.setRegex(searchValue);
+        props.refresh();
+    }
+
+    const buttons = (
+        <ButtonA width={300} text={"Добавить +"} onClick={() => {
+            setButtonStatus(0);
+            setShow(true);
+        }}/>
     )
+
+    const paginationButtons = () => {
+        // return <Pagination
+        //     count={props.size}
+        //     start={props.start}
+        //     limit={props.limit}
+        //     setStart={props.setStart}
+        //     refresh={props.refresh}
+        // />
+        let view = [];
+        if (props.start)
+            view.push(
+                <ButtonA width={300} text={"Предыдущая страница"} onClick={() => {
+                    props.setStart(props.start - 9);
+                    props.refresh();
+                }}/>
+            )
+
+        if (props.users.length === 10) {
+            view.push(
+                <ButtonA width={300} text={"Следующая страница"} onClick={() => {
+                    props.setStart(props.start + 9);
+                    props.refresh();
+                }}/>
+            )
+        }
+        return view;
+    }
+
+    const modalBody = () => {
+        if (buttonStatus === 0) {
+            return createUserView;
+        } else if (buttonStatus === 1) {
+            return createUserPasswordView;
+        } else if (buttonStatus === 2) {
+            return <p>
+                {
+                    "Вы уверен что хотите изменить пароль " +
+                    "у пользователя c Логиным: " + userForChanging["login"] + "?"
+                }
+            </p>
+        } else if (buttonStatus === 3) {
+            return chooseChangeAction;
+        } else if (buttonStatus === 4) {
+            return changingRoleView;
+        } else if (buttonStatus === 5) {
+            return fillUser();
+        }
+    }
+
+    const modalTitle = () => {
+        if (buttonStatus === 0) {
+            return "Добавление пользователя";
+        } else if (buttonStatus === 1 || buttonStatus === 2) {
+            return "Изменить пароль";
+        } else if (buttonStatus === 3) {
+            return "Изменение пользователя";
+        } else if (buttonStatus === 4) {
+            return "Изменение роли";
+        } else if (buttonStatus === 5) {
+            return "Изменение данных";
+        }
+        return null;
+    }
+
+    const modalFooter = () => {
+        let view = [<ButtonB text={"Отмена"} onClick={clearAll}/>];
+        if (buttonStatus === 0) {
+            view.push(<ButtonB text={"Добавить"} onClick={addUser}/>);
+        } else if (buttonStatus === 1) {
+            view.push(<ButtonB text={"Изменить"} onClick={changeUserPassword}/>)
+        } else if (buttonStatus === 2) {
+            view.push(<ButtonB text={"Изменить"} onClick={() => {
+                props.changePassword(userForChanging["id"], password);
+                setShow(false);
+            }}/>);
+        } else if (buttonStatus === 5) {
+            view.push(<ButtonB text={"Изменить информацию"}
+                               onClick={() => role === 1 ? addInfoForPatient() : addInfoForTutor()}/>)
+        }
+
+        return (
+            <div style={{
+                height: "25%",
+                width: "100%",
+                display: "flex",
+                justifyContent: "space-between"
+            }}>
+                {view}
+            </div>
+        )
+    }
+
+    return <SearchFrame
+        navPanel={<AdminNav context={props.context}/>}
+        filterList={filterList}
+        modalShow={show}
+        modalOnHide={clearAll}
+        modalTitle={modalTitle()}
+        modalBody={modalBody()}
+        modalFooter={modalFooter()}
+        title={"Список пользователей"}
+        buttons={buttons}
+        searchInputOnKeyDown={searchUser}
+        searchInputOnBlur={searchUser}
+        searchInputOnClick={searchUser}
+        content={createBasicViewUsers()}
+        contentFooter={paginationButtons()}
+    />
 }

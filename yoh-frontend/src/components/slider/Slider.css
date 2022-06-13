@@ -1,0 +1,11 @@
+.slider{
+    display: flex;
+    justify-content: space-evenly;
+    transition: linear 1s;
+}
+
+.slider-move{
+    display: flex;
+    justify-content: space-around;
+    width: 100%;
+}

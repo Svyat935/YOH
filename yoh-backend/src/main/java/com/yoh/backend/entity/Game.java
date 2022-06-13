@@ -1,11 +1,9 @@
 package com.yoh.backend.entity;
 
-import org.hibernate.annotations.LazyCollection;
-import org.hibernate.annotations.LazyCollectionOption;
+import com.yoh.backend.enums.GameActiveStatus;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -13,16 +11,20 @@ import java.util.UUID;
 public class Game {
     public Game() {}
 
-    public Game(String name, String type, String description, String url, LocalDateTime dateAdding) {
+    public Game(UUID id, String name, String type, String description, String url, LocalDateTime dateAdding, boolean useStatistic, GameActiveStatus gameActiveStatus) {
+        this.id = id;
         this.name = name;
         this.type = type;
         this.description = description;
         this.url = url;
         this.dateAdding = dateAdding;
+        this.useStatistic = useStatistic;
+        this.gameActiveStatus = gameActiveStatus;
     }
 
+
     @Id
-    @GeneratedValue
+//    @GeneratedValue
     private UUID id;
 
     public UUID getId() {
@@ -70,7 +72,7 @@ public class Game {
     }
 
 
-    @Column(name = "url", length = 128, nullable = false)
+    @Column(name = "url", length = 128, nullable = true)
     private String url;
 
     public String getUrl(){
@@ -105,28 +107,69 @@ public class Game {
         this.image = image;
     }
 
-    //TODO переименовать
-    @ManyToMany(mappedBy="games")
-    @LazyCollection(LazyCollectionOption.FALSE)
-    private List<Patient> patient;
-
-    public List<Patient> getPatient() {
-        return patient;
-    }
-
-    public void setPatients(List<Patient> patient) {
-        this.patient = patient;
+    public boolean equals(Game game)
+    {
+        return this.id == game.id;
     }
 
 
-    @OneToMany(mappedBy = "game")
-    private List<GameStatistic> gameStatistics;
+    @Column(name = "useStatistics", nullable = false)
+    private boolean useStatistic;
 
-    public List<GameStatistic> getStatistics() {
-        return gameStatistics;
+    public boolean getUseStatistic() {
+        return useStatistic;
     }
 
-    public void setStatistics(List<GameStatistic> gameStatistics) {
-        this.gameStatistics = gameStatistics;
+    public void setUseStatistic(boolean useStatistic) {
+        this.useStatistic = useStatistic;
     }
+
+
+    @Column(name = "gameActiveStatus", nullable = false)
+    private GameActiveStatus gameActiveStatus;
+
+    public GameActiveStatus getGameActiveStatus() {
+        return gameActiveStatus;
+    }
+
+    public void setActiveGameStatus(GameActiveStatus gameActiveStatus) {
+        this.gameActiveStatus = gameActiveStatus;
+    }
+
+    //    @OneToMany(mappedBy = "game")
+//    private List<GamePatient> gamePatientList;
+//
+//    public List<GamePatient> getGamePatientList() {
+//        return gamePatientList;
+//    }
+//
+//    public void setGamePatientList(List<GamePatient> gamePatientList) {
+//        this.gamePatientList = gamePatientList;
+//    }
+
+
+    //    //TODO переименовать
+//    @ManyToMany(mappedBy="games")
+//    @LazyCollection(LazyCollectionOption.FALSE)
+//    private List<Patient> patient;
+//
+//    public List<Patient> getPatient() {
+//        return patient;
+//    }
+//
+//    public void setPatients(List<Patient> patient) {
+//        this.patient = patient;
+//    }
+
+
+//    @OneToMany(mappedBy = "game")
+//    private List<GameStatistic> gameStatistics;
+//
+//    public List<GameStatistic> getStatistics() {
+//        return gameStatistics;
+//    }
+//
+//    public void setStatistics(List<GameStatistic> gameStatistics) {
+//        this.gameStatistics = gameStatistics;
+//    }
 }

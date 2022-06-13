@@ -9,12 +9,14 @@ export function FilterBlock(props) {
         if (filterList !== undefined){
             filterList.forEach((filterOne) => {
                 view.push(
-                    <div className={"filter-one"}>
+                    <div key={filterOne["text"]} className={"filter-one"}>
                         <input
                             id={filterOne["text"]}
                             name={"filterName"}
                             type={"radio"}
                             value={filterOne["value"]}
+                            onClick={filterOne["onClick"]}
+                            defaultChecked={filterOne["defaultChecked"]}
                         />
                         <label htmlFor={filterOne["text"]}>{filterOne["text"]}</label>
                     </div>
@@ -26,7 +28,7 @@ export function FilterBlock(props) {
 
     return (
         <div className={"filter-block"}>
-            <h3>Фильтры</h3>
+            <h3>Сортировка</h3>
             <div className={"filter-list"}>
                 {createFilterList()}
             </div>

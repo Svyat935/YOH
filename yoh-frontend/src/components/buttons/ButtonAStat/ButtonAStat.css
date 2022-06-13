@@ -1,0 +1,15 @@
+.buttons-a-stat{
+    padding: 10px 20px;
+    background: #6A6DCD;
+    color: #FFFFFF;
+    box-shadow: -10px 10px 30px rgba(0, 0, 0, 0.32);
+    border-radius: 40px;
+    font-size: x-large;
+    margin: 10px;
+    transition: .1s linear;
+    border: none;
+}
+
+.buttons-a-stat:hover, .buttons-b:focus{
+    cursor: default;
+}

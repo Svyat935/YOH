@@ -6,13 +6,9 @@ import profileStub from "../../../../../assets/profileStub.jpg";
 import {ButtonA} from "../../../../../components/buttons/ButtonA/ButtonA";
 import {InfoBlockStatic} from "../../../../../components/infoBlockStatic/InfoBlockStatic";
 import "./AccountInfo.css";
-import {ProgressBar} from "../../../../../components/progressBar/ProgressBar";
-import {PatientNav} from "../../../../../components/navigate/Patient/PatientNav";
 import Modal from "react-bootstrap/Modal";
 import {ButtonB} from "../../../../../components/buttons/ButtonB/ButtonB";
-import {InputPhone} from "../../../../../components/inputPhone/InputPhone";
-import {InputBirthday} from "../../../../../components/inputBirthday/InputBirthday";
-import {InputGender} from "../../../../../components/inputGender/InputGender";
+import {TutorNav} from "../../../../../components/navigate/NavPanel/Tutor/TutorNav";
 
 export function VAccount(props) {
     // ChangePhoto - 0, ChangeInfo - 1;
@@ -33,7 +29,26 @@ export function VAccount(props) {
     }
 
     const changeInfo = async () => {
+        let fName = document.getElementById("name"),
+            fSurname = document.getElementById("surname"),
+            fSecondName = document.getElementById("secondName");
 
+        let body = {};
+        body["id"] = props.accountInfo.id;
+        if (fName.value) body["name"] = fName.value;
+        if (fSurname.value) body["surname"] = fSurname.value;
+        if (fSecondName.value) body["secondName"] = fSecondName.value;
+
+        let response = await props.changeInfo(body);
+
+        if (response){
+            if (response.code === 401) {
+                console.log(response);
+            }else{
+                props.refresh();
+                setShow(false);
+            }
+        }
     }
 
     const changeView = () => {
@@ -50,24 +65,15 @@ export function VAccount(props) {
                 <label>Имя: </label>
                 <input id={"name"} type={"text"} style={
                     {borderRadius: 40, border: "none", padding: "5px 15px", marginBottom: 10}
-                } required/>
-                <p id={"name-before"} style={{margin: "5px 0", textDecoration: "underline"}}>
-                    Имя: {userInfo["name"]}
-                </p>
+                } required defaultValue={userInfo["name"] ? userInfo["name"] : null}/>
                 <label>Фамилия: </label>
                 <input id={"surname"} type={"text"} style={
                     {borderRadius: 40, border: "none", padding: "5px 15px", marginBottom: 10}
-                } required/>
-                <p id={"surname-before"} style={{margin: "5px 0", textDecoration: "underline"}}>
-                    Фамилия: {userInfo["surname"]}
-                </p>
+                } required defaultValue={userInfo["surname"] ? userInfo["surname"] : null}/>
                 <label>Отчество: </label>
                 <input id={"secondName"} type={"text"} style={
                     {borderRadius: 40, border: "none", padding: "5px 15px", marginBottom: 10}
-                } required/>
-                <p id={"secondName-before"} style={{margin: "5px 0", textDecoration: "underline"}}>
-                    Отчество: {userInfo["secondName"]}
-                </p>
+                } required defaultValue={userInfo["secondName"] ? userInfo["secondName"] : null}/>
             </div>
         )
     }
@@ -105,22 +111,21 @@ export function VAccount(props) {
 
     const createImageAccount = () => {
         let imageClass = new Image();
-        if (props.image !== null){
-            let base64 = props.image;
-            imageClass.src = 'data:image/jpg;base64,' + base64;
+        if (props.accountInfo !== null && props.accountInfo["image"] !== null){
+            //TODO: Add site url.
+            imageClass.src = "https://mobile.itkostroma.ru/images/" + props.accountInfo["image"];
         }
 
         return (
             <InfoBlockStatic>
-                <div>
-                    <img style={{width: "100%"}} src={imageClass.src ? imageClass.src : profileStub} alt={'game'}/>
-                </div>
+                <img style={{width: "100%", height: "100%", borderRadius: 40, objectFit: "cover"}}
+                     src={imageClass.src ? imageClass.src : profileStub} alt={'game'}/>
             </InfoBlockStatic>
         )
     }
 
     return (
-        <Back navPanel={<PatientNav/>}>
+        <Back navPanel={<TutorNav context={props.context}/>}>
             <Modal
                 show={show}
                 backdrop={true}

@@ -6,7 +6,8 @@ export function Back(props) {
         <div style={props.style}>
             {props.navPanel}
             <div id={"content"}>
-                <div id={"hat"}>{props.nav}</div>
+                <div id={"hat-right"}>{props.nav}</div>
+                <div id={"hat-left"}>{props.navLeft}</div>
                 <div id={"bin"} style={{height: 80}}/>
                 {props.children}
                 <div id={"footer"}>

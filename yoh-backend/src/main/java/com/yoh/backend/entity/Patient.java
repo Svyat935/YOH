@@ -10,7 +10,7 @@ import org.hibernate.annotations.LazyCollectionOption;
 
 @Entity
 @Table(name = "patients")
-public class Patient {
+public class Patient implements Comparable<Patient>{
     public Patient() {}
 
     public Patient(User user){
@@ -138,21 +138,18 @@ public class Patient {
 
     public void setOrganization(Organization organization){
         this.organization = organization;
-        if (organization != null)
-            this.setOrganizationString(organization.getName());
-        else this.setOrganizationString(null);
     }
 
-    @Column(name = "organizationString", length = 128, nullable = true)
-    private String organizationString;
-
-    public String getOrganizationString(){
-        return this.organizationString;
-    }
-
-    public void setOrganizationString(String organizationString){
-        this.organizationString = organizationString;
-    }
+//    @Column(name = "organizationString", length = 128, nullable = true)
+//    private String organizationString;
+//
+//    public String getOrganizationString(){
+//        return this.organizationString;
+//    }
+//
+//    public void setOrganizationString(String organizationString){
+//        this.organizationString = organizationString;
+//    }
 
 
     @OneToMany(mappedBy = "patient")
@@ -167,46 +164,35 @@ public class Patient {
     }
 
 
-    @ManyToMany
-    private List<Test> tests;
 
-    public List<Test> getTests() {
-        return tests;
-    }
-
-    public void setTests(List<Test> tests) {
-        this.tests = tests;
-    }
-
-
-    @ManyToMany
-    @LazyCollection(LazyCollectionOption.FALSE)
-    @JoinTable(name = "game_patient",
-            joinColumns = @JoinColumn(name = "game_id"),
-            inverseJoinColumns = @JoinColumn(name = "patient_id")
-    )
-    private List<Game> games;
-
-    public List<Game> getGames() {
-        return games;
-    }
-
-    public void setGames(List<Game> games) {
-        this.games = games;
-    }
+//    @ManyToMany
+//    @LazyCollection(LazyCollectionOption.FALSE)
+//    @JoinTable(name = "game_patient",
+//            joinColumns = @JoinColumn(name = "game_id"),
+//            inverseJoinColumns = @JoinColumn(name = "patient_id")
+//    )
+//    private List<Game> games;
+//
+//    public List<Game> getGames() {
+//        return games;
+//    }
+//
+//    public void setGames(List<Game> games) {
+//        this.games = games;
+//    }
 
 
-    @OneToMany(mappedBy = "patient")
-    @LazyCollection(LazyCollectionOption.FALSE)
-    private List<GameStatistic> gameStatistics;
-
-    public List<GameStatistic> getGameStatistics() {
-        return gameStatistics;
-    }
-
-    public void setGameStatistics(List<GameStatistic> gameStatistics){
-        this.gameStatistics = gameStatistics;
-    }
+//    @OneToMany(mappedBy = "patient")
+//    @LazyCollection(LazyCollectionOption.FALSE)
+//    private List<GameStatistic> gameStatistics;
+//
+//    public List<GameStatistic> getGameStatistics() {
+//        return gameStatistics;
+//    }
+//
+//    public void setGameStatistics(List<GameStatistic> gameStatistics){
+//        this.gameStatistics = gameStatistics;
+//    }
 
 
     @OneToMany(mappedBy = "patient")
@@ -221,25 +207,27 @@ public class Patient {
     }
 
 
-    @OneToMany(mappedBy = "patient")
-    @LazyCollection(LazyCollectionOption.FALSE)
-    private List<GameStatus> gameStatuses;
+//    @OneToMany(mappedBy = "patient")
+//    private List<GamePatient> gamePatientList;
+//
+//    public List<GamePatient> getGamePatientList() {
+//        return gamePatientList;
+//    }
+//
+//    public void setGamePatientList(List<GamePatient> gamePatientList) {
+//        this.gamePatientList = gamePatientList;
+//    }
 
-    public List<GameStatus> getGameStatuses() { return gameStatuses; }
+    //    @OneToMany(mappedBy = "patient")
+//    @LazyCollection(LazyCollectionOption.FALSE)
+//    private List<GameStatus> gameStatuses;
+//
+//    public List<GameStatus> getGameStatuses() { return gameStatuses; }
+//
+//    public void setGameStatuses(List<GameStatus> gameStatuses) {
+//        this.gameStatuses = gameStatuses;
+//    }
 
-    public void setGameStatuses(List<GameStatus> gameStatuses) {
-        this.gameStatuses = gameStatuses;
-    }
-
-
-    @OneToMany(mappedBy = "patient")
-    private List<TestStatus> testStatuses;
-
-    public List<TestStatus> getTestStatuses() { return testStatuses; }
-
-    public void setTestStatuses(List<TestStatus> testStatuses) {
-        this.testStatuses = testStatuses;
-    }
 
 
     @Column(name = "image", unique = false, nullable = true)
@@ -266,4 +254,14 @@ public class Patient {
     }
 
 
+    @Override
+    public int compareTo(Patient o) {
+        if (this.getName() == null && o.getName() == null)
+            return 0;
+        if (this.getName() == null)
+            return -1;
+        if (o.getName() == null)
+            return 1;
+        return this.getName().compareTo(o.getName());
+    }
 }

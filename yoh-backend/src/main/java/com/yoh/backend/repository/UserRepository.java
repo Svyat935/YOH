@@ -1,11 +1,11 @@
 package com.yoh.backend.repository;
 
 import com.yoh.backend.entity.*;
+import io.swagger.models.auth.In;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.criterion.MatchMode;
-import org.hibernate.criterion.Restrictions;
+import org.hibernate.criterion.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -21,7 +21,6 @@ public class UserRepository {
     private SessionFactory sessionFactory;
 
     public List<User> getAllUsers() {
-        //TODO подогнать под общий вид
         Session session = sessionFactory.openSession();
         try {
             Criteria criteria = session.createCriteria(User.class);
@@ -33,16 +32,71 @@ public class UserRepository {
         }
     }
 
-    public List<User> getAllUsersByAdmin(Integer role) {
-        //TODO подогнать под общий вид
+    public List<User> getAllUsersByAdmin(Integer role, String order, String regex) {
         Session session = sessionFactory.openSession();
         try {
             Criteria criteria = session.createCriteria(User.class)
                     .add(Restrictions.ne("role", 0));
             if (role != -1)
                 criteria.add(Restrictions.eq("role", role));
+
+            if (!regex.equals(""))
+                criteria.add(Restrictions.like("login", regex, MatchMode.ANYWHERE).ignoreCase());
+
+            switch (order) {
+                case "1" -> criteria.addOrder(Order.asc("login"));
+                case "-1" -> criteria.addOrder(Order.desc("login"));
+                case "2" -> criteria.addOrder(Order.asc("dateRegistration"));
+                case "-2" -> criteria.addOrder(Order.desc("dateRegistration"));
+            }
             List<User> users = criteria.list();
             return users;
+        }
+        finally {
+            session.close();
+        }
+    }
+
+    public List<User> getAllUsersByAdminPaginated(Integer role, String order, String regex, int start, int count) {
+        Session session = sessionFactory.openSession();
+        try {
+            Criteria criteria = session.createCriteria(User.class)
+                    .add(Restrictions.ne("role", 0));
+            if (role != -1)
+                criteria.add(Restrictions.eq("role", role));
+
+            if (!regex.equals(""))
+                criteria.add(Restrictions.like("login", regex, MatchMode.ANYWHERE).ignoreCase());
+
+            switch (order) {
+                case "1" -> criteria.addOrder(Order.asc("login"));
+                case "-1" -> criteria.addOrder(Order.desc("login"));
+                case "2" -> criteria.addOrder(Order.asc("dateRegistration"));
+                case "-2" -> criteria.addOrder(Order.desc("dateRegistration"));
+            }
+            criteria.setFirstResult(start);
+            criteria.setMaxResults(count);
+            List<User> users = criteria.list();
+            return users;
+        }
+        finally {
+            session.close();
+        }
+    }
+
+    public int getAllUsersByAdminCount(Integer role, String regex) {
+        Session session = sessionFactory.openSession();
+        try {
+            Criteria criteria = session.createCriteria(User.class)
+                    .add(Restrictions.ne("role", 0));
+            if (role != -1)
+                criteria.add(Restrictions.eq("role", role));
+
+            if (!regex.equals(""))
+                criteria.add(Restrictions.like("login", regex, MatchMode.ANYWHERE).ignoreCase());
+
+            criteria.setProjection(Projections.rowCount());
+            return (int)(long)criteria.uniqueResult();
         }
         finally {
             session.close();
@@ -55,6 +109,22 @@ public class UserRepository {
             session.beginTransaction();
             session.delete(user);
             session.getTransaction().commit();
+        }
+        finally {
+            session.close();
+        }
+    }
+
+    public User getUserByCredential(String credential) {
+        Session session = sessionFactory.openSession();
+        try {
+            Criteria criteria = session.createCriteria(User.class);
+            Criterion login = Restrictions.eq("login", credential);
+            Criterion email = Restrictions.eq("email", credential);
+            criteria.add(Restrictions.or(login, email));
+            List<User> users = criteria.list();
+            return users.isEmpty() ? null : users.get(0);
+
         }
         finally {
             session.close();

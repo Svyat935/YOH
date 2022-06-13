@@ -12,6 +12,7 @@ import com.yoh.backend.entity.User;
 import com.yoh.backend.repository.OrganizationRepository;
 import com.yoh.backend.repository.UserRepository;
 import com.yoh.backend.validators.UserValidator;
+import io.swagger.models.auth.In;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -40,16 +41,25 @@ public class UserService {
         userRepository.createUser(user);
     }
 
+    public void saveUser(User user) throws IllegalArgumentException{
+        userRepository.createUser(user);
+    }
+
     //Не применяется
     public List<User> getAllUsers() {
         return userRepository.getAllUsers();
     }
 
-    public List<User> getAllUsersByAdmin(Integer role, String regex) {
-        List<User> unfilteredList = userRepository.getAllUsersByAdmin(role);
-//        if (!unfilteredList.isEmpty())
-        return unfilteredList.stream().filter(i -> i.getLogin().toLowerCase().contains(regex.toLowerCase())).collect(Collectors.toList());
-//        else return unfilteredList;
+    public List<User> getAllUsersByAdmin(Integer role, String regex, String order) {
+        return userRepository.getAllUsersByAdmin(role, order, regex);
+    }
+
+    public List<User> getAllUsersByAdminPaginated(Integer role, String regex, String order, int start, int count) {
+        return userRepository.getAllUsersByAdminPaginated(role, order, regex, start, count);
+    }
+
+    public int getAllUsersByAdminCount(Integer role, String regex) {
+        return userRepository.getAllUsersByAdminCount(role, regex);
     }
 
     public void updateUser(User user) throws IllegalArgumentException{
@@ -61,7 +71,7 @@ public class UserService {
     }
 
     public User getUser(String credentials, String password) throws IllegalArgumentException{
-        User user = userRepository.getUserByLogin(credentials);
+        User user = userRepository.getUserByCredential(credentials);
         if (user != null) {
             boolean status = BCrypt.verifyer()
                     .verify(password.toCharArray(), user.getPassword())
@@ -70,17 +80,6 @@ public class UserService {
                 return user;
             }
         }
-
-        user = userRepository.getUserByEmail(credentials);
-        if (user != null) {
-            boolean status = BCrypt.verifyer()
-                    .verify(password.toCharArray(), user.getPassword())
-                    .verified;
-            if (status) {
-                return user;
-            }
-        }
-
         throw new IllegalArgumentException(
                 String.format("Sorry, but User with this credentials (%s, %s) wasn't found.",
                         credentials, password)

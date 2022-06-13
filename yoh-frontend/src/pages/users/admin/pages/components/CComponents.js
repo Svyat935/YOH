@@ -1,16 +1,27 @@
 import {VComponents} from "./VComponents";
 import React, {useContext, useEffect, useState} from "react";
 import {UserContext} from "../../../../../context/userContext";
+import {VUsersAdmin} from "../users/VUsersAdmin";
+import {LoadPage} from "../../../../../components/loadpage/LoadPage";
 
 export function CComponents() {
     const context = useContext(UserContext);
     const [games, setGames] = useState([]);
+    const [order, setOrder] = useState(1);
+    const [regex, setRegex] = useState("");
+    const [start, setStart] = useState(0);
+    const [limit, setLimit] = useState(10);
+    const [showDeleted, setShowDeleted] = useState(false);
     const [_, rerun] = useState(new class{});
+    const [load, setLoad] = useState(true);
 
     const requestGames = async () => {
         return await fetch("/games/all?" +
-            "start=" + encodeURIComponent(0) + "&" +
-            "limit=" + encodeURIComponent(100), {
+            "regex=" + encodeURIComponent(regex) + "&" +
+            "start=" + encodeURIComponent(start) + "&" +
+            "limit=" + encodeURIComponent(limit) + "&" +
+            "order=" + encodeURIComponent(order) + "&" +
+            "showDeleted=" + encodeURIComponent(showDeleted), {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -47,6 +58,20 @@ export function CComponents() {
         });
     }
 
+    const requestChangeImage = async (game_id, body) => {
+        return await fetch("/admins/upload/games/image/gameID=" + encodeURIComponent(game_id), {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'token': context.token
+            },
+            body: JSON.stringify(body)
+        }).then((response) => {
+            if (response.status === 200) return response.json()
+            else return null;
+        });
+    }
+
     const requestChangeGame = async (body) => {
         /*
         game_id: required
@@ -71,18 +96,29 @@ export function CComponents() {
             let responseGames = await requestGames();
 
             if (responseGames !== null){
-                responseGames = responseGames["jsonObject"]["results"];
+                responseGames = responseGames["results"];
                 if (responseGames !== undefined) setGames(responseGames);
+                if (responseGames.length === 0) setGames([]);
             }
+
+            if (load === true) setLoad(false);
         }
     }, [context, _])
 
-    return <VComponents
-        games={games}
-        refresh={() => rerun(new class{})}
-        sendGames={requestSendGames}
-        removeGame={requestRemoveGame}
-        changeGame={requestChangeGame}
-        context={context}
-    />
+    return <LoadPage status={load}>
+        <VComponents
+            games={games}
+            refresh={() => rerun(new class{})}
+            sendGames={requestSendGames}
+            removeGame={requestRemoveGame}
+            changeGame={requestChangeGame}
+            showDeleted={showDeleted}
+            setShowDeleted={setShowDeleted}
+            setRegex={setRegex}
+            setStart={setStart}
+            setOrder={setOrder}
+            start={start}
+            context={context}
+        />
+    </LoadPage>
 }

@@ -20,11 +20,13 @@ export function VAuth(props) {
 
     const throwPopUp = () => {
         let element = document.querySelector(".popup");
+        element.style.visibility = "visible";
         element.style.right = 0;
     }
 
     const takeAwayPopUp = () => {
         let element = document.querySelector(".popup");
+        element.style.visibility = "hidden";
         element.style.right = "-25%";
     }
 
@@ -38,11 +40,12 @@ export function VAuth(props) {
         }
 
         let role = await props.auth(credentials, password);
+
         if (role === null){
             popUpMessage("Пользователь с указанным логиным и паролем отсутствует.");
         }else if (role === undefined){
             popUpMessage("Извините. Произошла ошибка на сервере.");
-        } else if (role === -1){
+        } else if (role === 4){
             popUpMessage("Ваш пользователь не имеет роли. Пожалуйста обратитесь к администратору.");
         } else {
             switch (role) {
@@ -64,7 +67,7 @@ export function VAuth(props) {
 
 
     return (
-        <Back nav={<BasicNav/>}>
+        <Back navLeft={<BasicNav/>}>
             <PopUp text={textPopUp}/>
             <Container>
                 <Row>
@@ -80,6 +83,11 @@ export function VAuth(props) {
                                     type={"text"}
                                     placeholder={"Электронная почта / Логин"}
                                     required={true}
+                                    onKeyDown={(e) => {
+                                        if (e.key === "Enter"){
+                                            authorize();
+                                        }
+                                    }}
                                 />
                                 <input
                                     id={"password"}
@@ -87,6 +95,11 @@ export function VAuth(props) {
                                     type={"password"}
                                     placeholder={"Пароль"}
                                     required={true}
+                                    onKeyDown={(e) => {
+                                        if (e.key === "Enter"){
+                                            authorize();
+                                        }
+                                    }}
                                 />
                             </div>
                             <button className={"authButton"} onClick={authorize}>Войти</button>

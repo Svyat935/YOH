@@ -1,0 +1,18 @@
+.InfoBlockStat{
+    background: #F5F5F5;
+    box-shadow: -10px 10px 30px rgba(0, 0, 0, 0.32);
+    border-radius: 40px;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    flex-wrap: wrap;
+    margin: 20px 0;
+    padding: 0 20px;
+    transition: .2s linear;
+}
+
+.InfoBlockStat:hover{
+    transform: scale(1.05);
+    cursor: pointer;
+}

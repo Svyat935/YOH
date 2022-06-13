@@ -7,10 +7,12 @@ import com.yoh.backend.request.RoleForAssign;
 import com.yoh.backend.request.UserForAuthorize;
 import com.yoh.backend.request.UserForCreatingRequest;
 import com.yoh.backend.response.BaseResponse;
-import com.yoh.backend.response.JSONResponse;
+//import com.yoh.backend.response.JsonObject;
 import com.yoh.backend.service.*;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -28,27 +30,32 @@ public class AuthController {
     private SessionFactory sessionFactory;
 
     @GetMapping
-    public BaseResponse testing() {
-        return new BaseResponse("Test is successes.", 200);
+    public ResponseEntity<JsonObject> testing() {
+        JsonObject response = new JsonObject();
+        response.put("previous", false);
+        response.put("next", false);
+        response.put("count", 0);
+        response.put("size", 0);
+        return new ResponseEntity<>(response, HttpStatus.FORBIDDEN);
     }
 
     @PostMapping("/registration")
-    public JSONResponse createUser(@Valid @RequestBody UserForCreatingRequest userRequest) {
+    public ResponseEntity<JsonObject> createUser(@Valid @RequestBody UserForCreatingRequest userRequest) {
         User user = new User(userRequest.getLogin(), userRequest.getEmail(), userRequest.getPassword(), LocalDateTime.now(), 4);
         try {
             this.userService.createUser(user);
             JsonObject response = new JsonObject();
             response.put("message", "User was created");
-            return new JSONResponse(200, response);
+            return new ResponseEntity<>(response, HttpStatus.OK);
         } catch (IllegalArgumentException e) {
             JsonObject exceptionResponse = new JsonObject();
             exceptionResponse.put("message", e.getMessage());
-            return new JSONResponse(401, exceptionResponse);
+            return new ResponseEntity<>(exceptionResponse, HttpStatus.BAD_REQUEST);
         }
     }
 
     @PostMapping("/authorization")
-    public JSONResponse authorizeUser(@Valid @RequestBody UserForAuthorize userRequest) {
+    public ResponseEntity<JsonObject> authorizeUser(@Valid @RequestBody UserForAuthorize userRequest) {
         try {
             JsonObject response = new JsonObject();
             User user = this.userService.getUser(userRequest.getCredentials(), userRequest.getPassword());
@@ -56,7 +63,6 @@ public class AuthController {
             String token = this.userService.generateToken(user.getId());
             response.put("token", token);
             response.put("role", role);
-            //TODO опитимизация
             String roleString = "NotAssigned";
             if (role != null){
                 roleString = role == 0 ? "Admin" :
@@ -65,11 +71,11 @@ public class AuthController {
                                         role == 3 ? "Tutor" : "Not assigned";
             }
             response.put("roleString", roleString);
-            return new JSONResponse(200, response);
+            return new ResponseEntity<>(response, HttpStatus.OK);
         } catch (IllegalArgumentException e) {
             JsonObject exceptionResponse = new JsonObject();
             exceptionResponse.put("message", e.getMessage());
-            return new JSONResponse(401, exceptionResponse);
+            return new ResponseEntity<>(exceptionResponse, HttpStatus.UNAUTHORIZED);
         }
     }
 }

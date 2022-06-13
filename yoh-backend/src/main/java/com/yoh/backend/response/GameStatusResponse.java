@@ -1,6 +1,6 @@
 package com.yoh.backend.response;
 
-import com.yoh.backend.entity.GameStatus;
+//import com.yoh.backend.entity.GameStatus;
 
 //public class GameStatusResponse {
 //

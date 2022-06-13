@@ -1,0 +1,41 @@
+.button-arrow{
+    align-items: center;
+    display: flex;
+    justify-content: center;
+    padding: 8px;
+    border: none;
+    background: none;
+}
+
+.arrow{
+    background-color: transparent;
+    height: 18px;
+    width: 18px;
+}
+
+.arrow-left{
+    border-right: 3px solid #FFFFFF;
+    border-top: 3px solid #FFFFFF;
+    transform: translateX(25%) rotate(-135deg);
+    transition: .1s linear;
+}
+
+.back-arrow{
+    background: #6A6DCD;
+    height: 50px;
+    width: 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 40px;
+    transition: .1s linear;
+}
+
+.back-arrow:hover, .back-arrow:focus{
+    background: #FFFFFF;
+}
+
+.back-arrow:hover div, .back-arrow:focus div{
+    border-right: 3px solid #6A6DCD;
+    border-top: 3px solid #6A6DCD;
+}

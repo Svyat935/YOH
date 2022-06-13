@@ -34,7 +34,11 @@ public class GameService {
     }
 
     public boolean checkGameByName(String name) throws IllegalArgumentException{
-        return gameRepository.getGameByName(name) == null;
+        return gameRepository.getGameByName(name) != null;
+    }
+
+    public Game getGameByName(String name) throws IllegalArgumentException{
+        return gameRepository.getGameByName(name);
     }
 
     public Game getGameById(UUID id) throws IllegalArgumentException{
@@ -47,16 +51,24 @@ public class GameService {
         );
     }
 
-    public List<Game> getAllGames() {
-        return gameRepository.getAllGames();
+    public int getAllActiveGamesFilteredCount(String typeRegex, String regex, List<UUID> UUIDList, Boolean showDeleted) throws IllegalArgumentException{
+        return gameRepository.getAllActiveGamesFilteredCount(typeRegex, regex, UUIDList, showDeleted);
     }
 
-    public List<Game> getAllGamesFiltered(String regex, String typeRegex) {
-        List<Game> unfilteredList = gameRepository.getAllGames();
-//        if (!unfilteredList.isEmpty()) {
-        return unfilteredList.stream().filter(i -> i.getName().toLowerCase().contains(regex.toLowerCase())
-                        && i.getType().toLowerCase().contains(typeRegex.toLowerCase()))
-                .collect(Collectors.toList());
+    public List<Game> getAllActiveGamesFiltered(String order, String typeRegex, String regex, List<UUID> UUIDList, int start, int limit, Boolean showDeleted) throws IllegalArgumentException{
+        return gameRepository.getAllActiveGamesFiltered(order, typeRegex, regex, UUIDList, start, limit, showDeleted);
+    }
+
+    public List<Game> getAllGames() {
+        return gameRepository.getAllGames("");
+    }
+
+    public List<Game> getAllGamesFiltered(String typeRegex, String order, String regex) {
+        return gameRepository.getAllActiveGames(order, regex, typeRegex);
+//        return unfilteredList;
+//        if (!typeRegex.equals("")) {
+//        return unfilteredList.stream().filter(i -> i.getType().toLowerCase().contains(typeRegex.toLowerCase()))
+//                .collect(Collectors.toList());
 //            }
 //        else return unfilteredList;
 

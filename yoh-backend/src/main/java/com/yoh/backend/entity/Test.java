@@ -1,6 +1,7 @@
 package com.yoh.backend.entity;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -34,18 +35,16 @@ public class Test {
         this.subject = subject;
     }
 
+    @Column(name = "dateAdding", nullable = false)
+    private LocalDateTime dateAdding;
 
-    @ManyToMany
-    private List<Patient> patients;
-
-    public List<Patient> getPatients() {
-        return patients;
+    public LocalDateTime getDateAdding() {
+        return dateAdding;
     }
 
-    public void setPatients(List<Patient> patients) {
-        this.patients = patients;
+    public void setDateAdding(LocalDateTime dateAdding) {
+        this.dateAdding = dateAdding;
     }
-
 
     @ManyToMany
     private List<Question> questions;
@@ -58,15 +57,4 @@ public class Test {
         this.questions = questions;
     }
 
-
-    @OneToMany(mappedBy = "test")
-    private List<Result> results;
-
-    public List<Result> getResults() {
-        return results;
-    }
-
-    public void setResults(List<Result> results) {
-        this.results = results;
-    }
 }

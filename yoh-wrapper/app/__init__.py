@@ -7,6 +7,9 @@ from app.config import config, init_config
 
 
 def create_flask_app():
+    """
+    Инициализируем Flask сервер
+    """
     app = Flask(__name__)
 
     route(app)

@@ -1,16 +1,18 @@
 import React from "react";
-import {TutorNav} from "../../../../../components/navigate/Tutor/TutorNav";
+import {TutorNav} from "../../../../../components/navigate/NavPanel/Tutor/TutorNav";
 import {Container} from "react-bootstrap";
 import Row from "react-bootstrap/Row";
 import {Back} from "../../../../../components/back/Back";
 import {InfoBlock} from "../../../../../components/infoBlock/InfoBlock";
 import profileStub from "../../../../../assets/profileStub.jpg";
-import {RightArrow} from "../../../../../components/arrows/RightArrow";
+import {RightArrow} from "../../../../../components/arrows/RightArrow/RightArrow";
 import {useNavigate} from "react-router-dom";
 import {ProgressBar} from "../../../../../components/progressBar/ProgressBar";
+import {Slider} from "../../../../../components/slider/Slider";
 
 export function VHomeTutor(props) {
     const router = useNavigate();
+    const status = [];
 
     const createViewUsers = () => {
         let users = props.users.slice(-5),
@@ -18,47 +20,81 @@ export function VHomeTutor(props) {
 
         if (users.length > 0){
             users.forEach((user) => {
+                let imageSrc = user["image"] ? "https://mobile.itkostroma.ru/images/" + user["image"] : profileStub;
+
                 view.push(
-                    <InfoBlock key={user["id"]} text={user["login"]}>
-                        <div>
-                            <img style={{width: "100%"}} src={profileStub} alt={'profile'}/>
-                        </div>
+                    <InfoBlock key={user["id"]} text={
+                        user["surname"] && user["name"] ?
+                            user["surname"] + " " + user["name"] : "Отсутствует ФИО"
+                    } onClick={() => router("/user/tutor/patients/")}>
+                        <img style={{width: "100%", height: "100%", borderRadius: 40, objectFit: "cover"}}
+                             src={imageSrc} alt={'profile'}/>
                     </InfoBlock>
                 )
             })
+        }
+
+        return view;
+    }
+
+    const createStatusUsers = () => {
+        let status = props.status.slice(-5),
+            view = [];
+
+        if (status.length > 0) {
+            status.forEach((stat) => {
+                const allGames = stat.statistics["Done"] + stat.statistics["Assigned"] + stat.statistics["Failed"];
+
+                let fio = stat.user["surname"] && stat.user["name"] ? stat.user["surname"] + " " + stat.user["name"] :
+                            "Отсутствует ФИО",
+                    value = allGames !== 0 ? Math.round(stat.statistics["Done"] / allGames * 100) : 0
+                view.push(<label>{fio}: </label>)
+                view.push(<ProgressBar percent={value}/>)
+            })
         }else{
             view.push(
-                <div style={
-                    {
-                        height: 387,
-                        width: 936,
-                        display: "flex",
-                        justifyContent: "center",
-                        alignItems: "center"
-                    }
-                }>
-                    <h3>Пользователи в системе отсутствует.</h3>
+                <div style={{display: "flex", justifyContent: "center"}}>
+                    <h3>Отсутвуют назначенные пользователи.</h3>
                 </div>
             )
         }
 
-        return (
-            <div>
-                <h3 style={{marginTop: 20}}>Последняя активность пользователей:</h3>
-                <div style={{display: "flex", justifyContent: "space-evenly"}}>
-                    {view}
-                    {view.length === 5 ? <RightArrow onClick={() => router("/user/admin/users/")}/> : null}
-                </div>
-            </div>
-        )
+        return view;
     }
 
     return (
-        <Back navPanel={<TutorNav/>}>
+        <Back navPanel={<TutorNav context={props.context}/>}>
             <Container style={{marginTop: 20}}>
                 <Row>
-                    <h1 style={{fontWeight: "bold"}}>Добрый день!</h1>
-                    {createViewUsers()}
+                    <h1 style={{fontWeight: "bold"}}>{
+                        props.account !== null && props.account["name"] ?
+                            "Добрый день, " + props.account["name"] + "!" : "Добрый день!"
+                    }
+                    </h1>
+                    <h3 style={{marginTop: 20}}>Последняя активность пользователей:</h3>
+                    {
+                        props.users.length > 0 ?
+                            <div style={
+                                {
+                                    width: "100%",
+                                    display: "flex",
+                                    justifyContent: "space-around",
+                                }
+                            }>
+                                {createViewUsers()}
+                            </div> :
+                        <div style={
+                            {
+                                height: 387,
+                                width: "100%",
+                                display: "flex",
+                                justifyContent: "center",
+                                alignItems: "center"
+                            }
+                        }>
+                            <h3>Наблюдаемые пользователи в системе отсутствуют.</h3>
+                        </div>
+                    }
                 </Row>
             </Container>
             <Container>
@@ -72,18 +108,13 @@ export function VHomeTutor(props) {
                             borderRadius: 40,
                         }
                     }>
-                        <h3 style={{margin: "20px 50px"}}>Отслеживание успехов</h3>
+                        <h3 style={{margin: "20px 50px"}}>Отслеживание успехов:</h3>
                         <div style={
                             {
                                 padding: "10px 20px 30px 20px"
                             }
                         }>
-                            <label>Пользователь 1: </label>
-                            <ProgressBar percent={60}/>
-                            <label>Пользователь 2: </label>
-                            <ProgressBar percent={70}/>
-                            <label>Пользователь 3: </label>
-                            <ProgressBar percent={85}/>
+                            {createStatusUsers()}
                         </div>
                     </div>
                 </Row>

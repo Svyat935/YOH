@@ -7,7 +7,7 @@ import {ButtonA} from "../../../../../components/buttons/ButtonA/ButtonA";
 import {InfoBlockStatic} from "../../../../../components/infoBlockStatic/InfoBlockStatic";
 import "./AccountInfo.css";
 import {ProgressBar} from "../../../../../components/progressBar/ProgressBar";
-import {PatientNav} from "../../../../../components/navigate/Patient/PatientNav";
+import {PatientNav} from "../../../../../components/navigate/NavPanel/Patient/PatientNav";
 import Modal from "react-bootstrap/Modal";
 import {ButtonB} from "../../../../../components/buttons/ButtonB/ButtonB";
 import {InputPhone} from "../../../../../components/inputPhone/InputPhone";
@@ -18,6 +18,10 @@ export function VAccount(props) {
     // ChangePhoto - 0, ChangeInfo - 1;
     const [buttonStatus, setButtonStatus] = useState(0);
     const [show, setShow] = useState(false);
+    const allGames = props.statistics["Done"] + props.statistics["Assigned"] + props.statistics["Failed"];
+    const statDone = allGames !== 0 ? Math.round(props.statistics["Done"] / allGames * 100) : 0;
+    const statAssigned = allGames !== 0 ? Math.round(props.statistics["Assigned"] / allGames * 100) : 0;
+    const statStarted = allGames !== 0 ? Math.round(props.statistics["Started"] / allGames * 100) : 0;
 
     const changeImage = async () => {
         let fImage = document.getElementById("fileImage");
@@ -40,33 +44,26 @@ export function VAccount(props) {
             fPhone = document.getElementById("phone"),
             fGender = document.getElementById("gender-input"),
             fBirthday = document.getElementById("input-birthday");
-        let validStatus = true;
 
+        let body = {};
+        body["id"] = props.accountInfo.id;
+        if (fName.value) body["name"] = fName.value;
+        if (fSurname.value) body["surname"] = fSurname.value;
+        if (fSecondName.value) body["secondName"] = fSecondName.value;
+        if (fPhone.value) body["numberPhone"] = fPhone.value;
+        if (fAddress.value) body["address"] = fAddress.value;
+        if (fBirthday.value) body["birthDate"] = fBirthday.value;
+        if (fGender.value) body["gender"] = fGender.value;
 
-        if (validStatus){
-            let body = {};
-            body["id"] = props.accountInfo.id;
-            if (fName.value) body["name"] = fName.value;
-            if (fSurname.value) body["surname"] = fSurname.value;
-            if (fSecondName.value) body["secondName"] = fSecondName.value;
-            if (fPhone.value) body["numberPhone"] = fPhone.value;
-            if (fAddress.value) body["address"] = fAddress.value;
-            if (fBirthday.value) body["birthDate"] = fBirthday.value;
-            if (fGender.value) body["gender"] = fGender.value;
+        let response = await props.changeInfo(body);
 
-            let response = await props.changeInfo(body);
-
-            if (response){
-                if (response.code === 401) {
-                    console.log(response);
-                    validStatus = false;
-                }
+        if (response){
+            if (response.code === 401) {
+                console.log(response);
+            }else{
+                props.refresh();
+                setShow(false);
             }
-        }
-
-        if (validStatus){
-            props.refresh();
-            setShow(false);
         }
     }
 
@@ -81,49 +78,16 @@ export function VAccount(props) {
                     padding: "0 10px"
                 }
             }>
-                <label>Имя: </label>
-                <input id={"name"} type={"text"} style={
-                    {borderRadius: 40, border: "none", padding: "5px 15px", marginBottom: 10}
-                } required/>
-                <p id={"name-before"} style={{margin: "5px 0", textDecoration: "underline"}}>
-                    Имя: {userInfo["name"]}
-                </p>
-                <label>Фамилия: </label>
-                <input id={"surname"} type={"text"} style={
-                    {borderRadius: 40, border: "none", padding: "5px 15px", marginBottom: 10}
-                } required/>
-                <p id={"surname-before"} style={{margin: "5px 0", textDecoration: "underline"}}>
-                    Фамилия: {userInfo["surname"]}
-                </p>
-                <label>Отчество: </label>
-                <input id={"secondName"} type={"text"} style={
-                    {borderRadius: 40, border: "none", padding: "5px 15px", marginBottom: 10}
-                } required/>
-                <p id={"secondName-before"} style={{margin: "5px 0", textDecoration: "underline"}}>
-                    Отчество: {userInfo["secondName"]}
-                </p>
                 <label>День рождения: </label>
-                <InputBirthday/>
-                <p id={"birthday-before"} style={{margin: "5px 0", textDecoration: "underline"}}>
-                    День рождения: {userInfo["birthDate"] ? userInfo["birthDate"].slice(0, 10) : null}
-                </p>
+                <InputBirthday defaultValue={userInfo["birthDate"] ? userInfo["birthDate"].slice(0, 10) : null}/>
                 <label>Пол: </label>
-                <InputGender/>
-                <p id={"inputGender-before"} style={{margin: "5px 0", textDecoration: "underline"}}>
-                    Пол: {userInfo["gender"]}
-                </p>
+                <InputGender defaultValue={userInfo["gender"]}/>
                 <label>Телефон: </label>
-                <InputPhone id={"phone"}/>
-                <p id={"inputPhone-before"} style={{margin: "5px 0", textDecoration: "underline"}}>
-                    Телефон: {userInfo["phone"]}
-                </p>
+                <InputPhone id={"phone"} defaultValue={userInfo["numberPhone"]}/>
                 <label>Адрес: </label>
                 <input id={"address"} type={"text"} style={
                     {borderRadius: 40, border: "none", padding: "5px 15px", marginBottom: 10}
-                }/>
-                <p id={"address-before"} style={{margin: "5px 0", textDecoration: "underline"}}>
-                    Адрес: {userInfo["address"]}
-                </p>
+                } defaultValue={userInfo["address"] ? userInfo["address"] : null}/>
             </div>
         )
     }
@@ -174,20 +138,20 @@ export function VAccount(props) {
     const createImageAccount = () => {
         let imageClass = new Image();
         if (props.accountInfo !== null && props.accountInfo["image"] !== null){
+            //TODO: Add site url.
             imageClass.src = "https://mobile.itkostroma.ru/images/"+props.accountInfo["image"];
         }
 
         return (
             <InfoBlockStatic>
-                <div>
-                    <img style={{width: "100%"}} src={imageClass.src ? imageClass.src : profileStub} alt={'game'}/>
-                </div>
+                <img style={{width: "100%", height: "100%", borderRadius: 40, objectFit: "cover"}}
+                     src={imageClass.src ? imageClass.src : profileStub} alt={'game'}/>
             </InfoBlockStatic>
         )
     }
 
     return (
-        <Back navPanel={<PatientNav/>}>
+        <Back navPanel={<PatientNav context={props.context}/>}>
             <Modal
                 show={show}
                 backdrop={true}
@@ -272,14 +236,12 @@ export function VAccount(props) {
                                     padding: "10px 20px 30px 20px"
                                 }
                             }>
-                                <label>Начатых: </label>
-                                <ProgressBar percent={props.statistics["Done"]}/>
                                 <label>В ожидании: </label>
-                                <ProgressBar percent={props.statistics["Assigned"]}/>
+                                <ProgressBar percent={statAssigned}/>
                                 <label>Завершенных: </label>
-                                <ProgressBar percent={props.statistics["Done"]}/>
-                                <label>Неудачных: </label>
-                                <ProgressBar percent={props.statistics["Failed"]}/>
+                                <ProgressBar percent={statDone}/>
+                                <label>Начатые: </label>
+                                <ProgressBar percent={statStarted}/>
                             </div>
                         </div>
                     </Col>

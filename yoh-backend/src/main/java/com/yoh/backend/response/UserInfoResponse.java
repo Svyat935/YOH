@@ -17,7 +17,7 @@ public class UserInfoResponse {
         setEmail(user.getEmail());
         setRole(user.getRole());
         setRoleString(user.getRole());
-
+        setDateRegistration(user.getDateRegistration().toString());
     }
 
     private String id;
@@ -75,5 +75,15 @@ public class UserInfoResponse {
             this.roleString = role == 0 ? "Admin" :
                     role == 1 ? "Patient" :
                             role == 2 ? "Researcher" : "Tutor";
+    }
+
+    private String dateRegistration;
+
+    public String getDateRegistration() {
+        return dateRegistration;
+    }
+
+    public void setDateRegistration(String dateRegistration) {
+        this.dateRegistration = dateRegistration;
     }
 }

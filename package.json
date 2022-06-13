@@ -1,5 +1,7 @@
 {
   "dependencies": {
+    "imask": "^6.4.2",
+    "react-flip-move": "^3.0.4",
     "react-router-dom": "^6.3.0"
   }
 }

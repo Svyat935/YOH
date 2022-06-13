@@ -1,9 +1,13 @@
 package com.yoh.backend.repository;
 
 import com.yoh.backend.entity.Game;
+import com.yoh.backend.enums.GameActiveStatus;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.criterion.MatchMode;
+import org.hibernate.criterion.Order;
+import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -40,7 +44,7 @@ public class GameRepository {
         Session session = sessionFactory.openSession();
         try {
             session.beginTransaction();
-            session.delete(game);
+            session.delete(session.contains(game) ? game : session.merge(game));
             session.getTransaction().commit();
         }
         finally {
@@ -75,12 +79,103 @@ public class GameRepository {
     }
 
 
-    public List<Game> getAllGames(){
+    public List<Game> getAllActiveGames(String order, String regex, String typeRegex){
+        Session session = sessionFactory.openSession();
+        try {
+            Criteria criteria = session.createCriteria(Game.class)
+                    .add(Restrictions.eq("gameActiveStatus", GameActiveStatus.ACTIVE));
+            if (!regex.equals(""))
+                criteria.add(Restrictions.like("name", regex, MatchMode.ANYWHERE).ignoreCase());
+            if (!typeRegex.equals(""))
+                criteria.add(Restrictions.like("type", typeRegex, MatchMode.ANYWHERE).ignoreCase());
+            switch (order) {
+                case "1" -> criteria.addOrder(Order.asc("name"));
+                case "-1" -> criteria.addOrder(Order.desc("name"));
+                case "2" -> criteria.addOrder(Order.asc("dateAdding"));
+                case "-2" -> criteria.addOrder(Order.desc("dateAdding"));
+                case "3" -> criteria.addOrder(Order.asc("type"));
+                case "-3" -> criteria.addOrder(Order.desc("type"));
+            }
+            List<Game> games = criteria.list();
+            return games;
+//            return games.isEmpty() ? null : games;
+        }finally {
+            session.close();
+        }
+    }
+
+
+    public List<Game> getAllGames(String order){
         Session session = sessionFactory.openSession();
         try{
             Criteria criteria = session.createCriteria(Game.class);
+            switch (order) {
+                case "1" -> criteria.addOrder(Order.asc("name"));
+                case "-1" -> criteria.addOrder(Order.desc("name"));
+                case "2" -> criteria.addOrder(Order.asc("dateAdding"));
+                case "-2" -> criteria.addOrder(Order.desc("dateAdding"));
+                case "3" -> criteria.addOrder(Order.asc("type"));
+                case "-3" -> criteria.addOrder(Order.desc("type"));
+            }
             List<Game> games = criteria.list();
             return games;
+//            return games.isEmpty() ? null : games;
+        }finally {
+            session.close();
+        }
+    }
+
+    public int getAllActiveGamesFilteredCount(String typeRegex, String regex, List<UUID> UUIDList, Boolean showDeleted){
+        Session session = sessionFactory.openSession();
+        try{
+            Criteria criteria = session.createCriteria(Game.class);
+            if (showDeleted == null || showDeleted == Boolean.FALSE)
+                criteria.add(Restrictions.eq("gameActiveStatus", GameActiveStatus.ACTIVE));
+            if (!regex.equals(""))
+                criteria.add(Restrictions.like("name", regex, MatchMode.ANYWHERE).ignoreCase());
+            if (!typeRegex.equals(""))
+                criteria.add(Restrictions.like("type", typeRegex, MatchMode.ANYWHERE).ignoreCase());
+            if (!UUIDList.isEmpty())
+                criteria.add(
+                        Restrictions.not(
+                                Restrictions.in("id", UUIDList))
+                );
+            criteria.setProjection(Projections.rowCount());
+            return (int)(long)criteria.uniqueResult();
+
+//            return games.isEmpty() ? null : games;
+        }finally {
+            session.close();
+        }
+    }
+
+    public List<Game> getAllActiveGamesFiltered(String order, String typeRegex, String regex, List<UUID> UUIDList, int start, int limit, Boolean showDeleted){
+        Session session = sessionFactory.openSession();
+        try{
+            Criteria criteria = session.createCriteria(Game.class);
+            if (showDeleted == null || showDeleted == Boolean.FALSE)
+                criteria.add(Restrictions.eq("gameActiveStatus", GameActiveStatus.ACTIVE));
+            if (!regex.equals(""))
+                criteria.add(Restrictions.like("name", regex, MatchMode.ANYWHERE).ignoreCase());
+            if (!typeRegex.equals(""))
+                criteria.add(Restrictions.like("type", typeRegex, MatchMode.ANYWHERE).ignoreCase());
+            if (!UUIDList.isEmpty())
+                criteria.add(
+                        Restrictions.not(
+                                Restrictions.in("id", UUIDList))
+                );
+            switch (order) {
+                case "1" -> criteria.addOrder(Order.asc("name"));
+                case "-1" -> criteria.addOrder(Order.desc("name"));
+                case "2" -> criteria.addOrder(Order.asc("dateAdding"));
+                case "-2" -> criteria.addOrder(Order.desc("dateAdding"));
+                case "3" -> criteria.addOrder(Order.asc("type"));
+                case "-3" -> criteria.addOrder(Order.desc("type"));
+            }
+            criteria.setFirstResult(start);
+            criteria.setMaxResults(limit);
+            return criteria.list();
+
 //            return games.isEmpty() ? null : games;
         }finally {
             session.close();

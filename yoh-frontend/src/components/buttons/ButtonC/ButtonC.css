@@ -1,0 +1,14 @@
+.buttons-c{
+    padding: 10px 20px;
+    background: #FFFFFF;
+    color: #6A6DCD;
+    box-shadow: -10px 10px 30px rgba(0, 0, 0, 0.32);
+    border-radius: 40px;
+    margin: 10px;
+    transition: .1s linear;
+    border: 1px #6A6DCD solid;
+}
+
+.buttons-c:hover, .buttons-c:focus{
+    cursor: default;
+}

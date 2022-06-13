@@ -1,15 +1,18 @@
 import {Col, Container, Row} from "react-bootstrap";
-import React from "react";
+import React, {useContext} from "react";
 import {ChatContainerSend} from "../../../../../components/chatContainer/chatContainerSend/ChatContainerSend";
 import {Back} from "../../../../../components/back/Back";
 import ImageStub from "../../../../../assets/news1.png";
 import {ChatContainerReceive} from "../../../../../components/chatContainer/chatContainerReceive/ChatContainerReceive";
 import {ButtonB} from "../../../../../components/buttons/ButtonB/ButtonB";
-import {PatientNav} from "../../../../../components/navigate/Patient/PatientNav";
+import {PatientNav} from "../../../../../components/navigate/NavPanel/Patient/PatientNav";
+import {UserContext} from "../../../../../context/userContext";
 
 export function VChat() {
+    let context = useContext(UserContext);
+
     return (
-        <Back navPanel={<PatientNav/>}>
+        <Back navPanel={<PatientNav context={context}/>}>
             <Container style={{border: "1px solid #6A6DCD", borderRadius: 40, padding: 20}}>
                 <Row>
                     <Col>
@@ -17,12 +20,12 @@ export function VChat() {
                         <ChatContainerReceive text={"Привет"} date={"11:01"} image={ImageStub}/>
                         <ChatContainerSend text={"Это просто для теста"} date={"11:00"} image={ImageStub}/>
                         <ChatContainerSend
-                            text={"Главное чтобы и дальше все работало как надо, а не как получится."}
+                            text={"Большой тест получился."}
                             date={"11:00"}
                             image={ImageStub}
                         />
                         <ChatContainerReceive
-                            text={"Похоже реально может не получится и пойти все по пизде."}
+                            text={"Тест как он есть."}
                             date={"11:01"}
                             image={ImageStub}
                         />

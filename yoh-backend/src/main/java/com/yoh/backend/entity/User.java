@@ -24,7 +24,6 @@ public class User {
         this.role = role;
     }
 
-
     @Id
     @GeneratedValue
     private UUID id;
@@ -76,8 +75,7 @@ public class User {
     public void setRole(Integer role) {
         this.role = role;
     }
-
-    //TODO Сменить на nullable false после полной очистки бд
+    
     @Column(name = "dateRegistration", nullable = true)
     private LocalDateTime dateRegistration;
 

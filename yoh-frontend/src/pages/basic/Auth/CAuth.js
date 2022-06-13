@@ -15,26 +15,19 @@ export function CAuth() {
             })
         }).then((response) => {
             if (response.status === 200) { return response.json(); }
-            else {return null;}
+            else if (response.status === 401) { return response.json(); }
+            else { return null; }
         });
     }
 
     const authorize = async (credentials, password) => {
         let response = await requestAuth(credentials, password);
 
-        if (response === null){
-            return undefined;
-        }
+        let role = response["role"],
+            token = response["token"];
 
-        if (response.code === 401){
+        if (role === undefined){
             return null;
-        }
-
-        let role = response["jsonObject"]["role"],
-            token = response["jsonObject"]["token"];
-
-        if (role === null){
-            return -1;
         } else {
             userContext.login(token, role);
             return role;
