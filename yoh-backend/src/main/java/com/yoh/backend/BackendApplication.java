@@ -50,23 +50,13 @@ public class BackendApplication {
     private String games_folder;
 
     @Bean
-    public CommandLineRunner init(AdminService adminService, UserService userService, OrganizationRepository organizationRepository) {
+    public CommandLineRunner init(AdminService adminService, UserService userService) {
         return (args) -> {
             User user = new User(this.login, this.email, this.password, 0);
             Admin admin = new Admin(user);
-            // TODO: Delete organization later.
-            Organization organization = new Organization(
-                    "TestOrganization",
-                    null,
-                    null,
-                    null,
-                    null,
-                    LocalDateTime.now()
-            );
             try {
                 userService.createUser(user);
                 adminService.createAdmin(admin);
-                organizationRepository.createOrganization(organization);
             } catch (IllegalArgumentException e) {
                 System.out.println("Admin had been created.");
             }
