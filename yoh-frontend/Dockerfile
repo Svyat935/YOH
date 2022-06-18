@@ -6,5 +6,7 @@ RUN mkdir ./src
 RUN mkdir ./public
 COPY ./public ./public
 COPY ./src ./src
+
+RUN npm config set proxy http://yoh-backend:8080
 CMD npm start
 
